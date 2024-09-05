@@ -30,9 +30,12 @@ services:
     restart: unless-stopped
     ports:
       - "3000:3000"
+    volumes:
+      - ./frontend:/app           # Mapea el directorio frontend al directorio de trabajo del contenedor
+    environment:
+      - CHOKIDAR_USEPOLLING=true
     networks:
       - app-network
-
 networks:
   app-network:
     driver: bridge
