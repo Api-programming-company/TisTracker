@@ -1,76 +1,147 @@
-import React, { useState } from 'react';
-import './css/RegistroEstudiante.css'; // Opcional, para estilos personalizados
+// RegistroEstudiante.js
+import React, { useState } from "react";
+import {
+  TextField,
+  Button,
+  Container,
+  Typography,
+  Box,
+  FormControl,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import "./css/RegistroEstudiante.css";
 
-function RegistroEstudiante() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    course: '',
-    phone: '',
-  });
+const RegistroEstudiante = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleClickShowConfirmPassword = () =>
+    setShowConfirmPassword(!showConfirmPassword);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Aquí podrías manejar el envío del formulario
-    console.log('Datos enviados:', formData);
-  };
+  const handleMouseDownPassword = (event) => event.preventDefault();
 
   return (
-    <div className="register-students-container">
-      <h1>Registrar Estudiantes</h1>
-      <form onSubmit={handleSubmit} className="register-students-form">
-        <label>
-          Nombre:
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <label>
-          Correo Electrónico:
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <label>
-          Curso:
-          <input
-            type="text"
-            name="course"
-            value={formData.course}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <label>
-          Teléfono:
-          <input
-            type="tel"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <button type="submit">Registrar</button>
-      </form>
-    </div>
+    <Container maxWidth="sm">
+      <Box sx={{ mt: 5 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Crea tu cuenta estudiante
+        </Typography>
+
+        <form>
+          {/* Nombre */}
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <TextField
+              label="Nombre"
+              variant="outlined"
+              fullWidth
+              required
+              helperText="* Obligatorio"
+            />
+          </FormControl>
+
+          {/* Apellidos */}
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <TextField
+              label="Apellidos"
+              variant="outlined"
+              fullWidth
+              required
+              helperText="* Obligatorio"
+            />
+          </FormControl>
+
+          {/* Email */}
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <TextField
+              label="Email"
+              variant="outlined"
+              type="email"
+              fullWidth
+              required
+              helperText="* Obligatorio"
+            />
+          </FormControl>
+
+          {/* Código SIS */}
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <TextField
+              label="Código SIS"
+              variant="outlined"
+              fullWidth
+              required
+              helperText="* Obligatorio"
+            />
+          </FormControl>
+
+          {/* Contraseña */}
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <TextField
+              label="Contraseña"
+              variant="outlined"
+              type={showPassword ? "text" : "password"}
+              fullWidth
+              required
+              helperText="* Obligatorio"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </FormControl>
+
+          {/* Confirmar Contraseña */}
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <TextField
+              label="Confirmar Contraseña"
+              variant="outlined"
+              type={showConfirmPassword ? "text" : "password"}
+              fullWidth
+              required
+              helperText="* Obligatorio"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle confirm password visibility"
+                      onClick={handleClickShowConfirmPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </FormControl>
+
+          {/* Botón de Registro */}
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ mt: 2 }}
+          >
+            Registrarse
+          </Button>
+        </form>
+      </Box>
+    </Container>
   );
-}
+};
 
 export default RegistroEstudiante;
