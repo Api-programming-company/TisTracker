@@ -10,7 +10,6 @@ import {
   IconButton,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import "./css/RegistroDocente.css";
 
 const RegistroDocente = () => {
   const [showPassword, setShowPassword] = useState(false);
