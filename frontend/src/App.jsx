@@ -1,6 +1,6 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Home, NotFound, RegistroDocente, RegistroEstudiante } from "./pages";
+import { Home, NotFound, RegistroDocente, RegistroEstudiante, RegistroPeriodoAcademico } from "./pages";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 // Tema de material design
@@ -39,7 +39,9 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/registrodocente" element={<RegistroDocente />} />
           <Route path="/registroestudiante" element={<RegistroEstudiante />} />
+          <Route path="/registroperiodoacademico" element={<RegistroPeriodoAcademico />} />
           <Route path="*" element={<NotFound />} />
+
         </Routes>
       </Router>
     </ThemeProvider>
