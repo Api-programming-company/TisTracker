@@ -1,10 +1,6 @@
-import logo from "./logo.svg";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
-import RegistroDocente from "./pages/RegistroDocente";
-import RegistroEstudiante from "./pages/RegistroEstudiante";
+import { Home, NotFound, RegistroDocente, RegistroEstudiante } from "./pages";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 // Tema de material design
