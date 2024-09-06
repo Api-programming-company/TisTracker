@@ -14,13 +14,15 @@ services:
   frontend:
     build:
       context: ./frontend
-    container_name: react_app
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     volumes:
       - ./frontend:/app
+      - /app/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
     networks:
       - app-network
 networks:
