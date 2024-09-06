@@ -1,34 +1,49 @@
-FROM php:7.4.22-fpm
+# syntax=docker/dockerfile:1.4
 
-# Instala dependencias del sistema
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    libonig-dev \
-    libzip-dev \
-    zip \
+# Usa la imagen base de PHP 7.4 con Apache
+FROM php:7.4.22-apache as builder
+
+# Instala dependencias y extensiones necesarias
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
     git \
-    curl \
-    libpq-dev
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libicu-dev \
+    libzip-dev \
+    libpq-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd intl zip pdo pdo_pgsql \
+    && rm -rf /var/lib/apt/lists/*\
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Instalar Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Configurar el directorio de trabajo
+WORKDIR /var/www/html
 
-# Instala extensiones de PHP
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd \
-    && docker-php-ext-install pdo pdo_pgsql
+# Copia el archivo de configuración de Apache si es necesario (ajusta la ruta si es necesario)
+COPY apache.conf /etc/apache2/sites-available/000-default.conf
 
-# Crear y configurar la aplicación
-WORKDIR /var/www
-
+# Copiar los archivos del proyecto
 COPY . .
 
-RUN composer install
+# Instalar las dependencias de Composer
+#RUN composer install --no-dev --optimize-autoloader --verbose
 
-RUN chown -R www-data:www-data /var/www
-RUN chmod -R 755 /var/www
+# Agrega el usuario y el grupo
+#RUN useradd -s /bin/bash -m vscode \
+#    && groupadd docker \
+#    && usermod -aG docker vscode
 
-EXPOSE 8000
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Asegúrate de que el usuario 'www-data' tenga acceso a los archivos de la aplicación
+RUN chown -R www-data:www-data /var/www/html
+
+# Ajusta los permisos de los directorios
+RUN find /var/www/html -type d -exec chmod 755 {} \;
+RUN find /var/www/html -type f -exec chmod 644 {} \;
+
+# Exponemos el puerto 80
+EXPOSE 80
+
+# Ejecuta Apache en primer plano
+CMD ["apache2-foreground"]

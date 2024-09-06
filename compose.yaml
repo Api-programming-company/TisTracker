@@ -1,17 +1,13 @@
-version: '3.8'
-
 services:
   app:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      target: builder
     container_name: laravel_app
-    restart: unless-stopped
-    working_dir: /var/www
     volumes:
-      - ./backend:/var/www
+      - ./backend:/var/www/html
     ports:
-      - "8000:8000"
+      - "80:80"
     networks:
       - app-network
 

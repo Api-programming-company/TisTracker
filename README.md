@@ -4,6 +4,8 @@
 docker-compose build
 ## Inicia los contenedores en segundo plano
 docker-compose up -d
+## Ejecutar la primera vez para instalar dependencias
+docker-compose exec app composer install
 ## Para detener los contenedores
 docker-compose down
 # Licencia
