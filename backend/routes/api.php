@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 
@@ -19,3 +20,8 @@ Route::apiResource('posts', PostController::class);
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/simon', function () {
+    return 'simon hola';
+});
+// hola xd
