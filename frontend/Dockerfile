@@ -1,5 +1,5 @@
 # Usar una imagen de Node.js más liviana
-FROM node:20.16.0-alpine
+FROM node:18
 
 # Crear y establecer el directorio de trabajo
 WORKDIR /app
@@ -9,6 +9,9 @@ COPY package*.json ./
 
 # Instalar las dependencias
 RUN npm install
+
+# Copia el resto de los archivos de la aplicación al contenedor
+COPY . .
 
 # Exponer el puerto de desarrollo de React
 EXPOSE 3000

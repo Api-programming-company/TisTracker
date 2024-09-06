@@ -14,13 +14,11 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
     container_name: react_app
-    restart: unless-stopped
     ports:
       - "3000:3000"
     volumes:
-      - ./frontend:/app           # Mapea el directorio frontend al directorio de trabajo del contenedor
+      - ./frontend:/app
     environment:
       - CHOKIDAR_USEPOLLING=true
     networks:
