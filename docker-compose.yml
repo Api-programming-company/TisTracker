@@ -10,13 +10,6 @@ services:
     working_dir: /var/www
     volumes:
       - ./backend:/var/www
-    environment:
-      DB_CONNECTION: pgsql
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      DB_DATABASE: ${DB_DATABASE}
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
     ports:
       - "8000:8000"
     networks:
