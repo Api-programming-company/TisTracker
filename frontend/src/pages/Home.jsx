@@ -32,6 +32,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import TestComponent from "../components/testComponent";
 
 const Home = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -249,6 +250,7 @@ const Home = () => {
           <CircularProgress />
         </Box>
       </Container>
+      <TestComponent/>
     </div>
   );
 };

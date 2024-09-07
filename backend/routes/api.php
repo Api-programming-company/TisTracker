@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\TestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,4 +25,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('/simon', function () {
     return 'simon hola';
 });
-// hola xd
+
+
+Route::get('/test', [TestController::class, 'index']); // Ruta para GET
+Route::post('/test', [TestController::class, 'nombre_funcion']); // Ruta para POST
