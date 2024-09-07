@@ -24,7 +24,7 @@ class CrearEstudianteTabla extends Migration
 
     /**
      * Reverse the migrations.
-     *
+     *sdas
      * @return void
      */
     public function down()
