@@ -18,6 +18,9 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/*\
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+# Habilita el módulo rewrite de Apache
+RUN a2enmod rewrite
+
 # Configurar el directorio de trabajo
 WORKDIR /var/www/html
 
@@ -37,10 +40,6 @@ COPY . .
 
 # Asegúrate de que el usuario 'www-data' tenga acceso a los archivos de la aplicación
 RUN chown -R www-data:www-data /var/www/html
-
-# Ajusta los permisos de los directorios
-RUN find /var/www/html -type d -exec chmod 755 {} \;
-RUN find /var/www/html -type f -exec chmod 644 {} \;
 
 # Exponemos el puerto 80
 EXPOSE 80
