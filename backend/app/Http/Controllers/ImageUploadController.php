@@ -22,7 +22,7 @@ class ImageUploadController extends Controller
 
         return response()->json([
             'message' => 'Imagen subida correctamente',
-            'url' => "holaa",
+            'url' => $url,
         ]);
     }
 }

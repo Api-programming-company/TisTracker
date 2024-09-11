@@ -11,7 +11,7 @@ import { useUploadImageMutation } from "../api/imageSlice";
 
 const UploadImagePage = () => {
   const [file, setFile] = useState(null);
-  const [uploadImage, { isLoading, isSuccess, isError, error }] = useUploadImageMutation();
+  const [uploadImage, { isLoading, isSuccess, isError }] = useUploadImageMutation();
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -23,7 +23,8 @@ const UploadImagePage = () => {
       formData.append("image", file);
 
       try {
-        await uploadImage(formData).unwrap();
+        const response = await uploadImage(formData).unwrap();
+        console.log(response);
         alert("Imagen subida con éxito");
       } catch (err) {
         console.error("Error al subir la imagen:", err);
