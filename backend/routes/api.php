@@ -7,6 +7,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\Api\EstudianteController;
 use App\Http\Controllers\EmailController;
+use App\Http\Controllers\ImageUploadController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,3 +46,4 @@ Route::get('/test', [TestController::class, 'index']); // Ruta para GET
 Route::post('/test', [TestController::class, 'nombre_funcion']); // Ruta para POST
 
 Route::post('/send-test-email', [EmailController::class, 'sendTestEmail']);
+Route::post('/upload', [ImageUploadController::class, 'upload']);
