@@ -121,8 +121,17 @@ const Home = () => {
             to="/registroperiodoacademico"
             variant="contained"
             color="primary"
+            sx={{ mr: 2 }}
           >
             Registro Período Académico
+          </Button>
+          <Button
+            component={Link}
+            to="/upload"
+            variant="contained"
+            color="primary"
+          >
+            Prueba imagen
           </Button>
         </Box>
         {/* Card Example */}
