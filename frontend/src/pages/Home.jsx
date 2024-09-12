@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import React, { useState, useContext } from "react";
+import { Link } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
@@ -33,8 +33,11 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import TestComponent from "../components/testComponent";
+import AppContext from "../context/AppContext";
+import Registro from "./Registro";
 
 const Home = () => {
+  const { userType, setUserType } = useContext(AppContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const [dropdownValue, setDropdownValue] = useState("");
   const [checked, setChecked] = useState(true);
@@ -59,6 +62,18 @@ const Home = () => {
   const handleRadioChange = (event) => {
     setRadioValue(event.target.value);
   };
+
+  return (
+    <>
+      {userType === "estudiante" ? (
+        <div>Es estudiante</div>
+      ) : userType === "docente" ? (
+        <div>Es docente</div>
+      ) : (
+        <Registro />
+      )}
+    </>
+  );
 
   return (
     <div>
@@ -259,7 +274,7 @@ const Home = () => {
           <CircularProgress />
         </Box>
       </Container>
-      <TestComponent/>
+      <TestComponent />
     </div>
   );
 };
