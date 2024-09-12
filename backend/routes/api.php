@@ -48,4 +48,4 @@ Route::post('/test', [TestController::class, 'nombre_funcion']); // Ruta para PO
 
 Route::post('/send-test-email', [EmailController::class, 'sendTestEmail']);
 Route::post('/upload', [ImageUploadController::class, 'upload']);
-Route::post('/registrar_docente', [DocenteController::class, 'registrar']);
+Route::apiResource('/registrar_docente', [DocenteController::class]);
