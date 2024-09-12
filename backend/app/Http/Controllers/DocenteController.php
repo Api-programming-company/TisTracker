@@ -29,7 +29,11 @@ class DocenteController extends Controller
         return response()->json($docente, 201); 
     }
 
-    
+    public function show($id)
+    {
+        $docente = Docente::findOrFail($id);
+        return response()->json($docente);
+    }
 
     public function index() 
     {
