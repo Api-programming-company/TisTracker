@@ -35,6 +35,25 @@ class DocenteController extends Controller
         return response()->json($docente);
     }
 
+    public function update(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'nombre' => 'sometimes|required|string|max:255',
+            'apellidos' => 'sometimes|required|string|max:255',
+            'email' => 'sometimes|required|email|unique:docentes,email,' . $id,
+            'password' => 'nullable|string|min:8|confirmed', 
+        ]);
+
+        $docente = Docente::findOrFail($id);
+
+        if ($request->has('password')) {
+            $validatedData['password'] = Hash::make($validatedData['password']); 
+        }
+
+        $docente->update($validatedData);
+        return response()->json($docente, 200);
+    }
+
     public function index() 
     {
         $docentes = Docente::all(); 
