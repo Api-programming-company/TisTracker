@@ -33,10 +33,10 @@ const Sidebar = ({ open, setOpen }) => {
         open={isSmallScreen ? open : true}
         onClose={toggleDrawer}
         sx={{
-          width: 240,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
+         "& .MuiDrawer-paper": {
             width: 240,
+           width: 240,
+          flexShrink: 0,
             boxSizing: "border-box",
             position: 'fixed', // Fijo para superponerse sobre el contenido
             top: 0,

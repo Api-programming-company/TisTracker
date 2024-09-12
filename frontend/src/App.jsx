@@ -52,10 +52,10 @@ function App() {
           <Sidebar open={open} setOpen={setOpen}/>
           <main
             style={{
-              marginLeft: isSmallScreen ? (open ? 240 : 0) : 240,
               padding: '16px',
-              transition: 'margin-left 0.3s',
-              position: 'relative', // Asegura que el contenido no se mueva
+              marginLeft: isSmallScreen ? 0 : 240, // Ajusta el margen solo si el Sidebar está abierto en pantallas grandes
+              transition: 'margin-left 0.3s ease', // Transición suave para el margen
+              position: 'relative', // Posición relativa para que el contenido no se mueva con el Sidebar
               zIndex: 1, // Asegura que el contenido esté debajo del Sidebar
             }}
           >
