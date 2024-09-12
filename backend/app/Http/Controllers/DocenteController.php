@@ -1,32 +1,39 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Models\Docente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 
 class DocenteController extends Controller
 {
-    public function registrar(Request $request)
+    public function store(Request $request) 
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'nombre' => 'required|string|max:255',
             'apellidos' => 'required|string|max:255',
-            'email' => 'required|string|email|unique:docente,email',
-            'password' => 'required|string|confirmed|min:8', // confirmada y con al menos 8 caracteres
+            'email' => 'required|email|unique:docentes,email',
+            'password' => 'required|string|min:8|confirmed', 
         ]);
 
         $docente = Docente::create([
-            'nombre' => $request->nombre,
-            'apellidos' => $request->apellidos,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'nombre' => $validatedData['nombre'],
+            'apellidos' => $validatedData['apellidos'],
+            'email' => $validatedData['email'],
+            'password' => Hash::make($validatedData['password']),
         ]);
 
-        return response()->json([
-            'message' => 'Docente registrado con éxito',
-            'docente' => $docente,
-        ], 201);
+        return response()->json($docente, 201); 
+    }
+
+    
+
+    public function index() 
+    {
+        $docentes = Docente::all(); 
+        return response()->json($docentes);
     }
 }
