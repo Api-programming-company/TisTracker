@@ -1,8 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Container, Typography, Button, Box } from '@mui/material';
 
 function NotFound() {
+  const navigate = useNavigate();
+
   return (
     <Container maxWidth="sm" sx={{ textAlign: 'center', mt: 10 }}>
       <Box sx={{ p: 3, border: '1px solid', borderRadius: 2, borderColor: 'grey.300' }}>
@@ -18,8 +20,7 @@ function NotFound() {
         <Button
           variant="contained"
           color="primary"
-          component={Link}
-          to="/"
+          onClick={() => navigate('/')}
           sx={{ mt: 2 }}
         >
           Volver a la página principal
