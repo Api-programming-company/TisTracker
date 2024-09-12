@@ -3,12 +3,12 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import {
   Home,
   NotFound,
-  RegistroDocente,
-  RegistroEstudiante,
+  Registro,
   RegistroPeriodoAcademico,
   ImageUpload,
 } from "./pages";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { AppProvider } from "./context/AppContext";
 
 // Tema de material design
 const theme = createTheme({
@@ -40,21 +40,22 @@ const theme = createTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/registrodocente" element={<RegistroDocente />} />
-          <Route path="/registroestudiante" element={<RegistroEstudiante />} />
-          <Route
-            path="/registroperiodoacademico"
-            element={<RegistroPeriodoAcademico />}
-          />
-          <Route path="/upload" element={<ImageUpload />} />
+      <AppProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/registro" element={<Registro />} />
+            <Route
+              path="/registroperiodoacademico"
+              element={<RegistroPeriodoAcademico />}
+            />
+            <Route path="/upload" element={<ImageUpload />} />
 
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Router>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Router>
+      </AppProvider>
     </ThemeProvider>
   );
 }
