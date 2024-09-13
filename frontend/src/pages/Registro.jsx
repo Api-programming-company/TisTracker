@@ -1,28 +1,12 @@
 import React, { useState } from "react";
-import {
-  Button,
-  Container,
-  Typography,
-  Box,
-  TextField,
-  IconButton,
-  InputAdornment,
-} from "@mui/material";
+import { Button, Container, Typography, Box, TextField, IconButton, InputAdornment } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import VerificacionCodigo from "../components/VerificacionCodigo";
-import CryptoJS from "crypto-js";
+import { VerificarEmail, VerificacionCodigo } from "../components";
 import { validarContraseña } from "../utils/validaciones";
-
-// Simulación de una función de backend para verificar si un correo ya está registrado
-const verificarCorreoRegistrado = (email) => {
-  const correosRegistrados = ["ejemplo@correo.com", "usuario@dominio.com"];
-  return correosRegistrados.includes(email);
-};
+import { encryptData } from "../utils";
 
 const Registro = () => {
-  const [userType, setUserType] = useState("estudiante");
-  const [isRegistering, setIsRegistering] = useState(false);
   const [formData, setFormData] = useState({
     nombre: "",
     apellidos: "",
@@ -37,8 +21,13 @@ const Registro = () => {
     contraseña: "",
     confirmarContraseña: "",
   });
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const navigate = useNavigate();
+  const [userType, setUserType] = useState("estudiante");
+
   const handleTogglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
@@ -46,8 +35,6 @@ const Registro = () => {
   const handleToggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword((prev) => !prev);
   };
-
-  const navigate = useNavigate();
 
   const handleSwitchUserType = () => {
     setUserType((prevUserType) =>
@@ -59,24 +46,29 @@ const Registro = () => {
       email: "",
       contraseña: "",
       confirmarContraseña: "",
-    }); // Limpiar datos del formulario
+    });
     setErrors({});
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    if (name === "email") {
+      setIsEmailVerified(false);
+    }
     setErrors({ ...errors, [name]: "" });
   };
 
-  const encryptData = (data) => {
-    const secretKey = "1234"; // Muy segura
-    return CryptoJS.AES.encrypt(JSON.stringify(data), secretKey).toString();
+  const handleEmailVerification = (message) => {
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      email: message,
+    }));
+    setIsEmailVerified(!message);
   };
 
   const handleRegister = () => {
-    const { nombre, apellidos, email, contraseña, confirmarContraseña } =
-      formData;
+    const { nombre, apellidos, email, contraseña, confirmarContraseña } = formData;
     let hasError = false;
     const newErrors = {};
 
@@ -92,8 +84,7 @@ const Registro = () => {
       email: {
         condition: !email,
         message: "El correo electrónico es obligatorio.",
-        additionalCheck:
-          verificarCorreoRegistrado(email) && "El correo ya está registrado.",
+        additionalCheck: errors.email,
       },
       contraseña: {
         condition: !contraseña,
@@ -110,10 +101,7 @@ const Registro = () => {
       },
     };
 
-    for (const [
-      field,
-      { condition, message, additionalCheck },
-    ] of Object.entries(validations)) {
+    for (const [field, { condition, message, additionalCheck }] of Object.entries(validations)) {
       if (condition || additionalCheck) {
         newErrors[field] = additionalCheck || message;
         hasError = true;
@@ -172,17 +160,13 @@ const Registro = () => {
               error={Boolean(errors.apellidos)}
               helperText={errors.apellidos}
             />
-            <TextField
-              label="Email*"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              fullWidth
-              margin="normal"
-              error={Boolean(errors.email)}
-              helperText={errors.email}
+
+            <VerificarEmail
+              email={formData.email}
+              onEmailChange={handleInputChange}
+              setErrors={handleEmailVerification}
             />
+
             <TextField
               label="Contraseña*"
               name="contraseña"

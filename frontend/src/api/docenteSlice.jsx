@@ -13,10 +13,15 @@ const docenteApi = apiSlice.injectEndpoints({
         },
         body: data,
       }),
-      // Puedes invalidar otros tags si es necesario
-      // invalidatesTags: ['Docentes'], 
+      // invalidatesTags: ['Docentes'],
+    }),
+    // Nuevo Endpoint para GET en /docentes/check-email
+    checkEmail: builder.query({
+      query: (email) =>
+        `docente/check-email?email=${encodeURIComponent(email)}`,
     }),
   }),
 });
 
-export const { useRegistrarDocenteMutation } = docenteApi;
+export const { useRegistrarDocenteMutation, useLazyCheckEmailQuery } =
+  docenteApi;
