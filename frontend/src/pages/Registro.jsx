@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { Button, Container, Typography, Box } from "@mui/material";
 import { RegistroDocente, RegistroEstudiante } from "../components";
 import { useNavigate } from "react-router-dom";
+import VerificacionCodigo from "../components/VerificacionCodigo";
 
 const Registro = () => {
   const [userType, setUserType] = useState(null);
+  const [isRegistering, setIsRegistering] = useState(false);
   const navigate = useNavigate();
 
   const handleSwitchUserType = () => {
@@ -12,6 +14,14 @@ const Registro = () => {
       prevUserType === "docente" ? "estudiante" : "docente"
     );
   };
+
+  const handleRegister = () => {
+    // Lógica para registrar al usuario
+    setIsRegistering(true);
+    // Aquí podrías realizar el registro y, al finalizar, redirigir a la página de verificación.
+    // Por ejemplo, podrías usar navigate("/verificacion-codigo");
+  };
+
   const handleLoginRedirect = () => {
     navigate("/login");
   };
@@ -43,7 +53,7 @@ const Registro = () => {
               Registrarse como Estudiante
             </Button>
           </Box>
-        ) : (
+        ) : !isRegistering ? (
           <Box>
             <Button
               variant="outlined"
@@ -56,11 +66,13 @@ const Registro = () => {
             </Button>
 
             {userType === "docente" ? (
-              <RegistroDocente />
+              <RegistroDocente onRegister={handleRegister} />
             ) : (
-              <RegistroEstudiante />
+              <RegistroEstudiante onRegister={handleRegister} />
             )}
           </Box>
+        ) : (
+            <VerificacionCodigo/>
         )}
 
         <Button

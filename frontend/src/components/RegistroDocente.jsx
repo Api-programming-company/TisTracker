@@ -13,7 +13,7 @@ import {
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useRegistrarDocenteMutation } from "../api/docenteSlice";
 
-const RegistroDocente = () => {
+const RegistroDocente = ({ onRegister }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [nombre, setNombre] = useState("");
