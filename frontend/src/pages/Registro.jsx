@@ -125,6 +125,7 @@ const Registro = () => {
     const dataToSend = {
       ...formData,
       tipoUsuario: userTypeCode,
+      timestamp: new Date().toISOString(),
     };
 
     console.log("Enviando datos:", dataToSend);
