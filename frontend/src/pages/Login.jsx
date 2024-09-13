@@ -9,7 +9,7 @@ const Login = () => {
 
   const handleLogin = (event) => {
     event.preventDefault();
-    // Aquí puedes añadir la lógica de autenticación
+ 
     console.log("Email:", email);
     console.log("Password:", password);
     // Redirigir a la página principal u otra página después de la autenticación

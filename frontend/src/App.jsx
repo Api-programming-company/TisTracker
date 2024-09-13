@@ -44,17 +44,18 @@ const theme = createTheme({
 function App() {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md")); // Ajusta según el breakpoint deseado
   const [open, setOpen] = useState(false); // Manejo del estado abierto/cerrado
+  const [hideSidebar, setHideSidebar] = useState(false); // Manejo del estado oculto
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <AppProvider>
         <Router>
-          <Sidebar open={open} setOpen={setOpen}/>
+          <Sidebar open={open} setOpen={setOpen} hideSidebar={hideSidebar} setHideSidebar={setHideSidebar}/>
           <main
             style={{
               padding: '16px',
-              marginLeft: isSmallScreen ? 0 : 240, // Ajusta el margen solo si el Sidebar está abierto en pantallas grandes
+              marginLeft: hideSidebar ? 0 : (isSmallScreen ? 0 : 240), // Ajusta el margen solo si el Sidebar está abierto en pantallas grandes
               transition: 'margin-left 0.3s ease', // Transición suave para el margen
               position: 'relative', // Posición relativa para que el contenido no se mueva con el Sidebar
               zIndex: 1, // Asegura que el contenido esté debajo del Sidebar

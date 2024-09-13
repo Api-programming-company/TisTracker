@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Drawer,
   List,
@@ -11,19 +11,56 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link, useLocation } from "react-router-dom";
+import AppContext from "../context/AppContext";
 
-const Sidebar = ({ open, setOpen }) => {
+const Sidebar = ({ open, setOpen, hideSidebar, setHideSidebar }) => {
+  const { userType } = useContext(AppContext);
   const location = useLocation();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const hideSidebarRoutes = ["/registro"];
-  const hideSidebar = hideSidebarRoutes.includes(location.pathname);
+  setHideSidebar((userType === null) || hideSidebarRoutes.includes(location.pathname));
 
-  console.log(hideSidebar);
+  if (hideSidebar) {
+    return null
+  }
 
   const toggleDrawer = () => {
     setOpen(!open);
+  };
+
+  const renderUserOptions = () => {
+    if (userType === "estudiante") {
+      return (
+        <>
+          <ListItem button component={Link} to="/">
+            <ListItemText primary="Home" />
+          </ListItem>
+          <ListItem button component={Link} to="/ruta-estudiante">
+            <ListItemText primary="Opciones Estudiante" />
+          </ListItem>
+        </>
+      );
+    } else if (userType === "docente") {
+      return (
+        <>
+          <ListItem button component={Link} to="/">
+            <ListItemText primary="Home" />
+          </ListItem>
+          <ListItem button component={Link} to="/ruta-docente">
+            <ListItemText primary="Opciones Docente" />
+          </ListItem>
+        </>
+      );
+    } else {
+      // Opciones para guest (userType === null)
+      return (
+        <ListItem button component={Link} to="/login">
+          <ListItemText primary="Iniciar Sesión" />
+        </ListItem>
+      );
+    }
   };
 
   return (
@@ -39,7 +76,6 @@ const Sidebar = ({ open, setOpen }) => {
           <MenuIcon />
         </IconButton>
       )}
-
       <Drawer
         variant={isSmallScreen ? "temporary" : "permanent"}
         anchor="left"
@@ -47,7 +83,6 @@ const Sidebar = ({ open, setOpen }) => {
         onClose={toggleDrawer}
         sx={{
           "& .MuiDrawer-paper": {
-            width: 240,
             width: 240,
             flexShrink: 0,
             boxSizing: "border-box",
@@ -63,21 +98,7 @@ const Sidebar = ({ open, setOpen }) => {
           },
         }}
       >
-        <List>
-          <ListItem button component={Link} to="/">
-            <ListItemText primary="Home" />
-          </ListItem>
-          {!hideSidebar && (
-            <>
-              <ListItem button component={Link} to="/registro">
-                <ListItemText primary="Registro" />
-              </ListItem>
-              <ListItem button component={Link} to="/registroperiodoacademico">
-                <ListItemText primary="Registro Periodo Académico" />
-              </ListItem>
-            </>
-          )}
-        </List>
+        <List>{!hideSidebar && renderUserOptions()}</List>
         <Divider />
       </Drawer>
     </>
