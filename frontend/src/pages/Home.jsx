@@ -67,7 +67,7 @@ const Home = () => {
     <>
       {userType === "estudiante" ? (
         <div>Es estudiante</div>
-      ) : userType === "docente" ? (
+      ) : 1 ? (
         <div>Es docente</div>
       ) : (
         <Registro />

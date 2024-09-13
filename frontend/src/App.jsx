@@ -7,6 +7,7 @@ import {
   Registro,
   RegistroPeriodoAcademico,
   ImageUpload,
+  Login,
 } from "./pages";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline, useMediaQuery } from "@mui/material";
@@ -65,6 +66,7 @@ function App() {
               <Route path="/registro" element={<Registro />} />
               <Route path="/registroperiodoacademico" element={<RegistroPeriodoAcademico />} />
               <Route path="/upload" element={<ImageUpload />} />
+              <Route path="/login" element={<Login />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
