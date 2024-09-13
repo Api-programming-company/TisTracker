@@ -80,39 +80,44 @@ const Registro = () => {
     let hasError = false;
     const newErrors = {};
 
-    if (!nombre) {
-      newErrors.nombre = "El nombre es obligatorio.";
-      hasError = true;
-    }
+    const validations = {
+      nombre: {
+        condition: !nombre,
+        message: "El nombre es obligatorio.",
+      },
+      apellidos: {
+        condition: !apellidos,
+        message: "Los apellidos son obligatorios.",
+      },
+      email: {
+        condition: !email,
+        message: "El correo electrónico es obligatorio.",
+        additionalCheck:
+          verificarCorreoRegistrado(email) && "El correo ya está registrado.",
+      },
+      contraseña: {
+        condition: !contraseña,
+        message: "La contraseña es obligatoria.",
+        additionalCheck:
+          !validarContraseña(contraseña) &&
+          "Debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial.",
+      },
+      confirmarContraseña: {
+        condition: !confirmarContraseña,
+        message: "Debe confirmar su contraseña.",
+        additionalCheck:
+          contraseña !== confirmarContraseña && "Las contraseñas no coinciden.",
+      },
+    };
 
-    if (!apellidos) {
-      newErrors.apellidos = "Los apellidos son obligatorios.";
-      hasError = true;
-    }
-
-    if (!email) {
-      newErrors.email = "El correo electrónico es obligatorio.";
-      hasError = true;
-    } else if (verificarCorreoRegistrado(email)) {
-      newErrors.email = "El correo ya está registrado.";
-      hasError = true;
-    }
-
-    if (!contraseña) {
-      newErrors.contraseña = "La contraseña es obligatoria.";
-      hasError = true;
-    } else if (!validarContraseña(contraseña)) {
-      newErrors.contraseña =
-        "Debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial.";
-      hasError = true;
-    }
-
-    if (!confirmarContraseña) {
-      newErrors.confirmarContraseña = "Debe confirmar su contraseña.";
-      hasError = true;
-    } else if (contraseña !== confirmarContraseña) {
-      newErrors.confirmarContraseña = "Las contraseñas no coinciden.";
-      hasError = true;
+    for (const [
+      field,
+      { condition, message, additionalCheck },
+    ] of Object.entries(validations)) {
+      if (condition || additionalCheck) {
+        newErrors[field] = additionalCheck || message;
+        hasError = true;
+      }
     }
 
     if (hasError) {

@@ -117,6 +117,7 @@ function App() {
           >
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/verify_email" element={<VerificacionCodigo />} />
               <Route path="/home" element={<Home />} />
               <Route path="/registro" element={<Registro />} />
               <Route
@@ -125,8 +126,7 @@ function App() {
               />
               <Route path="/upload" element={<ImageUpload />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/verify_email" element={<VerificacionCodigo />} />
-              <Route path="*" element={<NotFound />} />
+              <Route path="/*" element={<NotFound />} />
             </Routes>
           </main>
         </Router>
