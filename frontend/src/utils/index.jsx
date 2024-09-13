@@ -1,2 +1,2 @@
 export { encryptData, decryptData } from './cryptoUtils';
-export { validarContraseña } from './validaciones';
+export { validarContraseña, validarEmailDocente, validarEmailEstudiante } from './validaciones';

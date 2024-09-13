@@ -188,6 +188,7 @@ const Registro = () => {
               errors={errors.email}
               isEmailVerified={isEmailVerified}
               setIsEmailVerified={setIsEmailVerified}
+              userType={userType}
             />
 
             <TextField
