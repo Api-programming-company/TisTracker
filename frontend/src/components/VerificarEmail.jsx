@@ -1,52 +1,43 @@
 import React, { useState, useEffect } from "react";
 import { TextField, InputAdornment, CircularProgress } from "@mui/material";
 import { CheckCircle } from "@mui/icons-material";
+import { useLazyCheckEmailQuery } from "../api/docenteSlice";
 
 const isValidEmail = (email) => /\S+@\S+\.\S+/.test(email);
 
 const VerificarEmail = () => {
   const [email, setEmail] = useState("");
-  const [errors, setErrors] = useState("");
+  const [error, setError] = useState("");
   const [isEmailVerified, setIsEmailVerified] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleBlur = async () => {
+  const [checkEmail, { error: apiError, isFetching, isSuccess }] =
+    useLazyCheckEmailQuery();
+
+  useEffect(() => {
+    if (apiError) {
+      setIsEmailVerified(false);
+      setError(
+        apiError?.status === 409
+          ? apiError?.data?.message
+          : "Error al verificar el email"
+      );
+    } else if (isSuccess) {
+      setError("");
+      setIsEmailVerified(true);
+    }
+  }, [apiError, isSuccess]);
+
+  const handleBlur = () => {
     if (!isValidEmail(email)) {
-      setErrors("Ingrese un email válido, ejemplo@test.com");
+      setError("Ingrese un email válido, ejemplo: ejemplo@test.com");
       return;
     }
-
-    setErrors("");
-    setIsEmailVerified(false);
-    setIsLoading(true);
-
-    try {
-      const response = await fetch(
-        `http://localhost:8000/api/docente/check-email?email=${encodeURIComponent(email)}`
-      );
-      if (!response.ok) {
-        const data = await response.json();
-        if (response.status === 409) {
-          setErrors(data.message || "Email ya registrado.");
-        } else {
-          setErrors(data.message || "Error al verificar el email.");
-        }
-        setIsEmailVerified(false);
-      } else {
-        setErrors("");
-        setIsEmailVerified(true);
-      }
-    } catch (err) {
-      setErrors("Error en la red o servidor.");
-      setIsEmailVerified(false);
-    } finally {
-      setIsLoading(false);
-    }
+    checkEmail(email);
   };
 
   const handleChange = (e) => {
     setEmail(e.target.value);
-    setErrors("");
+    if (error) setError("");
     setIsEmailVerified(false);
   };
 
@@ -59,15 +50,15 @@ const VerificarEmail = () => {
       onChange={handleChange}
       fullWidth
       margin="normal"
-      error={Boolean(errors)}
-      helperText={errors}
+      error={Boolean(error)}
+      helperText={error}
       onBlur={handleBlur}
-      disabled={isLoading}
+      disabled={isFetching}
       slotProps={{
         input: {
           endAdornment: (
             <InputAdornment position="end">
-              {isLoading ? (
+              {isFetching ? (
                 <CircularProgress size={30} thickness={6} color="primary" />
               ) : isEmailVerified ? (
                 <CheckCircle color="primary" />
