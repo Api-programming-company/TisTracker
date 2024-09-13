@@ -35,6 +35,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import TestComponent from "../components/testComponent";
 import AppContext from "../context/AppContext";
 import Registro from "./Registro";
+import { ListaPeriodosAcademicos } from "../components";
 
 const Home = () => {
   const { userType, setUserType } = useContext(AppContext);
@@ -67,8 +68,8 @@ const Home = () => {
     <>
       {userType === "estudiante" ? (
         <div>Es estudiante</div>
-      ) : userType === "docente" ? (
-        <div>Es docente</div>
+      ) : 1? (
+        <ListaPeriodosAcademicos />
       ) : (
         <Registro />
       )}
