@@ -12,7 +12,7 @@ class DocenteController extends Controller
 {
     public function store(Request $request) 
     {
-        Log::info($request->all());
+        
         $validatedData = $request->validate([
             'nombre' => 'required|string|max:255',
             'apellidos' => 'required|string|max:255',
@@ -27,14 +27,7 @@ class DocenteController extends Controller
             'password' => Hash::make($validatedData['password']),
         ]);
 
-        Log::info('Docente creado correctamente: ', $docente->toArray()); // Log para depuración
-
-        return response()->json([
-            'message' => 'Docente creado exitosamente',
-            'data' => $docente
-        ], 201);
-
-        //return response()->json($docente, 201); 
+        return response()->json($docente, 201);
     }
 
     public function show($id)
