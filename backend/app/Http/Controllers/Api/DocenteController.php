@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Docente;
 use Illuminate\Http\Request;
+use app\Rules\ValidarPassword;
+use App\Rules\ValidarCorreoDocente;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 
@@ -15,7 +17,7 @@ class DocenteController extends Controller
         $validatedData = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:docente,email',
+            'email' => ['required', 'email', 'unique:estudiantes,email', new ValidarCorreoDocente()],
             'password' => 'required|string|min:8|confirmed',
         ]);
 
