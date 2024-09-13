@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Estudiante;
 use Illuminate\Http\Request;
+use app\Rules\ValidarPassword;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller; // Importa la clase Controller correctamente
+
 
 
 
@@ -24,6 +26,8 @@ class EstudianteController extends Controller
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
             'email' => 'required|email|unique:estudiantes,email',
+            'codSis' => 'required|integer|unique:estudiantes,codSis',
+            'password' => ['sometimes', 'required', 'string', 'min:8', new ValidarPassword($request->nombre, $request->apellido)],
         ]);
 
         $estudiante = Estudiante::create($validatedData);
@@ -40,6 +44,8 @@ class EstudianteController extends Controller
             'nombre' => 'sometimes|required|string|max:255',
             'apellido' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|email|unique:estudiantes,email,' . $id,
+            'codSis' => 'sometimes|required|integer|unique:estudiantes,codSis,' . $id,
+            'password' => 'sometimes|required|string|min:8',
         ]);
 
         $estudiante = Estudiante::findOrFail($id);
