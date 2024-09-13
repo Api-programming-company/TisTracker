@@ -13,29 +13,29 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline, useMediaQuery, IconButton } from "@mui/material";
 import { AppProvider } from "./context/AppContext";
 import { Sidebar } from "./components";
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
 
 const lightTheme = createTheme({
   palette: {
-    mode: 'light',
+    mode: "light",
     primary: {
-      main: "#3f51b5",
+      main: "#a5d6a7", // Verde pastel
     },
     secondary: {
-      main: "#f50057",
+      main: "#ffab91", // Coral pastel
     },
     error: {
-      main: "#f44336",
+      main: "#f48fb1", // Rosa pastel
     },
     warning: {
-      main: "#ff9800",
+      main: "#ffe082", // Amarillo pastel
     },
     info: {
-      main: "#2196f3",
+      main: "#81d4fa", // Azul pastel
     },
     success: {
-      main: "#4caf50",
+      main: "#c5e1a5", // Verde claro pastel
     },
   },
   typography: {
@@ -45,24 +45,24 @@ const lightTheme = createTheme({
 
 const darkTheme = createTheme({
   palette: {
-    mode: 'dark',
+    mode: "dark",
     primary: {
-      main: "#3f51b5",
+      main: "#80e27e", // Verde pastel claro
     },
     secondary: {
-      main: "#f50057",
+      main: "#ffab91", // Coral pastel
     },
     error: {
-      main: "#f44336",
+      main: "#f48fb1", // Rosa pastel
     },
     warning: {
-      main: "#ff9800",
+      main: "#ffe082", // Amarillo pastel
     },
     info: {
-      main: "#2196f3",
+      main: "#81d4fa", // Azul pastel
     },
     success: {
-      main: "#4caf50",
+      main: "#c5e1a5", // Verde claro pastel
     },
   },
   typography: {
@@ -76,7 +76,6 @@ function App() {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [open, setOpen] = useState(false);
   const [hideSidebar, setHideSidebar] = useState(false);
-  
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -87,19 +86,24 @@ function App() {
       <CssBaseline />
       <AppProvider>
         <Router>
-          <Sidebar open={open} setOpen={setOpen} hideSidebar={hideSidebar} setHideSidebar={setHideSidebar} />
-          <IconButton 
-            onClick={toggleDarkMode} 
-            style={{ position: 'fixed', top: 16, right: 16, zIndex: 1200 }} // Position the button in the top-right corner
+          <Sidebar
+            open={open}
+            setOpen={setOpen}
+            hideSidebar={hideSidebar}
+            setHideSidebar={setHideSidebar}
+          />
+          <IconButton
+            onClick={toggleDarkMode}
+            style={{ position: "fixed", top: 16, right: 16, zIndex: 1200 }} // Position the button in the top-right corner
           >
             {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
           </IconButton>
           <main
             style={{
-              padding: '16px',
-              marginLeft: hideSidebar ? 0 : (isSmallScreen ? 0 : 240),
-              transition: 'margin-left 0.3s ease',
-              position: 'relative',
+              padding: "16px",
+              marginLeft: hideSidebar ? 0 : isSmallScreen ? 0 : 240,
+              transition: "margin-left 0.3s ease",
+              position: "relative",
               zIndex: 1,
             }}
           >
@@ -107,7 +111,10 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/home" element={<Home />} />
               <Route path="/registro" element={<Registro />} />
-              <Route path="/registroperiodoacademico" element={<RegistroPeriodoAcademico />} />
+              <Route
+                path="/registroperiodoacademico"
+                element={<RegistroPeriodoAcademico />}
+              />
               <Route path="/upload" element={<ImageUpload />} />
               <Route path="/login" element={<Login />} />
               <Route path="*" element={<NotFound />} />
