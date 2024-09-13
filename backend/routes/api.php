@@ -8,7 +8,7 @@ use App\Http\Controllers\TestController;
 use App\Http\Controllers\Api\EstudianteController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\ImageUploadController;
-use App\Http\Controllers\DocenteController;
+use App\Http\Controllers\Api\DocenteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,4 +48,6 @@ Route::post('/test', [TestController::class, 'nombre_funcion']); // Ruta para PO
 
 Route::post('/send-test-email', [EmailController::class, 'sendTestEmail']);
 Route::post('/upload', [ImageUploadController::class, 'upload']);
-Route::post('/registrar_docente', [DocenteController::class, 'registrar']);
+Route::apiResource('/docente', DocenteController::class);//->except(['store']);
+//Route::post('/docente', [DocenteController::class, 'store']);
+
