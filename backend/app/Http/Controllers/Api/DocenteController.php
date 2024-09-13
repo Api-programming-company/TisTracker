@@ -55,6 +55,13 @@ class DocenteController extends Controller
         return response()->json($docente, 200);
     }
 
+    public function destroy($id)
+    {
+        $docente = Docente::findOrFail($id);
+        $docente->delete(); 
+        return response()->json(['message' => 'Docente eliminado correctamente'], 200); // Responde con un mensaje de éxito
+    }
+
     public function index() 
     {
         $Docente = Docente::all(); 
