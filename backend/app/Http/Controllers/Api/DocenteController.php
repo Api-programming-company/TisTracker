@@ -12,10 +12,11 @@ class DocenteController extends Controller
 {
     public function store(Request $request) 
     {
+        Log::info($request->all());
         $validatedData = $request->validate([
             'nombre' => 'required|string|max:255',
             'apellidos' => 'required|string|max:255',
-            'email' => 'required|email|unique:docentes,email',
+            'email' => 'required|email|unique:docente,email',
             'password' => 'required|string|min:8|confirmed', 
         ]);
 
@@ -40,7 +41,7 @@ class DocenteController extends Controller
         $validatedData = $request->validate([
             'nombre' => 'sometimes|required|string|max:255',
             'apellidos' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|unique:docentes,email,' . $id,
+            'email' => 'sometimes|required|email|unique:docente,email,' . $id,
             'password' => 'nullable|string|min:8|confirmed', 
         ]);
 
@@ -56,7 +57,7 @@ class DocenteController extends Controller
 
     public function index() 
     {
-        $docentes = Docente::all(); 
-        return response()->json($docentes);
+        $Docente = Docente::all(); 
+        return response()->json($Docente);
     }
 }
