@@ -66,4 +66,16 @@ class DocenteController extends Controller
         $Docente = Docente::all();
         return response()->json($Docente);
     }
+
+    public function checkEmail(Request $request)
+    {
+        $email = $request->query('email');
+        $exists = Docente::where('email', $email)->exists();
+
+        if ($exists) {
+            return response()->json(['message' => 'El correo ya esta registrado.'], 409);
+        } else {
+            return response()->json(['message' => 'El correo esta disponible.'], 200);
+        }
+    }
 }
