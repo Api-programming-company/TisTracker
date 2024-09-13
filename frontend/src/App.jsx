@@ -1,6 +1,6 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Home,
   NotFound,
@@ -71,11 +71,18 @@ const darkTheme = createTheme({
 });
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    const savedMode = localStorage.getItem("darkMode");
+    return savedMode === "true";
+  });
   const theme = darkMode ? darkTheme : lightTheme;
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [open, setOpen] = useState(false);
   const [hideSidebar, setHideSidebar] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem("darkMode", darkMode);
+  }, [darkMode]);
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -94,7 +101,7 @@ function App() {
           />
           <IconButton
             onClick={toggleDarkMode}
-            style={{ position: "fixed", top: 16, right: 16, zIndex: 1200 }} // Position the button in the top-right corner
+            style={{ position: "fixed", top: 16, right: 16, zIndex: 1200 }}
           >
             {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
           </IconButton>
