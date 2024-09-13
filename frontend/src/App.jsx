@@ -10,18 +10,20 @@ import {
   Login,
 } from "./pages";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { CssBaseline, useMediaQuery } from "@mui/material";
+import { CssBaseline, useMediaQuery, IconButton } from "@mui/material";
 import { AppProvider } from "./context/AppContext";
 import { Sidebar } from "./components";
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 
-// Tema de material design
-const theme = createTheme({
+const lightTheme = createTheme({
   palette: {
+    mode: 'light',
     primary: {
-      main: "#ff5722",
+      main: "#3f51b5",
     },
     secondary: {
-      main: "#673ab7",
+      main: "#f50057",
     },
     error: {
       main: "#f44336",
@@ -37,28 +39,68 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: "Arial, sans-serif", // fuente global
+    fontFamily: "Roboto, Arial, sans-serif",
+  },
+});
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: "#3f51b5",
+    },
+    secondary: {
+      main: "#f50057",
+    },
+    error: {
+      main: "#f44336",
+    },
+    warning: {
+      main: "#ff9800",
+    },
+    info: {
+      main: "#2196f3",
+    },
+    success: {
+      main: "#4caf50",
+    },
+  },
+  typography: {
+    fontFamily: "Roboto, Arial, sans-serif",
   },
 });
 
 function App() {
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md")); // Ajusta según el breakpoint deseado
-  const [open, setOpen] = useState(false); // Manejo del estado abierto/cerrado
-  const [hideSidebar, setHideSidebar] = useState(false); // Manejo del estado oculto
+  const [darkMode, setDarkMode] = useState(false);
+  const theme = darkMode ? darkTheme : lightTheme;
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const [open, setOpen] = useState(false);
+  const [hideSidebar, setHideSidebar] = useState(false);
+  
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <AppProvider>
         <Router>
-          <Sidebar open={open} setOpen={setOpen} hideSidebar={hideSidebar} setHideSidebar={setHideSidebar}/>
+          <Sidebar open={open} setOpen={setOpen} hideSidebar={hideSidebar} setHideSidebar={setHideSidebar} />
+          <IconButton 
+            onClick={toggleDarkMode} 
+            style={{ position: 'fixed', top: 16, right: 16, zIndex: 1200 }} // Position the button in the top-right corner
+          >
+            {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+          </IconButton>
           <main
             style={{
               padding: '16px',
-              marginLeft: hideSidebar ? 0 : (isSmallScreen ? 0 : 240), // Ajusta el margen solo si el Sidebar está abierto en pantallas grandes
-              transition: 'margin-left 0.3s ease', // Transición suave para el margen
-              position: 'relative', // Posición relativa para que el contenido no se mueva con el Sidebar
-              zIndex: 1, // Asegura que el contenido esté debajo del Sidebar
+              marginLeft: hideSidebar ? 0 : (isSmallScreen ? 0 : 240),
+              transition: 'margin-left 0.3s ease',
+              position: 'relative',
+              zIndex: 1,
             }}
           >
             <Routes>
