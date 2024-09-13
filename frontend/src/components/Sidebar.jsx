@@ -1,11 +1,26 @@
 import React from "react";
-import { Drawer, List, ListItem, ListItemText, Divider, IconButton, useMediaQuery, useTheme } from "@mui/material";
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+  IconButton,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Sidebar = ({ open, setOpen }) => {
+  const location = useLocation();
   const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md")); // Ajusta según el breakpoint deseado
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
+
+  const hideSidebarRoutes = ["/registro"];
+  const hideSidebar = hideSidebarRoutes.includes(location.pathname);
+
+  console.log(hideSidebar);
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -13,39 +28,38 @@ const Sidebar = ({ open, setOpen }) => {
 
   return (
     <>
-      {/* Botón para abrir/cerrar el sidebar en pantallas pequeñas */}
-      {isSmallScreen && (
+      {isSmallScreen && !hideSidebar && (
         <IconButton
           edge="start"
           color="inherit"
           aria-label="menu"
           onClick={toggleDrawer}
-          sx={{ position: 'fixed', top: 16, left: 16, zIndex: 1201 }} // Fijo y encima del contenido
+          sx={{ position: "fixed", top: 16, left: 16, zIndex: 1201 }} // Fijo y encima del contenido
         >
           <MenuIcon />
         </IconButton>
       )}
 
-      {/* Sidebar */}
       <Drawer
         variant={isSmallScreen ? "temporary" : "permanent"}
         anchor="left"
-        open={isSmallScreen ? open : true}
+        open={isSmallScreen ? open : !hideSidebar}
         onClose={toggleDrawer}
         sx={{
-         "& .MuiDrawer-paper": {
+          "& .MuiDrawer-paper": {
             width: 240,
-           width: 240,
-          flexShrink: 0,
+            width: 240,
+            flexShrink: 0,
             boxSizing: "border-box",
-            position: 'fixed', // Fijo para superponerse sobre el contenido
+            position: "fixed", // Fijo para superponerse sobre el contenido
             top: 0,
             left: 0,
-            height: '100%',
-            overflow: 'auto',
+            height: "100%",
+            overflow: "auto",
             zIndex: 1200, // Asegúrate de que el Sidebar esté encima del contenido
-            transition: 'transform 0.3s ease', // Transición suave para el movimiento
-            transform: isSmallScreen && !open ? 'translateX(-100%)' : 'translateX(0)', // Desplazar fuera de la vista en modo temporal
+            transition: "transform 0.3s ease", // Transición suave para el movimiento
+            transform:
+              isSmallScreen && !open ? "translateX(-100%)" : "translateX(0)", // Desplazar fuera de la vista en modo temporal
           },
         }}
       >
@@ -53,15 +67,16 @@ const Sidebar = ({ open, setOpen }) => {
           <ListItem button component={Link} to="/">
             <ListItemText primary="Home" />
           </ListItem>
-          <ListItem button component={Link} to="/registro">
-            <ListItemText primary="Registro" />
-          </ListItem>
-          <ListItem button component={Link} to="/registroperiodoacademico">
-            <ListItemText primary="Registro Periodo Académico" />
-          </ListItem>
-          <ListItem button component={Link} to="/upload">
-            <ListItemText primary="Upload" />
-          </ListItem>
+          {!hideSidebar && (
+            <>
+              <ListItem button component={Link} to="/registro">
+                <ListItemText primary="Registro" />
+              </ListItem>
+              <ListItem button component={Link} to="/registroperiodoacademico">
+                <ListItemText primary="Registro Periodo Académico" />
+              </ListItem>
+            </>
+          )}
         </List>
         <Divider />
       </Drawer>
