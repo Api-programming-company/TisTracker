@@ -24,6 +24,8 @@ class EstudianteController extends Controller
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
             'email' => 'required|email|unique:estudiantes,email',
+            'codSis' => 'required|integer|unique:estudiantes,codSis',
+            'password' => 'required|string|min:8', // Se requiere una contraseña de al menos 8 caracteres
         ]);
 
         $estudiante = Estudiante::create($validatedData);
@@ -40,6 +42,8 @@ class EstudianteController extends Controller
             'nombre' => 'sometimes|required|string|max:255',
             'apellido' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|email|unique:estudiantes,email,' . $id,
+            'codSis' => 'sometimes|required|integer|unique:estudiantes,codSis,' . $id,
+            'password' => 'sometimes|required|string|min:8',
         ]);
 
         $estudiante = Estudiante::findOrFail($id);
