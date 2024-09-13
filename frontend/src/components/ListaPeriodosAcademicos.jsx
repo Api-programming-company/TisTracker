@@ -1,6 +1,8 @@
 import React from 'react';
-import { Card, CardContent, Typography, Grid, Container, Paper } from '@mui/material';
+import { Card, CardContent, Typography, Grid, Container, Fab } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import { format } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
 
 // Datos de ejemplo
 const periods = Array.from({ length: 25 }, (_, i) => ({
@@ -12,6 +14,12 @@ const periods = Array.from({ length: 25 }, (_, i) => ({
 const formatDate = (date) => format(date, 'dd MMM yyyy');
 
 const ListaPeriodosAcademicos = () => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate('/registroperiodoacademico');
+  };
+
   return (
     <Container>
       <Typography variant="h4" gutterBottom>
@@ -36,6 +44,18 @@ const ListaPeriodosAcademicos = () => {
           </Grid>
         ))}
       </Grid>
+      <Fab 
+        color="primary" 
+        aria-label="add" 
+        onClick={handleClick} 
+        style={{
+          position: 'fixed',
+          bottom: 16,
+          right: 16
+        }}
+      >
+        <AddIcon />
+      </Fab>
     </Container>
   );
 };
