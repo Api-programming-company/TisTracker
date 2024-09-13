@@ -5,40 +5,38 @@ import { useLazyCheckEmailQuery } from "../api/docenteSlice";
 
 const isValidEmail = (email) => /\S+@\S+\.\S+/.test(email);
 
-const VerificarEmail = () => {
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
-
+const VerificarEmail = ({
+  email,
+  onEmailChange,
+  setErrors,
+  errors,
+  isEmailVerified,
+  setIsEmailVerified,
+}) => {
   const [checkEmail, { error: apiError, isFetching, isSuccess }] =
     useLazyCheckEmailQuery();
 
   useEffect(() => {
     if (apiError) {
       setIsEmailVerified(false);
-      setError(
+      setErrors(
         apiError?.status === 409
           ? apiError?.data?.message
           : "Error al verificar el email"
       );
     } else if (isSuccess) {
-      setError("");
+      setErrors("");
       setIsEmailVerified(true);
     }
-  }, [apiError, isSuccess]);
+  }, [apiError, isSuccess, setErrors]);
 
   const handleBlur = () => {
+    setIsEmailVerified(false);
     if (!isValidEmail(email)) {
-      setError("Ingrese un email válido, ejemplo: ejemplo@test.com");
+      setErrors("Ingrese un email válido, ejemplo: ejemplo@test.com");
       return;
     }
     checkEmail(email);
-  };
-
-  const handleChange = (e) => {
-    setEmail(e.target.value);
-    if (error) setError("");
-    setIsEmailVerified(false);
   };
 
   return (
@@ -47,11 +45,11 @@ const VerificarEmail = () => {
       name="email"
       type="email"
       value={email}
-      onChange={handleChange}
+      onChange={onEmailChange}
       fullWidth
       margin="normal"
-      error={Boolean(error)}
-      helperText={error}
+      error={Boolean(errors)}
+      helperText={errors}
       onBlur={handleBlur}
       disabled={isFetching}
       slotProps={{

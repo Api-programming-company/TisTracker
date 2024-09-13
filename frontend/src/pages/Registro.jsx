@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Button, Container, Typography, Box, TextField, IconButton, InputAdornment } from "@mui/material";
+import {
+  Button,
+  Container,
+  Typography,
+  Box,
+  TextField,
+  IconButton,
+  InputAdornment,
+} from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { VerificarEmail, VerificacionCodigo } from "../components";
@@ -68,9 +76,18 @@ const Registro = () => {
   };
 
   const handleRegister = () => {
-    const { nombre, apellidos, email, contraseña, confirmarContraseña } = formData;
+    if (!isEmailVerified) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: "El email tiene que ser comprobado.",
+      }));
+      return;
+    }
+    const { nombre, apellidos, email, contraseña, confirmarContraseña } =
+      formData;
     let hasError = false;
     const newErrors = {};
+
 
     const validations = {
       nombre: {
@@ -101,7 +118,10 @@ const Registro = () => {
       },
     };
 
-    for (const [field, { condition, message, additionalCheck }] of Object.entries(validations)) {
+    for (const [
+      field,
+      { condition, message, additionalCheck },
+    ] of Object.entries(validations)) {
       if (condition || additionalCheck) {
         newErrors[field] = additionalCheck || message;
         hasError = true;
@@ -165,6 +185,9 @@ const Registro = () => {
               email={formData.email}
               onEmailChange={handleInputChange}
               setErrors={handleEmailVerification}
+              errors={errors.email}
+              isEmailVerified={isEmailVerified}
+              setIsEmailVerified={setIsEmailVerified}
             />
 
             <TextField
