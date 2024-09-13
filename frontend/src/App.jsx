@@ -15,6 +15,7 @@ import { AppProvider } from "./context/AppContext";
 import { Sidebar } from "./components";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
+import { VerificacionCodigo } from "./components";
 
 const lightTheme = createTheme({
   palette: {
@@ -124,6 +125,7 @@ function App() {
               />
               <Route path="/upload" element={<ImageUpload />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/verify_email" element={<VerificacionCodigo />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
