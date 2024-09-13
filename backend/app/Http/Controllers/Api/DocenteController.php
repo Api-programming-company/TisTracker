@@ -27,7 +27,14 @@ class DocenteController extends Controller
             'password' => Hash::make($validatedData['password']),
         ]);
 
-        return response()->json($docente, 201); 
+        Log::info('Docente creado correctamente: ', $docente->toArray()); // Log para depuración
+
+        return response()->json([
+            'message' => 'Docente creado exitosamente',
+            'data' => $docente
+        ], 201);
+
+        //return response()->json($docente, 201); 
     }
 
     public function show($id)
