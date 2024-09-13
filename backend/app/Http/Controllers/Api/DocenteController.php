@@ -17,7 +17,7 @@ class DocenteController extends Controller
         $validatedData = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => ['required', 'email', 'unique:estudiantes,email', new ValidarCorreoDocente()],
+            'email' => ['required', 'email', 'unique:docente,email', new ValidarCorreoDocente()],
             'password' => 'required|string|min:8|confirmed',
         ]);
 
@@ -42,7 +42,7 @@ class DocenteController extends Controller
         $validatedData = $request->validate([
             'first_name' => 'sometimes|required|string|max:255',
             'last_name' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|unique:docente,email,' . $id,
+            'email' => ['sometimes', 'required', 'email', 'unique:docente,email,' . $id, new ValidarCorreoDocente()], 
             'password' => 'nullable|string|min:8|confirmed',
         ]);
 

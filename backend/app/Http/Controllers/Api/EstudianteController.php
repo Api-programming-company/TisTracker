@@ -6,6 +6,7 @@ use App\Models\Estudiante;
 use Illuminate\Http\Request;
 use app\Rules\ValidarPassword;
 use app\Rules\ValidarCorreoEstudiante;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller; // Importa la clase Controller correctamente
 
@@ -31,6 +32,8 @@ class EstudianteController extends Controller
             'password' => ['sometimes', 'required', 'string', 'min:8', new ValidarPassword($request->nombre, $request->apellido)], // validar contraseña
         ]);
 
+        $validatedData['password'] = Hash::make($validatedData['password']);
+
         $estudiante = Estudiante::create($validatedData);
         return response()->json($estudiante, 201);
     }
@@ -50,6 +53,12 @@ class EstudianteController extends Controller
         ]);
 
         $estudiante = Estudiante::findOrFail($id);
+
+        // Encriptar la contraseña si se proporciona
+        if ($request->has('password')) {
+            $validatedData['password'] = Hash::make($validatedData['password']);
+        }
+
         $estudiante->update($validatedData);
         return response()->json($estudiante, 200);
     }
