@@ -11,21 +11,36 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-        ]);
-
-        $user = User::create([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        return response()->json(['message' => 'User registered successfully'], 201);
+        try {
+            // Validar los datos del request
+            $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:8',
+            ]);
+    
+            // Crear el usuario
+            $user = User::create([
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+    
+            // Retornar respuesta exitosa
+            return response()->json(['message' => 'User registered successfully'], 201);
+        } catch (ValidationException $e) {
+            // Capturar errores de validación y devolver en formato JSON
+            return response()->json([
+                'errors' => $e->errors()
+            ], 422); // Código de estado HTTP para Unprocessable Entity
+        } catch (\Exception $e) {
+            // Capturar cualquier otra excepción
+            return response()->json([
+                'error' => 'An unexpected error occurred.'
+            ], 500); // Código de estado HTTP para Internal Server Error
+        }
     }
 
 
@@ -42,9 +57,9 @@ class AuthController extends Controller
 
         // Verificar si las credenciales son incorrectas
         if (! $user || ! Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
+            return response()->json([
+                'error' => 'Las credenciales son incorrectas.'
+            ], 401);
         }
 
         // Crear un token de acceso para el usuario autenticado
