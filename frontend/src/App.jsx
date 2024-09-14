@@ -5,6 +5,7 @@ import {
   Home,
   NotFound,
   Registro,
+  RegistroGE,
   RegistroPeriodoAcademico,
   ImageUpload,
   Login,
@@ -118,6 +119,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/home" element={<Home />} />
               <Route path="/registro" element={<Registro />} />
+              <Route path="/registroge" element={<RegistroGE />} />
               <Route
                 path="/registroperiodoacademico"
                 element={<RegistroPeriodoAcademico />}
