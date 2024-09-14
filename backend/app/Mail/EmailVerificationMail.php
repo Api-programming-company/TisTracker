@@ -33,7 +33,7 @@ class EmailVerificationMail extends Mailable
     {
         return $this->view('emails.verify-email')
             ->with([
-                'url' => url('localhost:3000/verify-email?token=' . $this->token),
+                'url' => url('localhost:3000/verify-email/' . $this->token),
                 'user' => $this->user,
             ]);
     }

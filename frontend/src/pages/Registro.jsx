@@ -76,18 +76,10 @@ const Registro = () => {
   };
 
   const handleRegister = () => {
-    if (!isEmailVerified) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        email: "El email tiene que ser comprobado.",
-      }));
-      return;
-    }
     const { nombre, apellidos, email, contraseña, confirmarContraseña } =
       formData;
     let hasError = false;
     const newErrors = {};
-
 
     const validations = {
       nombre: {
@@ -127,7 +119,12 @@ const Registro = () => {
         hasError = true;
       }
     }
-
+    if (!isEmailVerified) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: "El email tiene que ser comprobado.",
+      }));
+    }
     if (hasError) {
       setErrors(newErrors);
       return;
