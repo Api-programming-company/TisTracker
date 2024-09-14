@@ -18,7 +18,7 @@ class DocenteController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => ['required', 'email', 'unique:docente,email', new ValidarCorreoDocente()],
-            'password' => 'required|string|min:8|confirmed',
+            'password' => ['required|string|min:8|confirmed', new ValidarPassword($request->nombre, $request->apellido)],
         ]);
 
         $docente = Docente::create([
@@ -43,7 +43,7 @@ class DocenteController extends Controller
             'first_name' => 'sometimes|required|string|max:255',
             'last_name' => 'sometimes|required|string|max:255',
             'email' => ['sometimes', 'required', 'email', 'unique:docente,email,' . $id, new ValidarCorreoDocente()], 
-            'password' => 'nullable|string|min:8|confirmed',
+            'password' => ['nullable|string|min:8|confirmed', new ValidarPassword($request->nombre, $request->apellido)],
         ]);
 
         $docente = Docente::findOrFail($id);
