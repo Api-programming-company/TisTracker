@@ -8,6 +8,8 @@ import {
   RegistroPeriodoAcademico,
   ImageUpload,
   Login,
+  VerifyEmail,
+  Example
 } from "./pages";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline, useMediaQuery, IconButton } from "@mui/material";
@@ -126,6 +128,8 @@ function App() {
               />
               <Route path="/upload" element={<ImageUpload />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/verify-email/:token" element={<VerifyEmail />} />
+              <Route path="/example" element={<Example />} />
               <Route path="/*" element={<NotFound />} />
             </Routes>
           </main>
