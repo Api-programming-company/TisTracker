@@ -9,7 +9,7 @@ use App\Http\Controllers\Api\EstudianteController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\ImageUploadController;
 use App\Http\Controllers\Api\DocenteController;
-
+use App\Http\Controllers\VerificationController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -51,3 +51,5 @@ Route::post('/upload', [ImageUploadController::class, 'upload']);
 
 Route::get('/docente/check-email', [DocenteController::class, 'checkEmail']);
 Route::apiResource('/docente', DocenteController::class);
+Route::post('/verification-code', [VerificationController::class, 'sendVerificationCode']);
+Route::post('/verify-code', [VerificationController::class, 'verifyCode']);
