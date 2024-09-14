@@ -18,18 +18,18 @@ class AuthController extends Controller
                 'last_name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users',
                 'password' => 'required|string|min:8',
+                'user_type' => 'required|in:D,E',
             ]);
     
-            // Crear el usuario
             $user = User::create([
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
+                'user_type' => $request->user_type,
             ]);
-    
-            // Retornar respuesta exitosa
-            return response()->json(['message' => 'User registered successfully'], 201);
+
+            return response()->json(['message' => 'Usuario registrado exitosamente'], 201);
         } catch (ValidationException $e) {
             // Capturar errores de validación y devolver en formato JSON
             return response()->json([
@@ -38,7 +38,7 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             // Capturar cualquier otra excepción
             return response()->json([
-                'error' => 'An unexpected error occurred.'
+                'error' => 'Ocurrio un error inesperado.'
             ], 500); // Código de estado HTTP para Internal Server Error
         }
     }
