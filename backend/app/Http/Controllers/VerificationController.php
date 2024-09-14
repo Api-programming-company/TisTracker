@@ -32,9 +32,9 @@ class VerificationController extends Controller
         $verificationCode->save();
 
         // Enviar el correo electrónico
-        Mail::raw("Tu código de verificación es: $code", function ($message) use ($email) {
+        Mail::send('emails.verification', ['code' => $code], function ($message) use ($email) {
             $message->to($email)
-                ->subject('Código de Verificación');
+                    ->subject('Código de Verificación');
         });
 
         return response()->json(['message' => 'Código de verificación enviado correctamente.'], 200);
