@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use App\Models\User;
+use Illuminate\Support\Str;
+use App\Mail\EmailVerificationMail;
+use App\Models\EmailVerification;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -20,7 +24,7 @@ class AuthController extends Controller
                 'password' => 'required|string|min:8',
                 'user_type' => 'required|in:D,E',
             ]);
-    
+
             $user = User::create([
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
@@ -28,8 +32,21 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
                 'user_type' => $request->user_type,
             ]);
+            // Crear el token de verificación
+            $token = Str::random(32);
 
-            return response()->json(['message' => 'Usuario registrado exitosamente'], 201);
+            // Guardar el token en la base de datos
+            EmailVerification::create([
+                'user_id' => $user->id,
+                'token' => $token,
+                'expires_at' => now()->addMinutes(15),
+            ]);
+
+            // Enviar el correo de verificación
+            Mail::to($user->email)->send(new EmailVerificationMail($token, $user));
+
+
+            return response()->json(['message' => 'Usuario registrado . Verifica tu correo electrónico para completar el registro.'], 201);
         } catch (ValidationException $e) {
             // Capturar errores de validación y devolver en formato JSON
             return response()->json([
@@ -38,7 +55,8 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             // Capturar cualquier otra excepción
             return response()->json([
-                'error' => 'Ocurrio un error inesperado.'
+                'error' => 'Ocurrió un error inesperado.',
+                'message' => $e->getMessage() // Incluir el mensaje de la excepción para detalles adicionales
             ], 500); // Código de estado HTTP para Internal Server Error
         }
     }
