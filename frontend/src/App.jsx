@@ -9,6 +9,8 @@ import {
   RegistroPeriodoAcademico,
   ImageUpload,
   Login,
+  VerifyEmail,
+  Example
 } from "./pages";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline, useMediaQuery, IconButton } from "@mui/material";
@@ -16,6 +18,7 @@ import { AppProvider } from "./context/AppContext";
 import { Sidebar } from "./components";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
+import { VerificacionCodigo } from "./components";
 
 const lightTheme = createTheme({
   palette: {
@@ -117,6 +120,7 @@ function App() {
           >
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/verify_email" element={<VerificacionCodigo />} />
               <Route path="/home" element={<Home />} />
               <Route path="/registro" element={<Registro />} />
               <Route path="/registroge" element={<RegistroGE />} />
@@ -126,7 +130,9 @@ function App() {
               />
               <Route path="/upload" element={<ImageUpload />} />
               <Route path="/login" element={<Login />} />
-              <Route path="*" element={<NotFound />} />
+              <Route path="/verify-email/:token" element={<VerifyEmail />} />
+              <Route path="/example" element={<Example />} />
+              <Route path="/*" element={<NotFound />} />
             </Routes>
           </main>
         </Router>
