@@ -25,7 +25,8 @@ class ValidarCorreoEstudiante implements Rule
      */
     public function passes($attribute, $value)
     {
-        //
+       //validar correo de estudiante
+       return preg_match('/@est\.umss\.edu$/', $value);
     }
 
     /**
@@ -35,6 +36,6 @@ class ValidarCorreoEstudiante implements Rule
      */
     public function message()
     {
-        return 'The validation error message.';
+        return 'el correo de un estudiante tiene que tener el dominio @est.umss.edu';
     }
 }
