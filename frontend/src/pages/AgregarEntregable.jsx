@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  IconButton,
   InputAdornment,
   Stack,
   TextField,
@@ -8,8 +9,10 @@ import {
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Hu from "../components/Hu";
+import AddIcon from "@mui/icons-material/Add"; // Importar el icono de agregar
+import DeleteIcon from "@mui/icons-material/Delete"; // Importar el icono de eliminar
 
 const AgregarEntregable = () => {
   const [formData, setFormData] = useState({
@@ -17,7 +20,7 @@ const AgregarEntregable = () => {
     fecha_ini: "",
     fecha_entrega: "",
     cobro: "",
-    hu: [{ nombre_hu: "", responsable: "", objetivo: "" }],
+    hu: [],
   });
 
   const [errors, setErrors] = useState({
@@ -51,16 +54,16 @@ const AgregarEntregable = () => {
     } catch (e) {}
   };
 
-  const handleAgregarHu = (e) => {
+  const handleAgregarHu = () => {
     let x = "hu";
     let actual = formData.hu;
     let nuevo = [...actual, { nombre_hu: "", responsable: "", objetivo: "" }];
     setFormData({ ...formData, [x]: nuevo });
   };
-  const handleQuitarHu = (e) => {
+
+  const handleEliminarHu = (index) => {
     let x = "hu";
-    let actual = formData.hu;
-    actual.pop();
+    let actual = formData.hu.filter((_, i) => i !== index);
     setFormData({ ...formData, [x]: actual });
   };
 
@@ -76,29 +79,21 @@ const AgregarEntregable = () => {
       },
       fecha_ini: {
         condition: !fecha_ini,
-        message: "La fecha de inicio es obligatorio.",
-        // additionalCheck: errors.email, aca falta controlar fechas raritas
+        message: "La fecha de inicio es obligatoria.",
       },
       fecha_entrega: {
         condition: !fecha_entrega,
-        message: "La fecha de entrega es obligatorio.",
-        // additionalCheck: errors.email, aca falta controlar fechas raritas
+        message: "La fecha de entrega es obligatoria.",
       },
       cobro: {
         condition: !cobro,
         message: "El cobro en porcentaje es obligatorio.",
-        // additionalCheck:
-        //   !validarContraseña(contraseña) &&
-        //   "Debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial.",
       },
     };
 
-    for (const [
-      field,
-      { condition, message, additionalCheck },
-    ] of Object.entries(validations)) {
-      if (condition || additionalCheck) {
-        newErrors[field] = additionalCheck || message;
+    for (const [field, { condition, message }] of Object.entries(validations)) {
+      if (condition) {
+        newErrors[field] = message;
         hasError = true;
       }
     }
@@ -115,110 +110,110 @@ const AgregarEntregable = () => {
     };
 
     console.log("Enviando datos:", dataToSend);
-    // setIsRegistering(true);
   };
 
-//   useEffect(() => {
-//     console.log(formData);
-//   }, [formData]);
-
   return (
-    <div>
-      <Typography variant="h3">
+    <Box sx={{ maxWidth: 600, margin: "auto", padding: 2 }}>
+      <Typography variant="h3" gutterBottom>
         Agregar producto entregable a planificación
       </Typography>
 
       <TextField
-        label="Nombre del hito"
+        label="Nombre del hito*"
         variant="outlined"
         name="nombre_hito"
         fullWidth
-        style={{ marginBottom: "16px" }}
+        sx={{ marginBottom: 2 }}
         onChange={handleInputChange}
         error={Boolean(errors.nombre_hito)}
         helperText={errors.nombre_hito}
+        aria-describedby="nombre_hito-error"
       />
 
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <DatePicker
-          label="Fecha de inicio"
-          onChange={handleDateIniChange}
-          error={Boolean(errors.fecha_ini)}
-          slotProps={{
-            textField: {
-              helperText: errors.fecha_ini,
-            },
-          }}
-        />
-      </LocalizationProvider>
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <DatePicker
-          label="Fecha de entrega"
-          onChange={handleDateFinChange}
-          error={Boolean(errors.fecha_entrega)}
-          slotProps={{
-            textField: {
-              helperText: errors.fecha_entrega,
-            },
-          }}
-        />
-      </LocalizationProvider>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          gap: 2,
+        }}
+      >
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DatePicker
+            label="Fecha de inicio*"
+            onChange={handleDateIniChange}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                error={Boolean(errors.fecha_ini)}
+                helperText={errors.fecha_ini}
+                aria-describedby="fecha_ini-error"
+              />
+            )}
+          />
+        </LocalizationProvider>
+
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DatePicker
+            label="Fecha de entrega*"
+            onChange={handleDateFinChange}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                error={Boolean(errors.fecha_entrega)}
+                helperText={errors.fecha_entrega}
+                aria-describedby="fecha_entrega-error"
+              />
+            )}
+          />
+        </LocalizationProvider>
+      </Box>
+
       <TextField
         label="Porcentaje de cobro (%)"
         variant="outlined"
         name="cobro"
         fullWidth
-        style={{ margin: "16px 0px" }}
+        sx={{ margin: "16px 0" }}
         onChange={handleInputChange}
         error={Boolean(errors.cobro)}
         helperText={errors.cobro}
-        slotProps={{
-          input: {
-            startAdornment: <InputAdornment position="start">%</InputAdornment>,
-          },
+        InputProps={{
+          startAdornment: <InputAdornment position="start">%</InputAdornment>,
         }}
+        aria-describedby="cobro-error"
       />
 
-      <Box sx={{ display: "flex" }}>
-        <Typography variant="h4">Historias de usuario</Typography>
-        <Button
-          variant="outlined"
-          color="primary"
-          style={{ marginRight: "8px", color: "black" }}
-          onClick={handleAgregarHu}
-        >
-          Agregar
-        </Button>
-        <Button
-          variant="outlined"
-          color="primary"
-          style={{ marginRight: "8px", color: "black" }}
-          onClick={handleQuitarHu}
-        >
-          Quitar
-        </Button>
-      </Box>
+      <Typography variant="h4" sx={{ marginY: 2 }}>
+        Historias de usuario
+      </Typography>
 
       <Stack spacing={2}>
-        {formData.hu.length > 0 ? (
-          formData.hu.map((e) => <Hu />)
-        ) : (
-          <Typography variant="h5">
-            {" "}
-            Presione al boton "Agregar" para insertar historias de usuario{" "}
-          </Typography>
-        )}
+        {formData.hu.map((e, index) => (
+          <Hu key={index} index={index} handleEliminarHu={handleEliminarHu} />
+        ))}
+        <Box sx={{ display: "flex", justifyContent: "center", marginY: 2 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={handleAgregarHu}
+          >
+            Agregar historia de usuario
+          </Button>
+        </Box>
       </Stack>
 
-      <Button
-        variant="contained"
-        color="primary"
-        style={{ marginRight: "8px", color: "black" }}
-        onClick={handleRegister}
-      >
-        Registrar
-      </Button>
-    </div>
+      <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ width: "200px" }} // Ajusta el ancho según sea necesario
+          onClick={handleRegister}
+        >
+          Registrar
+        </Button>
+      </Box>
+    </Box>
   );
 };
 
