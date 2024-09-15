@@ -19,3 +19,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/verify-email', [EmailVerificationController::class, 'verifyEmail']);
+
+
+
+
+Route::get('/simon', function () {
+    return response()->json(['message' => 'hola simon']);
+});
