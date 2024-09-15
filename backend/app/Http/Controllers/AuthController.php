@@ -39,7 +39,7 @@ class AuthController extends Controller
                 'last_name' => $request->last_name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'user_type' => $request->user_type, // Asignar user_type
+                'user_type' => $request->user_type,
             ]);
 
             // Crear el token de verificación
@@ -55,18 +55,9 @@ class AuthController extends Controller
             // Enviar el correo de verificación
             Mail::to($user->email)->send(new VerifyEmail($token, $user));
 
-            // Crear un token para el nuevo usuario
-            $token = $user->createToken('auth_token')->plainTextToken;
 
             return response()->json([
-                'access_token' => $token,
-                'token_type' => 'Bearer',
-                'user' => [
-                    'first_name' => $user->first_name,
-                    'last_name' => $user->last_name,
-                    'email' => $user->email,
-                    'user_type' => $user->user_type === 'E' ? 'Estudiante' : 'Docente', // Devolver el tipo de usuario
-                ]
+                'message' => 'Registro exitoso. Por favor, revisa tu correo para verificar tu cuenta.'
             ], 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Manejo de errores de validación
@@ -82,7 +73,6 @@ class AuthController extends Controller
             ], 500);
         }
     }
-
 
     /**
      * Handle login and issue a token.
@@ -141,6 +131,6 @@ class AuthController extends Controller
             return new ValidarCorreoDocente;
         }
 
-        return ''; // Debería ser una regla por defecto o manejar error aquí
+        return '';
     }
 }
