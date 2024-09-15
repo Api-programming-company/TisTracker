@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class EmailVerification extends Model
 {
     use HasFactory;
-    protected $table = 'email_verification'; 
+
     protected $fillable = [
         'user_id',
         'token',
         'expires_at',
     ];
 
-    // Define la relación con el modelo User
+    // Relación con el modelo User
     public function user()
     {
         return $this->belongsTo(User::class);

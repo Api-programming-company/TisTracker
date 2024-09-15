@@ -14,7 +14,7 @@ class AddUserTypeToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->char('user_type', 1)->default('E'); // 'E' como valor por defecto para estudiante
+            $table->char('user_type', 1)->default('E')->after('email'); // Agregar campo user_type
         });
     }
 
@@ -26,7 +26,7 @@ class AddUserTypeToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('user_type');
+            $table->dropColumn('user_type'); // Eliminar campo user_type si se revierte la migración
         });
     }
 }
