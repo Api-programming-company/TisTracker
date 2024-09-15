@@ -1,5 +1,4 @@
-// src/components/VerificacionCodigo.js
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { TextField, Button, Typography, Container, Alert, CircularProgress } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 import { useVerifyEmailMutation } from "../api/userSlice";
@@ -7,24 +6,27 @@ import { useVerifyEmailMutation } from "../api/userSlice";
 const VerifyEmail = () => {
   const { token } = useParams();
   const navigate = useNavigate();
+  const [hasVerified, setHasVerified] = useState(false); // Nuevo estado para controlar la verificación
 
   // Hook de mutación para verificar el correo electrónico
   const [verifyEmail, { isLoading, isError, isSuccess, error }] = useVerifyEmailMutation();
 
   useEffect(() => {
-    if (token) {
+    if (token && !hasVerified) {
+      setHasVerified(true); // Actualiza el estado para evitar solicitudes duplicadas
       // Imprime el token en la consola para depuración
       console.log(token);
 
       // Llama a la mutación para verificar el correo electrónico
       verifyEmail(token);
+      setHasVerified(false); // Actualiza el estado para evitar solicitudes duplicadas
     }
-  }, [token, verifyEmail]);
+  }, [token]);
 
   useEffect(() => {
     if (isSuccess) {
       // Redirige a una página de éxito o al inicio
-      //('/verificacion-exito');
+      //navigate('/login');
     }
   }, [isSuccess, navigate]);
 
@@ -34,7 +36,7 @@ const VerifyEmail = () => {
       console.error("Error al verificar el correo electrónico:", error);
     }
   }, [isError, error]);
-  
+
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" gutterBottom>
