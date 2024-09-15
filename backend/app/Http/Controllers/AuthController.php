@@ -9,6 +9,9 @@ use App\Models\EmailVerification;
 use App\Mail\VerifyEmail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use App\Rules\ValidarCorreoEstudiante;
+use App\Rules\ValidarCorreoDocente;
+use App\Rules\ValidarPassword;
 
 class AuthController extends Controller
 {
@@ -20,50 +23,66 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
-        // Validar los datos de registro
-        $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
-            'user_type' => 'required|in:E,D', // Validar que sea 'E' o 'D'
-        ]);
+        try {
+            // Validar los datos de registro
+            $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'email' => ['required', 'email', 'unique:users,email', $this->getEmailValidationRule($request->user_type)],
+                'password' => ['required', 'string', 'min:8', 'confirmed', new ValidarPassword($request->first_name, $request->last_name)],
+                'user_type' => 'required|in:E,D', // Validar que sea 'E' o 'D'
+            ]);
 
-        // Crear nuevo usuario
-        $user = User::create([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'user_type' => $request->user_type, // Asignar user_type
-        ]);
+            // Crear nuevo usuario
+            $user = User::create([
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'user_type' => $request->user_type, // Asignar user_type
+            ]);
 
-        // Crear el token de verificación
-        $token = Str::random(32);
+            // Crear el token de verificación
+            $token = Str::random(32);
 
-        // Guardar el token en la base de datos
-        EmailVerification::create([
-            'user_id' => $user->id,
-            'token' => $token,
-            'expires_at' => now()->addMinutes(15),
-        ]);
+            // Guardar el token en la base de datos
+            EmailVerification::create([
+                'user_id' => $user->id,
+                'token' => $token,
+                'expires_at' => now()->addMinutes(15),
+            ]);
 
-        // Enviar el correo de verificación
-        Mail::to($user->email)->send(new VerifyEmail($token, $user));
-        // Crear un token para el nuevo usuario
-        $token = $user->createToken('auth_token')->plainTextToken;
+            // Enviar el correo de verificación
+            Mail::to($user->email)->send(new VerifyEmail($token, $user));
 
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-            'user' => [
-                'first_name' => $user->first_name,
-                'last_name' => $user->last_name,
-                'email' => $user->email,
-                'user_type' => $user->user_type === 'E' ? 'Estudiante' : 'Docente', // Devolver el tipo de usuario
-            ]
-        ], 201);
+            // Crear un token para el nuevo usuario
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            return response()->json([
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+                'user' => [
+                    'first_name' => $user->first_name,
+                    'last_name' => $user->last_name,
+                    'email' => $user->email,
+                    'user_type' => $user->user_type === 'E' ? 'Estudiante' : 'Docente', // Devolver el tipo de usuario
+                ]
+            ], 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Manejo de errores de validación
+            return response()->json([
+                'message' => 'Error de validación',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            // Manejo de otros errores
+            return response()->json([
+                'message' => 'Se ha producido un error inesperado',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
+
 
     /**
      * Handle login and issue a token.
@@ -111,5 +130,17 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Sesión cerrada correctamente.'
         ]);
+    }
+    protected function getEmailValidationRule($userType)
+    {
+        if ($userType === 'E') {
+            return new ValidarCorreoEstudiante;
+        }
+
+        if ($userType === 'D') {
+            return new ValidarCorreoDocente;
+        }
+
+        return ''; // Debería ser una regla por defecto o manejar error aquí
     }
 }
