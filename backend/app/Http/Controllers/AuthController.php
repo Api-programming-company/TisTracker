@@ -12,6 +12,8 @@ use Illuminate\Support\Str;
 use App\Rules\ValidarCorreoEstudiante;
 use App\Rules\ValidarCorreoDocente;
 use App\Rules\ValidarPassword;
+use Illuminate\Validation\ValidationException;
+use Exception;
 
 class AuthController extends Controller
 {
@@ -28,8 +30,8 @@ class AuthController extends Controller
             $request->validate([
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
-                'email' => ['required', 'email', 'unique:users,email'],#, $this->getEmailValidationRule($request->user_type)],
-                'password' => ['required', 'string', 'min:8', 'confirmed'],#, new ValidarPassword($request->first_name, $request->last_name)],
+                'email' => ['required', 'email', 'unique:users,email'],# $this->getEmailValidationRule($request->user_type)],
+                'password' => ['required', 'string', 'min:8', 'confirmed'], #new ValidarPassword($request->first_name, $request->last_name)],
                 'user_type' => 'required|in:E,D', // Validar que sea 'E' o 'D'
             ]);
 
@@ -59,13 +61,13 @@ class AuthController extends Controller
             return response()->json([
                 'message' => 'Registro exitoso. Por favor, revisa tu correo para verificar tu cuenta.'
             ], 201);
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             // Manejo de errores de validación
             return response()->json([
                 'message' => 'Error de validación',
                 'errors' => $e->errors()
             ], 422);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Manejo de otros errores
             return response()->json([
                 'message' => 'Se ha producido un error inesperado',
@@ -121,6 +123,36 @@ class AuthController extends Controller
             'message' => 'Sesión cerrada correctamente.'
         ]);
     }
+
+    public function checkEmail(Request $request)
+    {
+        try {
+            // Validar que se ha proporcionado un correo electrónico
+            $request->validate([
+                'email' => 'required|email',
+            ]);
+
+            // Buscar si el correo electrónico existe en la base de datos
+            $exists = User::where('email', $request->email)->exists();
+
+            return response()->json([
+                'exists' => $exists
+            ]);
+        } catch (ValidationException $e) {
+            // Manejo de errores de validación
+            return response()->json([
+                'message' => 'Error de validación',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (Exception $e) {
+            // Manejo de otros errores
+            return response()->json([
+                'message' => 'Se ha producido un error inesperado',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     protected function getEmailValidationRule($userType)
     {
         if ($userType === 'E') {

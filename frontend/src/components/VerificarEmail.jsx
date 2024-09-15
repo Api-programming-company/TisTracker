@@ -16,22 +16,29 @@ const VerificarEmail = ({
   errors,
   isEmailVerified,
   setIsEmailVerified,
-  userType
+  userType,
 }) => {
-  const [checkEmail, { error: apiError, isFetching, isSuccess }] =
+  const [checkEmail, { error: apiError, data, isFetching, isSuccess }] =
     useLazyCheckEmailQuery();
 
   useEffect(() => {
-    if (apiError) {
+    if (isSuccess) {
+      if (data?.exists) {
+        setIsEmailVerified(false);
+        setErrors("El correo electrónico no está registrado.");
+      } else {
+        setIsEmailVerified(true);
+        setErrors("");
+      }
+    } else if (apiError) {
+      console.log("Error API:", apiError);
       setIsEmailVerified(false);
       setErrors(
         apiError?.status === 409
-          ? apiError?.data?.message
+          ? apiError?.data?.message ||
+              "El correo electrónico ya está registrado."
           : "Error al verificar el email"
       );
-    } else if (isSuccess) {
-      setErrors("");
-      setIsEmailVerified(true);
     }
   }, [apiError, isSuccess, setErrors]);
 
@@ -45,7 +52,9 @@ const VerificarEmail = ({
     } else {
       if (userType === "docente") {
         if (!validarEmailDocente(email)) {
-          setErrors("Ingrese un email válido, ejemplo: ejemplo@fcyt.umss.edu.bo");
+          setErrors(
+            "Ingrese un email válido, ejemplo: ejemplo@fcyt.umss.edu.bo"
+          );
           return;
         }
       } else {
@@ -56,7 +65,6 @@ const VerificarEmail = ({
       }
     }
 
-    
     checkEmail(email);
   };
 

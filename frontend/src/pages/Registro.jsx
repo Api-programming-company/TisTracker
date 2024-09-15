@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Container,
@@ -7,12 +7,13 @@ import {
   TextField,
   IconButton,
   InputAdornment,
+  CircularProgress,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { VerificarEmail, VerificacionCodigo } from "../components";
 import { validarContraseña } from "../utils/validaciones";
-import { encryptData } from "../utils";
+import { useRegisterUserMutation } from "../api/userSlice";
 
 const Registro = () => {
   const [formData, setFormData] = useState({
@@ -35,6 +36,17 @@ const Registro = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
   const [userType, setUserType] = useState("estudiante");
+  const [registerUser, { data, isFetching, isSuccess, isError, error }] =
+    useRegisterUserMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log("Registro exitoso:", data);
+    }
+    if (isError) {
+      console.log("Error de registro:", error);
+    }
+  }, [isSuccess, isError, error]);
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
@@ -133,15 +145,18 @@ const Registro = () => {
     // Si todo es válido, proceder con el registro
     const userTypeCode = userType === "docente" ? "D" : "E";
     const dataToSend = {
-      ...formData,
-      tipoUsuario: userTypeCode,
-      timestamp: new Date().toISOString(),
+      first_name: formData.nombre,
+      last_name: formData.apellidos,
+      email: formData.email,
+      password: formData.contraseña,
+      password_confirmation: formData.confirmarContraseña,
+      user_type: userTypeCode,
     };
 
     console.log("Enviando datos:", dataToSend);
-    localStorage.setItem("userData", encryptData(dataToSend));
-    setIsRegistering(true);
-    navigate("/verify_email");
+    registerUser(dataToSend);
+    //localStorage.setItem("userData", encryptData(dataToSend));
+    //setIsRegistering(true);
   };
 
   const handleLoginRedirect = () => {
@@ -249,8 +264,13 @@ const Registro = () => {
               fullWidth
               onClick={handleRegister}
               sx={{ mt: 2 }}
+              disabled={isFetching}
             >
-              Registrar
+              {isFetching ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Registrar"
+              )}
             </Button>
 
             <Button

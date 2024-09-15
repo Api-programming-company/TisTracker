@@ -2,9 +2,9 @@ import { apiSlice } from "./apiSlice";
 const userApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // Endpoint para POST en /registro_usuario
-    registrarUsuario: builder.mutation({
+    registerUser: builder.mutation({
       query: (data) => ({
-        url: "registro_usuario",
+        url: "user/register",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -12,14 +12,12 @@ const userApi = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
-    // Nuevo Endpoint para GET en /check-email
     checkEmail: builder.query({
-      query: (email) => `check-email?email=${encodeURIComponent(email)}`,
+      query: (email) => `user/check-email?email=${encodeURIComponent(email)}`,
     }),
-    // Nuevo Endpoint para POST en /verify-email
     verifyEmail: builder.mutation({
       query: (token) => ({
-        url: "verify-email",
+        url: "user/verify-email",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -31,7 +29,7 @@ const userApi = apiSlice.injectEndpoints({
 });
 
 export const {
-  useRegistrarUsuarioMutation,
+  useRegisterUserMutation,
   useLazyCheckEmailQuery,
   useVerifyEmailMutation,
 } = userApi;
