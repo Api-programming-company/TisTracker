@@ -52,10 +52,16 @@ const AgregarEntregable = () => {
   };
 
   const handleAgregarHu = (e) => {
-    let x = "hu"
-    let actual = formData.hu
-    let nuevo = [...actual, { nombre_hu: "", responsable: "", objetivo: "" }]
-    setFormData({...formData, [x]: nuevo});
+    let x = "hu";
+    let actual = formData.hu;
+    let nuevo = [...actual, { nombre_hu: "", responsable: "", objetivo: "" }];
+    setFormData({ ...formData, [x]: nuevo });
+  };
+  const handleQuitarHu = (e) => {
+    let x = "hu";
+    let actual = formData.hu;
+    actual.pop();
+    setFormData({ ...formData, [x]: actual });
   };
 
   const handleRegister = () => {
@@ -112,9 +118,9 @@ const AgregarEntregable = () => {
     // setIsRegistering(true);
   };
 
-  //   useEffect(()=> {
-  //     console.log(formData)
-  //   },[formData])
+//   useEffect(() => {
+//     console.log(formData);
+//   }, [formData]);
 
   return (
     <div>
@@ -183,10 +189,25 @@ const AgregarEntregable = () => {
         >
           Agregar
         </Button>
+        <Button
+          variant="outlined"
+          color="primary"
+          style={{ marginRight: "8px", color: "black" }}
+          onClick={handleQuitarHu}
+        >
+          Quitar
+        </Button>
       </Box>
 
       <Stack spacing={2}>
-        {formData.hu.map( e => <Hu /> )}
+        {formData.hu.length > 0 ? (
+          formData.hu.map((e) => <Hu />)
+        ) : (
+          <Typography variant="h5">
+            {" "}
+            Presione al boton "Agregar" para insertar historias de usuario{" "}
+          </Typography>
+        )}
       </Stack>
 
       <Button
