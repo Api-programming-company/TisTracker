@@ -25,7 +25,8 @@ class ValidarCorreoDocente implements Rule
      */
     public function passes($attribute, $value)
     {
-        //
+        //verificar que sea docente
+        return preg_match('/@fcyt\.umss\.edu\.bo$/', $value);
     }
 
     /**
@@ -35,6 +36,6 @@ class ValidarCorreoDocente implements Rule
      */
     public function message()
     {
-        return 'The validation error message.';
+        return 'El correo de un docente tiene que tener el dominio @fcyt.umss.edu.bo';
     }
 }
