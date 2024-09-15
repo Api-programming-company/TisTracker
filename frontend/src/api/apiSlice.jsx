@@ -2,11 +2,21 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 // Función para obtener el token CSRF
 const fetchCsrfToken = async () => {
-  await fetch("http://localhost:8000/sanctum/csrf-cookie", {
-    method: "GET",
-    credentials: "include", // Asegúrate de incluir las cookies
-  });
+  try {
+    console.log("getetetegetetet");
+    
+    const response = await fetch("http://localhost:8000/sanctum/csrf-cookie", {
+      method: "GET",
+      credentials: "include",
+    });
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+  } catch (error) {
+    console.error('Failed to fetch CSRF token:', error);
+  }
 };
+
 
 // Configuración básica de RTK Query
 export const apiSlice = createApi({

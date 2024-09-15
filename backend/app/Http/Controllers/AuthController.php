@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\EmailVerification;
+use App\Mail\VerifyEmail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -34,6 +38,18 @@ class AuthController extends Controller
             'user_type' => $request->user_type, // Asignar user_type
         ]);
 
+        // Crear el token de verificación
+        $token = Str::random(32);
+
+        // Guardar el token en la base de datos
+        EmailVerification::create([
+            'user_id' => $user->id,
+            'token' => $token,
+            'expires_at' => now()->addMinutes(15),
+        ]);
+
+        // Enviar el correo de verificación
+        Mail::to($user->email)->send(new VerifyEmail($token, $user));
         // Crear un token para el nuevo usuario
         $token = $user->createToken('auth_token')->plainTextToken;
 
