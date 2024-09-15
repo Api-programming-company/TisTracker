@@ -19,6 +19,8 @@ import { Sidebar } from "./components";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import { VerificacionCodigo } from "./components";
+import Planificacion from "./pages/Planificacion";
+import AgregarEntregable from "./pages/AgregarEntregable";
 
 const lightTheme = createTheme({
   palette: {
@@ -128,6 +130,7 @@ function App() {
                 path="/registroperiodoacademico"
                 element={<RegistroPeriodoAcademico />}
               />
+              <Route path="/agregarentrega" element={<AgregarEntregable />}/>
               <Route path="/upload" element={<ImageUpload />} />
               <Route path="/login" element={<Login />} />
               <Route path="/verify-email/:token" element={<VerifyEmail />} />

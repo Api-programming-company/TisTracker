@@ -18,14 +18,12 @@
         </include>
     </coverage>
     <php>
-        <server name="APP_ENV" value="testing"/>
-        <server name="BCRYPT_ROUNDS" value="4"/>
-        <server name="CACHE_DRIVER" value="array"/>
-        <!-- <server name="DB_CONNECTION" value="sqlite"/> -->
-        <!-- <server name="DB_DATABASE" value=":memory:"/> -->
-        <server name="MAIL_MAILER" value="array"/>
-        <server name="QUEUE_CONNECTION" value="sync"/>
-        <server name="SESSION_DRIVER" value="array"/>
-        <server name="TELESCOPE_ENABLED" value="false"/>
+        <env name="APP_ENV" value="testing"/>
+        <env name="DB_CONNECTION" value="pgsql"/>
+        <env name="DB_HOST" value="roundhouse.proxy.rlwy.net"/>
+        <env name="DB_PORT" value="23600"/>
+        <env name="DB_DATABASE" value="railway"/>
+        <env name="DB_USERNAME" value="postgres"/>
+        <env name="DB_PASSWORD" value="lutLTbTdXqFJGNcaiSEaHUzSUJjZgxBM"/>
     </php>
 </phpunit>
