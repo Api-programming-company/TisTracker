@@ -4,21 +4,20 @@ import { useState, useEffect } from "react";
 import {
   Home,
   NotFound,
-  Registro,
+  UserRegister,
   RegistroGE,
   RegistroPeriodoAcademico,
   ImageUpload,
   Login,
   VerifyEmail,
-  Example
+  Example,
 } from "./pages";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline, useMediaQuery, IconButton } from "@mui/material";
 import { AppProvider } from "./context/AppContext";
-import { Sidebar , Planificacion} from "./components";
+import { Sidebar, Planificacion } from "./components";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
-import { VerificacionCodigo } from "./components";
 
 const lightTheme = createTheme({
   palette: {
@@ -119,19 +118,21 @@ function App() {
             }}
           >
             <Routes>
+              <Route path="/register" element={<UserRegister />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/verify-email/:token" element={<VerifyEmail />} />
+
               <Route path="/" element={<Home />} />
-              <Route path="/verify_email" element={<VerificacionCodigo />} />
               <Route path="/home" element={<Home />} />
-              <Route path="/registro" element={<Registro />} />
+
               <Route path="/registroge" element={<RegistroGE />} />
               <Route
                 path="/registroperiodoacademico"
                 element={<RegistroPeriodoAcademico />}
               />
-              <Route path="/registerplan" element={<Planificacion />}/>
+              <Route path="/registerplan" element={<Planificacion />} />
               <Route path="/upload" element={<ImageUpload />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/verify-email/:token" element={<VerifyEmail />} />
+
               <Route path="/example" element={<Example />} />
               <Route path="/*" element={<NotFound />} />
             </Routes>

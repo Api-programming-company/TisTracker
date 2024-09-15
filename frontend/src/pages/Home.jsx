@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import AppContext from "../context/AppContext";
-import Registro from "./Registro";
+import UserRegister from "./UserRegister";
 import { ListaPeriodosAcademicos } from "../components";
 
 const Home = () => {
@@ -12,7 +12,7 @@ const Home = () => {
       ) : userType === "docente" ? (
         <ListaPeriodosAcademicos />
       ) : (
-        <Registro />
+        <UserRegister />
       )}
     </>
   );

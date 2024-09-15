@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { TextField, Button, Typography, Container, Alert, CircularProgress } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
-import { useVerifyEmailMutation } from "../api/userSlice";
+import { useVerifyEmailMutation } from "../api/userApi";
 
 const VerifyEmail = () => {
   const { token } = useParams();

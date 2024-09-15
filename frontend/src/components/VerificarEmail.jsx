@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { TextField, InputAdornment, CircularProgress } from "@mui/material";
 import { CheckCircle } from "@mui/icons-material";
-import { useLazyCheckEmailQuery } from "../api/userSlice";
+import { useLazyCheckEmailQuery } from "../api/userApi";
 import { validarEmailDocente, validarEmailEstudiante } from "../utils";
 
 // Variable para activar/desactivar la validación de email

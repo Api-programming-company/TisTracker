@@ -1,7 +1,7 @@
 import { apiSlice } from "./apiSlice";
+
 const userApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // Endpoint para POST en /registro_usuario
     registerUser: builder.mutation({
       query: (data) => ({
         url: "user/register",
