@@ -135,6 +135,12 @@ const AgregarEntregable = () => {
           display: "flex",
           flexDirection: { xs: "column", sm: "row" },
           gap: 2,
+          flexWrap: "wrap", // Permite que los elementos se ajusten en pantallas más pequeñas
+          "& > *": {
+            flex: 1, // Hace que los elementos de fecha ocupen el espacio disponible
+            minWidth: { xs: "100%", sm: "auto" }, // Asegura que en pantallas pequeñas ocupen el 100% del ancho
+            boxSizing: "border-box", // Asegura que padding y border no afecten el ancho total
+          },
         }}
       >
         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -167,21 +173,6 @@ const AgregarEntregable = () => {
           />
         </LocalizationProvider>
       </Box>
-
-      <TextField
-        label="Porcentaje de cobro (%)"
-        variant="outlined"
-        name="cobro"
-        fullWidth
-        sx={{ margin: "16px 0" }}
-        onChange={handleInputChange}
-        error={Boolean(errors.cobro)}
-        helperText={errors.cobro}
-        InputProps={{
-          startAdornment: <InputAdornment position="start">%</InputAdornment>,
-        }}
-        aria-describedby="cobro-error"
-      />
 
       <Typography variant="h4" sx={{ marginY: 2 }}>
         Historias de usuario
