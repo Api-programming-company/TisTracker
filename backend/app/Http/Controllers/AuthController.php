@@ -47,7 +47,8 @@ class AuthController extends Controller
             // Crear el token de verificación
             $token = Str::random(32);
 
-            // Guardar el token en la base de datos
+            // Guardar el token en la base de datos+
+            
             EmailVerification::create([
                 'user_id' => $user->id,
                 'token' => $token,
@@ -57,7 +58,7 @@ class AuthController extends Controller
             // Enviar el correo de verificación
             Mail::to($user->email)->send(new VerifyEmail($token, $user));
 
-
+            
             return response()->json([
                 'message' => 'Registro exitoso. Por favor, revisa tu correo para verificar tu cuenta.'
             ], 201);

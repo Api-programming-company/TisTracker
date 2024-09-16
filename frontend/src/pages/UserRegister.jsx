@@ -11,33 +11,34 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { VerificarEmail } from "../components";
-import { validarContraseña } from "../utils/validaciones";
+import { validarContraseña, validateEmail } from "../utils/validaciones";
 import { useRegisterUserMutation } from "../api/userApi";
 
 const UserRegister = () => {
+  const [userType, setUserType] = useState("estudiante");
   const [formData, setFormData] = useState({
-    nombre: "",
-    apellidos: "",
+    first_name: "",
+    last_name: "",
     email: "",
-    contraseña: "",
-    confirmarContraseña: "",
+    password: "",
+    password_confirmation: "",
+    user_type: userType === "docente" ? "D" : "E",
   });
   const [errors, setErrors] = useState({
-    nombre: "",
-    apellidos: "",
+    first_name: "",
+    last_name: "",
     email: "",
-    contraseña: "",
-    confirmarContraseña: "",
+    password: "",
+    password_confirmation: "",
   });
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
-  const [isRegistering, setIsRegistering] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
-  const [userType, setUserType] = useState("estudiante");
-  const [registerUser, { data, isFetching, isSuccess, isError, error }] =
-    useRegisterUserMutation();
+
+  const [
+    registerUser,
+    { data, isFetching, isLoading, isSuccess, isError, error },
+  ] = useRegisterUserMutation();
 
   useEffect(() => {
     if (isSuccess) {
@@ -45,8 +46,26 @@ const UserRegister = () => {
     }
     if (isError) {
       console.log("Error de registro:", error);
+      // Handle server errors
+      const errorResponse = error?.data?.errors || {};
+      const newErrors = {};
+
+      for (const [field, messages] of Object.entries(errorResponse)) {
+        newErrors[field] = messages.join(" ");
+      }
+
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        ...newErrors,
+      }));
     }
-  }, [isSuccess, isError, error]);
+    if (isFetching) {
+      console.log("esta fetching el registro!!!!");
+    }
+    if (isLoading) {
+      console.log("esta loadinga el registro!!!!");
+    }
+  }, [isSuccess, isError, error, isFetching, isLoading]);
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
@@ -57,68 +76,60 @@ const UserRegister = () => {
   };
 
   const handleSwitchUserType = () => {
-    setUserType((prevUserType) =>
-      prevUserType === "docente" ? "estudiante" : "docente"
-    );
-    setFormData({
-      nombre: "",
-      apellidos: "",
-      email: "",
-      contraseña: "",
-      confirmarContraseña: "",
+    setUserType((prevUserType) => {
+      const newUserType = prevUserType === "docente" ? "estudiante" : "docente";
+      setFormData({
+        first_name: "",
+        last_name: "",
+        email: "",
+        password: "",
+        password_confirmation: "",
+        user_type: newUserType === "docente" ? "D" : "E",
+      });
+      return newUserType;
     });
-    setErrors({});
+    setErrors({}); // Borra los errores
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    if (name === "email") {
-      setIsEmailVerified(false);
-    }
     setErrors({ ...errors, [name]: "" });
   };
 
-  const handleEmailVerification = (message) => {
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      email: message,
-    }));
-    setIsEmailVerified(!message);
-  };
-
   const handleRegister = () => {
-    const { nombre, apellidos, email, contraseña, confirmarContraseña } =
+    const { first_name, last_name, email, password, password_confirmation } =
       formData;
     let hasError = false;
     const newErrors = {};
 
     const validations = {
-      nombre: {
-        condition: !nombre,
-        message: "El nombre es obligatorio.",
+      first_name: {
+        condition: !first_name,
+        message: "El first_name es obligatorio.",
       },
-      apellidos: {
-        condition: !apellidos,
-        message: "Los apellidos son obligatorios.",
+      last_name: {
+        condition: !last_name,
+        message: "Los last_name son obligatorios.",
       },
       email: {
-        condition: !email,
-        message: "El correo electrónico es obligatorio.",
-        additionalCheck: errors.email,
+        condition: !email || !validateEmail(email),
+        message: !email
+          ? "El correo electrónico es obligatorio."
+          : "Ingrese un correo electrónico válido.",
       },
-      contraseña: {
-        condition: !contraseña,
-        message: "La contraseña es obligatoria.",
+      password: {
+        condition: !password,
+        message: "La password es obligatoria.",
         additionalCheck:
-          !validarContraseña(contraseña) &&
+          !validarContraseña(password) &&
           "Debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial.",
       },
-      confirmarContraseña: {
-        condition: !confirmarContraseña,
-        message: "Debe confirmar su contraseña.",
+      password_confirmation: {
+        condition: !password_confirmation,
+        message: "Debe confirmar su password.",
         additionalCheck:
-          contraseña !== confirmarContraseña && "Las contraseñas no coinciden.",
+          password !== password_confirmation && "Las contraseñas no coinciden.",
       },
     };
 
@@ -131,32 +142,14 @@ const UserRegister = () => {
         hasError = true;
       }
     }
-    if (!isEmailVerified) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        email: "El email tiene que ser comprobado.",
-      }));
-    }
+
     if (hasError) {
       setErrors(newErrors);
       return;
     }
 
-    // Si todo es válido, proceder con el registro
-    const userTypeCode = userType === "docente" ? "D" : "E";
-    const dataToSend = {
-      first_name: formData.nombre,
-      last_name: formData.apellidos,
-      email: formData.email,
-      password: formData.contraseña,
-      password_confirmation: formData.confirmarContraseña,
-      user_type: userTypeCode,
-    };
-
-    console.log("Enviando datos:", dataToSend);
-    registerUser(dataToSend);
-    //localStorage.setItem("userData", encryptData(dataToSend));
-    //setIsRegistering(true);
+    console.log("Enviando datos:", formData);
+    registerUser(formData);
   };
 
   const handleLoginRedirect = () => {
@@ -165,119 +158,143 @@ const UserRegister = () => {
 
   return (
     <Container maxWidth="sm">
-      <Box sx={{ mt: 5 }}>
+      <Box sx={{ mt: 5, position: "relative" }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Regístrate como {userType.charAt(0).toUpperCase() + userType.slice(1)}
         </Typography>
 
-        <Box component="form" noValidate autoComplete="off">
-          <TextField
-            label="Nombre*"
-            name="nombre"
-            value={formData.nombre}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-            error={Boolean(errors.nombre)}
-            helperText={errors.nombre}
-          />
-          <TextField
-            label="Apellidos*"
-            name="apellidos"
-            value={formData.apellidos}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-            error={Boolean(errors.apellidos)}
-            helperText={errors.apellidos}
-          />
-
-          <VerificarEmail
-            email={formData.email}
-            onEmailChange={handleInputChange}
-            setErrors={handleEmailVerification}
-            errors={errors.email}
-            isEmailVerified={isEmailVerified}
-            setIsEmailVerified={setIsEmailVerified}
-            userType={userType}
-          />
-
-          <TextField
-            label="Contraseña*"
-            name="contraseña"
-            type={showPassword ? "text" : "password"}
-            value={formData.contraseña}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-            error={Boolean(errors.contraseña)}
-            helperText={errors.contraseña}
-            slotProps={{
-              input: {
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={handleTogglePasswordVisibility}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              },
+        {isLoading ? (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "70vh",
             }}
-          />
-          <TextField
-            label="Confirmar Contraseña*"
-            name="confirmarContraseña"
-            type={showConfirmPassword ? "text" : "password"}
-            value={formData.confirmarContraseña}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-            error={Boolean(errors.confirmarContraseña)}
-            helperText={errors.confirmarContraseña}
-            slotProps={{
-              input: {
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={handleToggleConfirmPasswordVisibility}
-                      edge="end"
-                    >
-                      {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              },
-            }}
-          />
-
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            onClick={handleRegister}
-            sx={{ mt: 2 }}
-            disabled={isFetching}
           >
-            {isFetching ? (
-              <CircularProgress size={24} color="inherit" />
-            ) : (
-              "Registrar"
-            )}
-          </Button>
+            <CircularProgress />
+          </Box>
+        ) : isSuccess ? (
+          <Box sx={{ mt: 3, textAlign: "center" }}>
+            <Typography variant="h6" color="success.main">
+              ¡Registro exitoso!
+            </Typography>
+            <Typography variant="body1" color="textSecondary">
+              {data?.message || "Tu cuenta ha sido creada exitosamente."}
+            </Typography>
+          </Box>
+        ) : (
+          /* Mostrar el contenido cuando no está cargando */
+          <Box component="form" noValidate autoComplete="off">
+            <TextField
+              label="Nombre*"
+              name="first_name"
+              value={formData.first_name}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+              error={Boolean(errors.first_name)}
+              helperText={errors.first_name}
+            />
+            <TextField
+              label="Apellidos*"
+              name="last_name"
+              value={formData.last_name}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+              error={Boolean(errors.last_name)}
+              helperText={errors.last_name}
+            />
 
-          <Button
-            variant="outlined"
-            color="default"
-            fullWidth
-            onClick={handleSwitchUserType}
-            sx={{ mt: 2 }}
-          >
-            Cambiar a {userType === "docente" ? "Estudiante" : "Docente"}
-          </Button>
-        </Box>
+            <TextField
+              label="Email*"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+              error={Boolean(errors.email)}
+              helperText={errors.email}
+            />
+
+            <TextField
+              label="Contraseña*"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              value={formData.password}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+              error={Boolean(errors.password)}
+              helperText={errors.password}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={handleTogglePasswordVisibility}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+            <TextField
+              label="Confirmar Contraseña*"
+              name="password_confirmation"
+              type={showConfirmPassword ? "text" : "password"}
+              value={formData.password_confirmation}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+              error={Boolean(errors.password_confirmation)}
+              helperText={errors.password_confirmation}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={handleToggleConfirmPasswordVisibility}
+                        edge="end"
+                      >
+                        {showConfirmPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={handleRegister}
+              sx={{ mt: 2 }}
+            >
+              Registrar
+            </Button>
+
+            <Button
+              variant="outlined"
+              color="default"
+              fullWidth
+              onClick={handleSwitchUserType}
+              sx={{ mt: 2 }}
+            >
+              Cambiar a {userType === "docente" ? "Estudiante" : "Docente"}
+            </Button>
+          </Box>
+        )}
 
         <Button
           variant="text"
