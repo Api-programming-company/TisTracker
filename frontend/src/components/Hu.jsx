@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTheme } from "@mui/material/styles";
 
-const Hu = ({ handleEliminarHu, index, onUpdate, info }) => {
+const Hu = ({ handleEliminarHu, onUpdate, info }) => {
   const theme = useTheme();
 
   const [huData, setHuData] = useState({
@@ -72,7 +72,7 @@ const Hu = ({ handleEliminarHu, index, onUpdate, info }) => {
       </Box>
 
       <IconButton
-        onClick={() => handleEliminarHu(index)}
+        onClick={() => handleEliminarHu(huData.id)}
         color="error"
         aria-label="Eliminar hito"
         sx={{ justifySelf: "center" }}
