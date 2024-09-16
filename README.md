@@ -127,3 +127,9 @@ Ejecutar estos archivos .bat desde el explorador de archivos de Windows o la lí
 
 # Licencia
 ![cat](https://media1.tenor.com/m/DM7SdBiQKhEAAAAd/cat-underwater.gif)
+
+
+
+# para corre los test 
+php artisan test
+
