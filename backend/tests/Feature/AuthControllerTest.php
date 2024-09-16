@@ -290,5 +290,46 @@ public function validarSiPass2Obligatorio()
     Mail::assertNotSent(VerifyEmail::class);
 }
 
+
+
+
 //Docente
+    /** @test */
+    public function ValidarRegistraDocente()
+    {
+        // Simular el envío de correo
+        Mail::fake();
+
+        $response = $this->postJson('/api/user/register', [
+            'first_name' => 'doe',
+            'last_name' => 'jon',
+            'email' => 'jusntotomm3@gmail.com',
+            'password' => 'Password123!',
+            'password_confirmation' => 'Password123!',
+            'user_type' => 'D',
+        ]);
+
+        $response->assertStatus(201);
+        $response->assertJson([
+            'message' => 'Registro exitoso. Por favor, revisa tu correo para verificar tu cuenta.'
+        ]);
+
+        // Verificar que el usuario fue creado en la base de datos
+        $this->assertDatabaseHas('users', [
+            'email' => 'jusntotomm3@gmail.com',
+        ]);
+
+        // Verificar que el token de verificación fue creado en la base de datos
+        $user = User::where('email', 'jusntotomm3@gmail.com')->first();
+        $this->assertDatabaseHas('email_verifications', [
+            'user_id' => $user->id,
+        ]);
+
+        // Verificar que se envió el correo de verificación
+        Mail::assertSent(VerifyEmail::class, function ($mail) use ($user) {
+            return $mail->hasTo($user->email);
+        });
+    }
+
+
 }
