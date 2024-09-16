@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Password;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\EmailVerification;
@@ -24,7 +25,7 @@ class AuthControllerTest extends TestCase
         $response = $this->postJson('/api/user/register', [
             'first_name' => 'Simon',
             'last_name' => 'Prueba',
-            'email' => 'simon.prueba@example.com',
+            'email' => '123456789@est.umss.edu',
             'password' => 'Password123!',
             'password_confirmation' => 'Password123!',
             'user_type' => 'E',
@@ -37,11 +38,11 @@ class AuthControllerTest extends TestCase
 
         // Verificar que el usuario fue creado en la base de datos
         $this->assertDatabaseHas('users', [
-            'email' => 'simon.prueba@example.com',
+            'email' => '123456789@est.umss.edu',
         ]);
 
         // Verificar que el token de verificación fue creado en la base de datos
-        $user = User::where('email', 'simon.prueba@example.com')->first();
+        $user = User::where('email', '123456789@est.umss.edu')->first();
         $this->assertDatabaseHas('email_verifications', [
             'user_id' => $user->id,
         ]);
@@ -61,7 +62,7 @@ public function validarPassMenorA8()
     $response = $this->postJson('/api/user/register', [
         'first_name' => 'Simon',
         'last_name' => 'Prueba',
-        'email' => 'simon.prueba2@example.com',
+        'email' => '123456789@est.umss.edu',
         'password' => '1234567',    // Menor a 8 caracteres
         'password_confirmation' => '1234567',
         'user_type' => 'E',
@@ -75,11 +76,11 @@ public function validarPassMenorA8()
 
     // Verificar que el usuario no fue creado en la base de datos
     $this->assertDatabaseMissing('users', [
-        'email' => 'simon.prueba2@example.com',
+        'email' => '123456789@est.umss.edu',
     ]);
 
     // Verificar que no se creó un token de verificación en la base de datos
-    $user = User::where('email', 'simon.prueba2@example.com')->first();
+    $user = User::where('email', '123456789@est.umss.edu')->first();
     $this->assertNull($user);
 
     // Verificar que no se envió el correo de verificación
@@ -96,7 +97,7 @@ public function validarSiPassSonIguales()
     $response = $this->postJson('/api/user/register', [
         'first_name' => 'Simon',
         'last_name' => 'Prueba',
-        'email' => 'simon.prueba2@example.com',
+        'email' => '123456789@est.umss.edu',
         'password' => '12345678',    // Menor a 8 caracteres
         'password_confirmation' => '87654321',
         'user_type' => 'E',
@@ -110,11 +111,11 @@ public function validarSiPassSonIguales()
 
     // Verificar que el usuario no fue creado en la base de datos
     $this->assertDatabaseMissing('users', [
-        'email' => 'simon.prueba2@example.com',
+        'email' => '123456789@est.umss.edu',
     ]);
 
     // Verificar que no se creó un token de verificación en la base de datos
-    $user = User::where('email', 'simon.prueba2@example.com')->first();
+    $user = User::where('email', '123456789@est.umss.edu')->first();
     $this->assertNull($user);
 
     // Verificar que no se envió el correo de verificación
@@ -130,7 +131,7 @@ public function validarSiNombreObligatorio()
     $response = $this->postJson('/api/user/register', [
         'first_name' => '',
         'last_name' => 'Prueba',
-        'email' => 'simon.prueba2@example.com',
+        'email' => '123456789@est.umss.edu',
         'password' => '12345678',    // Menor a 8 caracteres
         'password_confirmation' => '87654321',
         'user_type' => 'E',
@@ -144,11 +145,11 @@ public function validarSiNombreObligatorio()
 
     // Verificar que el usuario no fue creado en la base de datos
     $this->assertDatabaseMissing('users', [
-        'email' => 'simon.prueba2@example.com',
+        'email' => '123456789@est.umss.edu',
     ]);
 
     // Verificar que no se creó un token de verificación en la base de datos
-    $user = User::where('email', 'simon.prueba2@example.com')->first();
+    $user = User::where('email', '123456789@est.umss.edu')->first();
     $this->assertNull($user);
 
     // Verificar que no se envió el correo de verificación
@@ -164,7 +165,7 @@ public function validarSiNombreObligatorio()
      $response = $this->postJson('/api/user/register', [
          'first_name' => 'simon',
          'last_name' => '',
-         'email' => 'simon.prueba2@example.com',
+         'email' => '123456789@est.umss.edu',
          'password' => '12345678',    // Menor a 8 caracteres
          'password_confirmation' => '87654321',
          'user_type' => 'E',
@@ -178,11 +179,11 @@ public function validarSiNombreObligatorio()
  
      // Verificar que el usuario no fue creado en la base de datos
      $this->assertDatabaseMissing('users', [
-         'email' => 'simon.prueba2@example.com',
+         'email' => '123456789@est.umss.edu',
      ]);
  
      // Verificar que no se creó un token de verificación en la base de datos
-     $user = User::where('email', 'simon.prueba2@example.com')->first();
+     $user = User::where('email', '123456789@est.umss.edu')->first();
      $this->assertNull($user);
  
      // Verificar que no se envió el correo de verificación
@@ -212,11 +213,11 @@ public function validarSiEmailObligatorio()
 
     // Verificar que el usuario no fue creado en la base de datos
     $this->assertDatabaseMissing('users', [
-        'email' => 'simon.prueba2@example.com',
+        'email' => '123456789@est.umss.edu',
     ]);
 
     // Verificar que no se creó un token de verificación en la base de datos
-    $user = User::where('email', 'simon.prueba2@example.com')->first();
+    $user = User::where('email', '123456789@est.umss.edu')->first();
     $this->assertNull($user);
 
     // Verificar que no se envió el correo de verificación
@@ -232,7 +233,7 @@ public function validarSiEmailObligatorio()
      $response = $this->postJson('/api/user/register', [
          'first_name' => 'simon',
          'last_name' => 'Prueba',
-         'email' => 'simon.prueba2@example.com',
+         'email' => '123456789@est.umss.edu',
          'password' => '',    // Menor a 8 caracteres
          'password_confirmation' => '87654321',
          'user_type' => 'E',
@@ -246,11 +247,11 @@ public function validarSiEmailObligatorio()
  
      // Verificar que el usuario no fue creado en la base de datos
      $this->assertDatabaseMissing('users', [
-         'email' => 'simon.prueba2@example.com',
+         'email' => '123456789@est.umss.edu',
      ]);
  
      // Verificar que no se creó un token de verificación en la base de datos
-     $user = User::where('email', 'simon.prueba2@example.com')->first();
+     $user = User::where('email', '123456789@est.umss.edu')->first();
      $this->assertNull($user);
  
      // Verificar que no se envió el correo de verificación
@@ -265,12 +266,12 @@ public function validarSiPass2Obligatorio()
     $response = $this->postJson('/api/user/register', [
         'first_name' => 'simon',
         'last_name' => 'Prueba',
-        'email' => 'simon.prueba2@example.com',
+        'email' => '123456789@est.umss.edu',
         'password' => '12345678',    // Menor a 8 caracteres
         'password_confirmation' => '',
         'user_type' => 'E',
     ]);
-
+     //Password158¡
     // Verificar que la respuesta tenga un estado 422 (Unprocessable Entity)
     $response->assertStatus(422);
     $response->assertJson([
@@ -279,11 +280,11 @@ public function validarSiPass2Obligatorio()
 
     // Verificar que el usuario no fue creado en la base de datos
     $this->assertDatabaseMissing('users', [
-        'email' => 'simon.prueba2@example.com',
+        'email' => '123456789@est.umss.edu',
     ]);
 
     // Verificar que no se creó un token de verificación en la base de datos
-    $user = User::where('email', 'simon.prueba2@example.com')->first();
+    $user = User::where('email', '123456789@est.umss.edu')->first();
     $this->assertNull($user);
 
     // Verificar que no se envió el correo de verificación
