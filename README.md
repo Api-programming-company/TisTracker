@@ -6,7 +6,7 @@
 
    Descarga el archivo PHP preconfigurado desde el siguiente enlace:
 
-   [Descargar PHP](https://drive.google.com/file/d/1rmSrcTG7ycIGDwLA8z7AmTQO6LvWWpqF/view?usp=sharing)
+   [Descargar PHP](https://drive.google.com/file/d/1edJ2h1zopg_LKoCoXkLVGVNmrM3FH6Hr/view?usp=sharing)
 
 2. **Descomprimir el Archivo**
 
