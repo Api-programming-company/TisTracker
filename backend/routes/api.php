@@ -10,9 +10,9 @@ Route::post('user/register', [AuthController::class, 'register']);
 Route::get('user/check-email', [AuthController::class, 'checkEmail']);
 Route::post('user/verify-email', [EmailVerificationController::class, 'verifyEmail']);
 Route::post('user/login', [AuthController::class, 'login']);
-Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware('auth:sanctum')->get('user', function (Request $request) {
     $user = $request->user();
     
     return response()->json([
@@ -24,7 +24,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         ]
     ]);
 });
-
 
 Route::get('/simon', function () {
     return response()->json(['message' => 'hola simon']);
