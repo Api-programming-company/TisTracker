@@ -95,8 +95,8 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AppProvider>
-        <Router>
+      <Router>
+        <AppProvider>
           <Sidebar
             open={open}
             setOpen={setOpen}
@@ -138,8 +138,8 @@ function App() {
               <Route path="/*" element={<NotFound />} />
             </Routes>
           </main>
-        </Router>
-      </AppProvider>
+        </AppProvider>
+      </Router>
     </ThemeProvider>
   );
 }

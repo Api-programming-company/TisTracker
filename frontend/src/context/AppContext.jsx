@@ -1,16 +1,25 @@
 import React, { createContext, useState, useEffect } from "react";
-import { useCheckUserQuery } from "../api/userApi";
+import { useLazyCheckUserQuery } from "../api/userApi";
 import { CircularProgress, Alert } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-  const { data, error, isError, isSuccess, isLoading } = useCheckUserQuery();
+  const [checkUser, { data, error, isError, isSuccess, isLoading }] =
+    useLazyCheckUserQuery();
+  const navigate = useNavigate();
   // Iniciamos el user con los datos del localstorage si existen
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("user");
     return savedUser ? JSON.parse(savedUser) : null;
   });
+
+  useEffect(() => {
+    if (user === null) {
+      checkUser();
+    }
+  }, [user, checkUser]);
 
   useEffect(() => {
     if (data) {
