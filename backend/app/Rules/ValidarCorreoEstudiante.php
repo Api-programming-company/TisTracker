@@ -26,7 +26,7 @@ class ValidarCorreoEstudiante implements Rule
     public function passes($attribute, $value)
     {
        //validar correo de estudiante
-       return preg_match('/@est\.umss\.edu$/', $value);
+       return preg_match('/^\d{9}@est\.umss\.edu$/', $value);
     }
 
     /**
