@@ -36,7 +36,7 @@ const UserRegister = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
   const [userType, setUserType] = useState("estudiante");
-  const [registerUser, { data, isFetching, isSuccess, isError, error }] =
+  const [registerUser, { data, isFetching, isLoading ,isSuccess, isError, error }] =
     useRegisterUserMutation();
 
   useEffect(() => {
@@ -46,7 +46,15 @@ const UserRegister = () => {
     if (isError) {
       console.log("Error de registro:", error);
     }
-  }, [isSuccess, isError, error]);
+    if (isFetching) {
+      console.log("esta fetching el registro!!!!");
+      
+    }
+    if (isLoading) {
+      console.log("esta loadinga el registro!!!!");
+      
+    }
+  }, [isSuccess, isError, error, isFetching, isLoading]);
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
@@ -165,119 +173,141 @@ const UserRegister = () => {
 
   return (
     <Container maxWidth="sm">
-      <Box sx={{ mt: 5 }}>
+      <Box sx={{ mt: 5, position: "relative" }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Regístrate como {userType.charAt(0).toUpperCase() + userType.slice(1)}
         </Typography>
 
-        <Box component="form" noValidate autoComplete="off">
-          <TextField
-            label="Nombre*"
-            name="nombre"
-            value={formData.nombre}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-            error={Boolean(errors.nombre)}
-            helperText={errors.nombre}
-          />
-          <TextField
-            label="Apellidos*"
-            name="apellidos"
-            value={formData.apellidos}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-            error={Boolean(errors.apellidos)}
-            helperText={errors.apellidos}
-          />
-
-          <VerificarEmail
-            email={formData.email}
-            onEmailChange={handleInputChange}
-            setErrors={handleEmailVerification}
-            errors={errors.email}
-            isEmailVerified={isEmailVerified}
-            setIsEmailVerified={setIsEmailVerified}
-            userType={userType}
-          />
-
-          <TextField
-            label="Contraseña*"
-            name="contraseña"
-            type={showPassword ? "text" : "password"}
-            value={formData.contraseña}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-            error={Boolean(errors.contraseña)}
-            helperText={errors.contraseña}
-            slotProps={{
-              input: {
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={handleTogglePasswordVisibility}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              },
+        {isLoading ? (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "70vh",
             }}
-          />
-          <TextField
-            label="Confirmar Contraseña*"
-            name="confirmarContraseña"
-            type={showConfirmPassword ? "text" : "password"}
-            value={formData.confirmarContraseña}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-            error={Boolean(errors.confirmarContraseña)}
-            helperText={errors.confirmarContraseña}
-            slotProps={{
-              input: {
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={handleToggleConfirmPasswordVisibility}
-                      edge="end"
-                    >
-                      {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              },
-            }}
-          />
-
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            onClick={handleRegister}
-            sx={{ mt: 2 }}
-            disabled={isFetching}
           >
-            {isFetching ? (
-              <CircularProgress size={24} color="inherit" />
-            ) : (
-              "Registrar"
-            )}
-          </Button>
+            <CircularProgress />
+          </Box>
+        ) : isSuccess ? (
+          <Box sx={{ mt: 3, textAlign: "center" }}>
+            <Typography variant="h6" color="success.main">
+              ¡Registro exitoso!
+            </Typography>
+            <Typography variant="body1" color="textSecondary">
+              {data?.message || "Tu cuenta ha sido creada exitosamente."}
+            </Typography>
+          </Box>
+        ) : (
+          /* Mostrar el contenido cuando no está cargando */
+          <Box component="form" noValidate autoComplete="off">
+            <TextField
+              label="Nombre*"
+              name="nombre"
+              value={formData.nombre}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+              error={Boolean(errors.nombre)}
+              helperText={errors.nombre}
+            />
+            <TextField
+              label="Apellidos*"
+              name="apellidos"
+              value={formData.apellidos}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+              error={Boolean(errors.apellidos)}
+              helperText={errors.apellidos}
+            />
 
-          <Button
-            variant="outlined"
-            color="default"
-            fullWidth
-            onClick={handleSwitchUserType}
-            sx={{ mt: 2 }}
-          >
-            Cambiar a {userType === "docente" ? "Estudiante" : "Docente"}
-          </Button>
-        </Box>
+            <VerificarEmail
+              email={formData.email}
+              onEmailChange={handleInputChange}
+              setErrors={handleEmailVerification}
+              errors={errors.email}
+              isEmailVerified={isEmailVerified}
+              setIsEmailVerified={setIsEmailVerified}
+              userType={userType}
+            />
+
+            <TextField
+              label="Contraseña*"
+              name="contraseña"
+              type={showPassword ? "text" : "password"}
+              value={formData.contraseña}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+              error={Boolean(errors.contraseña)}
+              helperText={errors.contraseña}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={handleTogglePasswordVisibility}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+            <TextField
+              label="Confirmar Contraseña*"
+              name="confirmarContraseña"
+              type={showConfirmPassword ? "text" : "password"}
+              value={formData.confirmarContraseña}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+              error={Boolean(errors.confirmarContraseña)}
+              helperText={errors.confirmarContraseña}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={handleToggleConfirmPasswordVisibility}
+                        edge="end"
+                      >
+                        {showConfirmPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={handleRegister}
+              sx={{ mt: 2 }}
+            >
+              Registrar
+            </Button>
+
+            <Button
+              variant="outlined"
+              color="default"
+              fullWidth
+              onClick={handleSwitchUserType}
+              sx={{ mt: 2 }}
+            >
+              Cambiar a {userType === "docente" ? "Estudiante" : "Docente"}
+            </Button>
+          </Box>
+        )}
 
         <Button
           variant="text"
