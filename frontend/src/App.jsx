@@ -78,6 +78,7 @@ function App() {
     const savedMode = localStorage.getItem("darkMode");
     return savedMode === "true";
   });
+
   const theme = darkMode ? darkTheme : lightTheme;
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [open, setOpen] = useState(false);

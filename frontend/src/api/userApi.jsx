@@ -35,6 +35,9 @@ const userApi = apiSlice.injectEndpoints({
         body: { token },
       }),
     }),
+    checkUser: builder.query({
+      query: () => 'user',
+    }),
   }),
 });
 
@@ -43,4 +46,5 @@ export const {
   useLoginUserMutation,
   useLazyCheckEmailQuery,
   useVerifyEmailMutation,
+  useCheckUserQuery,
 } = userApi;
