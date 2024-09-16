@@ -84,43 +84,48 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        // Validar los datos de inicio de sesión
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-        /*
-        // Buscar el usuario por email
-        $user = User::where('email', $request->email)->first();
+        try {
+            // Validar los datos de inicio de sesión
+            $request->validate([
+                'email' => 'required|email',
+                'password' => 'required',
+            ]);
 
-        // Verificar que las credenciales sean correctas
-        if (!$user || !Hash::check($request->password, $user->password)) {
+            // Intentar autenticar al usuario
+            if (!Auth::attempt($request->only('email', 'password'))) {
+                return response()->json([
+                    'message' => 'Credenciales incorrectas'
+                ], 401); // Error de credenciales incorrectas
+            }
+
+            // Si se autentica correctamente, regenerar la sesión
+            $request->session()->regenerate();
+
+            // Obtener la información del usuario autenticado
+            $user = Auth::user();
+
+            // Retornar la información del usuario
             return response()->json([
-                'message' => 'Las credenciales no coinciden con nuestros registros.'
-            ], 401);
+                'user' => [
+                    'first_name' => $user->first_name,
+                    'last_name' => $user->last_name,
+                    'email' => $user->email,
+                    'user_type' => $user->user_type === 'E' ? 'Estudiante' : 'Docente',
+                ]
+            ], 200);
+        } catch (ValidationException $e) {
+            // Manejo de errores de validación
+            return response()->json([
+                'message' => 'Error de validación',
+                'errors' => $e->errors()
+            ], 422); // Error de validación
+        } catch (Exception $e) {
+            // Manejo de otros errores
+            return response()->json([
+                'message' => 'Se ha producido un error inesperado',
+                'error' => $e->getMessage()
+            ], 500); // Error general
         }
-        */
-
-        // Crear un token para el usuario
-        // $token = $user->createToken('auth_token')->plainTextToken;
-        // Intentar autenticar al usuario
-        
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json(['message' => 'Credenciales incorrectas'], 401);
-        }
-        // Si se autentica correctamente, devolver la información del usuario
-        $request->session()->regenerate();
-        $user = Auth::user();
-        return response()->json([
-            //'access_token' => $token,
-            // 'token_type' => 'Bearer',
-            'user' => [
-                'first_name' => $user->first_name,
-                'last_name' => $user->last_name,
-                'email' => $user->email,
-                'user_type' => $user->user_type === 'E' ? 'Estudiante' : 'Docente',
-            ]
-        ]);
     }
     /**
      * Handle logout and revoke token.
