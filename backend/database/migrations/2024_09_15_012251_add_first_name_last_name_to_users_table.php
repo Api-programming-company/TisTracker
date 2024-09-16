@@ -14,8 +14,8 @@ class AddFirstNameLastNameToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('first_name')->after('id');  // Agregar campo first_name
-            $table->string('last_name')->after('first_name');  // Agregar campo last_name
+            $table->string('first_name')->default('')->after('id');
+            $table->string('last_name')->default('')->after('first_name');
             $table->dropColumn('name');  // Eliminar campo name
         });
     }
@@ -29,8 +29,8 @@ class AddFirstNameLastNameToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('name')->after('id');  // Restaurar campo name
-            $table->dropColumn('first_name');  // Eliminar campo first_name
-            $table->dropColumn('last_name');  // Eliminar campo last_name
+             // Eliminar las columnas 'first_name' y 'last_name'
+             $table->dropColumn(['first_name', 'last_name']);
         });
     }
 }
