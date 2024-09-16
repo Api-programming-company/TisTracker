@@ -7,12 +7,13 @@ const Home = () => {
   const { user } = useContext(AppContext);
   return (
     <>
-      {user.user_type === "estudiante" ? (
-        <div>Es estudiante</div>
+      {user === null ? (
+        <UserRegister />
+        
       ) : user.user_type === "docente" ? (
         <ListaPeriodosAcademicos />
       ) : (
-        <UserRegister />
+        <div>Es estudiante</div>  
       )}
     </>
   );

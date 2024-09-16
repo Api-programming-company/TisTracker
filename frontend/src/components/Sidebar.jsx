@@ -20,7 +20,7 @@ const Sidebar = ({ open, setOpen, hideSidebar, setHideSidebar }) => {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const hideSidebarRoutes = ["/registro"];
-  setHideSidebar((user.user_type === null) || hideSidebarRoutes.includes(location.pathname));
+  setHideSidebar((user === null) || (user?.user_type === null) || hideSidebarRoutes.includes(location.pathname));
 
   if (hideSidebar) {
     return null
@@ -31,7 +31,7 @@ const Sidebar = ({ open, setOpen, hideSidebar, setHideSidebar }) => {
   };
 
   const renderUserOptions = () => {
-    if (user.user_type === "estudiante") {
+    if (user?.user_type === "estudiante") {
       return (
         <>
           <ListItem button component={Link} to="/">
@@ -42,7 +42,7 @@ const Sidebar = ({ open, setOpen, hideSidebar, setHideSidebar }) => {
           </ListItem>
         </>
       );
-    } else if (user.user_type === "docente") {
+    } else if (user?.user_type === "docente") {
       return (
         <>
           <ListItem button component={Link} to="/">
