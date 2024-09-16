@@ -14,6 +14,8 @@ use App\Rules\ValidarCorreoDocente;
 use App\Rules\ValidarPassword;
 use Illuminate\Validation\ValidationException;
 use Exception;
+use Illuminate\Support\Facades\Auth;
+
 
 class AuthController extends Controller
 {
@@ -30,7 +32,7 @@ class AuthController extends Controller
             $request->validate([
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
-                'email' => ['required', 'email', 'unique:users,email'],# $this->getEmailValidationRule($request->user_type)],
+                'email' => ['required', 'email', 'unique:users,email'], # $this->getEmailValidationRule($request->user_type)],
                 'password' => ['required', 'string', 'min:8', 'confirmed'], #new ValidarPassword($request->first_name, $request->last_name)],
                 'user_type' => 'required|in:E,D', // Validar que sea 'E' o 'D'
             ]);
@@ -48,7 +50,7 @@ class AuthController extends Controller
             $token = Str::random(32);
 
             // Guardar el token en la base de datos+
-            
+
             EmailVerification::create([
                 'user_id' => $user->id,
                 'token' => $token,
@@ -58,7 +60,7 @@ class AuthController extends Controller
             // Enviar el correo de verificación
             Mail::to($user->email)->send(new VerifyEmail($token, $user));
 
-            
+
             return response()->json([
                 'message' => 'Registro exitoso. Por favor, revisa tu correo para verificar tu cuenta.'
             ], 201);
@@ -87,7 +89,7 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-
+        /*
         // Buscar el usuario por email
         $user = User::where('email', $request->email)->first();
 
@@ -97,13 +99,21 @@ class AuthController extends Controller
                 'message' => 'Las credenciales no coinciden con nuestros registros.'
             ], 401);
         }
+        */
 
         // Crear un token para el usuario
-        $token = $user->createToken('auth_token')->plainTextToken;
-
+        // $token = $user->createToken('auth_token')->plainTextToken;
+        // Intentar autenticar al usuario
+        
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            return response()->json(['message' => 'Credenciales incorrectas'], 401);
+        }
+        // Si se autentica correctamente, devolver la información del usuario
+        $request->session()->regenerate();
+        $user = Auth::user();
         return response()->json([
-            'access_token' => $token,
-            'token_type' => 'Bearer',
+            //'access_token' => $token,
+            // 'token_type' => 'Bearer',
             'user' => [
                 'first_name' => $user->first_name,
                 'last_name' => $user->last_name,
@@ -117,12 +127,17 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        // Revocar el token actual
-        $request->user()->currentAccessToken()->delete();
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-        return response()->json([
-            'message' => 'Sesión cerrada correctamente.'
-        ]);
+        return response()->json(['message' => 'Sesión cerrada']);
+        // Revocar el token actual
+        // $request->user()->currentAccessToken()->delete();
+
+        //return response()->json([
+        //    'message' => 'Sesión cerrada correctamente.'
+        //]);
     }
 
     public function checkEmail(Request $request)
