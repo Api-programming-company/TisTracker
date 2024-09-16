@@ -1,19 +1,42 @@
-import React, { useState } from "react";
-import { Button, TextField, Container, Typography, Box, Grid } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import {
+  Button,
+  TextField,
+  Container,
+  Typography,
+  Box,
+  Grid,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useLoginUserMutation } from "../api/userApi";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loginUser, { data, error, isLoading, isSuccess, isError }] =
+    useLoginUserMutation(); // Usa el hook
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log("logeado supuestamente");
+      //navigate("/");
+    }
+    if (isLoading) {
+      console.log("cargando login!");
+    }
+
+    if (isError) {
+      console.error(
+        "Error de inicio de sesión:",
+        error
+      );
+    }
+  }, [isSuccess, isError, error, isLoading]);
 
   const handleLogin = (event) => {
     event.preventDefault();
- 
-    console.log("Email:", email);
-    console.log("Password:", password);
-    // Redirigir a la página principal u otra página después de la autenticación
-    navigate("/");
+    loginUser({ email, password }).unwrap();
   };
 
   const handleRegisterRedirect = () => {

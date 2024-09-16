@@ -12,6 +12,16 @@ const userApi = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    loginUser: builder.mutation({
+      query: (data) => ({
+        url: "user/login",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: data,
+      }),
+    }),
     checkEmail: builder.query({
       query: (email) => `user/check-email?email=${encodeURIComponent(email)}`,
     }),
@@ -30,6 +40,7 @@ const userApi = apiSlice.injectEndpoints({
 
 export const {
   useRegisterUserMutation,
+  useLoginUserMutation,
   useLazyCheckEmailQuery,
   useVerifyEmailMutation,
 } = userApi;

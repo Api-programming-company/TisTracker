@@ -1,41 +1,39 @@
 import React, { useEffect, useState } from "react";
-import { TextField, Button, Typography, Container, Alert, CircularProgress } from "@mui/material";
+import { TextField, Button, Typography, Container, Alert, CircularProgress, Box } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 import { useVerifyEmailMutation } from "../api/userApi";
 
 const VerifyEmail = () => {
   const { token } = useParams();
   const navigate = useNavigate();
-  const [hasVerified, setHasVerified] = useState(false); // Nuevo estado para controlar la verificación
-
-  // Hook de mutación para verificar el correo electrónico
   const [verifyEmail, { isLoading, isError, isSuccess, error }] = useVerifyEmailMutation();
+  const [redirecting, setRedirecting] = useState(false);
 
   useEffect(() => {
-    if (token && !hasVerified) {
-      setHasVerified(true); // Actualiza el estado para evitar solicitudes duplicadas
-      // Imprime el token en la consola para depuración
+    if (token) {
       console.log(token);
-
-      // Llama a la mutación para verificar el correo electrónico
       verifyEmail(token);
-      setHasVerified(false); // Actualiza el estado para evitar solicitudes duplicadas
     }
-  }, [token]);
+  }, [token, verifyEmail]);
 
   useEffect(() => {
     if (isSuccess) {
-      // Redirige a una página de éxito o al inicio
-      //navigate('/login');
+      setRedirecting(true);
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000); // Espera 2 segundos antes de redirigir
     }
   }, [isSuccess, navigate]);
 
   useEffect(() => {
     if (isError) {
-      // Imprime el error en la consola para depuración
       console.error("Error al verificar el correo electrónico:", error);
     }
   }, [isError, error]);
+
+  const handleBackToHome = () => {
+    navigate('/');
+  };
 
   return (
     <Container maxWidth="sm">
@@ -43,17 +41,31 @@ const VerifyEmail = () => {
         Verificar Correo Electrónico
       </Typography>
       {isLoading && (
-        <CircularProgress />
+        <Box display="flex" justifyContent="center" mt={2}>
+          <CircularProgress />
+        </Box>
       )}
       {isError && (
-        <Alert severity="error">
-          {error?.data?.message || "Hubo un error al verificar el correo electrónico."}
-        </Alert>
+        <Box textAlign="center">
+          <Alert severity="error">
+            {error?.data?.error || "Hubo un error al verificar el correo electrónico."}
+          </Alert>
+          <Button 
+            variant="contained" 
+            color="primary" 
+            onClick={handleBackToHome}
+            style={{ marginTop: '16px' }}
+          >
+            Volver al Home
+          </Button>
+        </Box>
       )}
-      {isSuccess && (
-        <Alert severity="success">
-          El correo electrónico ha sido verificado exitosamente.
-        </Alert>
+      {isSuccess && !redirecting && (
+        <Box textAlign="center">
+          <Alert severity="success">
+            El correo electrónico ha sido verificado exitosamente. Serás redirigido al login en breve.
+          </Alert>
+        </Box>
       )}
     </Container>
   );
