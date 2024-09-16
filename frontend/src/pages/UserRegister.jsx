@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { VerificarEmail } from "../components";
 import { validarContraseña } from "../utils/validaciones";
 import { useRegisterUserMutation } from "../api/userApi";
 
@@ -36,8 +35,10 @@ const UserRegister = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
   const [userType, setUserType] = useState("estudiante");
-  const [registerUser, { data, isFetching, isLoading ,isSuccess, isError, error }] =
-    useRegisterUserMutation();
+  const [
+    registerUser,
+    { data, isFetching, isLoading, isSuccess, isError, error },
+  ] = useRegisterUserMutation();
 
   useEffect(() => {
     if (isSuccess) {
@@ -48,11 +49,9 @@ const UserRegister = () => {
     }
     if (isFetching) {
       console.log("esta fetching el registro!!!!");
-      
     }
     if (isLoading) {
       console.log("esta loadinga el registro!!!!");
-      
     }
   }, [isSuccess, isError, error, isFetching, isLoading]);
 
@@ -85,14 +84,6 @@ const UserRegister = () => {
       setIsEmailVerified(false);
     }
     setErrors({ ...errors, [name]: "" });
-  };
-
-  const handleEmailVerification = (message) => {
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      email: message,
-    }));
-    setIsEmailVerified(!message);
   };
 
   const handleRegister = () => {
@@ -163,8 +154,6 @@ const UserRegister = () => {
 
     console.log("Enviando datos:", dataToSend);
     registerUser(dataToSend);
-    //localStorage.setItem("userData", encryptData(dataToSend));
-    //setIsRegistering(true);
   };
 
   const handleLoginRedirect = () => {
@@ -222,14 +211,16 @@ const UserRegister = () => {
               helperText={errors.apellidos}
             />
 
-            <VerificarEmail
-              email={formData.email}
-              onEmailChange={handleInputChange}
-              setErrors={handleEmailVerification}
-              errors={errors.email}
-              isEmailVerified={isEmailVerified}
-              setIsEmailVerified={setIsEmailVerified}
-              userType={userType}
+            <TextField
+              label="Email*"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+              error={Boolean(errors.email)}
+              helperText={errors.email}
             />
 
             <TextField
