@@ -5,43 +5,108 @@ import {
   Container,
   Typography,
   Box,
-  Grid,
+  IconButton,
+  InputAdornment,
+  Alert,
+  CircularProgress,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useLoginUserMutation } from "../api/userApi";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { validateEmail } from "../utils/validaciones";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
+
   const [loginUser, { data, error, isLoading, isSuccess, isError }] =
     useLoginUserMutation(); // Usa el hook
   const navigate = useNavigate();
 
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
   useEffect(() => {
     if (isSuccess) {
-      console.log("logeado supuestamente");
+      console.log("logeado supuestamente", data);
       //navigate("/");
-    }
-    if (isLoading) {
-      console.log("cargando login!");
     }
 
     if (isError) {
-      console.error(
-        "Error de inicio de sesión:",
-        error
-      );
+      if (error?.status === 401) {
+        setErrors({ ...errors, general: "Credenciales incorrectas" });
+      } else if (error?.status === 422 && error?.data?.errors) {
+        setErrors(error.data.errors);
+      } else {
+        setErrors({
+          ...errors,
+          general: "Se ha producido un error inesperado.",
+        });
+      }
     }
-  }, [isSuccess, isError, error, isLoading]);
+  }, [isSuccess, isError]);
 
   const handleLogin = (event) => {
     event.preventDefault();
-    loginUser({ email, password }).unwrap();
+
+    // Validaciones
+    const newErrors = {};
+    let hasError = false;
+
+    if (!email || !validateEmail(email)) {
+      newErrors.email = !email
+        ? "El correo electrónico es obligatorio."
+        : "Ingrese un correo electrónico válido.";
+      hasError = true;
+    }
+
+    if (!password) {
+      newErrors.password = "La contraseña es obligatoria.";
+      hasError = true;
+    }
+
+    // Si hay errores, establecerlos y no enviar la solicitud
+    if (hasError) {
+      setErrors(newErrors);
+      return;
+    }
+
+    // Si no hay errores, enviar los datos
+    loginUser({ email, password });
   };
 
   const handleRegisterRedirect = () => {
-    navigate("/registro");
+    navigate("/register");
   };
+
+  const handleChange = (field) => (e) => {
+    const value = e.target.value;
+    if (field === "email") {
+      setEmail(value);
+    } else if (field === "password") {
+      setPassword(value);
+    }
+
+    // borramos el error general y el del campo
+    setErrors({
+      ...errors,
+      [field]: "",
+      general: "",
+    });
+  };
+
+  useEffect(() => {
+    console.log(errors);
+    
+  }, [errors]);
+  
 
   return (
     <Container maxWidth="xs">
@@ -67,7 +132,10 @@ const Login = () => {
             autoComplete="email"
             autoFocus
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={handleChange("email")}
+            error={!!errors.email}
+            helperText={errors.email}
+            disabled={isLoading}
           />
           <TextField
             margin="normal"
@@ -75,32 +143,61 @@ const Login = () => {
             fullWidth
             name="password"
             label="Contraseña"
-            type="password"
+            type={showPassword ? "text" : "password"}
             id="password"
             autoComplete="current-password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={handleChange("password")}
+            error={!!errors.password}
+            helperText={errors.password}
+            disabled={isLoading}
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
+            }}
           />
+          {errors.general && (
+            <Alert severity="error" sx={{ mt: 2 }}>
+              {errors.general}
+            </Alert>
+          )}
           <Button
             type="submit"
             fullWidth
             variant="contained"
             color="primary"
             sx={{ mt: 3, mb: 2 }}
+            disabled={isLoading || errors.general}
           >
-            Iniciar Sesión
+            {isLoading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              "Iniciar Sesión"
+            )}
           </Button>
-          <Grid container justifyContent="flex-end">
-            <Grid item>
-              <Button
-                variant="text"
-                color="primary"
-                onClick={handleRegisterRedirect}
-              >
-                ¿No tienes una cuenta? Regístrate
-              </Button>
-            </Grid>
-          </Grid>
+
+          <Box display="flex" justifyContent="flex-end">
+            <Button
+              variant="text"
+              color="primary"
+              onClick={handleRegisterRedirect}
+              disabled={isLoading}
+            >
+              ¿No tienes una cuenta? Regístrate
+            </Button>
+          </Box>
         </Box>
       </Box>
     </Container>
