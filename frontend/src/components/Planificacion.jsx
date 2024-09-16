@@ -4,7 +4,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Entregable from "./Entregable";
 import AddIcon from "@mui/icons-material/Add";
 

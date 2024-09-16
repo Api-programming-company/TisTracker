@@ -9,13 +9,14 @@ import {
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Hu from "./Hu";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const Entregable = ({ entregable, onUpdate, onDelete }) => {
   const [formData, setFormData] = useState({
+    id: entregable?.id,
     nombre_hito: entregable?.nombre_hito || "",
     fecha_ini: entregable?.fecha_ini || "",
     fecha_entrega: entregable?.fecha_entrega || "",
@@ -34,6 +35,7 @@ const Entregable = ({ entregable, onUpdate, onDelete }) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     setErrors({ ...errors, [name]: "" });
+    onUpdate(formData)
   };
 
   const handleDateIniChange = (e) => {
@@ -126,6 +128,7 @@ const Entregable = ({ entregable, onUpdate, onDelete }) => {
         error={Boolean(errors.nombre_hito)}
         helperText={errors.nombre_hito}
         aria-describedby="nombre_hito-error"
+        multiline
       />
 
       <Box

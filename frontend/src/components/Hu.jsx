@@ -25,12 +25,14 @@ const Hu = ({ handleEliminarHu, index }) => {
           variant="outlined"
           fullWidth
           sx={{ mb: 2 }}
+          multiline
         />
         <TextField
           label="Responsable"
           variant="outlined"
           fullWidth
           sx={{ mb: 2 }}
+          multiline
         />
 
         <TextField
@@ -38,6 +40,7 @@ const Hu = ({ handleEliminarHu, index }) => {
           variant="outlined"
           fullWidth
           sx={{ gridColumn: { xs: "1", sm: "1/3" } }}
+          multiline
         />
       </Box>
 
