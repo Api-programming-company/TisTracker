@@ -46,5 +46,5 @@ export const {
   useLoginUserMutation,
   useLazyCheckEmailQuery,
   useVerifyEmailMutation,
-  useCheckUserQuery,
+  useLazyCheckUserQuery,
 } = userApi;

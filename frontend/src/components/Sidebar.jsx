@@ -14,13 +14,13 @@ import { Link, useLocation } from "react-router-dom";
 import AppContext from "../context/AppContext";
 
 const Sidebar = ({ open, setOpen, hideSidebar, setHideSidebar }) => {
-  const { userType } = useContext(AppContext);
+  const { user } = useContext(AppContext);
   const location = useLocation();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const hideSidebarRoutes = ["/registro"];
-  setHideSidebar((userType === null) || hideSidebarRoutes.includes(location.pathname));
+  setHideSidebar((user.user_type === null) || hideSidebarRoutes.includes(location.pathname));
 
   if (hideSidebar) {
     return null
@@ -31,7 +31,7 @@ const Sidebar = ({ open, setOpen, hideSidebar, setHideSidebar }) => {
   };
 
   const renderUserOptions = () => {
-    if (userType === "estudiante") {
+    if (user.user_type === "estudiante") {
       return (
         <>
           <ListItem button component={Link} to="/">
@@ -42,7 +42,7 @@ const Sidebar = ({ open, setOpen, hideSidebar, setHideSidebar }) => {
           </ListItem>
         </>
       );
-    } else if (userType === "docente") {
+    } else if (user.user_type === "docente") {
       return (
         <>
           <ListItem button component={Link} to="/">
@@ -54,7 +54,7 @@ const Sidebar = ({ open, setOpen, hideSidebar, setHideSidebar }) => {
         </>
       );
     } else {
-      // Opciones para guest (userType === null)
+      // Opciones para guest (user.user_type === null)
       return (
         <ListItem button component={Link} to="/login">
           <ListItemText primary="Iniciar Sesión" />

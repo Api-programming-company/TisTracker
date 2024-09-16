@@ -4,12 +4,12 @@ import UserRegister from "./UserRegister";
 import { ListaPeriodosAcademicos } from "../components";
 
 const Home = () => {
-  const { userType } = useContext(AppContext);
+  const { user } = useContext(AppContext);
   return (
     <>
-      {userType === "estudiante" ? (
+      {user.user_type === "estudiante" ? (
         <div>Es estudiante</div>
-      ) : userType === "docente" ? (
+      ) : user.user_type === "docente" ? (
         <ListaPeriodosAcademicos />
       ) : (
         <UserRegister />
