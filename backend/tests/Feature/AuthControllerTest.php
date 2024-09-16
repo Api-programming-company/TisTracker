@@ -335,8 +335,8 @@ public function validarSiAlmenosUnaMinuscula()
         'first_name' => 'simon',
         'last_name' => 'Prueba',
         'email' => '123456789@est.umss.edu',
-        'password' => 'PASSWORD123!',    
-        'password_confirmation' => 'PASSWORD123!',
+        'password' => 'PASSWORD1d23!',    
+        'password_confirmation' => 'PASSWORD1d23!',
         'user_type' => 'E',
     ]);
      //Password158¡
