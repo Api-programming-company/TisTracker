@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Button,
   TextField,
@@ -14,16 +14,18 @@ import { useNavigate } from "react-router-dom";
 import { useLoginUserMutation } from "../api/userApi";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { validateEmail } from "../utils/validaciones";
+import AppContext from "../context/AppContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
+  const { setUserType } = useContext(AppContext);
+  const navigate = useNavigate();
 
   const [loginUser, { data, error, isLoading, isSuccess, isError }] =
-    useLoginUserMutation(); // Usa el hook
-  const navigate = useNavigate();
+    useLoginUserMutation();
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -36,7 +38,10 @@ const Login = () => {
   useEffect(() => {
     if (isSuccess) {
       console.log("logeado supuestamente", data);
-      //navigate("/");
+      if (data.user) {
+        setUserType(data.user.user_type);
+      }
+      navigate("/");
     }
 
     if (isError) {
@@ -101,12 +106,6 @@ const Login = () => {
       general: "",
     });
   };
-
-  useEffect(() => {
-    console.log(errors);
-    
-  }, [errors]);
-  
 
   return (
     <Container maxWidth="xs">
