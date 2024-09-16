@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 
 const RegistroPeriodoAcademico = () => {
+  //Campos del formulario
   const [nombreLargo, setNombreLargo] = useState("");
   const [errorNombreLargo, setErrorNombreLargo] = useState(false);
   const [nombreCorto, setNombreCorto] = useState("");
@@ -25,8 +26,10 @@ const RegistroPeriodoAcademico = () => {
   const [address, setAddress] = useState("");
   const [addressError, setAddressError] = useState(false);
   const [telefono, setTelefono] = useState("");
+  //Buscador
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
+  //Desplegables Docente y Gestion
   const [selectedDocente, setSelectedDocente] = useState("");
   const [selectedGestion, setSelectedGestion] = useState("");
   const [allItems] = useState([
@@ -68,6 +71,7 @@ const RegistroPeriodoAcademico = () => {
     },
   ]);
 
+  //Función que controla que los campos de formulario no excedan los 150 caracteres
   const handleInputChange = (event, setValue, setError, maxLength) => {
     const value = event.target.value;
     if (value.length <= maxLength) {
@@ -78,6 +82,7 @@ const RegistroPeriodoAcademico = () => {
     }
   };
 
+  //Llamados a la función para controlar no excedan los 150 caracteres
   const handleNombreCortoChange = (event) => {
     handleInputChange(event, setNombreCorto, setErrorNombreCorto, 150);
   };
@@ -94,6 +99,7 @@ const RegistroPeriodoAcademico = () => {
     handleInputChange(event, setAddress, setAddressError, 150);
   };
 
+  //Función que controla que el campo "telefono" solo permita numeros, simbolo "+" y espacios
   const handleTelefonoChange = (event) => {
     const value = event.target.value;
     const phoneRegex = /^(\+|\d|\s)*$/;
@@ -106,24 +112,28 @@ const RegistroPeriodoAcademico = () => {
     setSearchTerm(event.target.value);
   };
 
+  //Función para el buscador, está leyendo el "allItems" con los datos de los estudiantes
   const filteredItems = allItems.filter((item) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  //Función que controla que no se repitan estudiantes en la lista de integrantes
   const handleAddItem = (itemId) => {
     const itemToAdd = allItems.find((item) => item.id === itemId);
     if (itemToAdd && !selectedItems.some((item) => item.id === itemId)) {
       setSelectedItems((prevItems) => [...prevItems, itemToAdd]);
     }
-    setSearchTerm("");
+    setSearchTerm(""); //Despues de presionar un elemento borra el contenido del buscador
   };
 
+  //Función para quitar un estudiante de la lista de integrantes
   const handleRemoveItem = (itemId) => {
     setSelectedItems((prevItems) =>
       prevItems.filter((item) => item.id !== itemId)
     );
   };
 
+  //Funciones para obtener los valores de los desplegables docente y gestión
   const handleChangeDocente = (event) => {
     setSelectedDocente(event.target.value);
   };
