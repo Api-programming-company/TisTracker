@@ -63,8 +63,8 @@ public function validarPassMenorA8()
         'first_name' => 'Simon',
         'last_name' => 'Prueba',
         'email' => '123456789@est.umss.edu',
-        'password' => '1234567',    // Menor a 8 caracteres
-        'password_confirmation' => '1234567',
+        'password' => 'Passwor',    // Menor a 8 caracteres
+        'password_confirmation' => 'Passwor',
         'user_type' => 'E',
     ]);
 
@@ -98,8 +98,8 @@ public function validarSiPassSonIguales()
         'first_name' => 'Simon',
         'last_name' => 'Prueba',
         'email' => '123456789@est.umss.edu',
-        'password' => '12345678',    // Menor a 8 caracteres
-        'password_confirmation' => '87654321',
+        'password' => 'Password123!',    
+        'password_confirmation' => 'hola123',
         'user_type' => 'E',
     ]);
 
@@ -132,8 +132,8 @@ public function validarSiNombreObligatorio()
         'first_name' => '',
         'last_name' => 'Prueba',
         'email' => '123456789@est.umss.edu',
-        'password' => '12345678',    // Menor a 8 caracteres
-        'password_confirmation' => '87654321',
+        'password' => 'Password123!',    
+        'password_confirmation' => 'Password123!',
         'user_type' => 'E',
     ]);
 
@@ -166,8 +166,8 @@ public function validarSiNombreObligatorio()
          'first_name' => 'simon',
          'last_name' => '',
          'email' => '123456789@est.umss.edu',
-         'password' => '12345678',    // Menor a 8 caracteres
-         'password_confirmation' => '87654321',
+         'password' => 'Password123!',    
+         'password_confirmation' => 'Password123!',
          'user_type' => 'E',
      ]);
  
@@ -200,8 +200,8 @@ public function validarSiEmailObligatorio()
         'first_name' => 'simon',
         'last_name' => 'juan',
         'email' => '',
-        'password' => '12345678',    // Menor a 8 caracteres
-        'password_confirmation' => '87654321',
+        'password' => 'Password123!',    
+        'password_confirmation' => 'Password123!',
         'user_type' => 'E',
     ]);
 
@@ -234,8 +234,8 @@ public function validarSiEmailObligatorio()
          'first_name' => 'simon',
          'last_name' => 'Prueba',
          'email' => '123456789@est.umss.edu',
-         'password' => '',    // Menor a 8 caracteres
-         'password_confirmation' => '87654321',
+         'password' => '',    
+         'password_confirmation' => 'Password123!',
          'user_type' => 'E',
      ]);
  
@@ -267,7 +267,7 @@ public function validarSiPass2Obligatorio()
         'first_name' => 'simon',
         'last_name' => 'Prueba',
         'email' => '123456789@est.umss.edu',
-        'password' => '12345678',    // Menor a 8 caracteres
+        'password' => 'Password123!',    
         'password_confirmation' => '',
         'user_type' => 'E',
     ]);
@@ -290,6 +290,8 @@ public function validarSiPass2Obligatorio()
     // Verificar que no se envió el correo de verificación
     Mail::assertNotSent(VerifyEmail::class);
 }
+
+
 
 
 
