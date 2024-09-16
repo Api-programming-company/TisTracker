@@ -21,7 +21,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
-  const { setUserType } = useContext(AppContext);
+  const { setUser } = useContext(AppContext);
   const navigate = useNavigate();
 
   const [loginUser, { data, error, isLoading, isSuccess, isError }] =
@@ -39,7 +39,7 @@ const Login = () => {
     if (isSuccess) {
       console.log("logeado supuestamente", data);
       if (data.user) {
-        setUserType(data.user.user_type);
+        setUser(data.user);
       }
       navigate("/");
     }
