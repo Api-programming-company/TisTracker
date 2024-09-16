@@ -59,7 +59,7 @@ const Entregable = ({ entregable, onUpdate, onDelete }) => {
   const handleAgregarHu = () => {
     let x = "hu";
     let actual = formData.hu;
-    let nuevo = [...actual, { nombre_hu: "", responsable: "", objetivo: "" }];
+    let nuevo = [...actual, { id: Date.now(), nombre_hu: "", responsable: "", objetivo: "" }];
     setFormData({ ...formData, [x]: nuevo });
   };
 
@@ -68,6 +68,14 @@ const Entregable = ({ entregable, onUpdate, onDelete }) => {
     let actual = formData.hu.filter((_, i) => i !== index);
     setFormData({ ...formData, [x]: actual });
   };
+
+  const handleUpdateHu = (updatedData) => {
+    let x = "hu"
+    let nuevo = formData.hu.map(e =>
+      e.id === updatedData.id ? updatedData : e
+    )
+    setFormData({...formData, [x]: nuevo});
+  }
 
   const handleRegister = () => {
     const { nombre_hito, fecha_ini, fecha_entrega, cobro } = formData;
@@ -199,7 +207,7 @@ const Entregable = ({ entregable, onUpdate, onDelete }) => {
 
       <Stack spacing={2}>
         {formData.hu.map((e, index) => (
-          <Hu key={index} index={index} handleEliminarHu={handleEliminarHu} />
+          <Hu key={index} index={index} handleEliminarHu={handleEliminarHu} onUpdate={handleUpdateHu} info={e} />
         ))}
         <Box sx={{ display: "flex", justifyContent: "center", marginY: 2 }}>
           <Button
