@@ -11,30 +11,30 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { validarContraseña } from "../utils/validaciones";
+import { validarContraseña, validateEmail } from "../utils/validaciones";
 import { useRegisterUserMutation } from "../api/userApi";
 
 const UserRegister = () => {
+  const [userType, setUserType] = useState("estudiante");
   const [formData, setFormData] = useState({
-    nombre: "",
-    apellidos: "",
+    first_name: "",
+    last_name: "",
     email: "",
-    contraseña: "",
-    confirmarContraseña: "",
+    password: "",
+    password_confirmation: "",
+    user_type: userType === "docente" ? "D" : "E",
   });
   const [errors, setErrors] = useState({
-    nombre: "",
-    apellidos: "",
+    first_name: "",
+    last_name: "",
     email: "",
-    contraseña: "",
-    confirmarContraseña: "",
+    password: "",
+    password_confirmation: "",
   });
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
-  const [isRegistering, setIsRegistering] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
-  const [userType, setUserType] = useState("estudiante");
+
   const [
     registerUser,
     { data, isFetching, isLoading, isSuccess, isError, error },
@@ -46,6 +46,18 @@ const UserRegister = () => {
     }
     if (isError) {
       console.log("Error de registro:", error);
+      // Handle server errors
+      const errorResponse = error?.data?.errors || {};
+      const newErrors = {};
+
+      for (const [field, messages] of Object.entries(errorResponse)) {
+        newErrors[field] = messages.join(" ");
+      }
+
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        ...newErrors,
+      }));
     }
     if (isFetching) {
       console.log("esta fetching el registro!!!!");
@@ -64,60 +76,60 @@ const UserRegister = () => {
   };
 
   const handleSwitchUserType = () => {
-    setUserType((prevUserType) =>
-      prevUserType === "docente" ? "estudiante" : "docente"
-    );
-    setFormData({
-      nombre: "",
-      apellidos: "",
-      email: "",
-      contraseña: "",
-      confirmarContraseña: "",
+    setUserType((prevUserType) => {
+      const newUserType = prevUserType === "docente" ? "estudiante" : "docente";
+      setFormData({
+        first_name: "",
+        last_name: "",
+        email: "",
+        password: "",
+        password_confirmation: "",
+        user_type: newUserType === "docente" ? "D" : "E",
+      });
+      return newUserType;
     });
-    setErrors({});
+    setErrors({}); // Borra los errores
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    if (name === "email") {
-      setIsEmailVerified(false);
-    }
     setErrors({ ...errors, [name]: "" });
   };
 
   const handleRegister = () => {
-    const { nombre, apellidos, email, contraseña, confirmarContraseña } =
+    const { first_name, last_name, email, password, password_confirmation } =
       formData;
     let hasError = false;
     const newErrors = {};
 
     const validations = {
-      nombre: {
-        condition: !nombre,
-        message: "El nombre es obligatorio.",
+      first_name: {
+        condition: !first_name,
+        message: "El first_name es obligatorio.",
       },
-      apellidos: {
-        condition: !apellidos,
-        message: "Los apellidos son obligatorios.",
+      last_name: {
+        condition: !last_name,
+        message: "Los last_name son obligatorios.",
       },
       email: {
-        condition: !email,
-        message: "El correo electrónico es obligatorio.",
-        additionalCheck: errors.email,
+        condition: !email || !validateEmail(email),
+        message: !email
+          ? "El correo electrónico es obligatorio."
+          : "Ingrese un correo electrónico válido.",
       },
-      contraseña: {
-        condition: !contraseña,
-        message: "La contraseña es obligatoria.",
+      password: {
+        condition: !password,
+        message: "La password es obligatoria.",
         additionalCheck:
-          !validarContraseña(contraseña) &&
+          !validarContraseña(password) &&
           "Debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial.",
       },
-      confirmarContraseña: {
-        condition: !confirmarContraseña,
-        message: "Debe confirmar su contraseña.",
+      password_confirmation: {
+        condition: !password_confirmation,
+        message: "Debe confirmar su password.",
         additionalCheck:
-          contraseña !== confirmarContraseña && "Las contraseñas no coinciden.",
+          password !== password_confirmation && "Las contraseñas no coinciden.",
       },
     };
 
@@ -130,30 +142,14 @@ const UserRegister = () => {
         hasError = true;
       }
     }
-    if (!isEmailVerified) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        email: "El email tiene que ser comprobado.",
-      }));
-    }
+
     if (hasError) {
       setErrors(newErrors);
       return;
     }
 
-    // Si todo es válido, proceder con el registro
-    const userTypeCode = userType === "docente" ? "D" : "E";
-    const dataToSend = {
-      first_name: formData.nombre,
-      last_name: formData.apellidos,
-      email: formData.email,
-      password: formData.contraseña,
-      password_confirmation: formData.confirmarContraseña,
-      user_type: userTypeCode,
-    };
-
-    console.log("Enviando datos:", dataToSend);
-    registerUser(dataToSend);
+    console.log("Enviando datos:", formData);
+    registerUser(formData);
   };
 
   const handleLoginRedirect = () => {
@@ -192,23 +188,23 @@ const UserRegister = () => {
           <Box component="form" noValidate autoComplete="off">
             <TextField
               label="Nombre*"
-              name="nombre"
-              value={formData.nombre}
+              name="first_name"
+              value={formData.first_name}
               onChange={handleInputChange}
               fullWidth
               margin="normal"
-              error={Boolean(errors.nombre)}
-              helperText={errors.nombre}
+              error={Boolean(errors.first_name)}
+              helperText={errors.first_name}
             />
             <TextField
               label="Apellidos*"
-              name="apellidos"
-              value={formData.apellidos}
+              name="last_name"
+              value={formData.last_name}
               onChange={handleInputChange}
               fullWidth
               margin="normal"
-              error={Boolean(errors.apellidos)}
-              helperText={errors.apellidos}
+              error={Boolean(errors.last_name)}
+              helperText={errors.last_name}
             />
 
             <TextField
@@ -225,14 +221,14 @@ const UserRegister = () => {
 
             <TextField
               label="Contraseña*"
-              name="contraseña"
+              name="password"
               type={showPassword ? "text" : "password"}
-              value={formData.contraseña}
+              value={formData.password}
               onChange={handleInputChange}
               fullWidth
               margin="normal"
-              error={Boolean(errors.contraseña)}
-              helperText={errors.contraseña}
+              error={Boolean(errors.password)}
+              helperText={errors.password}
               slotProps={{
                 input: {
                   endAdornment: (
@@ -250,14 +246,14 @@ const UserRegister = () => {
             />
             <TextField
               label="Confirmar Contraseña*"
-              name="confirmarContraseña"
+              name="password_confirmation"
               type={showConfirmPassword ? "text" : "password"}
-              value={formData.confirmarContraseña}
+              value={formData.password_confirmation}
               onChange={handleInputChange}
               fullWidth
               margin="normal"
-              error={Boolean(errors.confirmarContraseña)}
-              helperText={errors.confirmarContraseña}
+              error={Boolean(errors.password_confirmation)}
+              helperText={errors.password_confirmation}
               slotProps={{
                 input: {
                   endAdornment: (

@@ -13,3 +13,8 @@ export const validarEmailEstudiante = (email) => {
   const regexEstudiante = /^[0-9]{9}@est\.umss\.edu$/;
   return regexEstudiante.test(email);
 };
+
+export const validateEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
