@@ -186,4 +186,38 @@ public function validarSiNombreObligatorio()
      // Verificar que no se envió el correo de verificación
      Mail::assertNotSent(VerifyEmail::class);
  }
+
+  /** @test */
+public function validarSiEmailObligatorio()
+{
+    // Simular el envío de correo
+    Mail::fake();
+
+    $response = $this->postJson('/api/user/register', [
+        'first_name' => 'simon',
+        'last_name' => 'juan',
+        'email' => '',
+        'password' => '12345678',    // Menor a 8 caracteres
+        'password_confirmation' => '87654321',
+        'user_type' => 'E',
+    ]);
+
+    // Verificar que la respuesta tenga un estado 422 (Unprocessable Entity)
+    $response->assertStatus(422);
+    $response->assertJson([
+        'message' => 'Error de validación'
+    ]);
+
+    // Verificar que el usuario no fue creado en la base de datos
+    $this->assertDatabaseMissing('users', [
+        'email' => 'simon.prueba2@example.com',
+    ]);
+
+    // Verificar que no se creó un token de verificación en la base de datos
+    $user = User::where('email', 'simon.prueba2@example.com')->first();
+    $this->assertNull($user);
+
+    // Verificar que no se envió el correo de verificación
+    Mail::assertNotSent(VerifyEmail::class);
+}
 }
