@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTheme } from "@mui/material/styles";
 
-const Hu = ({ handleEliminarHu, onUpdate, info }) => {
+const Hu = ({ handleEliminarHu, onUpdate, info, trigger, setTrigger }) => {
   const theme = useTheme();
 
   const [huData, setHuData] = useState({
@@ -25,6 +25,46 @@ const Hu = ({ handleEliminarHu, onUpdate, info }) => {
     setErrors({ ...errors, [name]: "" });
     onUpdate(huData)
   };
+
+  const handleRegisterHu = () => {
+    const { nombre_hu, responsable, objetivo } = huData;
+    let hasError = false;
+    const newErrors = {};
+
+    const validations = {
+      nombre_hu: {
+        condition: !nombre_hu,
+        message: "El nombre de la historia de usuario es obligatorio.",
+      },
+      responsable: {
+        condition: !responsable,
+        message: "El nombre del responsable es obligatorio.",
+      },
+      objetivo: {
+        condition: !objetivo,
+        message: "El objetivo de la historia de usuario es obligatorio.",
+      },
+    };
+
+    for (const [field, { condition, message }] of Object.entries(validations)) {
+      if (condition) {
+        newErrors[field] = message;
+        hasError = true;
+      }
+    }
+
+    if (hasError) {
+      setErrors(newErrors);
+      setTrigger(false);
+      return;
+    }
+  };
+
+  useEffect(() => {
+    if(trigger){
+      handleRegisterHu()
+    }
+  },[trigger])
 
   return (
     <Box
@@ -48,6 +88,8 @@ const Hu = ({ handleEliminarHu, onUpdate, info }) => {
           fullWidth
           sx={{ mb: 2 }}
           onChange={handleInputChange}
+          error={Boolean(errors.nombre_hu)}
+          helperText={errors.nombre_hu}
           multiline
         />
         <TextField
@@ -57,6 +99,8 @@ const Hu = ({ handleEliminarHu, onUpdate, info }) => {
           fullWidth
           sx={{ mb: 2 }}
           onChange={handleInputChange}
+          error={Boolean(errors.responsable)}
+          helperText={errors.responsable}
           multiline
         />
 
@@ -67,6 +111,8 @@ const Hu = ({ handleEliminarHu, onUpdate, info }) => {
           fullWidth
           sx={{ gridColumn: { xs: "1", sm: "1/3" } }}
           onChange={handleInputChange}
+          error={Boolean(errors.objetivo)}
+          helperText={errors.objetivo}
           multiline
         />
       </Box>
@@ -84,3 +130,4 @@ const Hu = ({ handleEliminarHu, onUpdate, info }) => {
 };
 
 export default Hu;
+

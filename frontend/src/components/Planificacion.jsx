@@ -7,9 +7,12 @@ import {
 import React, { useEffect, useState } from "react";
 import Entregable from "./Entregable";
 import AddIcon from "@mui/icons-material/Add";
+import { useNavigate } from "react-router-dom";
 
 const Planificacion = () => {
   const [entregables, setEntregables] = useState([]);
+  const [trigger, setTrigger] = useState(false);
+  const navigate = useNavigate()
 
   const handleAgregarEntregable = () => {
     setEntregables([
@@ -30,6 +33,19 @@ const Planificacion = () => {
     );
   };
 
+
+
+  const handleRegistrarPlan = () =>{
+    setTrigger(true) 
+    // console.log(entregables)
+    // aun hay un error, estan en estado false, y luego llenando todo
+    //correctamente sigue dando un false y al siguiente click recien true,
+    // no estoy seguro si es por lo del asincronismo 
+
+    trigger ? console.log("valido") : console.log("no valido")
+    
+  }
+
   return (
     <Box sx={{ maxWidth: 800, margin: "auto", padding: 2 }}>
       <Typography variant="h4" sx={{ marginY: 2 }}>
@@ -43,6 +59,8 @@ const Planificacion = () => {
               entregable={entregable}
               onUpdate={handleUpdateEntregable}
               onDelete={() => handleEliminarEntregable(entregable.id)}
+              trigger={trigger}
+              setTrigger={setTrigger}
             />
           </Box>
         ))}
@@ -54,6 +72,16 @@ const Planificacion = () => {
             onClick={handleAgregarEntregable}
           >
             Agregar entregable
+          </Button>
+        </Box>
+
+        <Box sx={{ display: "flex", justifyContent: "center", marginY: 2 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleRegistrarPlan}
+          >
+            Guardar planificación
           </Button>
         </Box>
       </Stack>

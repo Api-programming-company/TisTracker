@@ -14,7 +14,7 @@ import Hu from "./Hu";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-const Entregable = ({ entregable, onUpdate, onDelete }) => {
+const Entregable = ({ entregable, onUpdate, onDelete, trigger, setTrigger}) => {
   const [formData, setFormData] = useState({
     id: entregable?.id,
     nombre_hito: entregable?.nombre_hito || "",
@@ -74,6 +74,7 @@ const Entregable = ({ entregable, onUpdate, onDelete }) => {
       e.id === updatedData.id ? updatedData : e
     )
     setFormData({...formData, [x]: nuevo});
+    onUpdate(formData)
   }
 
   const handleRegister = () => {
@@ -107,20 +108,22 @@ const Entregable = ({ entregable, onUpdate, onDelete }) => {
       }
     }
 
-    if (hasError) {
-      setErrors(newErrors);
-      return;
+    if (formData.hu.length === 0){
+      setTrigger(false)
     }
 
-    // Si todo es válido, proceder con el registro
-    const dataToSend = {
-      ...formData,
-      timestamp: new Date().toISOString(),
-    };
-
-    console.log("Enviando datos:", dataToSend);
-    if (onUpdate) onUpdate(dataToSend); // Llama a la función de actualización si existe
+    if (hasError) {
+      setErrors(newErrors);
+      setTrigger(false)
+      return;
+    }
   };
+
+  useEffect(() => {
+    if(trigger){
+      handleRegister()
+    }
+  },[trigger])
 
   return (
     <Box sx={{ maxWidth: 600, margin: "auto", padding: 2 }}>
@@ -203,10 +206,10 @@ const Entregable = ({ entregable, onUpdate, onDelete }) => {
       <Typography variant="h4" sx={{ marginY: 2 }}>
         Historias de usuario
       </Typography>
-
+        
       <Stack spacing={2}>
         {formData.hu.map( e => (
-          <Hu key={e.id} handleEliminarHu={handleEliminarHu} onUpdate={handleUpdateHu} info={e} />
+          <Hu key={e.id} handleEliminarHu={handleEliminarHu} onUpdate={handleUpdateHu} info={e} trigger={trigger} setTrigger={setTrigger}  />
         ))}
         <Box sx={{ display: "flex", justifyContent: "center", marginY: 2 }}>
           <Button
