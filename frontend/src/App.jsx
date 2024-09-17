@@ -35,7 +35,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <AppProvider>
-        <AppBarWithMenu darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+        <AppBarWithMenu darkMode={darkMode} toggleDarkMode={toggleDarkMode} userType={"guest"}/>
 
         <Routes>
           <Route path="/register" element={<UserRegister />} />

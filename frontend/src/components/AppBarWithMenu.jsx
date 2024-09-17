@@ -9,7 +9,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 
-function AppBarWithMenu({ darkMode, toggleDarkMode }) {
+function AppBarWithMenu({ darkMode, toggleDarkMode, userType }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleMenuOpen = (event) => {
@@ -42,9 +42,18 @@ function AppBarWithMenu({ darkMode, toggleDarkMode }) {
           open={Boolean(anchorEl)}
           onClose={handleMenuClose}
         >
-          <MenuItem onClick={handleMenuClose}>Perfil</MenuItem>
-          <MenuItem onClick={handleMenuClose}>Configuración</MenuItem>
-          <MenuItem onClick={handleMenuClose}>Cerrar sesión</MenuItem>
+          {userType === 'guest' ? (
+            <>
+              <MenuItem onClick={handleMenuClose}>Iniciar sesión</MenuItem>
+              <MenuItem onClick={handleMenuClose}>Registrarse</MenuItem>
+            </>
+          ) : (
+            <>
+              <MenuItem onClick={handleMenuClose}>Perfil</MenuItem>
+              <MenuItem onClick={handleMenuClose}>Configuración</MenuItem>
+              <MenuItem onClick={handleMenuClose}>Cerrar sesión</MenuItem>
+            </>
+          )}
         </Menu>
       </Toolbar>
     </AppBar>
