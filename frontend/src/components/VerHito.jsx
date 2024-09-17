@@ -12,6 +12,9 @@ const VerHito = ({ nombre, fecha_ini, fecha_entrega, cobro, hu }) => {
         position: "relative",
       }}
     >
+      <Typography variant="h4" sx={{ marginY: 2 }}>
+        Hito
+      </Typography>
       <Box sx={{ display: "flex" }}>
         <Typography variant="h6" sx={{ margin: "0px 5px", fontWeight: "bold" }}>
           Nombre de Hito:{" "}
