@@ -19,6 +19,7 @@ import { Sidebar, Planificacion } from "./components";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import { lightTheme, darkTheme } from "./theme";
+import VerGE from "./pages/VerGE";
 
 function App() {
   const [darkMode, setDarkMode] = useState(() => {
@@ -73,6 +74,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/home" element={<Home />} />
 
+              <Route path="/vergrupoe" element={<VerGE />} />
               <Route path="/registroge" element={<RegistroGE />} />
               <Route
                 path="/registroperiodoacademico"

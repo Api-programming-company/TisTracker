@@ -40,6 +40,15 @@ const Sidebar = ({ open, setOpen, hideSidebar, setHideSidebar }) => {
           <ListItem button component={Link} to="/ruta-estudiante">
             <ListItemText primary="Opciones Estudiante" />
           </ListItem>
+          <ListItem button component={Link} to="/registroge">
+            <ListItemText primary="Crear grupo empresa" />
+          </ListItem>
+          <ListItem button component={Link} to="/">
+            <ListItemText primary="Ver grupo empresa" />
+          </ListItem>
+          <ListItem button component={Link} to="/">
+            <ListItemText primary="Notificaciones" />
+          </ListItem>
         </>
       );
     } else if (user?.user_type === "docente") {
