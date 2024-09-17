@@ -37,6 +37,7 @@ function App({ toggleTheme, isDarkMode }) {
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
 
+        <Route path="/vergrupoe" element={<VerGE />} />
         <Route path="/registroge" element={<RegistroGE />} />
         <Route
           path="/registroperiodoacademico"
