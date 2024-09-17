@@ -31,7 +31,7 @@ const VerEntregable = ({ nombre_entregable, responsable, objetivo }) => {
       >
         <Box sx={{ display: "flex" }}>
           <Typography
-            variant="h6"
+            variant="subtitle"
             sx={{ margin: "0px 5px", fontWeight: "bold",marginBottom: 2 }}
           >
             Nombre de entregable:{" "}
@@ -54,7 +54,7 @@ const VerEntregable = ({ nombre_entregable, responsable, objetivo }) => {
 
         <Box sx={{ display: "flex", gap: 0 }}>
           <Typography
-            variant="h6"
+            variant="subtitle"
             sx={{ margin: "0px 5px", fontWeight: "bold",marginBottom: 2 }}
           >
             Responsable:{" "}
@@ -77,7 +77,7 @@ const VerEntregable = ({ nombre_entregable, responsable, objetivo }) => {
 
         <Box sx={{ display: "flex" }}>
           <Typography
-            variant="h6"
+            variant="subtitle"
             sx={{ margin: "0px 5px", fontWeight: "bold" }}
           >
             Objetivo:{" "}

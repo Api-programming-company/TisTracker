@@ -14,11 +14,11 @@ const VerHito = ({ nombre, fecha_ini, fecha_entrega, cobro, hu }) => {
         
       }}
     >
-      <Typography variant="h4" sx={{ marginY: 2 }}>
+      <Typography variant="h5" sx={{ marginY: 2, fontWeight: 'bold'}}>
         Hito
       </Typography>
       <Box sx={{ display: "flex" }}>
-        <Typography variant="h6" sx={{ margin: "0px 5px", fontWeight: "bold",marginBottom: 2}}>
+        <Typography variant="subtitle" sx={{ margin: "0px 5px", fontWeight: "bold",marginBottom: 2}}>
           Nombre de Hito:{" "}
         </Typography>
         <Chip
@@ -51,7 +51,7 @@ const VerHito = ({ nombre, fecha_ini, fecha_entrega, cobro, hu }) => {
       >
         <Box sx={{ display: "flex" }}>
           <Typography
-            variant="h6"
+            variant="subtitle"
             sx={{ margin: "0px 5px", fontWeight: "bold", marginBottom: 2 }}
           >
             Fecha de inicio:{" "}
@@ -74,7 +74,7 @@ const VerHito = ({ nombre, fecha_ini, fecha_entrega, cobro, hu }) => {
 
         <Box sx={{ display: "flex" }}>
           <Typography
-            variant="h6"
+            variant="subtitle"
             sx={{ margin: "0px 5px", fontWeight: "bold", marginBottom: 2 }}
           >
             Fecha de entrega:{" "}
@@ -96,7 +96,7 @@ const VerHito = ({ nombre, fecha_ini, fecha_entrega, cobro, hu }) => {
         </Box>
       </Box>
       <Box sx={{ display: "flex" }}>
-        <Typography variant="h6" sx={{ margin: "0px 5px", fontWeight: "bold" }}>
+        <Typography variant="subtitle" sx={{ margin: "0px 5px", fontWeight: "bold" }}>
           Porcentaje de cobro en (%):{" "}
         </Typography>
         <Chip
@@ -113,7 +113,7 @@ const VerHito = ({ nombre, fecha_ini, fecha_entrega, cobro, hu }) => {
           }}
         />
       </Box>
-      <Typography variant="h4" sx={{ marginY: 2 }}>
+      <Typography variant="h5" sx={{ marginY: 2, fontWeight: 'bold' }}>
         Entregables
       </Typography>
       <Stack spacing={2}>

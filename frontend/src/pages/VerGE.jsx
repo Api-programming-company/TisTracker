@@ -89,49 +89,49 @@ const VerGE = () => {
         <AccordionDetails>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMore />}>
-              <Typography variant="h5">Nombre largo</Typography>
+              <Typography variant="h6">Nombre largo</Typography>
             </AccordionSummary>
             <AccordionDetails>{getInfo.nombre_largo}</AccordionDetails>
           </Accordion>
 
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMore />}>
-              <Typography variant="h5">Nombre Corto</Typography>
+              <Typography variant="h6">Nombre Corto</Typography>
             </AccordionSummary>
             <AccordionDetails>{getInfo.nombre_corto}</AccordionDetails>
           </Accordion>
 
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMore />}>
-              <Typography variant="h5">Correo electrónico</Typography>
+              <Typography variant="h6">Correo electrónico</Typography>
             </AccordionSummary>
             <AccordionDetails>{getInfo.correo}</AccordionDetails>
           </Accordion>
 
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMore />}>
-              <Typography variant="h5">Dirección</Typography>
+              <Typography variant="h6">Dirección</Typography>
             </AccordionSummary>
             <AccordionDetails>{getInfo.direccion}</AccordionDetails>
           </Accordion>
 
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMore />}>
-              <Typography variant="h5">Teléfono</Typography>
+              <Typography variant="h6">Teléfono</Typography>
             </AccordionSummary>
             <AccordionDetails>{getInfo.telefono}</AccordionDetails>
           </Accordion>
 
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMore />}>
-              <Typography variant="h5">Consultor TIS</Typography>
+              <Typography variant="h6">Consultor TIS</Typography>
             </AccordionSummary>
             <AccordionDetails>{getInfo.consultor_tis}</AccordionDetails>
           </Accordion>
 
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMore />}>
-              <Typography variant="h5">Gestión</Typography>
+              <Typography variant="h6">Gestión</Typography>
             </AccordionSummary>
             <AccordionDetails>{getInfo.gestion}</AccordionDetails>
           </Accordion>
