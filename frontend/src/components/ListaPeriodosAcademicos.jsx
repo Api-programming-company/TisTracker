@@ -1,49 +1,74 @@
 import React from 'react';
-import { Card, CardContent, Typography, Grid, Container, Fab } from '@mui/material';
+import { Card, CardContent, Typography, Box, Container, Fab, CircularProgress } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
+import { useGetAcademicPeriodsQuery } from '../api/academicPeriodApi'; 
 
-// Datos de ejemplo
-const periods = Array.from({ length: 25 }, (_, i) => ({
-  name: `Periodo ${i + 1}`,
-  startDate: new Date(2024, i % 12, 1),
-  endDate: new Date(2024, (i % 12) + 1, 0)
-}));
-
-const formatDate = (date) => format(date, 'dd MMM yyyy');
+const formatDate = (date) => format(new Date(date), 'dd MMM yyyy');
 
 const ListaPeriodosAcademicos = () => {
   const navigate = useNavigate();
+  const { data: periods = [], error, isLoading } = useGetAcademicPeriodsQuery();
 
   const handleClick = () => {
     navigate('/registroperiodoacademico');
   };
+
+  if (isLoading) return (
+    <Container
+      maxWidth="sm"
+      sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+    >
+      <CircularProgress />
+    </Container>
+  );
+
+  if (error) return (
+    <Container maxWidth="sm" sx={{ mt: 5 }}>
+      <Typography variant="h6" color="error">
+        Error: {error.message}
+      </Typography>
+    </Container>
+  );
 
   return (
     <Container>
       <Typography variant="h4" gutterBottom>
         Lista de Períodos Académicos
       </Typography>
-      <Grid container spacing={3}>
-        {periods.map((period, index) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+      <Box
+        display="flex"
+        flexWrap="wrap"
+        gap={3}
+      >
+        {periods.map((period) => (
+          <Box 
+            key={period.id} 
+            flex="1 1 calc(33.333% - 24px)" // Adjust this to achieve the desired column width
+            minWidth="250px" // Ensure cards are not too small
+          >
             <Card>
               <CardContent>
                 <Typography variant="h6" component="div">
                   {period.name}
                 </Typography>
                 <Typography color="text.secondary">
-                  Fecha de Inicio: {formatDate(period.startDate)}
+                  Fecha de Inicio: {formatDate(period.start_date)}
                 </Typography>
                 <Typography color="text.secondary">
-                  Fecha de Fin: {formatDate(period.endDate)}
+                  Fecha de Fin: {formatDate(period.end_date)}
                 </Typography>
+                {period.description && (
+                  <Typography color="text.secondary">
+                    Descripción: {period.description}
+                  </Typography>
+                )}
               </CardContent>
             </Card>
-          </Grid>
+          </Box>
         ))}
-      </Grid>
+      </Box>
       <Fab 
         color="primary" 
         aria-label="add" 

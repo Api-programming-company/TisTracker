@@ -55,15 +55,18 @@ function AppBarWithMenu({ isDarkMode, toggleDarkMode, userType }) {
     guest: [
       { label: "Iniciar sesión", path: "/login" },
       { label: "Registrarse", path: "/register" },
+      
     ],
     estudiante: [
       { label: "Perfil", path: "/profile" },
       { label: "Mis cursos", path: "/courses" },
+      
       { label: "Cerrar sesión", path: "/logout" },
     ],
     docente: [
       { label: "Perfil", path: "/profile" },
       { label: "Mis clases", path: "/classes" },
+      { label: "Periodos Académicos", path: "/academic-periods" },
       { label: "Cerrar sesión", path: "/logout" },
     ],
   };

@@ -5,15 +5,46 @@ import {
     Container, 
     Typography, 
     Box, 
-    FormControl 
+    FormControl,
+    CircularProgress
 } from '@mui/material';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { useCreateAcademicPeriodMutation } from '../api/academicPeriodApi';
+import { useNavigate } from 'react-router-dom';
 
 const RegistroPeriodoAcademico = () => {
-    const [fechaEvaluaciones, setFechaEvaluaciones] = useState(null);
-    const [fechaInicio, setFechaInicio] = useState(null);
-    const [fechaFin, setFechaFin] = useState(null);
+    const [name, setName] = useState('');
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const [description, setDescription] = useState('');
+    
+    const [createAcademicPeriod, { isLoading, error }] = useCreateAcademicPeriodMutation();
+    const navigate = useNavigate();
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        // Verifica que todos los campos obligatorios estén llenos
+        if (!name || !startDate || !endDate) {
+            alert("Por favor, completa todos los campos obligatorios.");
+            return;
+        }
+
+        try {
+            await createAcademicPeriod({
+                name,
+                start_date: startDate,
+                end_date: endDate,
+                description
+            }).unwrap();
+            // Redirige a la lista de períodos académicos después de registrar
+            navigate('/academic-periods');
+        } catch (err) {
+            // Maneja el error
+            alert(`Error: ${err.message}`);
+        }
+    };
 
     return (
         <Container maxWidth="sm">
@@ -22,7 +53,7 @@ const RegistroPeriodoAcademico = () => {
                     Registro de Período Académico
                 </Typography>
 
-                <form>
+                <form onSubmit={handleSubmit}>
                     {/* Nombre */}
                     <FormControl fullWidth sx={{ mb: 2 }}>
                         <TextField 
@@ -31,6 +62,8 @@ const RegistroPeriodoAcademico = () => {
                             fullWidth 
                             required 
                             helperText="* Obligatorio"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
                         />
                     </FormControl>
 
@@ -41,35 +74,25 @@ const RegistroPeriodoAcademico = () => {
                             variant="outlined" 
                             fullWidth 
                             helperText="Opcional"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
                         />
                     </FormControl>
 
-                    {/* Fecha de Evaluaciones */}
-                    <FormControl fullWidth sx={{ mb: 2 }}>
-                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DatePicker
-                                label="Fecha de Evaluaciones"
-                                value={fechaEvaluaciones}
-                                onChange={(newValue) => setFechaEvaluaciones(newValue)}
-                                renderInput={(params) => <TextField {...params} helperText="* Obligatorio" />}
-                            />
-                        </LocalizationProvider>
-                    </FormControl>
-
-                    {/* Duración (Fecha Inicio y Fecha Fin) */}
+                    {/* Fecha de Inicio y Fecha Fin */}
                     <FormControl fullWidth sx={{ mb: 2 }}>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
                                 <DatePicker
                                     label="Fecha Inicio"
-                                    value={fechaInicio}
-                                    onChange={(newValue) => setFechaInicio(newValue)}
+                                    value={startDate}
+                                    onChange={(newValue) => setStartDate(newValue)}
                                     renderInput={(params) => <TextField {...params} helperText="* Obligatorio" fullWidth />}
                                 />
                                 <DatePicker
                                     label="Fecha Fin"
-                                    value={fechaFin}
-                                    onChange={(newValue) => setFechaFin(newValue)}
+                                    value={endDate}
+                                    onChange={(newValue) => setEndDate(newValue)}
                                     renderInput={(params) => <TextField {...params} helperText="* Obligatorio" fullWidth />}
                                 />
                             </Box>
@@ -83,9 +106,16 @@ const RegistroPeriodoAcademico = () => {
                         color="primary" 
                         fullWidth 
                         sx={{ mt: 2 }}
+                        disabled={isLoading} // Deshabilita el botón durante la carga
                     >
-                        Registrar Período
+                        {isLoading ? <CircularProgress size={24} /> : "Registrar Período"}
                     </Button>
+                    
+                    {error && (
+                        <Typography color="error" sx={{ mt: 2 }}>
+                            Error: {error.message}
+                        </Typography>
+                    )}
                 </form>
             </Box>
         </Container>

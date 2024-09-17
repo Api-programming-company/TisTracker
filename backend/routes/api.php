@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EmailVerificationController;
+use App\Http\Controllers\AcademicPeriodController;
 
 
 Route::post('user/register', [AuthController::class, 'register']);
@@ -23,6 +24,12 @@ Route::middleware('auth:sanctum')->get('user', function (Request $request) {
             'user_type' => $user->user_type === 'E' ? 'estudiante' : 'docente',
         ]
     ]);
+});
+
+// docente
+Route::middleware('auth')->group(function () {
+    Route::get('docente/academic-periods', [AcademicPeriodController::class, 'index']);
+    Route::post('docente/academic-periods', [AcademicPeriodController::class, 'store']);
 });
 
 Route::get('/simon', function () {
