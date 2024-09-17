@@ -6,12 +6,15 @@ import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
 import store from "./app/store";
+import { AppProvider } from "./context/AppContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
     <BrowserRouter>
-      <App />
+      <AppProvider>
+        <App />
+      </AppProvider>
     </BrowserRouter>
   </Provider>
 );
