@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, Typography, Grid, Container, Fab } from '@mui/material';
+import { Card, CardContent, Typography, Box, Container, Fab, CircularProgress } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
@@ -15,17 +15,39 @@ const ListaPeriodosAcademicos = () => {
     navigate('/registroperiodoacademico');
   };
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  if (isLoading) return (
+    <Container
+      maxWidth="sm"
+      sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+    >
+      <CircularProgress />
+    </Container>
+  );
+
+  if (error) return (
+    <Container maxWidth="sm" sx={{ mt: 5 }}>
+      <Typography variant="h6" color="error">
+        Error: {error.message}
+      </Typography>
+    </Container>
+  );
 
   return (
     <Container>
       <Typography variant="h4" gutterBottom>
         Lista de Períodos Académicos
       </Typography>
-      <Grid container spacing={3}>
+      <Box
+        display="flex"
+        flexWrap="wrap"
+        gap={3}
+      >
         {periods.map((period) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={period.id}>
+          <Box 
+            key={period.id} 
+            flex="1 1 calc(33.333% - 24px)" // Adjust this to achieve the desired column width
+            minWidth="250px" // Ensure cards are not too small
+          >
             <Card>
               <CardContent>
                 <Typography variant="h6" component="div">
@@ -44,9 +66,9 @@ const ListaPeriodosAcademicos = () => {
                 )}
               </CardContent>
             </Card>
-          </Grid>
+          </Box>
         ))}
-      </Grid>
+      </Box>
       <Fab 
         color="primary" 
         aria-label="add" 

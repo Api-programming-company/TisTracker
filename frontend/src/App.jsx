@@ -13,7 +13,7 @@ import {
   VerifyEmail,
   Example,
 } from "./pages";
-import { Planificacion, AppBarWithMenu } from "./components";
+import { Planificacion, AppBarWithMenu, ListaPeriodosAcademicos } from "./components";
 
 import VerGE from "./pages/VerGE";
 
@@ -39,6 +39,9 @@ function App({ toggleTheme, isDarkMode }) {
 
         <Route path="/vergrupoe" element={<VerGE />} />
         <Route path="/registroge" element={<RegistroGE />} />
+        <Route path="/academic-periods" element={<ListaPeriodosAcademicos />} />
+
+
         <Route
           path="/registroperiodoacademico"
           element={<RegistroPeriodoAcademico />}

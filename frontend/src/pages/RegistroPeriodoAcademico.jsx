@@ -5,11 +5,13 @@ import {
     Container, 
     Typography, 
     Box, 
-    FormControl 
+    FormControl,
+    CircularProgress
 } from '@mui/material';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { useCreateAcademicPeriodMutation } from '../api/academicPeriodApi';
+import { useNavigate } from 'react-router-dom';
 
 const RegistroPeriodoAcademico = () => {
     const [name, setName] = useState('');
@@ -18,6 +20,7 @@ const RegistroPeriodoAcademico = () => {
     const [description, setDescription] = useState('');
     
     const [createAcademicPeriod, { isLoading, error }] = useCreateAcademicPeriodMutation();
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -35,8 +38,8 @@ const RegistroPeriodoAcademico = () => {
                 end_date: endDate,
                 description
             }).unwrap();
-            // Maneja el éxito (e.g., muestra un mensaje, redirige, etc.)
-            alert("Período académico registrado con éxito.");
+            // Redirige a la lista de períodos académicos después de registrar
+            navigate('/academic-periods');
         } catch (err) {
             // Maneja el error
             alert(`Error: ${err.message}`);
@@ -105,7 +108,7 @@ const RegistroPeriodoAcademico = () => {
                         sx={{ mt: 2 }}
                         disabled={isLoading} // Deshabilita el botón durante la carga
                     >
-                        Registrar Período
+                        {isLoading ? <CircularProgress size={24} /> : "Registrar Período"}
                     </Button>
                     
                     {error && (
