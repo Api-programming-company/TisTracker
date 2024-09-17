@@ -140,6 +140,18 @@ const RegistroPeriodoAcademico = () => {
       alert("Deben ser mínimo 3 integrantes");
       return;
     }
+
+    //Validación del campo Docente
+    if (!selectedDocente) {
+      alert("Debe seleccionar un Consultor TIS");
+      return;
+    }
+
+    // Validación del campo Gestión
+    if (!selectedGestion) {
+      alert("Debe seleccionar una Gestión");
+      return;
+    }
     alert("Formulario enviado con éxito");
     console.log("Formulario enviado con éxito");
   };
