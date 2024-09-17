@@ -50,6 +50,7 @@ function AppBarWithMenu({ darkMode, toggleDarkMode, userType }) {
           ) : (
             <>
               <MenuItem onClick={handleMenuClose}>Perfil</MenuItem>
+              <MenuItem onClick={handleMenuClose}>Ver grupo empresa</MenuItem>
               <MenuItem onClick={handleMenuClose}>Configuración</MenuItem>
               <MenuItem onClick={handleMenuClose}>Cerrar sesión</MenuItem>
             </>

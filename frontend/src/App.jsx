@@ -51,6 +51,7 @@ function App() {
             path="/registroperiodoacademico"
             element={<RegistroPeriodoAcademico />}
           />
+          <Route path="/vergrupoe" element={<VerGE />} />
           <Route path="/registerplan" element={<Planificacion />} />
           <Route path="/upload" element={<ImageUpload />} />
 
