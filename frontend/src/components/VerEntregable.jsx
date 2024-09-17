@@ -1,0 +1,47 @@
+import { useTheme } from "@emotion/react";
+import { Box, Chip, Typography } from "@mui/material";
+import React from "react";
+
+const VerEntregable = ({ nombre_entregable, responsable, objetivo }) => {
+  const theme = useTheme();
+  return (
+    <Box
+      sx={{
+        border: `1px solid ${theme.palette.divider}`,
+        borderRadius: theme.shape.borderRadius,
+        boxShadow: theme.shadows[1],
+        display: "grid",
+        gridTemplateColumns: { xs: "1fr", sm: "1fr auto" },
+        gap: theme.spacing(2),
+        padding: theme.spacing(2),
+        alignItems: "center",
+        backgroundColor: theme.palette.background.paper,
+      }}
+    >
+      <Box>
+        <Box sx={{ display: "flex" }}>
+          <Typography variant="h6" sx={{ margin: "0px 5px", fontWeight: 'bold' }}>
+            Nombre de entregable:{" "}
+          </Typography>
+          <Chip label={nombre_entregable} variant="outlined" sx={{fontSize: 'larger'}} />
+        </Box>
+
+        <Box sx={{ display: "flex" }}>
+          <Typography variant="h6" sx={{ margin: "0px 5px", fontWeight: 'bold' }}>
+            Responsable:{" "}
+          </Typography>
+          <Chip label={responsable} variant="outlined" sx={{fontSize: 'larger'}} />
+        </Box>
+
+        <Box sx={{ display: "flex" }}>
+        <Typography variant="h6" sx={{ margin: "0px 5px", fontWeight: 'bold' }}>
+          Objetivo:{" "}
+        </Typography>
+        <Chip label={objetivo} variant="outlined" sx={{fontSize: 'larger'}}/>
+      </Box>
+      </Box>
+    </Box>
+  );
+};
+
+export default VerEntregable;

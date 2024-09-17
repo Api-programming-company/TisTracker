@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import Socio from "../components/Socio";
+import VerHito from "../components/VerHito";
 
 const VerGE = () => {
   const getInfo = {
@@ -71,17 +72,19 @@ const VerGE = () => {
       },
     ],
   };
-  const [expanded, setExpanded] = useState('');
+  const [expanded, setExpanded] = useState("panel1");
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
-  }
+  };
 
   return (
     <Box sx={{ maxWidth: 800, margin: "auto", padding: 2 }}>
-      <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+      <Accordion
+        expanded={expanded === "panel1"}
+        onChange={handleChange("panel1")}
+      >
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography variant="h4">Información de Grupo Empresa</Typography>
-
         </AccordionSummary>
         <AccordionDetails>
           <Accordion>
@@ -135,28 +138,42 @@ const VerGE = () => {
         </AccordionDetails>
       </Accordion>
 
-      <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
+      <Accordion
+        expanded={expanded === "panel2"}
+        onChange={handleChange("panel2")}
+      >
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography variant="h4">Información de sus socios</Typography>
         </AccordionSummary>
         <AccordionDetails>
-            {getInfo.integrantes.map(e => (
-                <Socio key={e.id} primary={e.nombre+" "+e.apellidos} secondary={"Socio"}/>
-            ))}
+          {getInfo.integrantes.map((e) => (
+            <Socio
+              key={e.id}
+              primary={e.nombre + " " + e.apellidos}
+              secondary={"Socio"}
+            />
+          ))}
         </AccordionDetails>
       </Accordion>
 
-      <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
+      <Accordion
+        expanded={expanded === "panel3"}
+        onChange={handleChange("panel3")}
+      >
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography variant="h4">Información de su Planificación</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMore />}>
-              <Typography variant="h5">Hitos</Typography>
-            </AccordionSummary>
-            <AccordionDetails></AccordionDetails>
-          </Accordion>
+          {getInfo.planificacion.map((e) => (
+            <VerHito
+              key={e.id}
+              nombre={e.nombre_hito}
+              fecha_ini={e.fecha_ini}
+              fecha_entrega={e.fecha_entrega}
+              cobro={e.cobro}
+              hu={e.hu}
+            />
+          ))}
         </AccordionDetails>
       </Accordion>
     </Box>
