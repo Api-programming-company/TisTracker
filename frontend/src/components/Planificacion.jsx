@@ -49,7 +49,7 @@ const Planificacion = () => {
   return (
     <Box sx={{ maxWidth: 800, margin: "auto", padding: 2 }}>
       <Typography variant="h4" sx={{ marginY: 2 }}>
-        Planificación de Entregables
+        Planificación de Hitos
       </Typography>
 
       <Stack spacing={2}>
@@ -71,7 +71,7 @@ const Planificacion = () => {
             startIcon={<AddIcon />}
             onClick={handleAgregarEntregable}
           >
-            Agregar entregable
+            Agregar hito
           </Button>
         </Box>
 
