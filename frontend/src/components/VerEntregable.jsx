@@ -32,7 +32,7 @@ const VerEntregable = ({ nombre_entregable, responsable, objetivo }) => {
         <Box sx={{ display: "flex" }}>
           <Typography
             variant="h6"
-            sx={{ margin: "0px 5px", fontWeight: "bold" }}
+            sx={{ margin: "0px 5px", fontWeight: "bold",marginBottom: 2 }}
           >
             Nombre de entregable:{" "}
           </Typography>
@@ -42,6 +42,7 @@ const VerEntregable = ({ nombre_entregable, responsable, objetivo }) => {
             sx={{
               fontSize: "larger",
               height: "auto",
+              marginBottom: 2,
               width: "100%",
               "& .MuiChip-label": {
                 display: "block",
@@ -51,10 +52,10 @@ const VerEntregable = ({ nombre_entregable, responsable, objetivo }) => {
           />
         </Box>
 
-        <Box sx={{ display: "flex" }}>
+        <Box sx={{ display: "flex", gap: 0 }}>
           <Typography
             variant="h6"
-            sx={{ margin: "0px 5px", fontWeight: "bold" }}
+            sx={{ margin: "0px 5px", fontWeight: "bold",marginBottom: 2 }}
           >
             Responsable:{" "}
           </Typography>
@@ -64,6 +65,7 @@ const VerEntregable = ({ nombre_entregable, responsable, objetivo }) => {
             sx={{
               fontSize: "larger",
               height: "auto",
+              marginBottom: 2,
               width: "100%",
               "& .MuiChip-label": {
                 display: "block",

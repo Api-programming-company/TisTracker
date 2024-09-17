@@ -10,13 +10,15 @@ const VerHito = ({ nombre, fecha_ini, fecha_entrega, cobro, hu }) => {
         padding: 2,
         borderRadius: 1,
         position: "relative",
+        marginBottom: 3,
+        
       }}
     >
       <Typography variant="h4" sx={{ marginY: 2 }}>
         Hito
       </Typography>
       <Box sx={{ display: "flex" }}>
-        <Typography variant="h6" sx={{ margin: "0px 5px", fontWeight: "bold" }}>
+        <Typography variant="h6" sx={{ margin: "0px 5px", fontWeight: "bold",marginBottom: 2}}>
           Nombre de Hito:{" "}
         </Typography>
         <Chip
@@ -24,6 +26,7 @@ const VerHito = ({ nombre, fecha_ini, fecha_entrega, cobro, hu }) => {
           variant="outlined"
           sx={{
             fontSize: "larger",
+            marginBottom: 2,
             height: "auto",
             width: "100%",
             "& .MuiChip-label": {
@@ -49,7 +52,7 @@ const VerHito = ({ nombre, fecha_ini, fecha_entrega, cobro, hu }) => {
         <Box sx={{ display: "flex" }}>
           <Typography
             variant="h6"
-            sx={{ margin: "0px 5px", fontWeight: "bold" }}
+            sx={{ margin: "0px 5px", fontWeight: "bold", marginBottom: 2 }}
           >
             Fecha de inicio:{" "}
           </Typography>
@@ -59,6 +62,7 @@ const VerHito = ({ nombre, fecha_ini, fecha_entrega, cobro, hu }) => {
             sx={{
               fontSize: "larger",
               height: "auto",
+              marginBottom: 2,
               width: "100%",
               "& .MuiChip-label": {
                 display: "block",
@@ -71,7 +75,7 @@ const VerHito = ({ nombre, fecha_ini, fecha_entrega, cobro, hu }) => {
         <Box sx={{ display: "flex" }}>
           <Typography
             variant="h6"
-            sx={{ margin: "0px 5px", fontWeight: "bold" }}
+            sx={{ margin: "0px 5px", fontWeight: "bold", marginBottom: 2 }}
           >
             Fecha de entrega:{" "}
           </Typography>
@@ -81,6 +85,7 @@ const VerHito = ({ nombre, fecha_ini, fecha_entrega, cobro, hu }) => {
             sx={{
               fontSize: "larger",
               height: "auto",
+              marginBottom: 2,
               width: "100%",
               "& .MuiChip-label": {
                 display: "block",
