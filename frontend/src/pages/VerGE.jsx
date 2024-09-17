@@ -6,7 +6,8 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
+import Socio from "../components/Socio";
 
 const VerGE = () => {
   const getInfo = {
@@ -70,66 +71,93 @@ const VerGE = () => {
       },
     ],
   };
-  //   ];
+  const [expanded, setExpanded] = useState('');
+  const handleChange = (panel) => (event, newExpanded) => {
+    setExpanded(newExpanded ? panel : false);
+  }
 
   return (
-    <Box>
-      <Typography variant="h4">Información de Grupo Empresa</Typography>
-      <Accordion>
+    <Box sx={{ maxWidth: 800, margin: "auto", padding: 2 }}>
+      <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
         <AccordionSummary expandIcon={<ExpandMore />}>
-          <Typography variant="h5">Nombre largo</Typography>
+          <Typography variant="h4">Información de Grupo Empresa</Typography>
+
         </AccordionSummary>
-        <AccordionDetails>{getInfo.nombre_largo}</AccordionDetails>
+        <AccordionDetails>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              <Typography variant="h5">Nombre largo</Typography>
+            </AccordionSummary>
+            <AccordionDetails>{getInfo.nombre_largo}</AccordionDetails>
+          </Accordion>
+
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              <Typography variant="h5">Nombre Corto</Typography>
+            </AccordionSummary>
+            <AccordionDetails>{getInfo.nombre_corto}</AccordionDetails>
+          </Accordion>
+
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              <Typography variant="h5">Correo electrónico</Typography>
+            </AccordionSummary>
+            <AccordionDetails>{getInfo.correo}</AccordionDetails>
+          </Accordion>
+
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              <Typography variant="h5">Dirección</Typography>
+            </AccordionSummary>
+            <AccordionDetails>{getInfo.direccion}</AccordionDetails>
+          </Accordion>
+
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              <Typography variant="h5">Teléfono</Typography>
+            </AccordionSummary>
+            <AccordionDetails>{getInfo.telefono}</AccordionDetails>
+          </Accordion>
+
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              <Typography variant="h5">Consultor TIS</Typography>
+            </AccordionSummary>
+            <AccordionDetails>{getInfo.consultor_tis}</AccordionDetails>
+          </Accordion>
+
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              <Typography variant="h5">Gestión</Typography>
+            </AccordionSummary>
+            <AccordionDetails>{getInfo.gestion}</AccordionDetails>
+          </Accordion>
+        </AccordionDetails>
       </Accordion>
 
-      <Accordion>
+      <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
         <AccordionSummary expandIcon={<ExpandMore />}>
-          <Typography variant="h5">Nombre Corto</Typography>
+          <Typography variant="h4">Información de sus socios</Typography>
         </AccordionSummary>
-        <AccordionDetails>{getInfo.nombre_corto}</AccordionDetails>
+        <AccordionDetails>
+            {getInfo.integrantes.map(e => (
+                <Socio key={e.id} primary={e.nombre+" "+e.apellidos} secondary={"Socio"}/>
+            ))}
+        </AccordionDetails>
       </Accordion>
 
-      <Accordion>
+      <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
         <AccordionSummary expandIcon={<ExpandMore />}>
-          <Typography variant="h5">Correo electrónico</Typography>
+          <Typography variant="h4">Información de su Planificación</Typography>
         </AccordionSummary>
-        <AccordionDetails>{getInfo.correo}</AccordionDetails>
-      </Accordion>
-
-      <Accordion>
-        <AccordionSummary expandIcon={<ExpandMore />}>
-          <Typography variant="h5">Dirección</Typography>
-        </AccordionSummary>
-        <AccordionDetails>{getInfo.direccion}</AccordionDetails>
-      </Accordion>
-
-      <Accordion>
-        <AccordionSummary expandIcon={<ExpandMore />}>
-          <Typography variant="h5">Teléfono</Typography>
-        </AccordionSummary>
-        <AccordionDetails>{getInfo.telefono}</AccordionDetails>
-      </Accordion>
-
-      <Accordion>
-        <AccordionSummary expandIcon={<ExpandMore />}>
-          <Typography variant="h5">Consultor TIS</Typography>
-        </AccordionSummary>
-        <AccordionDetails>{getInfo.consultor_tis}</AccordionDetails>
-      </Accordion>
-
-      <Accordion>
-        <AccordionSummary expandIcon={<ExpandMore />}>
-          <Typography variant="h5">Gestión</Typography>
-        </AccordionSummary>
-        <AccordionDetails>{getInfo.gestion}</AccordionDetails>
-      </Accordion>
-
-      <Typography variant="h4">Información de su Planificación</Typography>
-      <Accordion>
-        <AccordionSummary expandIcon={<ExpandMore />}>
-          <Typography variant="h5">Hitos</Typography>
-        </AccordionSummary>
-        <AccordionDetails></AccordionDetails>
+        <AccordionDetails>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              <Typography variant="h5">Hitos</Typography>
+            </AccordionSummary>
+            <AccordionDetails></AccordionDetails>
+          </Accordion>
+        </AccordionDetails>
       </Accordion>
     </Box>
   );
