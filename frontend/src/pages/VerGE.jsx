@@ -39,7 +39,7 @@ const VerGE = () => {
             id: 1,
             nombre_hu: "Documentacion Parte A",
             responsable: "Susana Horia",
-            objetivo: "s",
+            objetivo: "Redactar la parte B de la documentacionRedactar la parte B de la documentacionRedactar la parte B de la documentacion",
           },
           {
             id: 2,

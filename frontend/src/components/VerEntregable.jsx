@@ -20,25 +20,70 @@ const VerEntregable = ({ nombre_entregable, responsable, objetivo }) => {
     >
       <Box>
         <Box sx={{ display: "flex" }}>
-          <Typography variant="h6" sx={{ margin: "0px 5px", fontWeight: 'bold' }}>
+          <Typography
+            variant="h6"
+            sx={{ margin: "0px 5px", fontWeight: "bold" }}
+          >
             Nombre de entregable:{" "}
           </Typography>
-          <Chip label={nombre_entregable} variant="outlined" sx={{fontSize: 'larger'}} />
+          <Chip
+            label={nombre_entregable}
+            variant="outlined"
+            sx={{
+                fontSize: "larger",
+                height: "auto",
+                width: "100%",
+                "& .MuiChip-label": {
+                  display: "block",
+                  whiteSpace: "normal",
+                },
+              }}
+          />
         </Box>
 
         <Box sx={{ display: "flex" }}>
-          <Typography variant="h6" sx={{ margin: "0px 5px", fontWeight: 'bold' }}>
+          <Typography
+            variant="h6"
+            sx={{ margin: "0px 5px", fontWeight: "bold" }}
+          >
             Responsable:{" "}
           </Typography>
-          <Chip label={responsable} variant="outlined" sx={{fontSize: 'larger'}} />
+          <Chip
+            label={responsable}
+            variant="outlined"
+            sx={{
+              fontSize: "larger",
+              height: "auto",
+              width: '100%',
+              "& .MuiChip-label": {
+                display: "block",
+                whiteSpace: "normal",
+              },
+            }}
+          />
         </Box>
 
         <Box sx={{ display: "flex" }}>
-        <Typography variant="h6" sx={{ margin: "0px 5px", fontWeight: 'bold' }}>
-          Objetivo:{" "}
-        </Typography>
-        <Chip label={objetivo} variant="outlined" sx={{fontSize: 'larger'}}/>
-      </Box>
+          <Typography
+            variant="h6"
+            sx={{ margin: "0px 5px", fontWeight: "bold" }}
+          >
+            Objetivo:{" "}
+          </Typography>
+          <Chip
+            label={objetivo}
+            variant="outlined"
+            sx={{
+                fontSize: "larger",
+                height: "auto",
+                width: "100%",
+                "& .MuiChip-label": {
+                  display: "block",
+                  whiteSpace: "normal",
+                },
+              }}
+          />
+        </Box>
       </Box>
     </Box>
   );

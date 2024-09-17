@@ -13,10 +13,22 @@ const VerHito = ({ nombre, fecha_ini, fecha_entrega, cobro, hu }) => {
       }}
     >
       <Box sx={{ display: "flex" }}>
-        <Typography variant="h6" sx={{ margin: "0px 5px", fontWeight: 'bold'}}>
+        <Typography variant="h6" sx={{ margin: "0px 5px", fontWeight: "bold" }}>
           Nombre de Hito:{" "}
         </Typography>
-        <Chip label={nombre} variant="outlined" sx={{fontSize: 'larger'}}/>
+        <Chip
+          label={nombre}
+          variant="outlined"
+          sx={{
+            fontSize: "larger",
+            height: "auto",
+            width: "100%",
+            "& .MuiChip-label": {
+              display: "block",
+              whiteSpace: "normal",
+            },
+          }}
+        />
       </Box>
       <Box
         sx={{
@@ -32,24 +44,66 @@ const VerHito = ({ nombre, fecha_ini, fecha_entrega, cobro, hu }) => {
         }}
       >
         <Box sx={{ display: "flex" }}>
-          <Typography variant="h6" sx={{ margin: "0px 5px", fontWeight: 'bold' }}>
+          <Typography
+            variant="h6"
+            sx={{ margin: "0px 5px", fontWeight: "bold" }}
+          >
             Fecha de inicio:{" "}
           </Typography>
-          <Chip label={fecha_ini} variant="outlined" sx={{fontSize: 'larger'}}/>
+          <Chip
+            label={fecha_ini}
+            variant="outlined"
+            sx={{
+              fontSize: "larger",
+              height: "auto",
+              width: "100%",
+              "& .MuiChip-label": {
+                display: "block",
+                whiteSpace: "normal",
+              },
+            }}
+          />
         </Box>
 
         <Box sx={{ display: "flex" }}>
-          <Typography variant="h6" sx={{ margin: "0px 5px", fontWeight: 'bold' }}>
+          <Typography
+            variant="h6"
+            sx={{ margin: "0px 5px", fontWeight: "bold" }}
+          >
             Fecha de entrega:{" "}
           </Typography>
-          <Chip label={fecha_entrega} variant="outlined" sx={{fontSize: 'larger'}}/>
+          <Chip
+            label={fecha_entrega}
+            variant="outlined"
+            sx={{
+              fontSize: "larger",
+              height: "auto",
+              width: "100%",
+              "& .MuiChip-label": {
+                display: "block",
+                whiteSpace: "normal",
+              },
+            }}
+          />
         </Box>
       </Box>
       <Box sx={{ display: "flex" }}>
-        <Typography variant="h6" sx={{ margin: "0px 5px", fontWeight: 'bold' }}>
+        <Typography variant="h6" sx={{ margin: "0px 5px", fontWeight: "bold" }}>
           Porcentaje de cobro en (%):{" "}
         </Typography>
-        <Chip label={cobro} variant="outlined" sx={{fontSize: 'larger'}}/>
+        <Chip
+          label={cobro}
+          variant="outlined"
+          sx={{
+            fontSize: "larger",
+            height: "auto",
+            width: "100%",
+            "& .MuiChip-label": {
+              display: "block",
+              whiteSpace: "normal",
+            },
+          }}
+        />
       </Box>
       <Typography variant="h4" sx={{ marginY: 2 }}>
         Entregables
