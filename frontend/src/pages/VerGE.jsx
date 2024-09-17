@@ -7,6 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
+import Socio from "../components/Socio";
 
 const VerGE = () => {
   const getInfo = {
@@ -139,12 +140,9 @@ const VerGE = () => {
           <Typography variant="h4">Información de sus socios</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMore />}>
-              <Typography variant="h5">Socios</Typography>
-            </AccordionSummary>
-            <AccordionDetails></AccordionDetails>
-          </Accordion>
+            {getInfo.integrantes.map(e => (
+                <Socio key={e.id} primary={e.nombre+" "+e.apellidos} secondary={"Socio"}/>
+            ))}
         </AccordionDetails>
       </Accordion>
 
