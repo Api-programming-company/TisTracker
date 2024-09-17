@@ -3,22 +3,20 @@ import { Card, CardContent, Typography, Grid, Container, Fab } from '@mui/materi
 import AddIcon from '@mui/icons-material/Add';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
+import { useGetAcademicPeriodsQuery } from '../api/academicPeriodApi'; 
 
-// Datos de ejemplo
-const periods = Array.from({ length: 25 }, (_, i) => ({
-  name: `Periodo ${i + 1}`,
-  startDate: new Date(2024, i % 12, 1),
-  endDate: new Date(2024, (i % 12) + 1, 0)
-}));
-
-const formatDate = (date) => format(date, 'dd MMM yyyy');
+const formatDate = (date) => format(new Date(date), 'dd MMM yyyy');
 
 const ListaPeriodosAcademicos = () => {
   const navigate = useNavigate();
+  const { data: periods = [], error, isLoading } = useGetAcademicPeriodsQuery();
 
   const handleClick = () => {
     navigate('/registroperiodoacademico');
   };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
 
   return (
     <Container>
@@ -26,19 +24,24 @@ const ListaPeriodosAcademicos = () => {
         Lista de Períodos Académicos
       </Typography>
       <Grid container spacing={3}>
-        {periods.map((period, index) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+        {periods.map((period) => (
+          <Grid item xs={12} sm={6} md={4} lg={3} key={period.id}>
             <Card>
               <CardContent>
                 <Typography variant="h6" component="div">
                   {period.name}
                 </Typography>
                 <Typography color="text.secondary">
-                  Fecha de Inicio: {formatDate(period.startDate)}
+                  Fecha de Inicio: {formatDate(period.start_date)}
                 </Typography>
                 <Typography color="text.secondary">
-                  Fecha de Fin: {formatDate(period.endDate)}
+                  Fecha de Fin: {formatDate(period.end_date)}
                 </Typography>
+                {period.description && (
+                  <Typography color="text.secondary">
+                    Descripción: {period.description}
+                  </Typography>
+                )}
               </CardContent>
             </Card>
           </Grid>

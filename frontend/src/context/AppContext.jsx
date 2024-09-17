@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import { useLazyCheckUserQuery, useLogoutUserMutation } from "../api/userApi";
-import { CircularProgress, Alert } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const AppContext = createContext();
