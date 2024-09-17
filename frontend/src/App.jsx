@@ -16,6 +16,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import { AppProvider } from "./context/AppContext";
 import { Planificacion, AppBarWithMenu } from "./components";
 import { lightTheme, darkTheme } from "./theme";
+import VerGE from "./pages/VerGE";
 
 function App() {
   const [darkMode, setDarkMode] = useState(() => {
