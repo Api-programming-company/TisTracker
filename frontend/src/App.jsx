@@ -1,6 +1,6 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
-import { useState, useEffect, useContext } from "react";
+import { useContext } from "react";
 import AppContext from "./context/AppContext";
 import {
   Home,
@@ -13,30 +13,16 @@ import {
   VerifyEmail,
   Example,
 } from "./pages";
-import { ThemeProvider } from "@mui/material/styles";
-import { CssBaseline } from "@mui/material";
 import { Planificacion, AppBarWithMenu } from "./components";
-import { lightTheme, darkTheme } from "./theme";
+
 import VerGE from "./pages/VerGE";
 
-function App() {
+function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
-  const userType = user ? user.type : "guest";
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    const savedMode = localStorage.getItem("darkMode");
-    return savedMode === "true";
-  });
-  useEffect(() => {
-    localStorage.setItem("darkMode", isDarkMode);
-  }, [isDarkMode]);
-
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-  };
+  const userType = user ? user.user_type : "guest";
 
   return (
-    <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
-      <CssBaseline />
+    <>
       <AppBarWithMenu
         darkMode={isDarkMode}
         toggleDarkMode={toggleTheme}
@@ -62,7 +48,7 @@ function App() {
         <Route path="/example" element={<Example />} />
         <Route path="/*" element={<NotFound />} />
       </Routes>
-    </ThemeProvider>
+    </>
   );
 }
 
