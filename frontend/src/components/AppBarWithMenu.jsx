@@ -9,7 +9,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 
-function AppBarWithMenu({ darkMode, toggleDarkMode, userType }) {
+function AppBarWithMenu({ isDarkMode, toggleDarkMode, userType }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleMenuOpen = (event) => {
@@ -27,7 +27,7 @@ function AppBarWithMenu({ darkMode, toggleDarkMode, userType }) {
           TisTracker
         </Typography>
         <IconButton color="inherit" onClick={toggleDarkMode}>
-          {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+          {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
         </IconButton>
         <IconButton
           edge="end"

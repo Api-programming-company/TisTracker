@@ -13,30 +13,34 @@ import {
   Example,
 } from "./pages";
 import { ThemeProvider } from "@mui/material/styles";
+import { CssBaseline } from "@mui/material";
 import { AppProvider } from "./context/AppContext";
 import { Planificacion, AppBarWithMenu } from "./components";
 import { lightTheme, darkTheme } from "./theme";
 import VerGE from "./pages/VerGE";
 
 function App() {
-  const [darkMode, setDarkMode] = useState(() => {
+  const [isDarkMode, setIsDarkMode] = useState(() => {
     const savedMode = localStorage.getItem("darkMode");
     return savedMode === "true";
   });
-  const theme = darkMode ? darkTheme : lightTheme;
-
   useEffect(() => {
-    localStorage.setItem("darkMode", darkMode);
-  }, [darkMode]);
+    localStorage.setItem("darkMode", isDarkMode);
+  }, [isDarkMode]);
 
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <AppProvider>
-        <AppBarWithMenu darkMode={darkMode} toggleDarkMode={toggleDarkMode} userType={"guest"}/>
+    <AppProvider>
+      <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
+        <CssBaseline />
+        <AppBarWithMenu
+          darkMode={isDarkMode}
+          toggleDarkMode={toggleTheme}
+          userType={"guest"}
+        />
 
         <Routes>
           <Route path="/register" element={<UserRegister />} />
@@ -57,8 +61,8 @@ function App() {
           <Route path="/example" element={<Example />} />
           <Route path="/*" element={<NotFound />} />
         </Routes>
-      </AppProvider>
-    </ThemeProvider>
+      </ThemeProvider>
+    </AppProvider>
   );
 }
 
