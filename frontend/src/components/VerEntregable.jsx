@@ -18,7 +18,17 @@ const VerEntregable = ({ nombre_entregable, responsable, objetivo }) => {
         backgroundColor: theme.palette.background.paper,
       }}
     >
-      <Box>
+      <Box
+        sx={{
+          "& > *": {
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            flex: 1,
+            minWidth: { xs: "100%", sm: "auto" },
+            boxSizing: "border-box",
+          },
+        }}
+      >
         <Box sx={{ display: "flex" }}>
           <Typography
             variant="h6"
@@ -30,14 +40,14 @@ const VerEntregable = ({ nombre_entregable, responsable, objetivo }) => {
             label={nombre_entregable}
             variant="outlined"
             sx={{
-                fontSize: "larger",
-                height: "auto",
-                width: "100%",
-                "& .MuiChip-label": {
-                  display: "block",
-                  whiteSpace: "normal",
-                },
-              }}
+              fontSize: "larger",
+              height: "auto",
+              width: "100%",
+              "& .MuiChip-label": {
+                display: "block",
+                whiteSpace: "normal",
+              },
+            }}
           />
         </Box>
 
@@ -54,7 +64,7 @@ const VerEntregable = ({ nombre_entregable, responsable, objetivo }) => {
             sx={{
               fontSize: "larger",
               height: "auto",
-              width: '100%',
+              width: "100%",
               "& .MuiChip-label": {
                 display: "block",
                 whiteSpace: "normal",
@@ -74,14 +84,14 @@ const VerEntregable = ({ nombre_entregable, responsable, objetivo }) => {
             label={objetivo}
             variant="outlined"
             sx={{
-                fontSize: "larger",
-                height: "auto",
-                width: "100%",
-                "& .MuiChip-label": {
-                  display: "block",
-                  whiteSpace: "normal",
-                },
-              }}
+              fontSize: "larger",
+              height: "auto",
+              width: "100%",
+              "& .MuiChip-label": {
+                display: "block",
+                whiteSpace: "normal",
+              },
+            }}
           />
         </Box>
       </Box>
