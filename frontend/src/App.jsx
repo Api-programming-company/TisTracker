@@ -12,6 +12,7 @@ import {
   Login,
   VerifyEmail,
   Example,
+  Logout
 } from "./pages";
 import { Planificacion, AppBarWithMenu } from "./components";
 
@@ -33,6 +34,7 @@ function App({ toggleTheme, isDarkMode }) {
         <Route path="/register" element={<UserRegister />} />
         <Route path="/login" element={<Login />} />
         <Route path="/verify-email/:token" element={<VerifyEmail />} />
+        <Route path="/logout" element={<Logout />} />
 
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />

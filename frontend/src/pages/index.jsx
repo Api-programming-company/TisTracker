@@ -6,4 +6,5 @@ export { default as UserRegister } from "./UserRegister";
 export { default as RegistroGE } from "./RegistroGE";
 export { default as Login } from "./Login";
 export { default as VerifyEmail } from "./VerifyEmail";
+export { default as Logout } from "./Logout";
 export { default as Example } from "./Example";
