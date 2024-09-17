@@ -19,11 +19,7 @@
     </coverage>
     <php>
         <env name="APP_ENV" value="testing"/>
-        <env name="DB_CONNECTION" value="pgsql"/>
-        <env name="DB_HOST" value="roundhouse.proxy.rlwy.net"/>
-        <env name="DB_PORT" value="23600"/>
-        <env name="DB_DATABASE" value="railway"/>
-        <env name="DB_USERNAME" value="postgres"/>
-        <env name="DB_PASSWORD" value="lutLTbTdXqFJGNcaiSEaHUzSUJjZgxBM"/>
+        <env name="DB_CONNECTION" value="sqlite"/>
+        <env name="DB_DATABASE" value="database/database.sqlite"/>
     </php>
 </phpunit>

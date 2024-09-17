@@ -31,6 +31,8 @@ class AuthControllerTest extends TestCase
             'user_type' => 'E',
         ]);
 
+        dd($response->getContent());
+
         $response->assertStatus(201);
         $response->assertJson([
             'message' => 'Registro exitoso. Por favor, revisa tu correo para verificar tu cuenta.'
