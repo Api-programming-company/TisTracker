@@ -133,6 +133,17 @@ const RegistroPeriodoAcademico = () => {
     );
   };
 
+  //Función para controlar que sean al menos 3 integrantes
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (selectedItems.length < 3) {
+      alert("Deben ser mínimo 3 integrantes");
+      return;
+    }
+    alert("Formulario enviado con éxito");
+    console.log("Formulario enviado con éxito");
+  };
+
   //Funciones para obtener los valores de los desplegables docente y gestión
   const handleChangeDocente = (event) => {
     setSelectedDocente(event.target.value);
@@ -154,8 +165,7 @@ const RegistroPeriodoAcademico = () => {
           Registrar Grupo-Empresa
         </Typography>
 
-        <form>
-          {/*  */}
+        <form onSubmit={handleSubmit}>
           <FormControl fullWidth sx={{ mb: 2 }}>
             <Box
               sx={{
