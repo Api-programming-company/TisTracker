@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import { useLazyCheckUserQuery } from "../api/userApi";
+import { useLazyCheckUserQuery, useLogoutUserMutation } from "../api/userApi";
 import { CircularProgress, Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -8,6 +8,7 @@ const AppContext = createContext();
 export const AppProvider = ({ children }) => {
   const [checkUser, { data, error, isError, isSuccess, isLoading }] =
     useLazyCheckUserQuery();
+  const [logoutUser, { isLoading: isLoggingOut }] = useLogoutUserMutation();
   const navigate = useNavigate();
   // Iniciamos el user con los datos del localstorage si existen
   const [user, setUser] = useState(() => {
@@ -32,9 +33,21 @@ export const AppProvider = ({ children }) => {
       removeUserFromLocalStorage(); // Eliminar el usuario en caso de error
     }
   }, [data, isSuccess, isError]);
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser().unwrap(); // Llama a la mutación de logout y espera a que se complete
+      setUser(null);
+      removeUserFromLocalStorage();
+      navigate("/login"); // Redirige al usuario a la página de inicio de sesión
+    } catch (error) {
+      console.error("Error durante el cierre de sesión:", error);
+      // Manejo de errores si es necesario
+    }
+  };
   return (
-    <AppContext.Provider value={{ user, setUser }}>
-      {isLoading ? (
+    <AppContext.Provider value={{ user, setUser, handleLogout }}>
+      {isLoading || isLoggingOut ? (
         <div
           style={{
             display: "flex",

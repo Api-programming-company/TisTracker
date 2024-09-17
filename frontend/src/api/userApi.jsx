@@ -22,6 +22,15 @@ const userApi = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    logoutUser: builder.mutation({
+      query: () => ({
+        url: "user/logout",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }),
+    }),
     checkEmail: builder.query({
       query: (email) => `user/check-email?email=${encodeURIComponent(email)}`,
     }),
@@ -36,7 +45,7 @@ const userApi = apiSlice.injectEndpoints({
       }),
     }),
     checkUser: builder.query({
-      query: () => 'user',
+      query: () => "user",
     }),
   }),
 });
@@ -44,6 +53,7 @@ const userApi = apiSlice.injectEndpoints({
 export const {
   useRegisterUserMutation,
   useLoginUserMutation,
+  useLogoutUserMutation,
   useLazyCheckEmailQuery,
   useVerifyEmailMutation,
   useLazyCheckUserQuery,
