@@ -9,7 +9,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 
-function Sidebar() {
+function AppBarWithDrawer() {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
 
   const toggleDrawer = (open) => (event) => {
@@ -48,4 +48,4 @@ function Sidebar() {
   );
 }
 
-export default Sidebar;
+export default AppBarWithDrawer;

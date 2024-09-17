@@ -15,7 +15,7 @@ import {
 import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline, useMediaQuery, IconButton } from "@mui/material";
 import { AppProvider } from "./context/AppContext";
-import { Sidebar, Planificacion } from "./components";
+import { Sidebar, Planificacion , SimpleAppBar, AppBarWithButtons, AppBarWithDrawer, AppBarWithMenu, TransparentAppBar, BottomAppBar} from "./components";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import { lightTheme, darkTheme } from "./theme";
@@ -26,7 +26,7 @@ function App() {
     return savedMode === "true";
   });
   const theme = darkMode ? darkTheme : lightTheme;
-  
+
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [open, setOpen] = useState(false);
   const [hideSidebar, setHideSidebar] = useState(false);
@@ -42,51 +42,50 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
-        <AppProvider>
-          <Sidebar
-            open={open}
-            setOpen={setOpen}
-            hideSidebar={hideSidebar}
-            setHideSidebar={setHideSidebar}
-          />
-          <IconButton
-            onClick={toggleDarkMode}
-            style={{ position: "fixed", top: 16, right: 16, zIndex: 1200 }}
-          >
-            {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
-          </IconButton>
-          <main
-            style={{
-              padding: "16px",
-              marginLeft: hideSidebar ? 0 : isSmallScreen ? 0 : 240,
-              transition: "margin-left 0.3s ease",
-              position: "relative",
-              zIndex: 1,
-            }}
-          >
-            <Routes>
-              <Route path="/register" element={<UserRegister />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/verify-email/:token" element={<VerifyEmail />} />
 
-              <Route path="/" element={<Home />} />
-              <Route path="/home" element={<Home />} />
+      <AppProvider>
+        <BottomAppBar
+          open={open}
+          setOpen={setOpen}
+          hideSidebar={hideSidebar}
+          setHideSidebar={setHideSidebar}
+        />
+        <IconButton
+          onClick={toggleDarkMode}
+          style={{ position: "fixed", top: 16, right: 16, zIndex: 1200 }}
+        >
+          {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+        </IconButton>
+        <main
+          style={{
+            padding: "16px",
+            marginLeft: hideSidebar ? 0 : isSmallScreen ? 0 : 240,
+            transition: "margin-left 0.3s ease",
+            position: "relative",
+            zIndex: 1,
+          }}
+        >
+          <Routes>
+            <Route path="/register" element={<UserRegister />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/verify-email/:token" element={<VerifyEmail />} />
 
-              <Route path="/registroge" element={<RegistroGE />} />
-              <Route
-                path="/registroperiodoacademico"
-                element={<RegistroPeriodoAcademico />}
-              />
-              <Route path="/registerplan" element={<Planificacion />} />
-              <Route path="/upload" element={<ImageUpload />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} />
 
-              <Route path="/example" element={<Example />} />
-              <Route path="/*" element={<NotFound />} />
-            </Routes>
-          </main>
-        </AppProvider>
-      </Router>
+            <Route path="/registroge" element={<RegistroGE />} />
+            <Route
+              path="/registroperiodoacademico"
+              element={<RegistroPeriodoAcademico />}
+            />
+            <Route path="/registerplan" element={<Planificacion />} />
+            <Route path="/upload" element={<ImageUpload />} />
+
+            <Route path="/example" element={<Example />} />
+            <Route path="/*" element={<NotFound />} />
+          </Routes>
+        </main>
+      </AppProvider>
     </ThemeProvider>
   );
 }
