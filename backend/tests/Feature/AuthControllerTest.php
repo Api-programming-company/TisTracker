@@ -31,7 +31,7 @@ class AuthControllerTest extends TestCase
             'user_type' => 'E',
         ]);
 
-        dd($response->getContent());
+        // dd($response->getContent());     //para mas info
 
         $response->assertStatus(201);
         $response->assertJson([
