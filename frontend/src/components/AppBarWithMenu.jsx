@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -11,6 +12,7 @@ import Brightness7Icon from "@mui/icons-material/Brightness7";
 
 function AppBarWithMenu({ isDarkMode, toggleDarkMode, userType }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const navigate = useNavigate();
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -18,6 +20,28 @@ function AppBarWithMenu({ isDarkMode, toggleDarkMode, userType }) {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleNavigation = (path) => {
+    navigate(path);
+    handleMenuClose();
+  };
+
+  const menuOptions = {
+    guest: [
+      { label: "Iniciar sesión", path: "/login" },
+      { label: "Registrarse", path: "/register" },
+    ],
+    estudiante: [
+      { label: "Perfil", path: "/profile" },
+      { label: "Mis cursos", path: "/courses" },
+      { label: "Cerrar sesión", path: "/logout" },
+    ],
+    docente: [
+      { label: "Perfil", path: "/profile" },
+      { label: "Mis clases", path: "/classes" },
+      { label: "Cerrar sesión", path: "/logout" },
+    ],
   };
 
   return (
@@ -42,18 +66,14 @@ function AppBarWithMenu({ isDarkMode, toggleDarkMode, userType }) {
           open={Boolean(anchorEl)}
           onClose={handleMenuClose}
         >
-          {userType === 'guest' ? (
-            <>
-              <MenuItem onClick={handleMenuClose}>Iniciar sesión</MenuItem>
-              <MenuItem onClick={handleMenuClose}>Registrarse</MenuItem>
-            </>
-          ) : (
-            <>
-              <MenuItem onClick={handleMenuClose}>Perfil</MenuItem>
-              <MenuItem onClick={handleMenuClose}>Configuración</MenuItem>
-              <MenuItem onClick={handleMenuClose}>Cerrar sesión</MenuItem>
-            </>
-          )}
+          {menuOptions[userType]?.map((option) => (
+            <MenuItem
+              key={option.label}
+              onClick={() => handleNavigation(option.path)}
+            >
+              {option.label}
+            </MenuItem>
+          ))}
         </Menu>
       </Toolbar>
     </AppBar>
