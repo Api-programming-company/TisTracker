@@ -82,7 +82,7 @@ const Hu = ({ handleEliminarHu, onUpdate, info, trigger, setTrigger }) => {
     >
       <Box>
         <TextField
-          label="Nombre del hito*"
+          label="Nombre del entregable*"
           name="nombre_hu"
           variant="outlined"
           fullWidth

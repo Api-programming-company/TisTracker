@@ -204,7 +204,7 @@ const Entregable = ({ entregable, onUpdate, onDelete, trigger, setTrigger}) => {
       />
 
       <Typography variant="h4" sx={{ marginY: 2 }}>
-        Historias de usuario
+        Entregables
       </Typography>
         
       <Stack spacing={2}>
@@ -218,7 +218,7 @@ const Entregable = ({ entregable, onUpdate, onDelete, trigger, setTrigger}) => {
             startIcon={<AddIcon />}
             onClick={handleAgregarHu}
           >
-            Agregar historia de usuario
+            Agregar entregable
           </Button>
         </Box>
       </Stack>
@@ -231,7 +231,7 @@ const Entregable = ({ entregable, onUpdate, onDelete, trigger, setTrigger}) => {
           aria-label="Eliminar entregable"
           sx={{ ml: 2 }}
         >
-          <DeleteIcon />
+          <DeleteIcon /> Quitar hito
         </IconButton>
       </Box>
     </Box>
