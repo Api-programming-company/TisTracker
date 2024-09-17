@@ -361,6 +361,42 @@ public function validarSiAlmenosUnaMinuscula()
     Mail::assertNotSent(VerifyEmail::class);
 }
 
+/** @test */
+public function validarSiAlmenosUnaNumero()
+{
+    // Simular el envío de correo
+    Mail::fake();
+
+    $response = $this->postJson('/api/user/register', [
+        'first_name' => 'simon',
+        'last_name' => 'Prueba',
+        'email' => '123456789@est.umss.edu',
+        'password' => 'PASSWORD!',    
+        'password_confirmation' => 'PASSWORD!',
+        'user_type' => 'E',
+    ]);
+     //Password158¡
+    // Verificar que la respuesta tenga un estado 422 (Unprocessable Entity)
+    $response->assertStatus(422);
+    $response->assertJson([
+        'message' => 'Error de validación'
+    ]);
+
+    // Verificar que el usuario no fue creado en la base de datos
+    $this->assertDatabaseMissing('users', [
+        'email' => '123456789@est.umss.edu',
+    ]);
+
+    // Verificar que no se creó un token de verificación en la base de datos
+    $user = User::where('email', '123456789@est.umss.edu')->first();
+    $this->assertNull($user);
+
+    // Verificar que no se envió el correo de verificación
+    Mail::assertNotSent(VerifyEmail::class);
+}
+
+
+
 
 
 
