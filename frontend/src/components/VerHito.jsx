@@ -1,8 +1,22 @@
-import { Box, Chip, Stack, Typography } from "@mui/material";
+import { Box, Button, Chip, Stack, Typography } from "@mui/material";
 import React from "react";
 import VerEntregable from "./VerEntregable";
+import { useNavigate } from "react-router-dom";
+import EditIcon from "@mui/icons-material/Edit";
 
-const VerHito = ({ nombre, fecha_ini, fecha_entrega, cobro, hu }) => {
+const VerHito = ({ id, nombre_hito, fecha_ini, fecha_entrega, cobro, hu }) => {
+  const navigate = useNavigate();
+
+  const handleEditHito = () => {
+    let y = fecha_ini.split("/");
+    fecha_ini = y[1] + "/" + y[0] + "/" + y[2];
+    let z = fecha_entrega.split("/");
+    fecha_entrega = z[1] + "/" + z[0] + "/" + z[2];
+
+    navigate(`/edithito/${id}`, {
+      state: { id, nombre_hito, fecha_ini, fecha_entrega, cobro, hu },
+    });
+  };
   return (
     <Box
       sx={{
@@ -11,18 +25,33 @@ const VerHito = ({ nombre, fecha_ini, fecha_entrega, cobro, hu }) => {
         borderRadius: 1,
         position: "relative",
         marginBottom: 3,
-        
       }}
     >
-      <Typography variant="h5" sx={{ marginY: 2, fontWeight: 'bold'}}>
-        Hito
-      </Typography>
+      <Box
+        sx={{ display: "flex", justifyContent: "space-between", marginY: 2 }}
+      >
+        <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+          Hito
+        </Typography>
+
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<EditIcon />}
+          onClick={handleEditHito}
+        >
+          Editar hito
+        </Button>
+      </Box>
       <Box sx={{ display: "flex" }}>
-        <Typography variant="subtitle" sx={{ margin: "0px 5px", fontWeight: "bold",marginBottom: 2}}>
+        <Typography
+          variant="subtitle"
+          sx={{ margin: "0px 5px", fontWeight: "bold", marginBottom: 2 }}
+        >
           Nombre de Hito:{" "}
         </Typography>
         <Chip
-          label={nombre}
+          label={nombre_hito}
           variant="outlined"
           sx={{
             fontSize: "larger",
@@ -96,7 +125,10 @@ const VerHito = ({ nombre, fecha_ini, fecha_entrega, cobro, hu }) => {
         </Box>
       </Box>
       <Box sx={{ display: "flex" }}>
-        <Typography variant="subtitle" sx={{ margin: "0px 5px", fontWeight: "bold" }}>
+        <Typography
+          variant="subtitle"
+          sx={{ margin: "0px 5px", fontWeight: "bold" }}
+        >
           Porcentaje de cobro en (%):{" "}
         </Typography>
         <Chip
@@ -113,7 +145,7 @@ const VerHito = ({ nombre, fecha_ini, fecha_entrega, cobro, hu }) => {
           }}
         />
       </Box>
-      <Typography variant="h5" sx={{ marginY: 2, fontWeight: 'bold' }}>
+      <Typography variant="h5" sx={{ marginY: 2, fontWeight: "bold" }}>
         Entregables
       </Typography>
       <Stack spacing={2}>

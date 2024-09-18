@@ -16,6 +16,7 @@ import {
 import { Planificacion, AppBarWithMenu, ListaPeriodosAcademicos } from "./components";
 
 import VerGE from "./pages/VerGE";
+import EditarHito from "./components/EditarHito";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -48,6 +49,8 @@ function App({ toggleTheme, isDarkMode }) {
         />
         <Route path="/registerplan" element={<Planificacion />} />
         <Route path="/upload" element={<ImageUpload />} />
+        <Route path="/edithito/:id" element={<EditarHito />} />
+
 
         <Route path="/example" element={<Example />} />
         <Route path="/*" element={<NotFound />} />
