@@ -1,9 +1,11 @@
-import { Box, Button, Chip, Stack, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import React, { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import Entregable from "./Entregable";
 
 const VerHito = ({ entregable }) => {
+  // en entregable esta id, nombre_hito, fecha_ini, fecha_entrega, cobro, hu: []
+  const [formData, setFormData] = useState(entregable)
   const [editar, setEditar] = useState(true);
 
   const handleAgregarEntregable = () => {
@@ -14,11 +16,10 @@ const VerHito = ({ entregable }) => {
   };
 
   const handleUpdateEntregable = (updatedData) => {
-    // setEntregables(
-    //   entregables.map(entregable =>
-    //     entregable.id === updatedData.id ? updatedData : entregable
-    //   )
-    // );
+    setFormData((prevState)=>{
+      const newFormData = {...prevState, ...updatedData}
+      return newFormData
+    });
   };
 
   const handleEliminarEntregable = (id) => {
@@ -35,9 +36,7 @@ const VerHito = ({ entregable }) => {
         marginBottom: 3,
       }}
     >
-      <Box
-        sx={{ display: "flex", justifyContent: "space-between", marginY: 2 }}
-      >
+      <Box sx={{ display: "flex", justifyContent: "space-evenly", marginY: 2 }}>
         <Typography variant="h5" sx={{ fontWeight: "bold" }}>
           Hito
         </Typography>
@@ -53,7 +52,7 @@ const VerHito = ({ entregable }) => {
       </Box>
 
       <Entregable
-        entregable={entregable}
+        entregable={formData}
         onDelete={handleEliminarEntregable}
         onUpdate={handleUpdateEntregable}
         toEdit={editar}
