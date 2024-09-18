@@ -65,8 +65,8 @@ public function validarPassMenorA8()
         'first_name' => 'Simon',
         'last_name' => 'Prueba',
         'email' => '123456789@est.umss.edu',
-        'password' => 'Passwor',    // Menor a 8 caracteres
-        'password_confirmation' => 'Passwor',
+        'password' => 'Pas1@',    // Menor a 8 caracteres
+        'password_confirmation' => 'Pas1@',
         'user_type' => 'E',
     ]);
 
