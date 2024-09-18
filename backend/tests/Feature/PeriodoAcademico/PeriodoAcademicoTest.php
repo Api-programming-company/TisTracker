@@ -18,9 +18,9 @@ class AuthControllerDocenteTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function non_docente_cannot_create_academic_period()
+    public function Solo_docente_puede_crear_periodoAcademico()
     {
-        // Crear un usuario con tipo diferente a 'D'
+        // Crear un usuario con tipo Estudiante "E"
         $estudiante = User::factory()->create(['user_type' => 'E']);
         $this->actingAs($estudiante);
 
@@ -46,9 +46,9 @@ class AuthControllerDocenteTest extends TestCase
 
 
     /** @test */
-    public function only_docente_can_create_academic_period()
+    public function Docente_puede_crear_periodo_academico()
     {
-        // Crear un usuario con tipo 'D'
+        // Crear un usuario con tipo "D" (Docente)
         $docente = User::factory()->create(['user_type' => 'D']);
         $this->actingAs($docente);
 
@@ -64,7 +64,7 @@ class AuthControllerDocenteTest extends TestCase
         $response = $this->postJson('/api/docente/academic-periods', $data);
 
         // Imprimir la respuesta para depuración
-        dd($response->getContent());
+        //dd($response->getContent());
 
         // Verificar que la respuesta sea 201 (creado)
         $response->assertStatus(201);
