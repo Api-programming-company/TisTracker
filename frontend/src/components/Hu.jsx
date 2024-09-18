@@ -85,6 +85,7 @@ const Hu = ({ handleEliminarHu, onUpdate, info, trigger, setTrigger }) => {
           label="Nombre del entregable*"
           name="nombre_hu"
           variant="outlined"
+          value={huData.nombre_hu}
           fullWidth
           sx={{ mb: 2 }}
           onChange={handleInputChange}
@@ -96,6 +97,7 @@ const Hu = ({ handleEliminarHu, onUpdate, info, trigger, setTrigger }) => {
           label="Responsable"
           name="responsable"
           variant="outlined"
+          value={huData.responsable}
           fullWidth
           sx={{ mb: 2 }}
           onChange={handleInputChange}
@@ -108,6 +110,7 @@ const Hu = ({ handleEliminarHu, onUpdate, info, trigger, setTrigger }) => {
           label="Objetivo"
           name="objetivo"
           variant="outlined"
+          value={huData.objetivo}
           fullWidth
           sx={{ gridColumn: { xs: "1", sm: "1/3" } }}
           onChange={handleInputChange}

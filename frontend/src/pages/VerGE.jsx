@@ -4,11 +4,14 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
+  Button,
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
+import AddIcon from "@mui/icons-material/Add";
 import Socio from "../components/Socio";
 import VerHito from "../components/VerHito";
+import { useNavigate } from "react-router-dom";
 
 const VerGE = () => {
   const getInfo = {
@@ -39,7 +42,8 @@ const VerGE = () => {
             id: 1,
             nombre_hu: "Documentacion Parte A",
             responsable: "Susana Horia",
-            objetivo: "Redactar la parte B de la documentacionRedactar la parte B de la documentacionRedactar la parte B de la documentacion",
+            objetivo:
+              "Redactar la parte B de la documentacionRedactar la parte B de la documentacionRedactar la parte B de la documentacion",
           },
           {
             id: 2,
@@ -76,6 +80,7 @@ const VerGE = () => {
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
+  const navigate = useNavigate()
 
   return (
     <Box sx={{ maxWidth: 800, margin: "auto", padding: 2 }}>
@@ -163,17 +168,34 @@ const VerGE = () => {
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography variant="h4">Información de su Planificación</Typography>
         </AccordionSummary>
-        <AccordionDetails>
-          {getInfo.planificacion.map((e) => (
-            <VerHito
-              key={e.id}
-              nombre={e.nombre_hito}
-              fecha_ini={e.fecha_ini}
-              fecha_entrega={e.fecha_entrega}
-              cobro={e.cobro}
-              hu={e.hu}
-            />
-          ))}
+
+        <AccordionDetails sx={{display:'flex', justifyContent:'center'}}>
+          {getInfo.planificacion.length === 0 ? (
+            <Box>
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AddIcon />}
+                onClick={()=>navigate('/registerplan')}
+              >
+                Agregar planificación
+              </Button>
+            </Box>
+          ) : (
+            <Box>
+              {getInfo.planificacion.map((e) => (
+                <VerHito
+                  key={e.id}
+                  id={e.id}
+                  nombre_hito={e.nombre_hito}
+                  fecha_ini={e.fecha_ini}
+                  fecha_entrega={e.fecha_entrega}
+                  cobro={e.cobro}
+                  hu={e.hu}
+                />
+              ))}
+            </Box>
+          )}
         </AccordionDetails>
       </Accordion>
     </Box>

@@ -14,7 +14,14 @@ import Hu from "./Hu";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-const Entregable = ({ entregable, onUpdate, onDelete, trigger, setTrigger}) => {
+const Entregable = ({
+  entregable,
+  onUpdate,
+  onDelete,
+  trigger,
+  setTrigger,
+  toEdit = false,
+}) => {
   const [formData, setFormData] = useState({
     id: entregable?.id,
     nombre_hito: entregable?.nombre_hito || "",
@@ -35,7 +42,7 @@ const Entregable = ({ entregable, onUpdate, onDelete, trigger, setTrigger}) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     setErrors({ ...errors, [name]: "" });
-    onUpdate(formData)
+    onUpdate(formData);
   };
 
   const handleDateIniChange = (e) => {
@@ -59,23 +66,26 @@ const Entregable = ({ entregable, onUpdate, onDelete, trigger, setTrigger}) => {
   const handleAgregarHu = () => {
     let x = "hu";
     let actual = formData.hu;
-    let nuevo = [...actual, { id: Date.now(), nombre_hu: "", responsable: "", objetivo: "" }];
+    let nuevo = [
+      ...actual,
+      { id: Date.now(), nombre_hu: "", responsable: "", objetivo: "" },
+    ];
     setFormData({ ...formData, [x]: nuevo });
   };
 
   const handleEliminarHu = (id) => {
     let x = "hu";
-    setFormData({ ...formData, [x]: formData.hu.filter(e => e.id !== id) });
+    setFormData({ ...formData, [x]: formData.hu.filter((e) => e.id !== id) });
   };
 
   const handleUpdateHu = (updatedData) => {
-    let x = "hu"
-    let nuevo = formData.hu.map(e =>
+    let x = "hu";
+    let nuevo = formData.hu.map((e) =>
       e.id === updatedData.id ? updatedData : e
-    )
-    setFormData({...formData, [x]: nuevo});
-    onUpdate(formData)
-  }
+    );
+    setFormData({ ...formData, [x]: nuevo });
+    onUpdate(formData);
+  };
 
   const handleRegister = () => {
     const { nombre_hito, fecha_ini, fecha_entrega, cobro } = formData;
@@ -108,22 +118,22 @@ const Entregable = ({ entregable, onUpdate, onDelete, trigger, setTrigger}) => {
       }
     }
 
-    if (formData.hu.length === 0){
-      setTrigger(false)
+    if (formData.hu.length === 0) {
+      setTrigger(false);
     }
 
     if (hasError) {
       setErrors(newErrors);
-      setTrigger(false)
+      setTrigger(false);
       return;
     }
   };
 
   useEffect(() => {
-    if(trigger){
-      handleRegister()
+    if (trigger) {
+      handleRegister();
     }
-  },[trigger])
+  }, [trigger]);
 
   return (
     <Box sx={{ maxWidth: 600, margin: "auto", padding: 2 }}>
@@ -156,7 +166,7 @@ const Entregable = ({ entregable, onUpdate, onDelete, trigger, setTrigger}) => {
       >
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DatePicker
-            label="Fecha de inicio*"
+            label="Fecha de inicio MM/DD/YYYY*"
             value={formData.fecha_ini ? new Date(formData.fecha_ini) : null}
             onChange={handleDateIniChange}
             renderInput={(params) => (
@@ -172,8 +182,10 @@ const Entregable = ({ entregable, onUpdate, onDelete, trigger, setTrigger}) => {
 
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DatePicker
-            label="Fecha de entrega*"
-            value={formData.fecha_entrega ? new Date(formData.fecha_entrega) : null}
+            label="Fecha de entrega MM/DD/YYYY*"
+            value={
+              formData.fecha_entrega ? new Date(formData.fecha_entrega) : null
+            }
             onChange={handleDateFinChange}
             renderInput={(params) => (
               <TextField
@@ -206,10 +218,17 @@ const Entregable = ({ entregable, onUpdate, onDelete, trigger, setTrigger}) => {
       <Typography variant="h4" sx={{ marginY: 2 }}>
         Entregables
       </Typography>
-        
+
       <Stack spacing={2}>
-        {formData.hu.map( e => (
-          <Hu key={e.id} handleEliminarHu={handleEliminarHu} onUpdate={handleUpdateHu} info={e} trigger={trigger} setTrigger={setTrigger}  />
+        {formData.hu.map((e) => (
+          <Hu
+            key={e.id}
+            handleEliminarHu={handleEliminarHu}
+            onUpdate={handleUpdateHu}
+            info={e}
+            trigger={trigger}
+            setTrigger={setTrigger}
+          />
         ))}
         <Box sx={{ display: "flex", justifyContent: "center", marginY: 2 }}>
           <Button
@@ -223,17 +242,18 @@ const Entregable = ({ entregable, onUpdate, onDelete, trigger, setTrigger}) => {
         </Box>
       </Stack>
 
-      <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
-      
-        <IconButton
-          onClick={onDelete}
-          color="error"
-          aria-label="Eliminar entregable"
-          sx={{ ml: 2 }}
-        >
-          <DeleteIcon /> Quitar hito
-        </IconButton>
-      </Box>
+      {toEdit ? null : (
+        <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
+          <IconButton
+            onClick={onDelete}
+            color="error"
+            aria-label="Eliminar entregable"
+            sx={{ ml: 2 }}
+          >
+            <DeleteIcon /> Quitar hito
+          </IconButton>
+        </Box>
+      )}
     </Box>
   );
 };
