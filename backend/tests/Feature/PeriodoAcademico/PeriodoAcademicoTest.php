@@ -164,4 +164,31 @@ class AuthControllerDocenteTest extends TestCase
                 'name' => 'Periodo 1',
             ]);
         }
+
+        /** @test */
+        public function fechas_en_orden()
+        {
+            // Crear un usuario con tipo Docente "D"
+            $docente = User::factory()->create(['user_type' => 'D']);
+            $this->actingAs($docente);
+        
+            // Datos de prueba para el periodo académico con fechas incorrectas
+            $data = [
+                'name' => 'Periodo 1',
+                'start_date' => '2023-06-30',
+                'end_date' => '2023-01-01',
+                'description' => 'Descripción del periodo 1',
+            ];
+        
+            // Enviar la solicitud para crear el periodo académico
+            $response = $this->postJson('/api/docente/academic-periods', $data);
+        
+            // Verificar que la respuesta sea 422 (Unprocessable Entity)
+            $response->assertStatus(422);
+        
+            // Verificar que el periodo académico no fue creado en la base de datos
+            $this->assertDatabaseMissing('academic_periods', [
+                'name' => 'Periodo 1',
+            ]);
+        }
 }
