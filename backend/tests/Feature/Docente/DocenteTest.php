@@ -12,7 +12,7 @@ use App\Mail\VerifyEmail;
 
 
 //EStudiante
-class AuthControllerTest extends TestCase
+class AuthControllerDocenteTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -466,6 +466,40 @@ class AuthControllerTest extends TestCase
         // Verificar que no se envió el correo de verificación
         Mail::assertNotSent(VerifyEmail::class);
     }
+
+        /** @test */
+        public function Password_no_tiene_espacios()
+        {
+            // Simular el envío de correo
+            Mail::fake();
+    
+            $response = $this->postJson('/api/user/register', [
+                'first_name' => 'simon',
+                'last_name' => 'pepe',
+                'email' => '123456789@fcyt.umss.edu.bo',
+                'password' => 'Pas sword123@',    // Menor a 8 caracteres
+                'password_confirmation' => 'Pas sword123@',
+                'user_type' => 'D',
+            ]);
+    
+            // Verificar que la respuesta tenga un estado 422 (Unprocessable Entity)
+            $response->assertStatus(422);
+            $response->assertJson([
+                'message' => 'Error de validación'
+            ]);
+    
+            // Verificar que el usuario no fue creado en la base de datos
+            $this->assertDatabaseMissing('users', [
+                'email' => '123456789@fcyt.umss.edu.bo',
+            ]);
+    
+            // Verificar que no se creó un token de verificación en la base de datos
+            $user = User::where('email', '123456789@fcyt.umss.edu.bo')->first();
+            $this->assertNull($user);
+    
+            // Verificar que no se envió el correo de verificación
+            Mail::assertNotSent(VerifyEmail::class);
+        }
 
 
 
