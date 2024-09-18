@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\VerifyEmail;
 
 
-//EStudiante
+//Docente
 class AuthControllerDocenteTest extends TestCase
 {
     use RefreshDatabase;
@@ -65,7 +65,7 @@ class AuthControllerDocenteTest extends TestCase
             'first_name' => 'Simon',
             'last_name' => 'Prueba',
             'email' => '123456789@fcyt.umss.edu.bo',
-            'password' => 'Pad123!',    // Menor a 8 caracteres
+            'password' => 'Pad123!',  
             'password_confirmation' => 'Pad123!',
             'user_type' => 'E',
         ]);
@@ -99,7 +99,7 @@ class AuthControllerDocenteTest extends TestCase
             'first_name' => 'Simon',
             'last_name' => 'Prueba',
             'email' => '123456789@fcyt.umss.edu.bo',
-            'password' => 'Pad123!',    // Menor a 8 caracteres
+            'password' => 'Pad123!',  
             'password_confirmation' => 'Pad123!',
             'user_type' => 'D',
         ]);
@@ -133,7 +133,7 @@ class AuthControllerDocenteTest extends TestCase
             'first_name' => 'Simon',
             'last_name' => 'Prueba',
             'email' => '123456789@fcyt.umss.edu.bo',
-            'password' => 'Password12@',    // Menor a 8 caracteres
+            'password' => 'Password12@',  
             'password_confirmation' => 'Pasword12@',
             'user_type' => 'D',
         ]);
@@ -167,7 +167,7 @@ class AuthControllerDocenteTest extends TestCase
             'first_name' => '',
             'last_name' => 'Prueba',
             'email' => '123456789@fcyt.umss.edu.bo',
-            'password' => 'Password12@',    // Menor a 8 caracteres
+            'password' => 'Password12@',  
             'password_confirmation' => 'Password12@',
             'user_type' => 'D',
         ]);
@@ -201,7 +201,7 @@ class AuthControllerDocenteTest extends TestCase
             'first_name' => 'simon',
             'last_name' => '',
             'email' => '123456789@fcyt.umss.edu.bo',
-            'password' => 'Password12@',    // Menor a 8 caracteres
+            'password' => 'Password12@',  
             'password_confirmation' => 'Password12@',
             'user_type' => 'D',
         ]);
@@ -235,7 +235,7 @@ class AuthControllerDocenteTest extends TestCase
             'first_name' => 'simon',
             'last_name' => 'pepe',
             'email' => '',
-            'password' => 'Password12@',    // Menor a 8 caracteres
+            'password' => 'Password12@',  
             'password_confirmation' => 'Password12@',
             'user_type' => 'D',
         ]);
@@ -269,7 +269,7 @@ class AuthControllerDocenteTest extends TestCase
             'first_name' => 'simon',
             'last_name' => 'pepe',
             'email' => '123456789@fcyt.umss.edu.bo',
-            'password' => '',    // Menor a 8 caracteres
+            'password' => '',  
             'password_confirmation' => 'Password12@',
             'user_type' => 'D',
         ]);
@@ -303,7 +303,7 @@ class AuthControllerDocenteTest extends TestCase
             'first_name' => 'simon',
             'last_name' => 'pepe',
             'email' => '123456789@fcyt.umss.edu.bo',
-            'password' => 'Password12@',    // Menor a 8 caracteres
+            'password' => 'Password12@',  
             'password_confirmation' => '',
             'user_type' => 'D',
         ]);
@@ -341,7 +341,7 @@ class AuthControllerDocenteTest extends TestCase
             'first_name' => 'simon',
             'last_name' => 'pepe',
             'email' => '123456789@fcyt.umss.edu.bo',
-            'password' => 'password12@',    // Menor a 8 caracteres
+            'password' => 'password12@',  
             'password_confirmation' => 'password12@',
             'user_type' => 'D',
         ]);
@@ -375,7 +375,7 @@ class AuthControllerDocenteTest extends TestCase
             'first_name' => 'simon',
             'last_name' => 'pepe',
             'email' => '123456789@fcyt.umss.edu.bo',
-            'password' => 'PASSWORD12@',    // Menor a 8 caracteres
+            'password' => 'PASSWORD12@',  
             'password_confirmation' => 'PASSWORD12@',
             'user_type' => 'D',
         ]);
@@ -409,7 +409,7 @@ class AuthControllerDocenteTest extends TestCase
             'first_name' => 'simon',
             'last_name' => 'pepe',
             'email' => '123456789@fcyt.umss.edu.bo',
-            'password' => 'Password@',    // Menor a 8 caracteres
+            'password' => 'Password@',  
             'password_confirmation' => 'Password@',
             'user_type' => 'D',
         ]);
@@ -443,7 +443,7 @@ class AuthControllerDocenteTest extends TestCase
             'first_name' => 'simon',
             'last_name' => 'pepe',
             'email' => '123456789@fcyt.umss.edu.bo',
-            'password' => 'Password123',    // Menor a 8 caracteres
+            'password' => 'Password123',  
             'password_confirmation' => 'Password123',
             'user_type' => 'D',
         ]);
@@ -477,7 +477,7 @@ class AuthControllerDocenteTest extends TestCase
             'first_name' => 'simon',
             'last_name' => 'pepe',
             'email' => '123456789@fcyt.umss.edu.bo',
-            'password' => 'Pas sword123@',    // Menor a 8 caracteres
+            'password' => 'Pas sword123@',  
             'password_confirmation' => 'Pas sword123@',
             'user_type' => 'D',
         ]);
@@ -512,7 +512,7 @@ class AuthControllerDocenteTest extends TestCase
             'first_name' => 'simon',
             'last_name' => 'pepe',
             'email' => '123456789@gmail.com',
-            'password' => 'Password123@',    // Menor a 8 caracteres
+            'password' => 'Password123@',  
             'password_confirmation' => 'Password123@',
             'user_type' => 'D',
         ]);
@@ -540,15 +540,4 @@ class AuthControllerDocenteTest extends TestCase
 
 }
 
-
-
-// Verificar que se pueda subir diferentes hitos
-// Verificar que el representante pueda asignar una fecha de inicio a cada hito
-// Verificar que el representante puede asignar una fecha de fin a cada hito
-// Verificar que no se pueda asignar una fecha de inicio a un hito que este a la mitad de un intervalo de tiempo de otro hito
-// Verificar que la fecha fin del ultimo hito no pueda sobrepasar la fecha limite de entrega del producto final
-// Verificar que la fecha fin de cada hito sea mayor por al menos 7 días de la fecha inicio
-// Verificar que se pueda subir entregables a cada hito
-// Verificar que no se pueda subir un hito sin ningún entregable
-// Verificar que no se pueda subir el mismo entregable más de una vez
 
