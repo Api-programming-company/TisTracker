@@ -191,4 +191,53 @@ class AuthControllerDocenteTest extends TestCase
                 'name' => 'Periodo 1',
             ]);
         }
+
+        /** @test */
+public function nombre_de_periodo_academico_debe_ser_unico()
+{
+    // Crear un usuario con tipo Docente "D"
+    $docente = User::factory()->create(['user_type' => 'D']);
+    $this->actingAs($docente);
+
+    // Datos de prueba para el primer periodo académico
+    $data1 = [
+        'name' => 'Periodo Unico',
+        'start_date' => '2023-01-01',
+        'end_date' => '2023-06-30',
+        'description' => 'Descripción del primer periodo',
+    ];
+
+    // Enviar la solicitud para crear el primer periodo académico
+    $response1 = $this->postJson('/api/docente/academic-periods', $data1);
+
+    // Verificar que la respuesta sea 201 (Created)
+    $response1->assertStatus(201);
+
+    // Datos de prueba para el segundo periodo académico con el mismo nombre
+    $data2 = [
+        'name' => 'Periodo Unico',
+        'start_date' => '2023-07-01',
+        'end_date' => '2023-12-31',
+        'description' => 'Descripción del segundo periodo',
+    ];
+
+    // Enviar la solicitud para crear el segundo periodo académico
+    $response2 = $this->postJson('/api/docente/academic-periods', $data2);
+
+    // Verificar que la respuesta sea 422 (Unprocessable Entity) debido a la duplicidad del nombre
+    $response2->assertStatus(422);
+
+    // Verificar que solo el primer periodo académico fue creado en la base de datos
+    $this->assertDatabaseHas('academic_periods', [
+        'name' => 'Periodo Unico',
+        'start_date' => '2023-01-01',
+        'end_date' => '2023-06-30',
+    ]);
+
+    $this->assertDatabaseMissing('academic_periods', [
+        'name' => 'Periodo Unico',
+        'start_date' => '2023-07-01',
+        'end_date' => '2023-12-31',
+    ]);
+}
 }
