@@ -1,22 +1,30 @@
 import { Box, Button, Chip, Stack, Typography } from "@mui/material";
-import React from "react";
-import VerEntregable from "./VerEntregable";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
+import Entregable from "./Entregable";
 
-const VerHito = ({ id, nombre_hito, fecha_ini, fecha_entrega, cobro, hu }) => {
-  const navigate = useNavigate();
+const VerHito = ({ entregable }) => {
+  const [editar, setEditar] = useState(true);
 
-  const handleEditHito = () => {
-    let y = fecha_ini.split("/");
-    fecha_ini = y[1] + "/" + y[0] + "/" + y[2];
-    let z = fecha_entrega.split("/");
-    fecha_entrega = z[1] + "/" + z[0] + "/" + z[2];
-
-    navigate(`/edithito/${id}`, {
-      state: { id, nombre_hito, fecha_ini, fecha_entrega, cobro, hu },
-    });
+  const handleAgregarEntregable = () => {
+    // setEntregables([
+    //   ...entregables,
+    //   { id: Date.now(), nombre_hito: "", fecha_ini: "", fecha_entrega: "", cobro: "", hu: [] }
+    // ]);
   };
+
+  const handleUpdateEntregable = (updatedData) => {
+    // setEntregables(
+    //   entregables.map(entregable =>
+    //     entregable.id === updatedData.id ? updatedData : entregable
+    //   )
+    // );
+  };
+
+  const handleEliminarEntregable = (id) => {
+    // setEntregables(entregables.filter(entregable => entregable.id !== id));
+  };
+
   return (
     <Box
       sx={{
@@ -38,126 +46,18 @@ const VerHito = ({ id, nombre_hito, fecha_ini, fecha_entrega, cobro, hu }) => {
           variant="contained"
           color="primary"
           startIcon={<EditIcon />}
-          onClick={handleEditHito}
+          onClick={() => setEditar(!editar)}
         >
-          Editar hito
+          {editar ? "Editar hito" : "Guardar"}
         </Button>
       </Box>
-      <Box sx={{ display: "flex" }}>
-        <Typography
-          variant="subtitle"
-          sx={{ margin: "0px 5px", fontWeight: "bold", marginBottom: 2 }}
-        >
-          Nombre de Hito:{" "}
-        </Typography>
-        <Chip
-          label={nombre_hito}
-          variant="outlined"
-          sx={{
-            fontSize: "larger",
-            marginBottom: 2,
-            height: "auto",
-            width: "100%",
-            "& .MuiChip-label": {
-              display: "block",
-              whiteSpace: "normal",
-            },
-          }}
-        />
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", sm: "row" },
-          gap: 2,
-          flexWrap: "wrap",
-          "& > *": {
-            flex: 1,
-            minWidth: { xs: "100%", sm: "auto" },
-            boxSizing: "border-box",
-          },
-        }}
-      >
-        <Box sx={{ display: "flex" }}>
-          <Typography
-            variant="subtitle"
-            sx={{ margin: "0px 5px", fontWeight: "bold", marginBottom: 2 }}
-          >
-            Fecha de inicio:{" "}
-          </Typography>
-          <Chip
-            label={fecha_ini}
-            variant="outlined"
-            sx={{
-              fontSize: "larger",
-              height: "auto",
-              marginBottom: 2,
-              width: "100%",
-              "& .MuiChip-label": {
-                display: "block",
-                whiteSpace: "normal",
-              },
-            }}
-          />
-        </Box>
 
-        <Box sx={{ display: "flex" }}>
-          <Typography
-            variant="subtitle"
-            sx={{ margin: "0px 5px", fontWeight: "bold", marginBottom: 2 }}
-          >
-            Fecha de entrega:{" "}
-          </Typography>
-          <Chip
-            label={fecha_entrega}
-            variant="outlined"
-            sx={{
-              fontSize: "larger",
-              height: "auto",
-              marginBottom: 2,
-              width: "100%",
-              "& .MuiChip-label": {
-                display: "block",
-                whiteSpace: "normal",
-              },
-            }}
-          />
-        </Box>
-      </Box>
-      <Box sx={{ display: "flex" }}>
-        <Typography
-          variant="subtitle"
-          sx={{ margin: "0px 5px", fontWeight: "bold" }}
-        >
-          Porcentaje de cobro en (%):{" "}
-        </Typography>
-        <Chip
-          label={cobro}
-          variant="outlined"
-          sx={{
-            fontSize: "larger",
-            height: "auto",
-            width: "100%",
-            "& .MuiChip-label": {
-              display: "block",
-              whiteSpace: "normal",
-            },
-          }}
-        />
-      </Box>
-      <Typography variant="h5" sx={{ marginY: 2, fontWeight: "bold" }}>
-        Entregables
-      </Typography>
-      <Stack spacing={2}>
-        {hu.map((e) => (
-          <VerEntregable
-            key={e.id}
-            nombre_entregable={e.nombre_hu}
-            responsable={e.responsable}
-            objetivo={e.objetivo}
-          />
-        ))}
-      </Stack>
+      <Entregable
+        entregable={entregable}
+        onDelete={handleEliminarEntregable}
+        onUpdate={handleUpdateEntregable}
+        toEdit={editar}
+      />
     </Box>
   );
 };

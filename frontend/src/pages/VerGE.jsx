@@ -19,6 +19,7 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 const VerGE = () => {
   const [expandedSocios, setExpandedSocios] = useState(false);
   const [expandedPlanificacion, setExpandedPlanificacion] = useState(false);
+  
 
   const getInfo = {
     nombre_largo: "Vamos equipo S.R.L.",
@@ -183,12 +184,7 @@ const VerGE = () => {
             {getInfo.planificacion.map((e) => (
               <VerHito
                 key={e.id}
-                id={e.id}
-                nombre_hito={e.nombre_hito}
-                fecha_ini={e.fecha_ini}
-                fecha_entrega={e.fecha_entrega}
-                cobro={e.cobro}
-                hu={e.hu}
+                entregable={e}
               />
             ))}
           </Box>

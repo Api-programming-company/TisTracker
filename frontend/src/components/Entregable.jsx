@@ -153,7 +153,6 @@ const Entregable = ({
       setTrigger(false); // Asegúrate de restablecer el trigger
     }
   }, [trigger]);
-  
 
   return (
     <Box sx={{ maxWidth: 600, margin: "auto", padding: 2 }}>
@@ -169,6 +168,11 @@ const Entregable = ({
         helperText={errors.nombre_hito}
         aria-describedby="nombre_hito-error"
         multiline
+        slotProps={{
+          input: {
+            readOnly: toEdit,
+          },
+        }}
       />
 
       <Box
@@ -197,6 +201,7 @@ const Entregable = ({
                 aria-describedby="fecha_ini-error"
               />
             )}
+            readOnly={toEdit}
           />
         </LocalizationProvider>
 
@@ -215,6 +220,7 @@ const Entregable = ({
                 aria-describedby="fecha_entrega-error"
               />
             )}
+            readOnly={toEdit}
           />
         </LocalizationProvider>
       </Box>
@@ -229,10 +235,13 @@ const Entregable = ({
         value={formData.cobro}
         error={Boolean(errors.cobro)}
         helperText={errors.cobro}
-        InputProps={{
-          startAdornment: <InputAdornment position="start">%</InputAdornment>,
-        }}
         aria-describedby="cobro-error"
+        slotProps={{
+          input: {
+            startAdornment: <InputAdornment position="start">%</InputAdornment>,
+            readOnly: toEdit,
+          },
+        }}
       />
 
       <Typography variant="h4" sx={{ marginY: 2 }}>
@@ -248,6 +257,7 @@ const Entregable = ({
             info={e}
             trigger={trigger}
             setTrigger={setTrigger}
+            toEdit={toEdit}
           />
         ))}
         <Box sx={{ display: "flex", justifyContent: "center", marginY: 2 }}>
@@ -262,18 +272,16 @@ const Entregable = ({
         </Box>
       </Stack>
 
-      {toEdit ? null : (
-        <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
-          <IconButton
-            onClick={onDelete}
-            color="error"
-            aria-label="Eliminar entregable"
-            sx={{ ml: 2 }}
-          >
-            <DeleteIcon /> Quitar hito
-          </IconButton>
-        </Box>
-      )}
+      <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
+        <IconButton
+          onClick={onDelete}
+          color="error"
+          aria-label="Eliminar entregable"
+          sx={{ ml: 2 }}
+        >
+          <DeleteIcon /> Quitar hito
+        </IconButton>
+      </Box>
     </Box>
   );
 };

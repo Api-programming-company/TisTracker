@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTheme } from "@mui/material/styles";
 
-const Hu = ({ handleEliminarHu, onUpdate, info, trigger, setTrigger }) => {
+const Hu = ({ handleEliminarHu, onUpdate, info, trigger, setTrigger, toEdit=false }) => {
   const theme = useTheme();
 
   const [huData, setHuData] = useState({
@@ -92,6 +92,11 @@ const Hu = ({ handleEliminarHu, onUpdate, info, trigger, setTrigger }) => {
           error={Boolean(errors.nombre_hu)}
           helperText={errors.nombre_hu}
           multiline
+          slotProps={{
+            input: {
+              readOnly: toEdit,
+            },
+          }}
         />
         <TextField
           label="Responsable"
@@ -104,6 +109,11 @@ const Hu = ({ handleEliminarHu, onUpdate, info, trigger, setTrigger }) => {
           error={Boolean(errors.responsable)}
           helperText={errors.responsable}
           multiline
+          slotProps={{
+            input: {
+              readOnly: toEdit,
+            },
+          }}
         />
 
         <TextField
@@ -117,6 +127,11 @@ const Hu = ({ handleEliminarHu, onUpdate, info, trigger, setTrigger }) => {
           error={Boolean(errors.objetivo)}
           helperText={errors.objetivo}
           multiline
+          slotProps={{
+            input: {
+              readOnly: toEdit,
+            },
+          }}
         />
       </Box>
 
