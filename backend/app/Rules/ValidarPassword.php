@@ -27,13 +27,13 @@ class ValidarPassword implements Rule
         //$noNameParts = !preg_match('/' . preg_quote($this->nombre, '/') . '|' . preg_quote($this->apellidos, '/') . '/i', $value);// No puede contener el nombre o apellidos
 
         return strlen($value) >= $minLength &&
-               $hasUpperCase &&
-               $hasLowerCase &&
-               $hasNumber &&
-               $hasSpecialChar &&
-               $hasNoSpaces ;
-              // $noCommonSequences &&
-              // $noNameParts;
+            $hasUpperCase &&
+            $hasLowerCase &&
+            $hasNumber &&
+            $hasSpecialChar &&
+            $hasNoSpaces;
+        // $noCommonSequences &&
+        // $noNameParts;
     }
 
     public function message()
