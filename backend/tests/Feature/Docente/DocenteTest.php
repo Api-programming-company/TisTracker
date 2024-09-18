@@ -26,8 +26,8 @@ class AuthControllerDocenteTest extends TestCase
             'first_name' => 'Simon',
             'last_name' => 'Prueba',
             'email' => '123456789@fcyt.umss.edu.bo',
-            'password' => 'Pad123!',
-            'password_confirmation' => 'Pad123!',
+            'password' => 'Password12@',
+            'password_confirmation' => 'Password12@',
             'user_type' => 'D',
         ]);
 
