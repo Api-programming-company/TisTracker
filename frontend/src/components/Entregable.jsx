@@ -40,27 +40,42 @@ const Entregable = ({
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    setErrors({ ...errors, [name]: "" });
-    onUpdate(formData);
+    setFormData((prevState) => {
+      const newFormData = { ...prevState, [name]: value };
+      setErrors({ ...errors, [name]: "" });
+      onUpdate(newFormData);
+      return newFormData;
+    });
   };
 
   const handleDateIniChange = (e) => {
     let f = "fecha_ini";
     try {
       const value = new Date(e).toISOString();
-      setFormData({ ...formData, [f]: value });
-      setErrors({ ...errors, [f]: "" });
-    } catch (e) {}
+      setFormData((prevState) => {
+        const newFormData = { ...prevState, [f]: value };
+        setErrors({ ...errors, [f]: "" });
+        onUpdate(newFormData);
+        return newFormData;
+      });
+    } catch (error) {
+      console.error("Error al manejar la fecha:", error);
+    }
   };
 
   const handleDateFinChange = (e) => {
     let f = "fecha_entrega";
     try {
       const value = new Date(e).toISOString();
-      setFormData({ ...formData, [f]: value });
-      setErrors({ ...errors, [f]: "" });
-    } catch (e) {}
+      setFormData((prevState) => {
+        const newFormData = { ...prevState, [f]: value };
+        setErrors({ ...errors, [f]: "" });
+        onUpdate(newFormData);
+        return newFormData;
+      });
+    } catch (error) {
+      console.error("Error al manejar la fecha:", error);
+    }
   };
 
   const handleAgregarHu = () => {
@@ -83,8 +98,11 @@ const Entregable = ({
     let nuevo = formData.hu.map((e) =>
       e.id === updatedData.id ? updatedData : e
     );
-    setFormData({ ...formData, [x]: nuevo });
-    onUpdate(formData);
+
+    // Actualiza el estado y luego llama a onUpdate con el valor nuevo
+    const updatedFormData = { ...formData, [x]: nuevo };
+    setFormData(updatedFormData);
+    onUpdate(updatedFormData); // Pasamos el valor actualizado a onUpdate
   };
 
   const handleRegister = () => {
@@ -132,8 +150,10 @@ const Entregable = ({
   useEffect(() => {
     if (trigger) {
       handleRegister();
+      setTrigger(false); // Asegúrate de restablecer el trigger
     }
   }, [trigger]);
+  
 
   return (
     <Box sx={{ maxWidth: 600, margin: "auto", padding: 2 }}>

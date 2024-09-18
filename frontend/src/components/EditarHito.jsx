@@ -51,6 +51,8 @@ const EditarHito = () => {
 
   const handleGuardar = () => {
     window.alert(entregables.cobro)
+    console.log(entregables);
+    
     //enviar al back :v
   }
   
