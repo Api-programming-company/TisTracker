@@ -84,57 +84,84 @@ class AuthControllerDocenteTest extends TestCase
 
     //Campos obligatorios
 
-     /** @test */
-     public function nombre_obligatorio()
-     {
-         // Crear un usuario con tipo Estudiante "E"
-         $estudiante = User::factory()->create(['user_type' => 'D']);
-         $this->actingAs($estudiante);
- 
-         // Datos de prueba para el periodo académico
-         $data = [
-             'name' => '',
-             'start_date' => '2023-01-01',
-             'end_date' => '2023-06-30',
-             'description' => 'Descripción del periodo 1',
-         ];
- 
-         // Enviar la solicitud para crear el periodo académico
-         $response = $this->postJson('/api/docente/academic-periods', $data);
- 
-         // Verificar que la respuesta sea 422 campo obligatorio
-         $response->assertStatus(422);
- 
-         // Verificar que el periodo académico no fue creado en la base de datos
-         $this->assertDatabaseMissing('academic_periods', [
-             'name' => 'Periodo 1',
-         ]);
-     }
+        /** @test */
+        public function nombre_obligatorio()
+        {
+            // Crear un usuario con tipo Estudiante "E"
+            $estudiante = User::factory()->create(['user_type' => 'D']);
+            $this->actingAs($estudiante);
 
-          /** @test */
-          public function diaInicio_obligatorio()
-          {
-              // Crear un usuario con tipo Estudiante "E"
-              $estudiante = User::factory()->create(['user_type' => 'D']);
-              $this->actingAs($estudiante);
-      
-              // Datos de prueba para el periodo académico
-              $data = [
-                  'name' => 'peeriodo 1',
-                  'start_date' => '',
-                  'end_date' => '2023-06-30',
-                  'description' => 'Descripción del periodo 1',
-              ];
-      
-              // Enviar la solicitud para crear el periodo académico
-              $response = $this->postJson('/api/docente/academic-periods', $data);
-      
-              // Verificar que la respuesta sea 422 campo obligatorio
-              $response->assertStatus(422);
-      
-              // Verificar que el periodo académico no fue creado en la base de datos
-              $this->assertDatabaseMissing('academic_periods', [
-                  'name' => 'Periodo 1',
-              ]);
-          }
+            // Datos de prueba para el periodo académico
+            $data = [
+                'name' => '',
+                'start_date' => '2023-01-01',
+                'end_date' => '2023-06-30',
+                'description' => 'Descripción del periodo 1',
+            ];
+
+            // Enviar la solicitud para crear el periodo académico
+            $response = $this->postJson('/api/docente/academic-periods', $data);
+
+            // Verificar que la respuesta sea 422 campo obligatorio
+            $response->assertStatus(422);
+
+            // Verificar que el periodo académico no fue creado en la base de datos
+            $this->assertDatabaseMissing('academic_periods', [
+                'name' => 'Periodo 1',
+            ]);
+        }
+
+        /** @test */
+        public function diaInicio_obligatorio()
+        {
+            // Crear un usuario con tipo Estudiante "E"
+            $estudiante = User::factory()->create(['user_type' => 'D']);
+            $this->actingAs($estudiante);
+
+            // Datos de prueba para el periodo académico
+            $data = [
+                'name' => 'peeriodo 1',
+                'start_date' => '',
+                'end_date' => '2023-06-30',
+                'description' => 'Descripción del periodo 1',
+            ];
+
+            // Enviar la solicitud para crear el periodo académico
+            $response = $this->postJson('/api/docente/academic-periods', $data);
+
+            // Verificar que la respuesta sea 422 campo obligatorio
+            $response->assertStatus(422);
+
+            // Verificar que el periodo académico no fue creado en la base de datos
+            $this->assertDatabaseMissing('academic_periods', [
+                'name' => 'Periodo 1',
+            ]);
+        }
+
+        /** @test */
+        public function diaFin_obligatorio()
+        {
+            // Crear un usuario con tipo Estudiante "E"
+            $estudiante = User::factory()->create(['user_type' => 'D']);
+            $this->actingAs($estudiante);
+
+            // Datos de prueba para el periodo académico
+            $data = [
+                'name' => 'peeriodo 1',
+                'start_date' => '2023-01-01',
+                'end_date' => '',
+                'description' => 'Descripción del periodo 1',
+            ];
+
+            // Enviar la solicitud para crear el periodo académico
+            $response = $this->postJson('/api/docente/academic-periods', $data);
+
+            // Verificar que la respuesta sea 422 campo obligatorio
+            $response->assertStatus(422);
+
+            // Verificar que el periodo académico no fue creado en la base de datos
+            $this->assertDatabaseMissing('academic_periods', [
+                'name' => 'Periodo 1',
+            ]);
+        }
 }
