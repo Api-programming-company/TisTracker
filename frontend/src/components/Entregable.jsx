@@ -5,7 +5,10 @@ import {
   Stack,
   TextField,
   Typography,
-  IconButton,  
+  IconButton,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -14,6 +17,7 @@ import Hu from "./Hu";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DialogMod from "./DialogMod";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const Entregable = ({
   entregable,
@@ -262,15 +266,27 @@ const Entregable = ({
 
       <Stack spacing={2}>
         {formData.hu.map((e) => (
-          <Hu
-            key={e.id}
-            handleEliminarHu={handleEliminarHu}
-            onUpdate={handleUpdateHu}
-            info={e}
-            trigger={trigger}
-            setTrigger={setTrigger}
-            toEdit={toEdit}
-          />
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1-content"
+              id="panel1-header"
+            >
+              <Typography>{e.nombre_hu}</Typography>
+            </AccordionSummary>
+
+            <AccordionDetails>
+              <Hu
+                key={e.id}
+                handleEliminarHu={handleEliminarHu}
+                onUpdate={handleUpdateHu}
+                info={e}
+                trigger={trigger}
+                setTrigger={setTrigger}
+                toEdit={toEdit}
+              />
+            </AccordionDetails>
+          </Accordion>
         ))}
         <Box sx={{ display: "flex", justifyContent: "center", marginY: 2 }}>
           <Button
@@ -287,7 +303,7 @@ const Entregable = ({
 
       <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
         <IconButton
-          onClick={()=>setOpen(true)} //()=>onDelete(formData.id)
+          onClick={() => setOpen(true)} //()=>onDelete(formData.id)
           color="error"
           aria-label="Eliminar entregable"
           sx={{ ml: 2 }}
