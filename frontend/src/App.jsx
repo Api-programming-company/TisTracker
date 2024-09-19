@@ -12,8 +12,13 @@ import {
   Login,
   VerifyEmail,
   Example,
+  InvitacionesGE,
 } from "./pages";
-import { Planificacion, AppBarWithMenu, ListaPeriodosAcademicos } from "./components";
+import {
+  Planificacion,
+  AppBarWithMenu,
+  ListaPeriodosAcademicos,
+} from "./components";
 
 import VerGE from "./pages/VerGE";
 import EditarHito from "./components/EditarHito";
@@ -40,8 +45,8 @@ function App({ toggleTheme, isDarkMode }) {
 
         <Route path="/vergrupoe" element={<VerGE />} />
         <Route path="/registroge" element={<RegistroGE />} />
+        <Route path="/invitacionesge" element={<InvitacionesGE />} />
         <Route path="/academic-periods" element={<ListaPeriodosAcademicos />} />
-
 
         <Route
           path="/registroperiodoacademico"
@@ -50,7 +55,6 @@ function App({ toggleTheme, isDarkMode }) {
         <Route path="/registerplan" element={<Planificacion />} />
         <Route path="/upload" element={<ImageUpload />} />
         <Route path="/edithito/:id" element={<EditarHito />} />
-
 
         <Route path="/example" element={<Example />} />
         <Route path="/*" element={<NotFound />} />

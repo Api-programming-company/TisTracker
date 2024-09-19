@@ -15,7 +15,7 @@ import {
   IconButton,
 } from "@mui/material";
 
-const RegistroPeriodoAcademico = () => {
+const RegistroGE = () => {
   //Campos del formulario
   const [nombreLargo, setNombreLargo] = useState("");
   const [errorNombreLargo, setErrorNombreLargo] = useState(false);
@@ -297,7 +297,7 @@ const RegistroPeriodoAcademico = () => {
                         )}
                         onClick={() => handleAddItem(item.id)}
                         style={{
-                          backgroundColor: "aliceblue",
+                          backgroundColor: "#F6F6F6",
                           marginBottom: "2px",
                         }}
                       >
@@ -398,7 +398,7 @@ const RegistroPeriodoAcademico = () => {
           <Button
             type="submit"
             variant="contained"
-            color="info"
+            color="primary"
             sx={{
               display: "block",
               mx: "auto",
@@ -416,4 +416,4 @@ const RegistroPeriodoAcademico = () => {
   );
 };
 
-export default RegistroPeriodoAcademico;
+export default RegistroGE;
