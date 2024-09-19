@@ -19,7 +19,6 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 const VerGE = () => {
   const [expandedSocios, setExpandedSocios] = useState(false);
   const [expandedPlanificacion, setExpandedPlanificacion] = useState(false);
-  
 
   const getInfo = {
     nombre_largo: "Vamos equipo S.R.L.",
@@ -83,22 +82,28 @@ const VerGE = () => {
       },
     ],
   };
-
+  const [formData, setFormData] = useState(getInfo);
   const [expanded, setExpanded] = useState("panel1");
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
   const navigate = useNavigate();
 
+  const handleEliminarHitoEdit = (id) => {
+    let x = "planificacion";
+    const newPlanificacion = formData.planificacion.filter((e) => e.id !== id);
+    setFormData({ ...formData, [x]: newPlanificacion });
+  };
+
   return (
     <Box sx={{ maxWidth: 900, margin: "auto", padding: 2 }}>
       {/* Información importante destacada */}
       <Box sx={{ mb: 4, textAlign: "center" }}>
         <Typography variant="h4">
-          {getInfo.nombre_largo} ({getInfo.nombre_corto})
+          {formData.nombre_largo} ({formData.nombre_corto})
         </Typography>
         <Typography variant="h6" color="textSecondary">
-          {getInfo.correo} | {getInfo.telefono} | {getInfo.direccion}
+          {formData.correo} | {formData.telefono} | {formData.direccion}
         </Typography>
       </Box>
 
@@ -110,11 +115,11 @@ const VerGE = () => {
         <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
           <Box sx={{ flex: 1 }}>
             <Typography variant="h6">Consultor TIS</Typography>
-            <Typography>{getInfo.consultor_tis}</Typography>
+            <Typography>{formData.consultor_tis}</Typography>
           </Box>
           <Box sx={{ flex: 1 }}>
             <Typography variant="h6">Gestión</Typography>
-            <Typography>{getInfo.gestion}</Typography>
+            <Typography>{formData.gestion}</Typography>
           </Box>
         </Box>
       </Box>
@@ -124,7 +129,7 @@ const VerGE = () => {
       {/* Socios del Grupo */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h5" gutterBottom>
-          Socios del Grupo ({getInfo.integrantes.length})
+          Socios del Grupo ({formData.integrantes.length})
         </Typography>
         <Box
           sx={{
@@ -137,7 +142,7 @@ const VerGE = () => {
           }}
         >
           {expandedSocios &&
-            getInfo.integrantes.map((e) => (
+            formData.integrantes.map((e) => (
               <Socio
                 key={e.id}
                 primary={`${e.nombre} ${e.apellidos}`}
@@ -162,7 +167,7 @@ const VerGE = () => {
         <Typography variant="h5" gutterBottom>
           Planificación
         </Typography>
-        {getInfo.planificacion.length === 0 ? (
+        {formData.planificacion.length === 0 ? (
           <Button
             variant="contained"
             color="primary"
@@ -181,15 +186,16 @@ const VerGE = () => {
               overflow: "hidden",
             }}
           >
-            {getInfo.planificacion.map((e) => (
+            {formData.planificacion.map((e) => (
               <VerHito
                 key={e.id}
                 entregable={e}
+                onDelete={handleEliminarHitoEdit}
               />
             ))}
           </Box>
         )}
-        {getInfo.planificacion.length > 0 && (
+        {formData.planificacion.length > 0 && (
           <Button
             variant="text"
             onClick={() => setExpandedPlanificacion(!expandedPlanificacion)}
