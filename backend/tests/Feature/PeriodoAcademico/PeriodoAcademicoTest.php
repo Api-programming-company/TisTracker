@@ -306,4 +306,56 @@ class AuthControllerDocenteTest extends TestCase
                 ]
             ]);
     }
+    /** @test */
+    public function only_students_can_enroll()
+    {
+        $teacher = User::factory()->create(['user_type' => 'D']);
+        $academicPeriod = AcademicPeriod::factory()->create(['user_id' => $teacher->id]);
+
+        Sanctum::actingAs($teacher);
+        $response = $this->postJson('/api/academic-periods/enroll', [
+            'academic_period_id' => $academicPeriod->getAttribute('id'),
+        ]);
+
+        $response->assertStatus(403)
+            ->assertJson(['message' => 'Solo estudiantes pueden inscribirse.']);
+    }
+
+    /** @test */
+    public function student_can_only_enroll_in_one_academic_period()
+    {
+        $student = User::factory()->create(['user_type' => 'E']);
+        $academicPeriod1 = AcademicPeriod::factory()->create();
+        $academicPeriod2 = AcademicPeriod::factory()->create();
+
+        // Enroll the student in the first academic period
+        Sanctum::actingAs($student);
+        $response1 = $this->postJson('/api/academic-periods/enroll', [
+            'academic_period_id' => $academicPeriod1->getAttribute('id'),
+        ]);
+
+        $response1->assertStatus(200)
+            ->assertJson(['message' => 'Se inscribió correctamente en el periodo académico']);
+
+        // Attempt to enroll in another academic period
+        
+        $response2 = $this->postJson('/api/academic-periods/enroll', [
+            'academic_period_id' => $academicPeriod2->getAttribute('id'),
+        ]);
+
+        $response2->assertStatus(400)
+            ->assertJson(['message' => 'Ya está inscrito en un periodo académico']);
+    }
+
+    /** @test */
+    public function student_cannot_enroll_in_nonexistent_academic_period()
+    {
+        $student = User::factory()->create(['user_type' => 'E']);
+        Sanctum::actingAs($student);
+        $response = $this->postJson('/api/academic-periods/enroll', [
+            'academic_period_id' => 9999, // Nonexistent ID
+        ]);
+
+        $response->assertStatus(404);
+    }
 }

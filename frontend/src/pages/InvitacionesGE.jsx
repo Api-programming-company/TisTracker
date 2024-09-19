@@ -132,7 +132,7 @@ const InvitacionesGE = () => {
                 ml: 3,
               }}
             >
-              {/* Bloque de texto a la izquierda */}
+              {/* Detalles de la Grupo-Empresa, lado izquierdo */}
               <Box sx={{ flex: 1, mr: 2, mb: 3 }}>
                 <Typography
                   component="p"
@@ -169,7 +169,7 @@ const InvitacionesGE = () => {
                 </Typography>
               </Box>
 
-              {/* Lista de Integrantes a la derecha */}
+              {/* Lista de Integrantes, lado derecho */}
               <Box sx={{ flex: 1 }}>
                 <List sx={{ paddingTop: 0 }}>
                   <Typography component="p" sx={{ color: "black" }}>
