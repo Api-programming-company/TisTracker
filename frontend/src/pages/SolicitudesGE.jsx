@@ -85,7 +85,7 @@ const SolicitudesGE = () => {
                 ml: 3,
               }}
             >
-              {/* Bloque de texto a la izquierda */}
+              {/* Detalles de la Grupo-Empresa, lado izquierdo */}
               <Box sx={{ flex: 1, mr: 2, mb: 3 }}>
                 <Typography
                   component="h1"
@@ -126,7 +126,7 @@ const SolicitudesGE = () => {
                 </Typography>
               </Box>
 
-              {/* Botones de Aceptar y Rechazar */}
+              {/* Botones de Aceptar y Rechazar, lado derecho */}
               <Box
                 sx={{
                   display: "flex",
