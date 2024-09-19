@@ -32,8 +32,8 @@ class AuthController extends Controller
             $request->validate([
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
-                'email' => ['required', 'email', 'unique:users,email'], # $this->getEmailValidationRule($request->user_type)],
-                'password' => ['required', 'string', 'min:8', 'confirmed'], #new ValidarPassword($request->first_name, $request->last_name)],
+                'email' => ['required', 'email', 'unique:users,email',  $this->getEmailValidationRule($request->user_type)],
+                'password' => ['required', 'string', 'min:8', 'confirmed', new ValidarPassword($request->first_name, $request->last_name)],
                 'user_type' => 'required|in:E,D', // Validar que sea 'E' o 'D'
             ]);
 
