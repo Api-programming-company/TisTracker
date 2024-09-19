@@ -240,4 +240,70 @@ class AuthControllerDocenteTest extends TestCase
             'end_date' => '2023-12-31',
         ]);
     }
+
+    /** @test */
+    public function test_it_returns_academic_periods_grouped_by_teacher()
+    {
+        $teacher1 = User::factory()->create([
+            'first_name' => 'Teacher',
+            'last_name' => 'One',
+            'email' => 'teacher1@example.com',
+            'user_type' => 'D',
+        ]);
+
+        $teacher2 = User::factory()->create([
+            'first_name' => 'Teacher',
+            'last_name' => 'Two',
+            'email' => 'teacher2@example.com',
+            'user_type' => 'D',
+        ]);
+
+        // Crear periodos académicos
+        AcademicPeriod::factory()->create([
+            'name' => 'Fall Semester 2024',
+            'start_date' => '2024-09-01',
+            'end_date' => '2024-12-15',
+            'user_id' => $teacher1->getAttribute('id'),
+        ]);
+
+        AcademicPeriod::factory()->create([
+            'name' => 'Spring Semester 2024',
+            'start_date' => '2024-02-01',
+            'end_date' => '2024-06-30',
+            'user_id' => $teacher2->getAttribute('id'),
+        ]);
+
+        // Autenticar como un docente usando Sanctum
+        Sanctum::actingAs($teacher1);
+
+        // Hacer la solicitud a la ruta que agrupa los periodos por docentes
+        $response = $this->getJson('/api/academic-periods/grouped-by-teacher');
+
+        // Verificar que la respuesta tenga la estructura esperada
+        $response->assertStatus(200)
+            ->assertJson([
+                [
+                    'teacher_name' => 'Teacher One',
+                    'teacher_email' => 'teacher1@example.com',
+                    'academic_periods' => [
+                        [
+                            'name' => 'Fall Semester 2024',
+                            'start_date' => '2024-09-01',
+                            'end_date' => '2024-12-15',
+                        ]
+                    ]
+                ],
+                [
+                    'teacher_name' => 'Teacher Two',
+                    'teacher_email' => 'teacher2@example.com',
+                    'academic_periods' => [
+                        [
+                            'name' => 'Spring Semester 2024',
+                            'start_date' => '2024-02-01',
+                            'end_date' => '2024-06-30',
+                        ]
+                    ]
+                ]
+            ]);
+    }
 }
