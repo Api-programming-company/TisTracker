@@ -26,4 +26,9 @@ class AcademicPeriod extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function companies()
+    {
+        return $this->hasMany(Company::class);
+    }
 }

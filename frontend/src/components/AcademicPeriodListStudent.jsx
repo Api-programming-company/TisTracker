@@ -14,14 +14,12 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   useGetAcademicPeriodsGroupedByTeacherQuery,
   useEnrollInAcademicPeriodMutation,
 } from "../api/academicPeriodApi";
 
 const AcademicPeriodListStudent = () => {
-  const navigate = useNavigate();
   const {
     data: groupedPeriods = [],
     error,
@@ -42,7 +40,7 @@ const AcademicPeriodListStudent = () => {
   const [selectedTeacher, setSelectedTeacher] = useState("");
   const [selectedPeriod, setSelectedPeriod] = useState("");
   const [academicPeriods, setAcademicPeriods] = useState([]);
-  const [openDialog, setOpenDialog] = useState(false); // Estado para controlar el diálogo
+  const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
     if (selectedTeacher) {
