@@ -5,12 +5,7 @@ import {
   Stack,
   TextField,
   Typography,
-  IconButton,
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
+  IconButton,  
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -18,6 +13,7 @@ import React, { useEffect, useState } from "react";
 import Hu from "./Hu";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import DialogMod from "./DialogMod";
 
 const Entregable = ({
   entregable,
@@ -46,16 +42,8 @@ const Entregable = ({
   // para dialog -----------------
   const [open, setOpen] = useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   const handleAceptarDelete = () => {
-    onDelete(formData.id)
+    onDelete(formData.id);
     //post del id del hito para que lo elimine de la DB
     console.log(formData);
     setOpen(false);
@@ -299,7 +287,7 @@ const Entregable = ({
 
       <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
         <IconButton
-          onClick={handleClickOpen} //()=>onDelete(formData.id)
+          onClick={()=>setOpen(true)} //()=>onDelete(formData.id)
           color="error"
           aria-label="Eliminar entregable"
           sx={{ ml: 2 }}
@@ -307,25 +295,13 @@ const Entregable = ({
         >
           <DeleteIcon /> Quitar hito
         </IconButton>
-        <Dialog
+        <DialogMod
           open={open}
-          onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{"Eliminar hito"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              ¿Estás seguro de que deseas eliminar el hito?
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Rechazar</Button>
-            <Button onClick={handleAceptarDelete} autoFocus>
-              Aceptar
-            </Button>
-          </DialogActions>
-        </Dialog>
+          setOpen={setOpen}
+          title={"Eliminar hito"}
+          content={"¿Estás seguro de que deseas eliminar el hito?"}
+          onAccept={handleAceptarDelete}
+        />
       </Box>
     </Box>
   );

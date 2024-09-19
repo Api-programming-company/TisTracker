@@ -2,9 +2,18 @@ import { Box, TextField, IconButton } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTheme } from "@mui/material/styles";
+import DialogMod from "./DialogMod";
 
-const Hu = ({ handleEliminarHu, onUpdate, info, trigger, setTrigger, toEdit=false }) => {
+const Hu = ({
+  handleEliminarHu,
+  onUpdate,
+  info,
+  trigger,
+  setTrigger,
+  toEdit = false,
+}) => {
   const theme = useTheme();
+  const [open, setOpen] = useState(false);
 
   const [huData, setHuData] = useState({
     id: info?.id,
@@ -23,7 +32,7 @@ const Hu = ({ handleEliminarHu, onUpdate, info, trigger, setTrigger, toEdit=fals
     const { name, value } = e.target;
     setHuData({ ...huData, [name]: value });
     setErrors({ ...errors, [name]: "" });
-    onUpdate(huData)
+    onUpdate(huData);
   };
 
   const handleRegisterHu = () => {
@@ -61,10 +70,10 @@ const Hu = ({ handleEliminarHu, onUpdate, info, trigger, setTrigger, toEdit=fals
   };
 
   useEffect(() => {
-    if(trigger){
-      handleRegisterHu()
+    if (trigger) {
+      handleRegisterHu();
     }
-  },[trigger])
+  }, [trigger]);
 
   return (
     <Box
@@ -136,7 +145,7 @@ const Hu = ({ handleEliminarHu, onUpdate, info, trigger, setTrigger, toEdit=fals
       </Box>
 
       <IconButton
-        onClick={() => handleEliminarHu(huData.id)}
+        onClick={() => setOpen(true)} //() => handleEliminarHu(huData.id)
         color="error"
         aria-label="Eliminar hito"
         sx={{ justifySelf: "center" }}
@@ -144,9 +153,16 @@ const Hu = ({ handleEliminarHu, onUpdate, info, trigger, setTrigger, toEdit=fals
       >
         <DeleteIcon />
       </IconButton>
+      <DialogMod
+        open={open}
+        setOpen={setOpen}
+        title={"Eliminar entregable"}
+        content={"¿Estás seguro de que deseas eliminar el entregable?"}
+        onAccept={handleEliminarHu}
+        paramsAccept={huData.id}
+      />
     </Box>
   );
 };
 
 export default Hu;
-
