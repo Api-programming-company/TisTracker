@@ -15,7 +15,7 @@ class CreateAcademicPeriodsTable extends Migration
     {
         Schema::create('academic_periods', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name') -> unique();
             $table->date('start_date');
             $table->date('end_date');
             $table->text('description')->nullable(); // Descripción opcional

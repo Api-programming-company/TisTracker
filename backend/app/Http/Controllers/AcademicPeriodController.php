@@ -34,7 +34,7 @@ class AcademicPeriodController extends Controller
         }
 
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:academic_periods',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
             'description' => 'nullable|string',
