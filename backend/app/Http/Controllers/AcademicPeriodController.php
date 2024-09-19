@@ -53,7 +53,7 @@ class AcademicPeriodController extends Controller
     }
     public function getAllGroupedByTeacher()
     {
-        $academicPeriods = AcademicPeriod::with('user')->get();
+        $academicPeriods = AcademicPeriod::with('creator')->get();
 
         // Agrupar los periodos por docente (user_id)
         $groupedByTeacher = $academicPeriods->groupBy('user_id')->map(function ($periods, $userId) {
@@ -62,11 +62,36 @@ class AcademicPeriodController extends Controller
 
             return [
                 'teacher_name' => $teacher->getFullNameAttribute(),
-                'teacher_email' => $teacher->email,
+                'teacher_email' => $teacher->getAttribute('email'),
                 'academic_periods' => $periods->toArray()
             ];
         })->values(); // Convertir el resultado en una lista
 
         return response()->json($groupedByTeacher);
     }
+    public function enroll(Request $request)
+    {
+        /** @var \App\Models\User $user **/
+        $user = Auth::user();
+    
+        if ($user->user_type !== 'E') {
+            return response()->json(['message' => 'Solo estudiantes pueden inscribirse.'], 403);
+        }
+    
+        // Verifica que el estudiante no esté ya inscrito en un periodo académico
+        if ($user->academic_period_id) {
+            return response()->json(['message' => 'Ya está inscrito en un periodo académico'], 400);
+        }
+    
+        $academicPeriodId = $request->input('academic_period_id'); // Obtén el ID desde el cuerpo de la solicitud
+    
+        $academicPeriod = AcademicPeriod::findOrFail($academicPeriodId);
+    
+        // Inscribe al estudiante en el periodo académico
+        $user->academic_period_id = $academicPeriod->id;
+        $user->save();
+    
+        return response()->json(['message' => 'Se inscribió correctamente en el periodo académico']);
+    }
+    
 }
