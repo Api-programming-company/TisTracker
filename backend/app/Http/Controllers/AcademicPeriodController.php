@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AcademicPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class AcademicPeriodController extends Controller
 {
@@ -49,5 +50,23 @@ class AcademicPeriodController extends Controller
         ]);
 
         return response()->json($academicPeriod, 201);
+    }
+    public function getAllGroupedByTeacher()
+    {
+        $academicPeriods = AcademicPeriod::with('user')->get();
+
+        // Agrupar los periodos por docente (user_id)
+        $groupedByTeacher = $academicPeriods->groupBy('user_id')->map(function ($periods, $userId) {
+            // Obtener información del docente
+            $teacher = User::find($userId);
+
+            return [
+                'teacher_name' => $teacher->getFullNameAttribute(),
+                'teacher_email' => $teacher->email,
+                'academic_periods' => $periods->toArray()
+            ];
+        })->values(); // Convertir el resultado en una lista
+
+        return response()->json($groupedByTeacher);
     }
 }

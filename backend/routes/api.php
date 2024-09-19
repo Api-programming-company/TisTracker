@@ -30,6 +30,7 @@ Route::middleware('auth:sanctum')->get('user', function (Request $request) {
 Route::middleware('auth')->group(function () {
     Route::get('docente/academic-periods', [AcademicPeriodController::class, 'index']);
     Route::post('docente/academic-periods', [AcademicPeriodController::class, 'store']);
+    Route::get('/academic-periods/grouped-by-teacher', [AcademicPeriodController::class, 'getAllGroupedByTeacher']);
 });
 
 Route::get('/simon', function () {
