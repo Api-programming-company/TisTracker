@@ -15,10 +15,14 @@ const academicPeriodApi = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    getAcademicPeriodsGroupedByTeacher: builder.query({
+      query: () => "academic-periods/grouped-by-teacher",
+    }),
   }),
 });
 
 export const {
   useGetAcademicPeriodsQuery,
   useCreateAcademicPeriodMutation,
+  useGetAcademicPeriodsGroupedByTeacherQuery,
 } = academicPeriodApi;

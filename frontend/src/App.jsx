@@ -13,6 +13,7 @@ import {
   VerifyEmail,
   Example,
   InvitacionesGE,
+  SolicitudesGE,
 } from "./pages";
 import {
   Planificacion,
@@ -46,6 +47,7 @@ function App({ toggleTheme, isDarkMode }) {
         <Route path="/vergrupoe" element={<VerGE />} />
         <Route path="/registroge" element={<RegistroGE />} />
         <Route path="/invitacionesge" element={<InvitacionesGE />} />
+        <Route path="/solicitudesge" element={<SolicitudesGE />} />
         <Route path="/academic-periods" element={<ListaPeriodosAcademicos />} />
 
         <Route
