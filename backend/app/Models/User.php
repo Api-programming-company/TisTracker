@@ -22,7 +22,8 @@ class User extends Authenticatable
         'last_name',
         'email',
         'password',
-        'user_type', // Añadido user_type
+        'user_type',
+        'academic_period_id', // Añadido para asociar al estudiante con el periodo académico
     ];
 
     /**
@@ -54,13 +55,13 @@ class User extends Authenticatable
         return "{$this->first_name} {$this->last_name}";
     }
 
-    /**
-     * Get the user's type in a human-readable format.
-     *
-     * @return string
-     */
     public function getUserTypeDescriptionAttribute()
     {
         return $this->user_type === 'E' ? 'Estudiante' : 'Docente';
+    }
+
+    public function academicPeriod()
+    {
+        return $this->belongsTo(AcademicPeriod::class, 'academic_period_id');
     }
 }
