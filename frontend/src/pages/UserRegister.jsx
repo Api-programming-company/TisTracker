@@ -159,7 +159,12 @@ const UserRegister = () => {
   return (
     <Container maxWidth="sm">
       <Box sx={{ mt: 5, position: "relative" }}>
-        <Typography variant="h4" component="h1" gutterBottom>
+        <Typography
+          variant="h4"
+          component="h1"
+          gutterBottom
+          sx={{ textAlign: "center" }}
+        >
           Regístrate como {userType.charAt(0).toUpperCase() + userType.slice(1)}
         </Typography>
 
