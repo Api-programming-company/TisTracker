@@ -140,6 +140,7 @@ const Hu = ({ handleEliminarHu, onUpdate, info, trigger, setTrigger, toEdit=fals
         color="error"
         aria-label="Eliminar hito"
         sx={{ justifySelf: "center" }}
+        disabled={toEdit}
       >
         <DeleteIcon />
       </IconButton>

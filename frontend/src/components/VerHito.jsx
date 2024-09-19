@@ -1,29 +1,58 @@
-import { Box, Button, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Typography,
+} from "@mui/material";
 import React, { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import Entregable from "./Entregable";
 
-const VerHito = ({ entregable }) => {
+const VerHito = ({ entregable, onDelete }) => {
   // en entregable esta id, nombre_hito, fecha_ini, fecha_entrega, cobro, hu: []
-  const [formData, setFormData] = useState(entregable)
+  const [formData, setFormData] = useState(entregable);
   const [editar, setEditar] = useState(true);
 
-  const handleAgregarEntregable = () => {
-    // setEntregables([
-    //   ...entregables,
-    //   { id: Date.now(), nombre_hito: "", fecha_ini: "", fecha_entrega: "", cobro: "", hu: [] }
-    // ]);
+
+  // para dialog -----------------
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
   };
 
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleCancelarGuardado = () => {
+    setEditar(!editar)
+    setOpen(false);
+  };
+
+  const handleAceptarGuardado = () => {
+    //post enviar formData para que guarde los datos del hito acorde a su id
+    console.log(formData);
+    setOpen(false);
+  };
+  // ----------------------------
+
   const handleUpdateEntregable = (updatedData) => {
-    setFormData((prevState)=>{
-      const newFormData = {...prevState, ...updatedData}
-      return newFormData
+    setFormData((prevState) => {
+      const newFormData = { ...prevState, ...updatedData };
+      return newFormData;
     });
   };
 
-  const handleEliminarEntregable = (id) => {
-    // setEntregables(entregables.filter(entregable => entregable.id !== id));
+  const handleClickButton = () => {
+    if (!editar) {
+      handleClickOpen();
+    }
+    setEditar(!editar);
   };
 
   return (
@@ -45,15 +74,34 @@ const VerHito = ({ entregable }) => {
           variant="contained"
           color="primary"
           startIcon={<EditIcon />}
-          onClick={() => setEditar(!editar)}
+          onClick={handleClickButton}
         >
           {editar ? "Editar hito" : "Guardar"}
         </Button>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Guardar cambios"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              ¿Estás seguro de que deseas guardar los cambios realizados?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCancelarGuardado}>Rechazar</Button>
+            <Button onClick={handleAceptarGuardado} autoFocus>
+              Aceptar
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Box>
 
       <Entregable
         entregable={formData}
-        onDelete={handleEliminarEntregable}
+        onDelete={onDelete}
         onUpdate={handleUpdateEntregable}
         toEdit={editar}
       />
