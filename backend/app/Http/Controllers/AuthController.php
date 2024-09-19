@@ -111,6 +111,7 @@ class AuthController extends Controller
                     'last_name' => $user->last_name,
                     'email' => $user->email,
                     'user_type' => $user->user_type === 'E' ? 'estudiante' : 'docente',
+                    'academic_period_id' => $user->academic_period_id,
                 ]
             ], 200);
         } catch (ValidationException $e) {

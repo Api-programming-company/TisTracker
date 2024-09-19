@@ -18,6 +18,16 @@ const academicPeriodApi = apiSlice.injectEndpoints({
     getAcademicPeriodsGroupedByTeacher: builder.query({
       query: () => "academic-periods/grouped-by-teacher",
     }),
+    enrollInAcademicPeriod: builder.mutation({
+      query: (data) => ({
+        url: "academic-periods/enroll",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -25,4 +35,5 @@ export const {
   useGetAcademicPeriodsQuery,
   useCreateAcademicPeriodMutation,
   useGetAcademicPeriodsGroupedByTeacherQuery,
+  useEnrollInAcademicPeriodMutation,
 } = academicPeriodApi;
