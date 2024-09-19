@@ -10,7 +10,7 @@ use App\Models\AcademicPeriod;
 use App\Models\EmailVerification;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VerifyEmail;
-
+use Laravel\Sanctum\Sanctum;
 
 //Docente
 class AuthControllerDocenteTest extends TestCase
@@ -22,7 +22,7 @@ class AuthControllerDocenteTest extends TestCase
     {
         // Crear un usuario con tipo Estudiante "E"
         $estudiante = User::factory()->create(['user_type' => 'E']);
-        $this->actingAs($estudiante);
+        Sanctum::actingAs($estudiante);
 
         // Datos de prueba para el periodo académico
         $data = [
@@ -50,7 +50,7 @@ class AuthControllerDocenteTest extends TestCase
     {
         // Crear un usuario con tipo "D" (Docente)
         $docente = User::factory()->create(['user_type' => 'D']);
-        $this->actingAs($docente);
+        Sanctum::actingAs($docente);
 
         // Datos de prueba para el periodo académico
         $data = [
@@ -75,7 +75,7 @@ class AuthControllerDocenteTest extends TestCase
             'start_date' => '2023-01-01',
             'end_date' => '2023-06-30',
             'description' => 'Descripción del periodo 1',
-            'user_id' => $docente->id,
+            'user_id' => $docente->getAttribute("id"),
         ]);
     }
 
@@ -89,7 +89,7 @@ class AuthControllerDocenteTest extends TestCase
     {
         // Crear un usuario con tipo Estudiante "E"
         $estudiante = User::factory()->create(['user_type' => 'D']);
-        $this->actingAs($estudiante);
+        Sanctum::actingAs($estudiante);
 
         // Datos de prueba para el periodo académico
         $data = [
@@ -116,7 +116,7 @@ class AuthControllerDocenteTest extends TestCase
     {
         // Crear un usuario con tipo Estudiante "E"
         $estudiante = User::factory()->create(['user_type' => 'D']);
-        $this->actingAs($estudiante);
+        Sanctum::actingAs($estudiante);
 
         // Datos de prueba para el periodo académico
         $data = [
@@ -143,7 +143,7 @@ class AuthControllerDocenteTest extends TestCase
     {
         // Crear un usuario con tipo Estudiante "E"
         $estudiante = User::factory()->create(['user_type' => 'D']);
-        $this->actingAs($estudiante);
+        Sanctum::actingAs($estudiante);
 
         // Datos de prueba para el periodo académico
         $data = [
@@ -170,7 +170,7 @@ class AuthControllerDocenteTest extends TestCase
     {
         // Crear un usuario con tipo Docente "D"
         $docente = User::factory()->create(['user_type' => 'D']);
-        $this->actingAs($docente);
+        Sanctum::actingAs($docente);
 
         // Datos de prueba para el periodo académico con fechas incorrectas
         $data = [
@@ -197,7 +197,7 @@ class AuthControllerDocenteTest extends TestCase
     {
         // Crear un usuario con tipo Docente "D"
         $docente = User::factory()->create(['user_type' => 'D']);
-        $this->actingAs($docente);
+        Sanctum::actingAs($docente);
 
         // Datos de prueba para el primer periodo académico
         $data1 = [
