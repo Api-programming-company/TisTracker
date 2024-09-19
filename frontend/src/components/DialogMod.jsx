@@ -25,6 +25,7 @@ const DialogMod = ({
   const handleClose = () => {
     if(onCancel===null){
         setOpen(false);
+        return
     } 
     onCancel(paramsCancel)
   };
