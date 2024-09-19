@@ -4,6 +4,8 @@ export { default as RegistroPeriodoAcademico } from "./RegistroPeriodoAcademico"
 export { default as ImageUpload } from "./ImageUpload";
 export { default as UserRegister } from "./UserRegister";
 export { default as RegistroGE } from "./RegistroGE";
+export { default as InvitacionesGE } from "./InvitacionesGE";
+export { default as SolicitudesGE } from "./SolicitudesGE";
 export { default as Login } from "./Login";
 export { default as VerifyEmail } from "./VerifyEmail";
 export { default as Example } from "./Example";
