@@ -1,36 +1,23 @@
 import {
   Box,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import Entregable from "./Entregable";
+import DialogMod from "./DialogMod";
 
 const VerHito = ({ entregable, onDelete }) => {
   // en entregable esta id, nombre_hito, fecha_ini, fecha_entrega, cobro, hu: []
   const [formData, setFormData] = useState(entregable);
   const [editar, setEditar] = useState(true);
 
-
   // para dialog -----------------
   const [open, setOpen] = useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   const handleCancelarGuardado = () => {
-    setEditar(!editar)
+    setEditar(!editar);
     setOpen(false);
   };
 
@@ -50,7 +37,7 @@ const VerHito = ({ entregable, onDelete }) => {
 
   const handleClickButton = () => {
     if (!editar) {
-      handleClickOpen();
+      setOpen(true)
     }
     setEditar(!editar);
   };
@@ -78,25 +65,14 @@ const VerHito = ({ entregable, onDelete }) => {
         >
           {editar ? "Editar hito" : "Guardar"}
         </Button>
-        <Dialog
+        <DialogMod
           open={open}
-          onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{"Guardar cambios"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              ¿Estás seguro de que deseas guardar los cambios realizados?
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCancelarGuardado}>Rechazar</Button>
-            <Button onClick={handleAceptarGuardado} autoFocus>
-              Aceptar
-            </Button>
-          </DialogActions>
-        </Dialog>
+          setOpen={setOpen}
+          title={"Guardar cambios"}
+          content={"¿Estás seguro de que deseas guardar los cambios realizados?"}
+          onCancel={handleCancelarGuardado}
+          onAccept={handleAceptarGuardado}
+        />
       </Box>
 
       <Entregable
