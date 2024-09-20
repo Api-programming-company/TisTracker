@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   TextField,
   Button,
@@ -6,17 +6,26 @@ import {
   Typography,
   Box,
   FormControl,
-  Select,
-  MenuItem,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
   IconButton,
+  Snackbar,
+  CircularProgress,
+  Avatar,
 } from "@mui/material";
+import { Delete } from "@mui/icons-material";
+import { Person } from "@mui/icons-material";
+import { useCreateCompanyMutation } from "../api/companyApi";
+import { useNavigate } from "react-router-dom";
 
 const RegistroGE = () => {
-  //Campos del formulario
+  const navigate = useNavigate();
+  const [createCompany, { data, isSuccess, isError, isLoading }] =
+    useCreateCompanyMutation();
+  
+  // Campos del formulario
   const [nombreLargo, setNombreLargo] = useState("");
   const [errorNombreLargo, setErrorNombreLargo] = useState(false);
   const [nombreCorto, setNombreCorto] = useState("");
@@ -26,52 +35,36 @@ const RegistroGE = () => {
   const [address, setAddress] = useState("");
   const [addressError, setAddressError] = useState(false);
   const [telefono, setTelefono] = useState("");
-  //Buscador
+
+  // Buscador
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
-  //Desplegables Docente y Gestion
-  const [selectedDocente, setSelectedDocente] = useState("");
-  const [selectedGestion, setSelectedGestion] = useState("");
+  
   const [allItems] = useState([
-    {
-      id: 1,
-      name: "Juan Alberto Peredo Pozo",
-      codsis: "202000571",
-      ingroup: "false",
-    },
-    {
-      id: 2,
-      name: "Carlos José Padilla Poma",
-      codsis: "202000572",
-      ingroup: "false",
-    },
-    {
-      id: 3,
-      name: "Daniela Torrico Torreón",
-      codsis: "202000570",
-      ingroup: "false",
-    },
-    {
-      id: 4,
-      name: "Andres Castillo Lozada",
-      codsis: "202100580",
-      ingroup: "false",
-    },
-    {
-      id: 5,
-      name: "Antonio Gomez Amaranto",
-      codsis: "202200740",
-      ingroup: "false",
-    },
-    {
-      id: 6,
-      name: "Camila Torrez Gutierrez",
-      codsis: "202100712",
-      ingroup: "false",
-    },
+    { id: 1, name: "Juan Alberto Peredo Pozo", codsis: "202000571" },
+    { id: 2, name: "Carlos José Padilla Poma", codsis: "202000572" },
+    { id: 3, name: "Daniela Torrico Torreón", codsis: "202000570" },
+    { id: 4, name: "Andres Castillo Lozada", codsis: "202100580" },
+    { id: 5, name: "Antonio Gomez Amaranto", codsis: "202200740" },
+    { id: 6, name: "Camila Torrez Gutierrez", codsis: "202100712" },
   ]);
 
-  //Función que controla que los campos de formulario no excedan los 150 caracteres
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  useEffect(() => {
+    if (isSuccess) {
+      setSnackbarMessage("Formulario enviado con éxito");
+      setSnackbarOpen(true);
+      navigate("/");
+    }
+
+    if (isError) {
+      setSnackbarMessage("Error al enviar el formulario");
+      setSnackbarOpen(true);
+    }
+  }, [isSuccess, isError, navigate]);
+
   const handleInputChange = (event, setValue, setError, maxLength) => {
     const value = event.target.value;
     if (value.length <= maxLength) {
@@ -82,7 +75,6 @@ const RegistroGE = () => {
     }
   };
 
-  //Llamados a la función para controlar no excedan los 150 caracteres
   const handleNombreCortoChange = (event) => {
     handleInputChange(event, setNombreCorto, setErrorNombreCorto, 150);
   };
@@ -99,7 +91,6 @@ const RegistroGE = () => {
     handleInputChange(event, setAddress, setAddressError, 150);
   };
 
-  //Función que controla que el campo "telefono" solo permita numeros, simbolo "+" y espacios
   const handleTelefonoChange = (event) => {
     const value = event.target.value;
     const phoneRegex = /^(\+|\d|\s)*$/;
@@ -112,57 +103,51 @@ const RegistroGE = () => {
     setSearchTerm(event.target.value);
   };
 
-  //Función para el buscador, está leyendo el "allItems" con los datos de los estudiantes
   const filteredItems = allItems.filter((item) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  //Función que controla que no se repitan estudiantes en la lista de integrantes
   const handleAddItem = (itemId) => {
     const itemToAdd = allItems.find((item) => item.id === itemId);
     if (itemToAdd && !selectedItems.some((item) => item.id === itemId)) {
       setSelectedItems((prevItems) => [...prevItems, itemToAdd]);
     }
-    setSearchTerm(""); //Despues de presionar un elemento borra el contenido del buscador
+    setSearchTerm("");
   };
 
-  //Función para quitar un estudiante de la lista de integrantes
   const handleRemoveItem = (itemId) => {
     setSelectedItems((prevItems) =>
       prevItems.filter((item) => item.id !== itemId)
     );
   };
 
-  //Función para controlar que sean al menos 3 integrantes
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (selectedItems.length < 3) {
-      alert("Deben ser mínimo 3 integrantes");
+      setSnackbarMessage("Deben ser mínimo 3 integrantes");
+      setSnackbarOpen(true);
       return;
     }
 
-    //Validación del campo Docente
-    if (!selectedDocente) {
-      alert("Debe seleccionar un Consultor TIS");
-      return;
-    }
+    const companyData = {
+      long_name: nombreLargo,
+      short_name: nombreCorto,
+      email: emailGE,
+      address: address,
+      phone: telefono,
+      members: selectedItems.map((item) => item.id),
+    };
 
-    // Validación del campo Gestión
-    if (!selectedGestion) {
-      alert("Debe seleccionar una Gestión");
-      return;
+    try {
+      await createCompany(companyData).unwrap();
+    } catch (error) {
+      setSnackbarMessage("Error al enviar el formulario: " + error.message);
+      setSnackbarOpen(true);
     }
-    alert("Formulario enviado con éxito");
-    console.log("Formulario enviado con éxito");
   };
 
-  //Funciones para obtener los valores de los desplegables docente y gestión
-  const handleChangeDocente = (event) => {
-    setSelectedDocente(event.target.value);
-  };
-
-  const handleChangeGestion = (event) => {
-    setSelectedGestion(event.target.value);
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -187,7 +172,6 @@ const RegistroGE = () => {
               }}
             >
               <FormControl fullWidth sx={{ mb: 2 }}>
-                {/* Nombre largo */}
                 <TextField
                   label="Nombre largo"
                   variant="outlined"
@@ -199,13 +183,7 @@ const RegistroGE = () => {
                   error={errorNombreLargo}
                   value={nombreLargo}
                   onChange={handleNombreLargoChange}
-                  sx={{
-                    "& .MuiFormHelperText-root": {
-                      marginBottom: 1,
-                    },
-                  }}
                 />
-                {/* Nombre corto */}
                 <TextField
                   label="Nombre corto"
                   variant="outlined"
@@ -217,13 +195,7 @@ const RegistroGE = () => {
                   error={errorNombreCorto}
                   value={nombreCorto}
                   onChange={handleNombreCortoChange}
-                  sx={{
-                    "& .MuiFormHelperText-root": {
-                      marginBottom: 1,
-                    },
-                  }}
                 />
-                {/* Correo electrónico */}
                 <TextField
                   label="Correo electrónico"
                   variant="outlined"
@@ -236,13 +208,7 @@ const RegistroGE = () => {
                     emailError ? "Máx. 150 caracteres" : "* Obligatorio"
                   }
                   error={emailError}
-                  sx={{
-                    "& .MuiFormHelperText-root": {
-                      marginBottom: 1,
-                    },
-                  }}
                 />
-                {/* Dirección */}
                 <TextField
                   label="Dirección"
                   variant="outlined"
@@ -254,13 +220,7 @@ const RegistroGE = () => {
                     addressError ? "Máx. 150 caracteres" : "* Obligatorio"
                   }
                   error={addressError}
-                  sx={{
-                    "& .MuiFormHelperText-root": {
-                      marginBottom: 1,
-                    },
-                  }}
                 />
-                {/* Telefono */}
                 <TextField
                   label="Teléfono"
                   variant="outlined"
@@ -269,11 +229,6 @@ const RegistroGE = () => {
                   value={telefono}
                   onChange={handleTelefonoChange}
                   helperText="* Obligatorio"
-                  sx={{
-                    "& .MuiFormHelperText-root": {
-                      marginBottom: 1,
-                    },
-                  }}
                 />
               </FormControl>
 
@@ -292,21 +247,16 @@ const RegistroGE = () => {
                       <ListItem
                         key={item.id}
                         button
-                        disabled={selectedItems.find(
+                        disabled={selectedItems.some(
                           (selectedItem) => selectedItem.id === item.id
                         )}
                         onClick={() => handleAddItem(item.id)}
-                        style={{
-                          backgroundColor: "#F6F6F6",
-                          marginBottom: "2px",
-                        }}
+                        sx={{ backgroundColor: "#F6F6F6", mb: 0.5 }}
                       >
                         <ListItemIcon>
-                          <img
-                            src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png"
-                            alt="Icono persona"
-                            style={{ width: "25px", height: "25px" }}
-                          />
+                          <Avatar>
+                            <Person />
+                          </Avatar>
                         </ListItemIcon>
                         <ListItemText
                           primary={item.name}
@@ -316,35 +266,28 @@ const RegistroGE = () => {
                     ))}
                   </List>
                 )}
-                <p>Integrantes</p>
+                <Typography variant="subtitle1" sx={{ mt: 2 }}>
+                  Integrantes
+                </Typography>
                 <List>
                   {selectedItems.map((item) => (
                     <ListItem
                       key={item.id}
                       secondaryAction={
-                        <IconButton edge="end" aria-label="delete">
-                          <img
-                            src="https://cdn-icons-png.freepik.com/256/484/484662.png?semt=ais_hybrid"
-                            alt="Icono borrar"
-                            onClick={() => handleRemoveItem(item.id)}
-                            style={{
-                              width: "25px",
-                              height: "25px",
-                            }}
-                          />
+                        <IconButton
+                          edge="end"
+                          aria-label="delete"
+                          onClick={() => handleRemoveItem(item.id)}
+                        >
+                          <Delete />
                         </IconButton>
                       }
-                      style={{
-                        backgroundColor: "aliceblue",
-                        marginBottom: "2px",
-                      }}
+                      sx={{ backgroundColor: "aliceblue", mb: 0.5 }}
                     >
                       <ListItemIcon>
-                        <img
-                          src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png"
-                          alt="Icono persona"
-                          style={{ width: "25px", height: "25px" }}
-                        />
+                        <Avatar>
+                          <Person />
+                        </Avatar>
                       </ListItemIcon>
                       <ListItemText
                         primary={item.name}
@@ -357,48 +300,12 @@ const RegistroGE = () => {
             </Box>
           </FormControl>
 
-          {/* Docente */}
-          <FormControl fullWidth sx={{ mb: 2 }}>
-            <label for="docente-select">Consultor TIS</label>
-            <Select
-              id="docente-select"
-              value={selectedDocente}
-              onChange={handleChangeDocente}
-              sx={{ textAlign: "center" }}
-            >
-              <MenuItem disabled value="">
-                Seleccionar Consultor TIS
-              </MenuItem>
-              <MenuItem value="docente1">Docente 1</MenuItem>
-              <MenuItem value="docente2">Docente 2</MenuItem>
-            </Select>
-          </FormControl>
-
-          {/* Gestion */}
-          <FormControl fullWidth sx={{ mb: 2 }}>
-            <label for="gestion-select">Gestión</label>
-            <Select
-              id="gestion-select"
-              value={selectedGestion}
-              onChange={handleChangeGestion}
-              sx={{ textAlign: "center" }}
-            >
-              <MenuItem disabled value="">
-                Seleccionar Gestión
-              </MenuItem>
-
-              <MenuItem value="gestion1">Gestión 1 - 2024</MenuItem>
-              <MenuItem value="gestion2">Gestión 2 - 2024</MenuItem>
-              <MenuItem value="gestion3">Gestión 3 (Verano) - 2024</MenuItem>
-              <MenuItem value="gestion4">Gestión 4 (Invierno) - 2024</MenuItem>
-            </Select>
-          </FormControl>
-
           {/* Botón de Registro */}
           <Button
             type="submit"
             variant="contained"
             color="primary"
+            disabled={isLoading}
             sx={{
               display: "block",
               mx: "auto",
@@ -408,9 +315,21 @@ const RegistroGE = () => {
               borderRadius: "30px",
             }}
           >
-            REGISTRAR
+            {isLoading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              "REGISTRAR"
+            )}
           </Button>
         </form>
+
+        {/* Snackbar para mensajes */}
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000}
+          onClose={handleSnackbarClose}
+          message={snackbarMessage}
+        />
       </Box>
     </Container>
   );

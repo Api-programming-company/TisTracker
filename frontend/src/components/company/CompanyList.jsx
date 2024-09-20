@@ -1,7 +1,6 @@
 import {
   Container,
-  List,
-  ListItem,
+  Grid,
   Typography,
   IconButton,
   Box,
@@ -15,7 +14,6 @@ import { CompanyCard } from "../";
 
 const CompanyList = () => {
   const navigate = useNavigate();
-
   const { user } = useContext(AppContext);
   const { data, error, isLoading } = useGetCompaniesByAcademicPeriodQuery();
 
@@ -31,7 +29,6 @@ const CompanyList = () => {
   const handleAddCompany = () => {
     navigate("/registroge"); // Redirige a la página de registro
   };
-  
 
   if (!user.academic_period_id) {
     window.location.href = "/enroll-to-ap"; // Redirige a la página de inscripción
@@ -77,13 +74,13 @@ const CompanyList = () => {
           <AddIcon fontSize="large" />
         </IconButton>
       </Box>
-      <List>
+      <Grid container spacing={2}>
         {data.companies.map((company) => (
-          <ListItem key={company.id}>
+          <Grid item xs={12} sm={6} md={4} key={company.id}>
             <CompanyCard company={company} />
-          </ListItem>
+          </Grid>
         ))}
-      </List>
+      </Grid>
     </Container>
   );
 };

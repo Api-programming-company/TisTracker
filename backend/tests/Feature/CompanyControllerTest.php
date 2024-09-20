@@ -37,7 +37,7 @@ class CompanyControllerTest extends TestCase
         ];
 
         // Realizar la solicitud
-        $response = $this->post('api/companies', $data);
+        $response = $this->post('api/company', $data);
 
         // Verificar la respuesta
         $response->assertStatus(201);
@@ -78,16 +78,15 @@ class CompanyControllerTest extends TestCase
             'email' => 'another@example.com',
             'address' => '456 Another St',
             'phone' => '0987654321',
-            'academic_period_id' => 999, // ID inválido
         ];
 
         // Realizar la solicitud
-        $response = $this->post('api/companies', $data);
+        $response = $this->post('api/company', $data);
 
         // Verificar la respuesta
-        $response->assertStatus(422);
+        $response->assertStatus(404);
         $response->assertJson([
-            'message' => 'Validation Error'
+            'message' => 'El periodo académico asociado no existe.'
         ]);
     }
 
