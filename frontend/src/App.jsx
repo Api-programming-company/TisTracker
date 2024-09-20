@@ -14,12 +14,13 @@ import {
   Example,
   InvitacionesGE,
   SolicitudesGE,
+  EditarListaGE,
 } from "./pages";
 import {
   Planificacion,
   AppBarWithMenu,
   ListaPeriodosAcademicos,
-  EnrollToAcademicPeriod
+  EnrollToAcademicPeriod,
 } from "./components";
 
 import VerGE from "./pages/VerGE";
@@ -51,6 +52,7 @@ function App({ toggleTheme, isDarkMode }) {
         <Route path="/registroge" element={<RegistroGE />} />
         <Route path="/invitacionesge" element={<InvitacionesGE />} />
         <Route path="/solicitudesge" element={<SolicitudesGE />} />
+        <Route path="/editarlistage" element={<EditarListaGE />} />
         <Route path="/academic-periods" element={<ListaPeriodosAcademicos />} />
 
         <Route
