@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import Socio from "../components/Socio";
 import VerHito from "../components/VerHito";
-import { useNavigate } from "react-router-dom";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import EditIcon from "@mui/icons-material/Edit";
@@ -77,7 +76,6 @@ const VerGE = () => {
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
-  const navigate = useNavigate();
   const [expandedSocios, setExpandedSocios] = useState(false);
   const [expandedPlanificacion, setExpandedPlanificacion] = useState(false);
   const [editar, setEditar] = useState(true);
@@ -205,7 +203,14 @@ const VerGE = () => {
 
       {/* Planificación */}
       <Box sx={{ mb: 4, textAlign: "center" }}>
-        <Box sx={{ display: "flex", justifyContent: "space-evenly" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-evenly",
+            alignItems: "center",
+            paddingY: 2,
+          }}
+        >
           <Typography variant="h5" gutterBottom>
             Planificación
           </Typography>
