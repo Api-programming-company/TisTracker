@@ -30,9 +30,12 @@ const Hu = ({
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setHuData({ ...huData, [name]: value });
-    setErrors({ ...errors, [name]: "" });
-    onUpdate(huData);
+    setHuData((prevState)=>{ 
+      let newHuData = {...prevState, [name]: value} 
+      setErrors({ ...errors, [name]: "" });
+      onUpdate(newHuData);
+      return newHuData
+    });
   };
 
   const handleRegisterHu = () => {
@@ -145,7 +148,7 @@ const Hu = ({
       </Box>
 
       <IconButton
-        onClick={() => setOpen(true)} //() => handleEliminarHu(huData.id)
+        onClick={() => setOpen(true)} 
         color="error"
         aria-label="Eliminar hito"
         sx={{ justifySelf: "center" }}

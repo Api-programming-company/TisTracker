@@ -1,8 +1,4 @@
-import { ExpandMore } from "@mui/icons-material";
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   Divider,
   Box,
   Button,
@@ -15,11 +11,10 @@ import VerHito from "../components/VerHito";
 import { useNavigate } from "react-router-dom";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import EditIcon from "@mui/icons-material/Edit";
+import DialogMod from "../components/DialogMod";
 
 const VerGE = () => {
-  const [expandedSocios, setExpandedSocios] = useState(false);
-  const [expandedPlanificacion, setExpandedPlanificacion] = useState(false);
-
   const getInfo = {
     nombre_largo: "Vamos equipo S.R.L.",
     nombre_corto: "Vamo",
@@ -88,11 +83,43 @@ const VerGE = () => {
     setExpanded(newExpanded ? panel : false);
   };
   const navigate = useNavigate();
+  const [expandedSocios, setExpandedSocios] = useState(false);
+  const [expandedPlanificacion, setExpandedPlanificacion] = useState(false);
+  const [editar, setEditar] = useState(true);
+  // para dialog------------------
+  const [open, setOpen] = useState(false);
+  const handleCancelarGuardado = () => {
+    setEditar(!editar);
+    setOpen(false);
+  };
+  const handleAceptarGuardado = () => {
+    //post enviar formData para que guarde los datos modificados
+    console.log(formData);
+    setOpen(false);
+  };
+  //----------------------------
+  const handleClickButton = () => {
+    if (!editar) {
+      setOpen(true);
+    }
+    setEditar(!editar);
+  };
 
   const handleEliminarHitoEdit = (id) => {
     let x = "planificacion";
     const newPlanificacion = formData.planificacion.filter((e) => e.id !== id);
     setFormData({ ...formData, [x]: newPlanificacion });
+  };
+
+  const handleUpdateInfo = (infoHito) => {
+    setFormData((prevState) => {
+      let x = "planificacion";
+      let updatedPlanificacion = formData.planificacion.map((e) =>
+        e.id === infoHito.id ? infoHito : e
+      );
+      let newFormData = { ...prevState, [x]: updatedPlanificacion };
+      return newFormData;
+    });
   };
 
   return (
@@ -164,9 +191,29 @@ const VerGE = () => {
 
       {/* Planificación */}
       <Box sx={{ mb: 4, textAlign: "center" }}>
-        <Typography variant="h5" gutterBottom>
-          Planificación
-        </Typography>
+        <Box sx={{ display: "flex", justifyContent: "space-evenly" }}>
+          <Typography variant="h5" gutterBottom>
+            Planificación
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<EditIcon />}
+            onClick={handleClickButton}
+          >
+            {editar ? "Editar planificación" : "Guardar"}
+          </Button>
+          <DialogMod
+            open={open}
+            setOpen={setOpen}
+            title={"Guardar cambios"}
+            content={
+              "¿Estás seguro de que deseas guardar los cambios realizados?"
+            }
+            onCancel={handleCancelarGuardado}
+            onAccept={handleAceptarGuardado}
+          />
+        </Box>
         {formData.planificacion.length === 0 ? (
           <Button
             variant="contained"
@@ -191,6 +238,9 @@ const VerGE = () => {
                 key={e.id}
                 entregable={e}
                 onDelete={handleEliminarHitoEdit}
+                editar={editar}
+                setEditar={setEditar}
+                onUpdate={handleUpdateInfo}
               />
             ))}
           </Box>

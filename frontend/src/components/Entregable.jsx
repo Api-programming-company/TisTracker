@@ -95,13 +95,16 @@ const Entregable = ({
   };
 
   const handleAgregarHu = () => {
-    let x = "hu";
-    let actual = formData.hu;
-    let nuevo = [
-      ...actual,
-      { id: Date.now(), nombre_hu: "", responsable: "", objetivo: "" },
-    ];
-    setFormData({ ...formData, [x]: nuevo });
+    setFormData((prevState) => {
+      let x = "hu";
+      let newHu = [
+        ...prevState.hu,
+        { id: Date.now(), nombre_hu: "", responsable: "", objetivo: "" },
+      ];
+      let newFormData = { ...prevState, [x]: newHu };
+      onUpdate(newFormData);
+      return newFormData;
+    });
   };
 
   const handleEliminarHu = (id) => {
@@ -303,7 +306,7 @@ const Entregable = ({
 
       <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
         <IconButton
-          onClick={() => setOpen(true)} //()=>onDelete(formData.id)
+          onClick={() => setOpen(true)}
           color="error"
           aria-label="Eliminar entregable"
           sx={{ ml: 2 }}
