@@ -23,7 +23,7 @@ import { useNavigate } from "react-router-dom";
 
 const EnrollToAcademicPeriod = () => {
   const navigate = useNavigate();
-  const { user } = useContext(AppContext);
+  const { user, removeUserFromLocalStorage } = useContext(AppContext);
 
   useEffect(() => {
     if (user?.academic_period_id) {
@@ -67,6 +67,8 @@ const EnrollToAcademicPeriod = () => {
   useEffect(() => {
     if (isEnrollSuccess) {
       console.log(enrollData);
+      removeUserFromLocalStorage();
+      navigate("/");
     }
     if (isEnrollError) {
       console.log(enrollError);
@@ -74,7 +76,7 @@ const EnrollToAcademicPeriod = () => {
   }, [isEnrollSuccess, isEnrollError, enrollData, enrollError]);
 
   const handleInscribirse = () => {
-    setOpenDialog(false); // Cerrar el diálogo
+    setOpenDialog(false);
     console.log(selectedPeriod);
     enrollInAcademicPeriod({ academic_period_id: selectedPeriod });
   };

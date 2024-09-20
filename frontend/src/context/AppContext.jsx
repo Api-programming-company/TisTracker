@@ -6,6 +6,14 @@ import { useNavigate } from "react-router-dom";
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
+  const saveUserToLocalStorage = (user) => {
+    localStorage.setItem("user", JSON.stringify(user));
+  };
+  
+  const removeUserFromLocalStorage = () => {
+    localStorage.removeItem("user");
+  };
+  
   const [checkUser, { data, error, isError, isSuccess, isLoading }] =
     useLazyCheckUserQuery();
   const [logoutUser, { isLoading: isLoggingOut }] = useLogoutUserMutation();
@@ -46,7 +54,7 @@ export const AppProvider = ({ children }) => {
     }
   };
   return (
-    <AppContext.Provider value={{ user, setUser, handleLogout }}>
+    <AppContext.Provider value={{ user, setUser, handleLogout, removeUserFromLocalStorage }}>
       {isLoading || isLoggingOut ? (
         <div
           style={{
@@ -64,12 +72,5 @@ export const AppProvider = ({ children }) => {
   );
 };
 
-const saveUserToLocalStorage = (user) => {
-  localStorage.setItem("user", JSON.stringify(user));
-};
-
-const removeUserFromLocalStorage = () => {
-  localStorage.removeItem("user");
-};
 
 export default AppContext;

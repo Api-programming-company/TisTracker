@@ -14,26 +14,25 @@ import { CompanyCard } from "../";
 
 const CompanyList = () => {
   const navigate = useNavigate();
-  const { user } = useContext(AppContext);
-  const { data, error, isLoading } = useGetCompaniesByAcademicPeriodQuery();
+  const { user, removeUserFromLocalStorage } = useContext(AppContext);
+  const { data, error, isLoading, isError, isSuccess } = useGetCompaniesByAcademicPeriodQuery();
 
   useEffect(() => {
-    if (data) {
+    if (isSuccess) {
       console.log(data);
     }
-    if (error) {
-      console.log(error);
+    if (isError) {
+      if (error.status === 400) {
+        console.log(error.message);
+        removeUserFromLocalStorage();
+        navigate("/enroll-to-ap");
+      }
     }
-  }, [data, error]);
+  }, [isSuccess, isError, data, error]);
 
   const handleAddCompany = () => {
-    navigate("/registroge"); // Redirige a la página de registro
+    navigate("/registroge");
   };
-
-  if (!user.academic_period_id) {
-    window.location.href = "/enroll-to-ap"; // Redirige a la página de inscripción
-    return null;
-  }
 
   if (isLoading) {
     return (
