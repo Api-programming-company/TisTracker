@@ -3,14 +3,14 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\EmailVerificationController;
+//use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\AcademicPeriodController;
 use App\Http\Controllers\CompanyController;
-
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 Route::post('user/register', [AuthController::class, 'register']);
 Route::get('user/check-email', [AuthController::class, 'checkEmail']);
-Route::post('user/verify-email', [EmailVerificationController::class, 'verifyEmail']);
+//Route::post('user/verify-email', [EmailVerificationController::class, 'verifyEmail']); no es necesario
 Route::post('user/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->post('user/logout', [AuthController::class, 'logout']);
 
@@ -27,7 +27,22 @@ Route::middleware('auth:sanctum')->get('user', function (Request $request) {
         ]
     ]);
 });
+// Ruta para mostrar la notificación de verificación de email
+Route::get('/email/verify', function () {
+    return response()->json(['message' => 'Por favor, verifica tu correo.']);
+})->middleware('auth')->name('verification.notice');
 
+// Ruta que maneja la verificación de email desde el enlace
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    return response()->json(['message' => 'Correo verificado exitosamente.']);
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+// Ruta para reenviar el enlace de verificación
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return response()->json(['message' => 'Enlace de verificación reenviado.']);
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 // docente
 Route::middleware('auth')->group(function () {
     Route::get('docente/academic-periods', [AcademicPeriodController::class, 'index']);
