@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Company;
 use Illuminate\Validation\ValidationException;
 use Exception;
+use Illuminate\Support\Facades\Auth;
+use App\Models\AcademicPeriod;
 
 class CompanyController extends Controller
 {
@@ -19,11 +21,23 @@ class CompanyController extends Controller
                 'email' => 'required|email|unique:companies,email',
                 'address' => 'required|string|max:255',
                 'phone' => 'required|string|max:20',
-                'academic_period_id' => 'required|exists:academic_periods,id',
             ]);
 
+            // Obtener el usuario autenticado
+            $user = Auth::user();
+
+            // Obtener el periodo académico del usuario autenticado
+            $academicPeriodId = $user->academic_period_id;
+
+            // Validar que el periodo académico existe
+            if (!$academicPeriodId || !AcademicPeriod::find($academicPeriodId)) {
+                return response()->json([
+                    'message' => 'El periodo académico asociado no existe.'
+                ], 404); // 404 Not Found
+            }
+
             // Crear la compañía
-            $company = Company::create($request->all());
+            $company = Company::create(array_merge($request->all(), ['academic_period_id' => $academicPeriodId]));
 
             // Devolver una respuesta JSON
             return response()->json([
@@ -46,6 +60,7 @@ class CompanyController extends Controller
             ], 500); // 500 Internal Server Error
         }
     }
+
     public function getCompaniesByAcademicPeriod()
     {
         try {
