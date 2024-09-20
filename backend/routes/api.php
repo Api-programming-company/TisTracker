@@ -50,8 +50,9 @@ Route::middleware('auth')->group(function () {
     Route::get('academic-periods/grouped-by-teacher', [AcademicPeriodController::class, 'getAllGroupedByTeacher']);
     Route::post('academic-periods/enroll', [AcademicPeriodController::class, 'enroll']);
     Route::post('company', [CompanyController::class, 'store']);
-    Route::get('/academic-periods/companies', [CompanyController::class, 'getCompaniesByAcademicPeriod']);
+    Route::get('academic-periods/companies', [CompanyController::class, 'getCompaniesByAcademicPeriod']);
     Route::get('company/{id}', [CompanyController::class, 'getCompanyById']);
+    Route::get('academic-periods/companies/pending', [CompanyController::class, 'getPendingCompanies']);
 });
 
 Route::get('/simon', function () {

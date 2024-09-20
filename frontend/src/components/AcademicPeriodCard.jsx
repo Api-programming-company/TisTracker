@@ -1,13 +1,21 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Card, CardContent, Typography, Button, CircularProgress } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  CircularProgress,
+  CardHeader,
+} from "@mui/material";
 import { format } from "date-fns";
 import { useEnrollInAcademicPeriodMutation } from "../api/academicPeriodApi";
 import AppContext from "../context/AppContext";
 
 const formatDate = (date) => format(new Date(date), "dd MMM yyyy");
 
-const AcademicPeriodCard = ({ period }) => {
-  const [enrollInAcademicPeriod, { isLoading, isSuccess, isError, error }] = useEnrollInAcademicPeriodMutation();
+const AcademicPeriodCard = ({ period, isEnroll = true }) => {
+  const [enrollInAcademicPeriod, { isLoading, isSuccess, isError, error }] =
+    useEnrollInAcademicPeriodMutation();
   const [isEnrolled, setIsEnrolled] = useState(false);
   const { user } = useContext(AppContext);
 
@@ -28,25 +36,37 @@ const AcademicPeriodCard = ({ period }) => {
   };
 
   return (
-    <Card sx={{ mb: 2 }}>
+    <Card
+      sx={{
+        mb: 2,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        height: "100%", // Asegura que todas las tarjetas tengan la misma altura
+      }}
+    >
+      <CardHeader
+        title={period.name}
+        sx={{ textAlign: "center" }} // Centrar el título
+      />
       <CardContent>
-        <Typography variant="h6" component="div">
-          {period.name}
-        </Typography>
-        <Typography color="text.secondary">
+        <Typography variant="body2" noWrap>
           Fecha de Inicio: {formatDate(period.start_date)}
         </Typography>
-        <Typography color="text.secondary">
+        <Typography variant="body2" noWrap>
           Fecha de Fin: {formatDate(period.end_date)}
         </Typography>
+
         {period.description && (
-          <Typography color="text.secondary">
+          <Typography variant="body2">
             Descripción: {period.description}
           </Typography>
         )}
-        <div>
-          {isEnrolled ? (
-            <Typography color="success.main">¡Inscrito correctamente!</Typography>
+        {isEnroll ? (
+          isEnrolled ? (
+            <Typography color="success.main">
+              ¡Inscrito correctamente!
+            </Typography>
           ) : (
             <Button
               variant="contained"
@@ -56,9 +76,12 @@ const AcademicPeriodCard = ({ period }) => {
             >
               {isLoading ? <CircularProgress size={24} /> : "Inscribirse"}
             </Button>
-          )}
-          {isError && <Typography color="error.main">Error: {error.message}</Typography>}
-        </div>
+          )
+        ) : null}
+
+        {isError && (
+          <Typography color="error.main">Error: {error.message}</Typography>
+        )}
       </CardContent>
     </Card>
   );

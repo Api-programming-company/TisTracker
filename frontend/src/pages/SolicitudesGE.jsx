@@ -152,7 +152,7 @@ const SolicitudesGE = () => {
                 <Button
                   onClick={() => handleDecline(request.nombreCorto)}
                   variant="contained"
-                  color="#000000"
+                  color="secondary"
                   sx={{
                     px: 12,
                     py: 1,
