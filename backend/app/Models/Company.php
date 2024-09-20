@@ -17,6 +17,7 @@ class Company extends Model
         'address',
         'phone',
         'academic_period_id',
+        'status',
     ];
 
     public function academicPeriod()

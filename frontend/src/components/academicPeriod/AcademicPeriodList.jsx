@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
 import {
-  Card,
-  CardContent,
   Typography,
   Box,
   Container,
@@ -13,8 +11,6 @@ import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { useGetAcademicPeriodsQuery } from "../../api/academicPeriodApi";
 import AcademicPeriodCard from "../AcademicPeriodCard";
-
-const formatDate = (date) => format(new Date(date), "dd MMM yyyy");
 
 const AcademicPeriodList = () => {
     const navigate = useNavigate();
