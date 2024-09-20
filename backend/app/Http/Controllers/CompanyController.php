@@ -98,6 +98,49 @@ class CompanyController extends Controller
         }
     }
 
+    public function getCompanyById($id)
+    {
+        try {
+            // Buscar la compañía por su ID
+            $company = Company::find($id);
+
+            // Verificar si la compañía existe
+            if (!$company) {
+                return response()->json([
+                    'message' => 'No se encontró la compañía especificada.'
+                ], 404); // 404 Not Found
+            }
+
+            // Obtener el periodo académico asociado
+            $academicPeriod = $company->academicPeriod;
+
+            // Verificar si el periodo académico existe y obtener el creador
+            if ($academicPeriod) {
+                $creator = $academicPeriod->creator;
+                $creatorName = $creator ? "{$creator->first_name} {$creator->last_name}" : 'Creador no disponible';
+            } else {
+                $creatorName = 'Periodo académico no disponible';
+            }
+
+            // Devolver la información de la compañía junto con el creador y el periodo académico
+            return response()->json([
+                'message' => 'Compañía obtenida correctamente.',
+                'company' => $company,
+                'academic_period' => [
+                    'name' => $academicPeriod ? $academicPeriod->name : null,
+                    'creator_name' => $creatorName,
+                ],
+            ], 200); // 200 OK
+
+        } catch (Exception $e) {
+            // Manejar otros errores
+            return response()->json([
+                'message' => 'Ocurrió un error al obtener la información de la compañía.',
+                'error' => $e->getMessage()
+            ], 500); // 500 Internal Server Error
+        }
+    }
+
     public function getPendingCompanies(Request $request)
     {
         try {
