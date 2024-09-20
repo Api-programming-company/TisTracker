@@ -15,6 +15,7 @@ import {
   InvitacionesGE,
   SolicitudesGE,
   EditarListaGE,
+  ConformacionGE,
 } from "./pages";
 import {
   Planificacion,
@@ -42,19 +43,16 @@ function App({ toggleTheme, isDarkMode }) {
         <Route path="/register" element={<UserRegister />} />
         <Route path="/login" element={<Login />} />
         <Route path="/verify-email/:token" element={<VerifyEmail />} />
-
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
-
         <Route path="/enroll-to-ap" element={<EnrollToAcademicPeriod />} />
-
         <Route path="/vergrupoe/:id" element={<VerGE />} />
         <Route path="/registroge" element={<RegistroGE />} />
         <Route path="/invitacionesge" element={<InvitacionesGE />} />
         <Route path="/solicitudesge" element={<SolicitudesGE />} />
+        <Route path="/conformacionge" element={<ConformacionGE />} />
         <Route path="/editarlistage" element={<EditarListaGE />} />
         <Route path="/academic-periods" element={<ListaPeriodosAcademicos />} />
-
         <Route
           path="/registroperiodoacademico"
           element={<RegistroPeriodoAcademico />}
@@ -62,7 +60,6 @@ function App({ toggleTheme, isDarkMode }) {
         <Route path="/registerplan" element={<Planificacion />} />
         <Route path="/upload" element={<ImageUpload />} />
         <Route path="/edithito/:id" element={<EditarHito />} />
-
         <Route path="/example" element={<Example />} />
         <Route path="/*" element={<NotFound />} />
       </Routes>
