@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\AcademicPeriodController;
-
+use App\Http\Controllers\CompanyController;
 
 Route::post('user/register', [AuthController::class, 'register']);
 Route::get('user/check-email', [AuthController::class, 'checkEmail']);
@@ -15,7 +15,7 @@ Route::middleware('auth:sanctum')->post('user/logout', [AuthController::class, '
 
 Route::middleware('auth:sanctum')->get('user', function (Request $request) {
     $user = $request->user();
-    
+
     return response()->json([
         'user' => [
             'first_name' => $user->first_name,
@@ -31,7 +31,8 @@ Route::middleware('auth')->group(function () {
     Route::get('docente/academic-periods', [AcademicPeriodController::class, 'index']);
     Route::post('docente/academic-periods', [AcademicPeriodController::class, 'store']);
     Route::get('academic-periods/grouped-by-teacher', [AcademicPeriodController::class, 'getAllGroupedByTeacher']);
-    Route::post('/academic-periods/enroll', [AcademicPeriodController::class, 'enroll']);
+    Route::post('academic-periods/enroll', [AcademicPeriodController::class, 'enroll']);
+    Route::post('companies', [CompanyController::class, 'store']);
 });
 
 Route::get('/simon', function () {
