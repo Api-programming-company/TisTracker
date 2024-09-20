@@ -17,10 +17,13 @@ class Authenticate
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::guard('sanctum')->check()) {
-            return $next($request);
+       // Permitir si el usuario está autenticado en cualquier guard
+       if (Auth::check()) {
+        return $next($request);
         }
 
-        return response()->json(['message' => 'No estas autenticado.'], 401);
+        // Si no está autenticado, devolver mensaje de error
+        return response()->json(['message' => 'No autenticado.'], 401);
+        return redirect()->guest(route('login'));
     }
 }
