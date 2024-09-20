@@ -108,8 +108,13 @@ const Entregable = ({
   };
 
   const handleEliminarHu = (id) => {
-    let x = "hu";
-    setFormData({ ...formData, [x]: formData.hu.filter((e) => e.id !== id) });
+    setFormData((prevState)=>{
+      let x = "hu";
+      let newHu = prevState.hu.filter((e)=>e.id!==id)
+      let newFormData = {...prevState, [x]: newHu}
+      onUpdate(newFormData)
+      return newFormData
+    });
   };
 
   const handleUpdateHu = (updatedData) => {
