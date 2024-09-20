@@ -12,7 +12,13 @@ const companyApi = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    getCompanyById: builder.query({
+      query: (id) => ({
+        url: `company/${id}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useCreateCompanyMutation } = companyApi;
+export const { useCreateCompanyMutation, useGetCompanyByIdQuery } = companyApi;

@@ -47,7 +47,7 @@ function App({ toggleTheme, isDarkMode }) {
 
         <Route path="/enroll-to-ap" element={<EnrollToAcademicPeriod />} />
 
-        <Route path="/vergrupoe" element={<VerGE />} />
+        <Route path="/vergrupoe/:id" element={<VerGE />} />
         <Route path="/registroge" element={<RegistroGE />} />
         <Route path="/invitacionesge" element={<InvitacionesGE />} />
         <Route path="/solicitudesge" element={<SolicitudesGE />} />
