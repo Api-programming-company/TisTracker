@@ -28,6 +28,10 @@ const academicPeriodApi = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    getCompaniesByAcademicPeriod: builder.query({
+      query: (academicPeriodId) =>
+        `academic-periods/${academicPeriodId}/companies`,
+    }),
   }),
 });
 
@@ -36,4 +40,5 @@ export const {
   useCreateAcademicPeriodMutation,
   useGetAcademicPeriodsGroupedByTeacherQuery,
   useEnrollInAcademicPeriodMutation,
+  useGetCompaniesByAcademicPeriodQuery,
 } = academicPeriodApi;

@@ -7,6 +7,7 @@ use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\AcademicPeriodController;
 use App\Http\Controllers\CompanyController;
 
+
 Route::post('user/register', [AuthController::class, 'register']);
 Route::get('user/check-email', [AuthController::class, 'checkEmail']);
 Route::post('user/verify-email', [EmailVerificationController::class, 'verifyEmail']);
@@ -22,6 +23,7 @@ Route::middleware('auth:sanctum')->get('user', function (Request $request) {
             'last_name' => $user->last_name,
             'email' => $user->email,
             'user_type' => $user->user_type === 'E' ? 'estudiante' : 'docente',
+            'academic_period_id' => $user->academic_period_id,
         ]
     ]);
 });
@@ -33,6 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::get('academic-periods/grouped-by-teacher', [AcademicPeriodController::class, 'getAllGroupedByTeacher']);
     Route::post('academic-periods/enroll', [AcademicPeriodController::class, 'enroll']);
     Route::post('companies', [CompanyController::class, 'store']);
+    Route::get('/academic-periods/{academic_period_id}/companies', [CompanyController::class, 'getCompaniesByAcademicPeriod']);
 });
 
 Route::get('/simon', function () {

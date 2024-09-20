@@ -13,13 +13,24 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   useGetAcademicPeriodsGroupedByTeacherQuery,
   useEnrollInAcademicPeriodMutation,
 } from "../api/academicPeriodApi";
+import AppContext from "../context/AppContext";
+import { useNavigate } from "react-router-dom";
 
-const AcademicPeriodListStudent = () => {
+const EnrollToAcademicPeriod = () => {
+  const navigate = useNavigate();
+  const { user } = useContext(AppContext);
+
+  useEffect(() => {
+    if (user?.academic_period_id) {
+      console.log("Ya esta inscrito");
+      navigate("/");
+    }
+  }, [user]);
   const {
     data: groupedPeriods = [],
     error,
@@ -189,4 +200,4 @@ const AcademicPeriodListStudent = () => {
   );
 };
 
-export default AcademicPeriodListStudent;
+export default EnrollToAcademicPeriod;

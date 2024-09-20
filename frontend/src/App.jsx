@@ -19,6 +19,7 @@ import {
   Planificacion,
   AppBarWithMenu,
   ListaPeriodosAcademicos,
+  EnrollToAcademicPeriod
 } from "./components";
 
 import VerGE from "./pages/VerGE";
@@ -43,6 +44,8 @@ function App({ toggleTheme, isDarkMode }) {
 
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
+
+        <Route path="/enroll-to-ap" element={<EnrollToAcademicPeriod />} />
 
         <Route path="/vergrupoe" element={<VerGE />} />
         <Route path="/registroge" element={<RegistroGE />} />

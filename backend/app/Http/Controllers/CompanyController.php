@@ -46,4 +46,30 @@ class CompanyController extends Controller
             ], 500); // 500 Internal Server Error
         }
     }
+    public function getCompaniesByAcademicPeriod($academic_period_id)
+    {
+        try {
+            // Obtener las compañías asociadas al periodo académico
+            $companies = Company::where('academic_period_id', $academic_period_id)->get();
+
+            // Verificar si existen compañías para ese periodo
+            if ($companies->isEmpty()) {
+                return response()->json([
+                    'message' => 'No se encontraron compañías para el periodo académico especificado.'
+                ], 404); // 404 Not Found
+            }
+
+            // Devolver la lista de compañías
+            return response()->json([
+                'message' => 'Compañías obtenidas correctamente.',
+                'companies' => $companies
+            ], 200); // 200 OK
+        } catch (Exception $e) {
+            // Manejar otros errores
+            return response()->json([
+                'message' => 'Ocurrió un error al obtener las compañías.',
+                'error' => $e->getMessage()
+            ], 500); // 500 Internal Server Error
+        }
+    }
 }
