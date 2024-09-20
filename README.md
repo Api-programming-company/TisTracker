@@ -46,10 +46,6 @@
    cd backend
    composer install
    ```
-   Para usar el método Auth::routes()
-   ```sh
-   composer require laravel/ui
-   ```
 2. **Migrar la Base de Datos**
 
    ```sh
