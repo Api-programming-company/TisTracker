@@ -35,7 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::get('academic-periods/grouped-by-teacher', [AcademicPeriodController::class, 'getAllGroupedByTeacher']);
     Route::post('academic-periods/enroll', [AcademicPeriodController::class, 'enroll']);
     Route::post('companies', [CompanyController::class, 'store']);
-    Route::get('/academic-periods/{academic_period_id}/companies', [CompanyController::class, 'getCompaniesByAcademicPeriod']);
+    Route::get('/academic-periods/companies', [CompanyController::class, 'getCompaniesByAcademicPeriod']);
 });
 
 Route::get('/simon', function () {
