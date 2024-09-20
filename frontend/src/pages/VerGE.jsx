@@ -1,9 +1,4 @@
-import {
-  Divider,
-  Box,
-  Button,
-  Typography,
-} from "@mui/material";
+import { Divider, Box, Button, Typography } from "@mui/material";
 import React, { useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import Socio from "../components/Socio";
@@ -122,6 +117,25 @@ const VerGE = () => {
     });
   };
 
+  const handleAgregarHito = () => {
+    let newHito = {
+      id: Date.now(),
+      nombre_hito: "",
+      fecha_ini: "",
+      fecha_entrega: "",
+      cobro: "",
+      hu: [],
+    };
+    setFormData((prevState) => {
+      let x = "planificacion";
+      let newFormData = {
+        ...prevState,
+        [x]: [...prevState.planificacion, newHito],
+      };
+      return newFormData;
+    });
+  };
+
   return (
     <Box sx={{ maxWidth: 900, margin: "auto", padding: 2 }}>
       {/* Información importante destacada */}
@@ -214,37 +228,47 @@ const VerGE = () => {
             onAccept={handleAceptarGuardado}
           />
         </Box>
-        {formData.planificacion.length === 0 ? (
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<AddIcon />}
-            onClick={() => navigate("/registerplan")}
-          >
-            Agregar planificación
-          </Button>
-        ) : (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-              maxHeight: expandedPlanificacion ? "none" : 300,
-              overflow: "hidden",
-            }}
-          >
-            {formData.planificacion.map((e) => (
-              <VerHito
-                key={e.id}
-                entregable={e}
-                onDelete={handleEliminarHitoEdit}
-                editar={editar}
-                setEditar={setEditar}
-                onUpdate={handleUpdateInfo}
-              />
-            ))}
+
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            maxHeight: expandedPlanificacion ? "none" : 300,
+            overflow: "hidden",
+          }}
+        >
+          {formData.planificacion.map((e) => (
+            <VerHito
+              key={e.id}
+              entregable={e}
+              onDelete={handleEliminarHitoEdit}
+              editar={editar}
+              setEditar={setEditar}
+              onUpdate={handleUpdateInfo}
+            />
+          ))}
+          {formData.planificacion.length === 0 ? (
+            <Box sx={{ padding: 2 }}>
+              {" "}
+              <Typography variant="h6">
+                Aún no tiene hitos planificados
+              </Typography>
+            </Box>
+          ) : null}
+          <Box sx={{ padding: 2 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<AddIcon />}
+              onClick={handleAgregarHito}
+              disabled={editar}
+            >
+              Agregar hito
+            </Button>
           </Box>
-        )}
+        </Box>
+
         {formData.planificacion.length > 0 && (
           <Button
             variant="text"

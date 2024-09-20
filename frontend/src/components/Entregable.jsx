@@ -99,7 +99,7 @@ const Entregable = ({
       let x = "hu";
       let newHu = [
         ...prevState.hu,
-        { id: Date.now(), nombre_hu: "", responsable: "", objetivo: "" },
+        { id: Date.now(), nombre_hu: "Entregable", responsable: "", objetivo: "" },
       ];
       let newFormData = { ...prevState, [x]: newHu };
       onUpdate(newFormData);
