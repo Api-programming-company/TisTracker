@@ -17,7 +17,7 @@ class AuthControllerTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function it_registers_a_new_user()
+    public function Registrar_nuevo_estudiante()
     {
         // Simular el envío de correo
         Mail::fake();
@@ -56,7 +56,7 @@ class AuthControllerTest extends TestCase
     }
 
     /** @test */
-    public function validarPassMenorA8()
+    public function Validar_contraseña_8_caracteres()
     {
         // Simular el envío de correo
         Mail::fake();
@@ -91,7 +91,7 @@ class AuthControllerTest extends TestCase
 
 
     /** @test */
-    public function validarSiPassSonIguales()
+    public function Validar_si_password_son_iguales()
     {
         // Simular el envío de correo
         Mail::fake();
@@ -125,7 +125,7 @@ class AuthControllerTest extends TestCase
     }
 
     /** @test */
-    public function validarSiNombreObligatorio()
+    public function Validar_nombre_obligatorio()
     {
         // Simular el envío de correo
         Mail::fake();
@@ -159,7 +159,7 @@ class AuthControllerTest extends TestCase
     }
 
     /** @test */
-    public function validarSiApellidoObligatorio()
+    public function Validar_apellido_obligatorioo()
     {
         // Simular el envío de correo
         Mail::fake();
@@ -193,7 +193,7 @@ class AuthControllerTest extends TestCase
     }
 
     /** @test */
-    public function validarSiEmailObligatorio()
+    public function Validar_email_obligatorio()
     {
         // Simular el envío de correo
         Mail::fake();
@@ -227,7 +227,7 @@ class AuthControllerTest extends TestCase
     }
 
     /** @test */
-    public function validarSiPasswordObligatorio()
+    public function Validar_password_obligatorio()
     {
         // Simular el envío de correo
         Mail::fake();
@@ -260,7 +260,7 @@ class AuthControllerTest extends TestCase
         Mail::assertNotSent(VerifyEmail::class);
     }
     /** @test */
-    public function validarSiPass2Obligatorio()
+    public function Validar_password2_obligatorio()
     {
         // Simular el envío de correo
         Mail::fake();
@@ -294,7 +294,7 @@ class AuthControllerTest extends TestCase
     }
 
     /** @test */
-    public function validarSiAlmenosUnaMayuscula()
+    public function Validar_contraseña_Mayuscula()
     {
         // Simular el envío de correo
         Mail::fake();
@@ -328,7 +328,7 @@ class AuthControllerTest extends TestCase
     }
 
     /** @test */
-    public function validarSiAlmenosUnaMinuscula()
+    public function Validar_contraseña_minuscula()
     {
         // Simular el envío de correo
         Mail::fake();
@@ -362,7 +362,7 @@ class AuthControllerTest extends TestCase
     }
 
     /** @test */
-    public function validarSiAlmenosUnaNumero()
+    public function Validar_contraseña_numero()
     {
         // Simular el envío de correo
         Mail::fake();
@@ -396,7 +396,7 @@ class AuthControllerTest extends TestCase
     }
 
     /** @test */
-    public function validarSiAlmenosUnaCaracterEspecial()
+    public function Validar_contraseña_CaracterEspecial()
     {
         // Simular el envío de correo
         Mail::fake();
@@ -430,7 +430,7 @@ class AuthControllerTest extends TestCase
     }
 
     /** @test */
-    public function validarSiAlSinEspacios()
+    public function Validar_contraseña_sinEspacios()
     {
         // Simular el envío de correo
         Mail::fake();
@@ -465,7 +465,7 @@ class AuthControllerTest extends TestCase
 
 
     /** @test */
-    public function validarSiCorreoCumpleDominio()
+    public function Validar_email_cumpleDominio()
     {
         // Simular el envío de correo
         Mail::fake();
@@ -499,7 +499,7 @@ class AuthControllerTest extends TestCase
     }
 
     /** @test */
-    public function validarSiCorreoTieneNueveCaracters()
+    public function validar_Correo_NueveCaracters()
     {
         // Simular el envío de correo
         Mail::fake();
