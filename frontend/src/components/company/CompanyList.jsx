@@ -1,9 +1,9 @@
 import {
   Container,
-  Grid,
+  Box,
   Typography,
   IconButton,
-  Box,
+  CircularProgress,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
@@ -15,7 +15,8 @@ import { CompanyCard } from "../";
 const CompanyList = () => {
   const navigate = useNavigate();
   const { user, removeUserFromLocalStorage } = useContext(AppContext);
-  const { data, error, isLoading, isError, isSuccess } = useGetCompaniesByAcademicPeriodQuery();
+  const { data, error, isLoading, isError, isSuccess } =
+    useGetCompaniesByAcademicPeriodQuery();
 
   useEffect(() => {
     if (isSuccess) {
@@ -36,8 +37,17 @@ const CompanyList = () => {
 
   if (isLoading) {
     return (
-      <Container maxWidth="sm" sx={{ mt: 5 }}>
-        <Typography variant="h6">Cargando empresas...</Typography>
+      <Container
+        maxWidth="sm"
+        sx={{
+          mt: 5,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        <CircularProgress />
       </Container>
     );
   }
@@ -46,7 +56,7 @@ const CompanyList = () => {
     return (
       <Container maxWidth="sm" sx={{ mt: 5 }}>
         <Typography variant="h6" color="error">
-          {error.data?.message}
+          {error?.message}
         </Typography>
       </Container>
     );
@@ -73,13 +83,26 @@ const CompanyList = () => {
           <AddIcon fontSize="large" />
         </IconButton>
       </Box>
-      <Grid container spacing={2}>
+      <Box
+        display="flex"
+        flexWrap="wrap"
+        justifyContent="space-between"
+        sx={{ mt: 2 }}
+      >
         {data.companies.map((company) => (
-          <Grid item xs={12} sm={6} md={4} key={company.id}>
+          <Box
+            key={company.id}
+            flexBasis={{
+              xs: "100%", // 100% width for extra small screens
+              sm: "48%", // Two items per row for small screens
+              md: "30%", // Three items per row for medium screens
+            }}
+            mb={2}
+          >
             <CompanyCard company={company} />
-          </Grid>
+          </Box>
         ))}
-      </Grid>
+      </Box>
     </Container>
   );
 };

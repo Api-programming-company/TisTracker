@@ -97,4 +97,50 @@ class CompanyController extends Controller
             ], 500); // 500 Internal Server Error
         }
     }
+
+    public function getPendingCompanies(Request $request)
+    {
+        try {
+
+            // Validar la solicitud
+            $request->validate([
+                'academic_period_id' => 'required|exists:academic_periods,id',
+            ]);
+
+            // Obtener el usuario autenticado
+            $user = auth()->user();
+
+            // Verificar si el usuario es el creador del periodo académico
+            $academicPeriod = AcademicPeriod::find($request->academic_period_id);
+            if ($academicPeriod->creator->id !== $user->id) {
+                return response()->json([
+                    'message' => 'No tienes permiso para acceder a estas compañías.'
+                ], 403); // 403 Forbidden
+            }
+
+            // Obtener las compañías pendientes para el periodo académico especificado
+            $companies = Company::where('academic_period_id', $request->academic_period_id)
+                ->where('status', 'P') // Asumiendo que 'P' es el código para pendiente
+                ->get();
+
+            // Verificar si existen compañías pendientes
+            if ($companies->isEmpty()) {
+                return response()->json([
+                    'message' => 'No se encontraron compañías pendientes para el periodo académico especificado.'
+                ], 404); // 404 Not Found
+            }
+
+            // Devolver la lista de compañías pendientes
+            return response()->json([
+                'message' => 'Compañías pendientes obtenidas correctamente.',
+                'companies' => $companies
+            ], 200); // 200 OK
+        } catch (Exception $e) {
+            // Manejar otros errores
+            return response()->json([
+                'message' => 'Ocurrió un error al obtener las compañías pendientes.',
+                'error' => $e->getMessage()
+            ], 500); // 500 Internal Server Error
+        }
+    }
 }

@@ -3,7 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model; 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AcademicPeriod extends Model
 {
@@ -22,7 +23,7 @@ class AcademicPeriod extends Model
         return $this->hasMany(User::class, 'academic_period_id');
     }
 
-    public function creator()
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
