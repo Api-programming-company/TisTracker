@@ -22,4 +22,9 @@ class Milestone extends Model
     {
         return $this->belongsTo(Planning::class);
     }
+    // Relación con Deliverables
+    public function deliverables()
+    {
+        return $this->hasMany(Deliverable::class);
+    }
 }
