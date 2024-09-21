@@ -307,7 +307,7 @@ class PeriodoAcademicoTest extends TestCase
             ]);
     }
     /** @test */
-    public function Solo_los_estudiantes_pueden_incribirce_a_un_periodo_academico() //good
+    public function Solo_los_estudiantes_pueden_incribirce_a_un_Grupo_Tis() //good
     {
         $teacher = User::factory()->create(['user_type' => 'D']);
         $academicPeriod = AcademicPeriod::factory()->create(['user_id' => $teacher->id]);
