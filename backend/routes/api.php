@@ -13,6 +13,7 @@ use App\Http\Controllers\DeliverableController;
 
 Route::post('user/register', [AuthController::class, 'register']);
 Route::get('user/check-email', [AuthController::class, 'checkEmail']);
+Route::post('search-student', [AuthController::class, 'searchStudentByEmail']); //buscador por correo solo estudiante
 //Route::post('user/verify-email', [EmailVerificationController::class, 'verifyEmail']); no es necesario
 Route::post('user/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->post('user/logout', [AuthController::class, 'logout']);
