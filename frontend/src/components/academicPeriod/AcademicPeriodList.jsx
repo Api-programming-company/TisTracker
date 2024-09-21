@@ -14,7 +14,14 @@ import AcademicPeriodCard from "./AcademicPeriodCard";
 
 const AcademicPeriodList = () => {
   const navigate = useNavigate();
-  const { data: periods = [], error, isLoading } = useGetAcademicPeriodsQuery();
+  const {
+    data: periods = [],
+    error,
+    isFetching,
+    isLoading
+  } = useGetAcademicPeriodsQuery(undefined, {
+    refetchOnMountOrArgChange: true, // Recargar al montar el componente
+  });
 
   const handleClick = () => {
     navigate("/register-ap");
@@ -29,7 +36,7 @@ const AcademicPeriodList = () => {
     }
   }, [error, periods]);
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return (
       <Container
         maxWidth="sm"
