@@ -61,21 +61,16 @@ class CompanyController extends Controller
         }
     }
 
-    public function getCompaniesByAcademicPeriod()
+    public function getCompaniesByAcademicPeriod($id)
     {
         try {
             // Obtener el usuario autenticado
             $user = auth()->user();
 
-            // Verificar si el usuario tiene un periodo académico asociado
-            if (!$user->academic_period_id) {
-                return response()->json([
-                    'message' => 'No esta inscrito en un periodo academico'
-                ], 400); // 400 Bad Request
-            }
-
             // Obtener las compañías asociadas al periodo académico del usuario
-            $companies = Company::where('academic_period_id', $user->academic_period_id)->get();
+            $companies = Company::where('academic_period_id', $id)
+                ->where('status', 'A')
+                ->get();
 
             // Verificar si existen compañías para ese periodo
             if ($companies->isEmpty()) {

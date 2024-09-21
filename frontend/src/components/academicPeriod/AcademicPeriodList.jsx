@@ -7,7 +7,6 @@ import {
   CircularProgress,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { useGetAcademicPeriodsQuery } from "../../api/academicPeriodApi";
 import AcademicPeriodCard from "./AcademicPeriodCard";

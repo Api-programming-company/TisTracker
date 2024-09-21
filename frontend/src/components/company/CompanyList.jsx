@@ -5,7 +5,7 @@ import {
   IconButton,
   CircularProgress,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 import React, { useContext, useEffect } from "react";
 import { useGetCompaniesByAcademicPeriodQuery } from "../../api/academicPeriodApi";
@@ -13,10 +13,11 @@ import AppContext from "../../context/AppContext";
 import { CompanyCard } from "../";
 
 const CompanyList = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const { user, removeUserFromLocalStorage } = useContext(AppContext);
   const { data, error, isLoading, isError, isSuccess } =
-    useGetCompaniesByAcademicPeriodQuery();
+    useGetCompaniesByAcademicPeriodQuery(id);
 
   useEffect(() => {
     if (isSuccess) {

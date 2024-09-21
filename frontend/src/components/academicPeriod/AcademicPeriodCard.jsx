@@ -17,8 +17,9 @@ const formatDate = (date) => format(new Date(date), "dd MMM yyyy");
 const AcademicPeriodCard = ({ period, isEnroll = true }) => {
   const navigate = useNavigate();
   const handleClick = () => {
-    navigate(`/company-application/${period.id}`);
+    navigate(`/academic-period/${period.id}`);
   };
+  
   const [enrollInAcademicPeriod, { isLoading, isSuccess, isError, error }] =
     useEnrollInAcademicPeriodMutation();
   const [isEnrolled, setIsEnrolled] = useState(false);
