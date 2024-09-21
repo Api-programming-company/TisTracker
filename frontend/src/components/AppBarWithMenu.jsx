@@ -15,7 +15,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import AppContext from "../context/AppContext";
-import logo from '../assets/logo.png';
+import logo from "../assets/logo.png";
 
 function AppBarWithMenu({ isDarkMode, toggleDarkMode, userType }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -57,14 +57,8 @@ function AppBarWithMenu({ isDarkMode, toggleDarkMode, userType }) {
       { label: "Iniciar sesión", path: "/login" },
       { label: "Registrarse", path: "/register" },
     ],
-    estudiante: [
-      { label: "Perfil", path: "/profile" },
-      { label: "Mis cursos", path: "/courses" },
-      { label: "Cerrar sesión", path: "/logout" },
-    ],
+    estudiante: [{ label: "Cerrar sesión", path: "/logout" }],
     docente: [
-      { label: "Perfil", path: "/profile" },
-      { label: "Solicitudes empresas", path: "/company-application" },
       { label: "Periodos Académicos", path: "/academic-periods" },
       { label: "Cerrar sesión", path: "/logout" },
     ],
@@ -74,7 +68,11 @@ function AppBarWithMenu({ isDarkMode, toggleDarkMode, userType }) {
     <>
       <AppBar position="static">
         <Toolbar>
-          <img src={logo} alt="Logo" style={{ height: '40px', marginRight: '8px' }} />
+          <img
+            src={logo}
+            alt="Logo"
+            style={{ height: "40px", marginRight: "8px" }}
+          />
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             TisTracker
           </Typography>
