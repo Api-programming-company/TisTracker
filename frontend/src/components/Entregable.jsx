@@ -226,6 +226,7 @@ const Entregable = ({
               />
             )}
             readOnly={toEdit}
+            format="dd/MM/yyyy"
           />
         </LocalizationProvider>
 
@@ -245,6 +246,7 @@ const Entregable = ({
               />
             )}
             readOnly={toEdit}
+            format="dd/MM/yyyy"
           />
         </LocalizationProvider>
       </Box>

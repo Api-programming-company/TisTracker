@@ -9,6 +9,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { format } from "date-fns";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useCreateAcademicPeriodMutation } from "../api/academicPeriodApi";
 import { useNavigate } from "react-router-dom";
@@ -106,6 +107,7 @@ const RegistroPeriodoAcademico = () => {
                       fullWidth
                     />
                   )}
+                  format="dd/MM/yyyy"
                 />
                 <DatePicker
                   label="Fecha Fin"
@@ -118,6 +120,7 @@ const RegistroPeriodoAcademico = () => {
                       fullWidth
                     />
                   )}
+                  format="dd/MM/yyyy"
                 />
               </Box>
             </LocalizationProvider>
