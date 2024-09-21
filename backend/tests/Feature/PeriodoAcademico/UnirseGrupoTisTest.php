@@ -83,7 +83,7 @@ class UnirseGrupoTisTest extends TestCase
             ]);
     }
     /** @test */
-    public function Solo_los_estudiantes_pueden_incribirce_a_un_Grupo_Tis() //good
+    public function los_docentes_no_pueden_incribirce_a_un_Grupo_Tis() //good
     {
         $teacher = User::factory()->create(['user_type' => 'D']);
         $academicPeriod = AcademicPeriod::factory()->create(['user_id' => $teacher->id]);
@@ -98,7 +98,7 @@ class UnirseGrupoTisTest extends TestCase
     }
 
     /** @test */
-    public function student_can_only_enroll_in_one_academic_period()
+    public function Solo_los_estudiantes_pueden_unierse_Grupo_tis()
     {
         $student = User::factory()->create(['user_type' => 'E']);
         $academicPeriod1 = AcademicPeriod::factory()->create();
@@ -124,7 +124,7 @@ class UnirseGrupoTisTest extends TestCase
     }
 
     /** @test */
-    public function student_cannot_enroll_in_nonexistent_academic_period()
+    public function estudiante_no_se_puede_inscribir_Grupo_tis_inexistente()
     {
         $student = User::factory()->create(['user_type' => 'E']);
         Sanctum::actingAs($student);
