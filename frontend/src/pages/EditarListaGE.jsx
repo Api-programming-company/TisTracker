@@ -256,7 +256,6 @@ const EditarListaGE = () => {
               mt: 2,
               px: 12,
               py: 1,
-              borderRadius: "30px",
             }}
           >
             {isLoading ? (

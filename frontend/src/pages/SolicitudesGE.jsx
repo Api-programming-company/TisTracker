@@ -143,7 +143,6 @@ const SolicitudesGE = () => {
                     mb: 2,
                     px: 12,
                     py: 1,
-                    borderRadius: "30px",
                   }}
                 >
                   ACEPTAR
@@ -152,11 +151,10 @@ const SolicitudesGE = () => {
                 <Button
                   onClick={() => handleDecline(request.nombreCorto)}
                   variant="contained"
-                  color="secondary"
+                  color="transparent"
                   sx={{
                     px: 12,
                     py: 1,
-                    borderRadius: "30px",
                     color: "black",
                   }}
                 >

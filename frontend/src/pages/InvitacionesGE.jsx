@@ -229,7 +229,6 @@ const InvitacionesGE = () => {
                   mb: 2,
                   px: 12,
                   py: 1,
-                  borderRadius: "30px",
                 }}
               >
                 ACEPTAR
@@ -238,11 +237,10 @@ const InvitacionesGE = () => {
               <Button
                 onClick={() => handleDecline(invitation.nombreCorto)}
                 variant="contained"
-                color="#000000"
+                color="transparent"
                 sx={{
                   px: 12,
                   py: 1,
-                  borderRadius: "30px",
                   color: "black",
                 }}
               >

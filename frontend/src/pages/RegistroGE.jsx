@@ -24,7 +24,7 @@ const RegistroGE = () => {
   const navigate = useNavigate();
   const [createCompany, { data, isSuccess, isError, isLoading }] =
     useCreateCompanyMutation();
-  
+
   // Campos del formulario
   const [nombreLargo, setNombreLargo] = useState("");
   const [errorNombreLargo, setErrorNombreLargo] = useState(false);
@@ -39,7 +39,7 @@ const RegistroGE = () => {
   // Buscador
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
-  
+
   const [allItems] = useState([
     { id: 1, name: "Juan Alberto Peredo Pozo", codsis: "202000571" },
     { id: 2, name: "Carlos José Padilla Poma", codsis: "202000572" },
@@ -312,7 +312,6 @@ const RegistroGE = () => {
               mt: 2,
               px: 12,
               py: 1,
-              borderRadius: "30px",
             }}
           >
             {isLoading ? (
