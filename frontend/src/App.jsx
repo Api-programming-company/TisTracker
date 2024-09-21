@@ -20,7 +20,7 @@ import {
 import {
   Planificacion,
   AppBarWithMenu,
-  ListaPeriodosAcademicos,
+  AcademicPeriodList,
   EnrollToAcademicPeriod,
 } from "./components";
 
@@ -49,10 +49,10 @@ function App({ toggleTheme, isDarkMode }) {
         <Route path="/vergrupoe/:id" element={<VerGE />} />
         <Route path="/registroge" element={<RegistroGE />} />
         <Route path="/invitacionesge" element={<InvitacionesGE />} />
-        <Route path="/solicitudesge" element={<SolicitudesGE />} />
+        <Route path="/company-application/:id" element={<SolicitudesGE />} />
         <Route path="/conformacionge" element={<ConformacionGE />} />
         <Route path="/editarlistage" element={<EditarListaGE />} />
-        <Route path="/academic-periods" element={<ListaPeriodosAcademicos />} />
+        <Route path="/academic-periods" element={<AcademicPeriodList />} />
         <Route
           path="/registroperiodoacademico"
           element={<RegistroPeriodoAcademico />}

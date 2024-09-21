@@ -8,12 +8,17 @@ import {
   CardHeader,
 } from "@mui/material";
 import { format } from "date-fns";
-import { useEnrollInAcademicPeriodMutation } from "../api/academicPeriodApi";
-import AppContext from "../context/AppContext";
+import { useEnrollInAcademicPeriodMutation } from "../../api/academicPeriodApi";
+import AppContext from "../../context/AppContext";
+import { useNavigate } from "react-router-dom";
 
 const formatDate = (date) => format(new Date(date), "dd MMM yyyy");
 
 const AcademicPeriodCard = ({ period, isEnroll = true }) => {
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate(`/company-application/${period.id}`);
+  };
   const [enrollInAcademicPeriod, { isLoading, isSuccess, isError, error }] =
     useEnrollInAcademicPeriodMutation();
   const [isEnrolled, setIsEnrolled] = useState(false);
@@ -37,12 +42,19 @@ const AcademicPeriodCard = ({ period, isEnroll = true }) => {
 
   return (
     <Card
+      onClick={handleClick}
       sx={{
         mb: 2,
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        height: "100%", // Asegura que todas las tarjetas tengan la misma altura
+        height: "100%",
+        cursor: "pointer", // Cambia el cursor a puntero
+        transition: "background-color 0.3s, box-shadow 0.3s", // Transición suave para fondo y sombra
+        "&:hover": {
+          backgroundColor: "#f0f0f0", // Cambia a un color de fondo activo al hacer hover
+          boxShadow: 4, // Aumenta un poco la sombra
+        },
       }}
     >
       <CardHeader

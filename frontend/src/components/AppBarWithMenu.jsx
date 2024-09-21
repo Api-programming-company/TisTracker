@@ -65,7 +65,7 @@ function AppBarWithMenu({ isDarkMode, toggleDarkMode, userType }) {
     ],
     docente: [
       { label: "Perfil", path: "/profile" },
-      { label: "Mis clases", path: "/classes" },
+      { label: "Solicitudes empresas", path: "/company-application" },
       { label: "Periodos Académicos", path: "/academic-periods" },
       { label: "Cerrar sesión", path: "/logout" },
     ],
