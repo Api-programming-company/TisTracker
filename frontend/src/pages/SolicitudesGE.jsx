@@ -1,16 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { Button, Container, Typography, Box, Icon } from "@mui/material";
+import {
+  Button,
+  Container,
+  Typography,
+  Box,
+  Icon,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  CircularProgress,
+  Snackbar,
+} from "@mui/material";
 import { useParams } from "react-router-dom";
-import { useGetPedingCompaniesQuery } from "../api/companyApi";
+import { useGetPedingCompaniesQuery, useAcceptCompanyByIdMutation } from "../api/companyApi";
 
 const SolicitudesGE = () => {
   const { id } = useParams();
-  const { data, error, isError, isSuccess, isLoading } =
-    useGetPedingCompaniesQuery(id);
-  
+  const { data, error, isError, isSuccess, isLoading } = useGetPedingCompaniesQuery(id);
+  const [acceptCompany] = useAcceptCompanyByIdMutation();
+  const [companies, setCompanies] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [selectedCompany, setSelectedCompany] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+
   useEffect(() => {
     if (isSuccess) {
-      console.log(data);
+      setCompanies(data.companies);
     }
     if (isError) {
       console.log(error);
@@ -18,16 +36,42 @@ const SolicitudesGE = () => {
     if (isLoading) {
       console.log("cargando");
     }
-  }, [data, isError, isLoading, data, error]);
+  }, [data, isError, isLoading, error]);
 
-  const handleAccept = (nombreCorto) => {
-    alert(`Invitación de ${nombreCorto} aceptada`);
-    console.log(`Invitación de ${nombreCorto} aceptada`);
+  const handleClickOpen = (companyId) => {
+    setSelectedCompany(companyId);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedCompany(null);
+  };
+
+  const handleAccept = async () => {
+    if (!selectedCompany) return;
+    setLoading(true); // Start loading
+
+    try {
+      await acceptCompany(selectedCompany).unwrap();
+      setSnackbar({ open: true, message: 'Invitación aceptada', severity: 'success' });
+      setCompanies((prevCompanies) => prevCompanies.filter(company => company.id !== selectedCompany));
+    } catch (error) {
+      console.error("Error al aceptar la solicitud:", error);
+      setSnackbar({ open: true, message: 'Ocurrió un error al aceptar la solicitud.', severity: 'error' });
+    } finally {
+      setLoading(false); // Stop loading
+      handleClose();
+    }
   };
 
   const handleDecline = (nombreCorto) => {
     alert(`Invitación de ${nombreCorto} rechazada`);
     console.log(`Invitación de ${nombreCorto} rechazada`);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbar({ ...snackbar, open: false });
   };
 
   return (
@@ -42,7 +86,7 @@ const SolicitudesGE = () => {
           Solicitudes de creación de Grupo-Empresas
         </Typography>
 
-        {data.companies.map((request) => (
+        {companies.map((request) => (
           <Box
             key={request.id}
             sx={{
@@ -62,7 +106,6 @@ const SolicitudesGE = () => {
                 ml: 3,
               }}
             >
-              {/* Detalles de la Grupo-Empresa, lado izquierdo */}
               <Box sx={{ flex: 1, mr: 2, mb: 3 }}>
                 <Typography
                   component="h1"
@@ -97,7 +140,6 @@ const SolicitudesGE = () => {
                 </Typography>
               </Box>
 
-              {/* Botones de Aceptar y Rechazar, lado derecho */}
               <Box
                 sx={{
                   display: "flex",
@@ -107,20 +149,33 @@ const SolicitudesGE = () => {
                 }}
               >
                 <Button
-                  onClick={() => handleAccept(request.id)}
+                  onClick={() => handleClickOpen(request.id)}
                   variant="contained"
                   color="primary"
                   sx={{
                     mb: 2,
                     px: 12,
                     py: 1,
+                    position: 'relative',
                   }}
                 >
                   ACEPTAR
+                  {loading && (
+                    <CircularProgress
+                      size={24}
+                      sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        marginTop: '-12px',
+                        marginLeft: '-12px',
+                      }}
+                    />
+                  )}
                 </Button>
 
                 <Button
-                  onClick={() => handleDecline(request.id)}
+                  onClick={() => handleDecline(request.short_name)}
                   variant="contained"
                   color="transparent"
                   sx={{
@@ -135,6 +190,36 @@ const SolicitudesGE = () => {
             </Box>
           </Box>
         ))}
+
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Confirmar Aceptación"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              ¿Está seguro de que desea aceptar esta invitación?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">
+              Cancelar
+            </Button>
+            <Button onClick={handleAccept} color="primary" autoFocus>
+              Aceptar
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={6000}
+          onClose={handleSnackbarClose}
+          message={snackbar.message}
+          severity={snackbar.severity}
+        />
       </Box>
     </Container>
   );

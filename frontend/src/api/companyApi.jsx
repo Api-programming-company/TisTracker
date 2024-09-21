@@ -24,7 +24,18 @@ const companyApi = apiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
+    acceptCompanyById: builder.mutation({
+      query: (id) => ({
+        url: `companies/accept/${id}`,
+        method: "POST",
+      }),
+    }),
   }),
 });
 
-export const { useCreateCompanyMutation, useGetCompanyByIdQuery, useGetPedingCompaniesQuery } = companyApi;
+export const {
+  useCreateCompanyMutation,
+  useGetCompanyByIdQuery,
+  useGetPedingCompaniesQuery,
+  useAcceptCompanyByIdMutation,
+} = companyApi;

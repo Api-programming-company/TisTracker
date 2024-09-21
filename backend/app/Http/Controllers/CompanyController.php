@@ -186,4 +186,56 @@ class CompanyController extends Controller
             ], 500); // 500 Internal Server Error
         }
     }
+
+    public function acceptCompanyById($id)
+    {
+        try {
+            // Buscar la compañía por su ID
+            $company = Company::find($id);
+
+            // Verificar si la compañía existe
+            if (!$company) {
+                return response()->json([
+                    'message' => 'No se encontró la compañía especificada.'
+                ], 404); // 404 Not Found
+            }
+
+            // Obtener el periodo académico asociado
+            $academicPeriod = $company->academicPeriod;
+
+            // Verificar si el periodo académico existe
+            if (!$academicPeriod) {
+                return response()->json([
+                    'message' => 'No se encontró el periodo académico asociado.'
+                ], 404); // 404 Not Found
+            }
+
+            // Obtener el usuario autenticado
+            $user = auth()->user();
+
+            // Verificar si el usuario es el creador del periodo académico
+            if ($academicPeriod->creator->id !== $user->id) {
+                return response()->json([
+                    'message' => 'No tienes permiso para aceptar esta compañía.'
+                ], 403); // 403 Forbidden
+            }
+
+            // Actualizar el estado de la compañía a 'Aceptada' (o el estado que corresponda)
+            $company->status = 'A'; // Asumiendo que 'A' es el código para aceptada
+            $company->save();
+
+            // Devolver una respuesta de éxito
+            return response()->json([
+                'message' => 'Compañía aceptada correctamente.',
+                'company' => $company
+            ], 200); // 200 OK
+
+        } catch (Exception $e) {
+            // Manejar otros errores
+            return response()->json([
+                'message' => 'Ocurrió un error al aceptar la compañía.',
+                'error' => $e->getMessage()
+            ], 500); // 500 Internal Server Error
+        }
+    }
 }

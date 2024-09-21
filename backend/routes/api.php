@@ -56,6 +56,7 @@ Route::middleware('auth')->group(function () {
     Route::get('academic-periods/companies', [CompanyController::class, 'getCompaniesByAcademicPeriod']);
     Route::get('company/{id}', [CompanyController::class, 'getCompanyById']);
     Route::get('academic-periods/companies/pending', [CompanyController::class, 'getPendingCompanies']);
+    Route::post('companies/accept/{id}', [CompanyController::class, 'acceptCompanyById']);
 });
 
 // Ruta de planificacion
