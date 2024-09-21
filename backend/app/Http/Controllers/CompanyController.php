@@ -233,4 +233,102 @@ class CompanyController extends Controller
             ], 500); // 500 Internal Server Error
         }
     }
+
+    public function index()
+    {
+        try {
+            // Obtener todas las compañías
+            $companies = Company::all();
+
+            // Devolver una respuesta con la lista de compañías
+            return response()->json([
+                'message' => 'Lista de compañías obtenida correctamente.',
+                'companies' => $companies
+            ], 200); // 200 OK
+        } catch (Exception $e) {
+            // Manejar otros errores
+            return response()->json([
+                'message' => 'Ocurrió un error al obtener la lista de compañías.',
+                'error' => $e->getMessage()
+            ], 500); // 500 Internal Server Error
+        }
+    }
+    public function update(Request $request, $id)
+    {
+        try {
+            // Validar la solicitud
+            $request->validate([
+                'long_name' => 'sometimes|required|string|max:255',
+                'short_name' => 'sometimes|required|string|max:100',
+                'email' => "sometimes|required|email|unique:companies,email,{$id}",
+                'address' => 'sometimes|required|string|max:255',
+                'phone' => 'sometimes|required|string|max:20',
+            ]);
+
+            // Buscar la compañía por su ID
+            $company = Company::find($id);
+
+            // Verificar si la compañía existe
+            if (!$company) {
+                return response()->json([
+                    'message' => 'No se encontró la compañía especificada.'
+                ], 404); // 404 Not Found
+            }
+
+            // Actualizar la compañía
+            $company->update($request->all());
+
+            // Devolver una respuesta de éxito
+            return response()->json([
+                'message' => 'Compañía actualizada correctamente.',
+                'company' => $company
+            ], 200); // 200 OK
+
+        } catch (ValidationException $e) {
+            // Manejar errores de validación
+            return response()->json([
+                'message' => 'Validation Error',
+                'errors' => $e->validator->errors()
+            ], 422); // 422 Unprocessable Entity
+
+        } catch (Exception $e) {
+            // Manejar otros errores
+            return response()->json([
+                'message' => 'Ocurrió un error al actualizar la compañía.',
+                'error' => $e->getMessage()
+            ], 500); // 500 Internal Server Error
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            // Buscar la compañía por su ID
+            $company = Company::find($id);
+
+            // Verificar si la compañía existe
+            if (!$company) {
+                return response()->json([
+                    'message' => 'No se encontró la compañía especificada.'
+                ], 404); // 404 Not Found
+            }
+
+            // Eliminar la compañía
+            $company->delete();
+
+            // Devolver una respuesta de éxito
+            return response()->json([
+                'message' => 'Compañía eliminada correctamente.'
+            ], 200); // 200 OK
+
+        } catch (Exception $e) {
+            // Manejar otros errores
+            return response()->json([
+                'message' => 'Ocurrió un error al eliminar la compañía.',
+                'error' => $e->getMessage()
+            ], 500); // 500 Internal Server Error
+        }
+    }
+
+
 }
