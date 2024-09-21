@@ -1,53 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Container, Typography, Box, Icon } from "@mui/material";
+import { useParams } from "react-router-dom";
+import { useGetPedingCompaniesQuery } from "../api/companyApi";
 
 const SolicitudesGE = () => {
-  const [requests] = useState([
-    {
-      id: 1,
-      nombreCorto: "API",
-      nombreLargo: "Agile Programming Innovators",
-      fechaInvitacion: "05/09/2024",
-      docente: "Docente 1",
-      gestion: "Gestión 2 - 2024",
-      integrantes: 6,
-    },
-    {
-      id: 2,
-      nombreCorto: "Cascade Inc.",
-      nombreLargo: "Cascade Incorporation",
-      fechaInvitacion: "01/09/2024",
-      docente: "Docente 1",
-      gestion: "Gestión 2 - 2024",
-      integrantes: 3,
-    },
-    {
-      id: 3,
-      nombreCorto: "Evil Inc.",
-      nombreLargo: "Doofenshmirtz Evil Incorporated ",
-      fechaInvitacion: "01/09/2024",
-      docente: "Docente 1",
-      gestion: "Gestión 2 - 2024",
-      integrantes: 7,
-    },
-    {
-      id: 4,
-      nombreCorto: "Absolute",
-      nombreLargo: "Absolute Incorporation",
-      fechaInvitacion: "01/09/2024",
-      docente: "Docente 1",
-      gestion: "Gestión 2 - 2024",
-      integrantes: 5,
-    },
-  ]);
+  const { id } = useParams();
+  const { data, error, isError, isSuccess, isLoading } =
+    useGetPedingCompaniesQuery(id);
+  
+  useEffect(() => {
+    if (isSuccess) {
+      console.log(data);
+    }
+    if (isError) {
+      console.log(error);
+    }
+    if (isLoading) {
+      console.log("cargando");
+    }
+  }, [data, isError, isLoading, data, error]);
 
-  //Función para el botón ACEPTAR
   const handleAccept = (nombreCorto) => {
     alert(`Invitación de ${nombreCorto} aceptada`);
     console.log(`Invitación de ${nombreCorto} aceptada`);
   };
 
-  //Función para el botón RECHAZAR
   const handleDecline = (nombreCorto) => {
     alert(`Invitación de ${nombreCorto} rechazada`);
     console.log(`Invitación de ${nombreCorto} rechazada`);
@@ -65,7 +42,7 @@ const SolicitudesGE = () => {
           Solicitudes de creación de Grupo-Empresas
         </Typography>
 
-        {requests.map((request) => (
+        {data.companies.map((request) => (
           <Box
             key={request.id}
             sx={{
@@ -91,10 +68,10 @@ const SolicitudesGE = () => {
                   component="h1"
                   sx={{ color: "black", fontSize: "36px", lineHeight: "1" }}
                 >
-                  {request.nombreCorto}
+                  {request.short_name}
                 </Typography>
                 <Typography component="h2" sx={{ color: "black" }}>
-                  {request.nombreLargo}
+                  {request.long_name}
                 </Typography>
                 <Typography
                   component="p"
@@ -118,12 +95,6 @@ const SolicitudesGE = () => {
                 >
                   Desean formar parte del grupo de TIS
                 </Typography>
-                <Typography
-                  component="p"
-                  sx={{ color: "#8E9090", fontSize: "14px" }}
-                >
-                  Gestión: {request.gestion}
-                </Typography>
               </Box>
 
               {/* Botones de Aceptar y Rechazar, lado derecho */}
@@ -136,7 +107,7 @@ const SolicitudesGE = () => {
                 }}
               >
                 <Button
-                  onClick={() => handleAccept(request.nombreCorto)}
+                  onClick={() => handleAccept(request.id)}
                   variant="contained"
                   color="primary"
                   sx={{
@@ -149,7 +120,7 @@ const SolicitudesGE = () => {
                 </Button>
 
                 <Button
-                  onClick={() => handleDecline(request.nombreCorto)}
+                  onClick={() => handleDecline(request.id)}
                   variant="contained"
                   color="transparent"
                   sx={{

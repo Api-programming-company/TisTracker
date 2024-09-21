@@ -18,7 +18,13 @@ const companyApi = apiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
+    getPedingCompanies: builder.query({
+      query: (id) => ({
+        url: `academic-periods/companies/pending?academic_period_id=${id}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useCreateCompanyMutation, useGetCompanyByIdQuery } = companyApi;
+export const { useCreateCompanyMutation, useGetCompanyByIdQuery, useGetPedingCompaniesQuery } = companyApi;
