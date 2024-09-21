@@ -13,7 +13,7 @@ use App\Mail\VerifyEmail;
 use Laravel\Sanctum\Sanctum;
 
 //Docente
-class AuthControllerDocenteTest extends TestCase
+class PeriodoAcademicoTest extends TestCase
 {
     use RefreshDatabase;
 
