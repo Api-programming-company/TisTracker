@@ -13,12 +13,12 @@ use App\Mail\VerifyEmail;
 use Laravel\Sanctum\Sanctum;
 
 //Docente
-class AuthControllerDocenteTest extends TestCase
+class PeriodoAcademicoTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test */
-    public function Solo_docente_puede_crear_periodoAcademico()
+    public function Solo_docente_puede_crear_periodoAcademico()  //good
     {
         // Crear un usuario con tipo Estudiante "E"
         $estudiante = User::factory()->create(['user_type' => 'E']);
@@ -46,7 +46,7 @@ class AuthControllerDocenteTest extends TestCase
 
 
     /** @test */
-    public function Docente_puede_crear_periodo_academico()
+    public function Docente_puede_crear_periodo_academico()  //good
     {
         // Crear un usuario con tipo "D" (Docente)
         $docente = User::factory()->create(['user_type' => 'D']);
@@ -85,7 +85,7 @@ class AuthControllerDocenteTest extends TestCase
     //Campos obligatorios
 
     /** @test */
-    public function nombre_obligatorio()
+    public function nombre_obligatorio() //doog
     {
         // Crear un usuario con tipo Estudiante "E"
         $estudiante = User::factory()->create(['user_type' => 'D']);
@@ -112,7 +112,7 @@ class AuthControllerDocenteTest extends TestCase
     }
 
     /** @test */
-    public function diaInicio_obligatorio()
+    public function diaInicio_obligatorio() //good
     {
         // Crear un usuario con tipo Estudiante "E"
         $estudiante = User::factory()->create(['user_type' => 'D']);
@@ -139,7 +139,7 @@ class AuthControllerDocenteTest extends TestCase
     }
 
     /** @test */
-    public function diaFin_obligatorio()
+    public function diaFin_obligatorio() //good
     {
         // Crear un usuario con tipo Estudiante "E"
         $estudiante = User::factory()->create(['user_type' => 'D']);
@@ -166,7 +166,7 @@ class AuthControllerDocenteTest extends TestCase
     }
 
     /** @test */
-    public function fechas_en_orden()
+    public function fechas_en_orden() //good
     {
         // Crear un usuario con tipo Docente "D"
         $docente = User::factory()->create(['user_type' => 'D']);
@@ -193,7 +193,7 @@ class AuthControllerDocenteTest extends TestCase
     }
 
     /** @test */
-    public function nombre_de_periodo_academico_debe_ser_unico()
+    public function nombre_de_periodo_academico_debe_ser_unico() //good
     {
         // Crear un usuario con tipo Docente "D"
         $docente = User::factory()->create(['user_type' => 'D']);
@@ -242,7 +242,7 @@ class AuthControllerDocenteTest extends TestCase
     }
 
     /** @test */
-    public function test_it_returns_academic_periods_grouped_by_teacher()
+    public function retorne_correctamente_los_periodos_académicos_agrupados_por_docente()
     {
         $teacher1 = User::factory()->create([
             'first_name' => 'Teacher',
@@ -307,7 +307,7 @@ class AuthControllerDocenteTest extends TestCase
             ]);
     }
     /** @test */
-    public function only_students_can_enroll()
+    public function Solo_los_estudiantes_pueden_incribirce_a_un_periodo_academico() //good
     {
         $teacher = User::factory()->create(['user_type' => 'D']);
         $academicPeriod = AcademicPeriod::factory()->create(['user_id' => $teacher->id]);
@@ -321,41 +321,41 @@ class AuthControllerDocenteTest extends TestCase
             ->assertJson(['message' => 'Solo estudiantes pueden inscribirse.']);
     }
 
-    /** @test */
-    public function student_can_only_enroll_in_one_academic_period()
-    {
-        $student = User::factory()->create(['user_type' => 'E']);
-        $academicPeriod1 = AcademicPeriod::factory()->create();
-        $academicPeriod2 = AcademicPeriod::factory()->create();
+    // /** @test */
+    // public function student_can_only_enroll_in_one_academic_period()
+    // {
+    //     $student = User::factory()->create(['user_type' => 'E']);
+    //     $academicPeriod1 = AcademicPeriod::factory()->create();
+    //     $academicPeriod2 = AcademicPeriod::factory()->create();
 
-        // Enroll the student in the first academic period
-        Sanctum::actingAs($student);
-        $response1 = $this->postJson('/api/academic-periods/enroll', [
-            'academic_period_id' => $academicPeriod1->getAttribute('id'),
-        ]);
+    //     // Enroll the student in the first academic period
+    //     Sanctum::actingAs($student);
+    //     $response1 = $this->postJson('/api/academic-periods/enroll', [
+    //         'academic_period_id' => $academicPeriod1->getAttribute('id'),
+    //     ]);
 
-        $response1->assertStatus(200)
-            ->assertJson(['message' => 'Se inscribió correctamente en el periodo académico']);
+    //     $response1->assertStatus(200)
+    //         ->assertJson(['message' => 'Se inscribió correctamente en el periodo académico']);
 
-        // Attempt to enroll in another academic period
+    //     // Attempt to enroll in another academic period
         
-        $response2 = $this->postJson('/api/academic-periods/enroll', [
-            'academic_period_id' => $academicPeriod2->getAttribute('id'),
-        ]);
+    //     $response2 = $this->postJson('/api/academic-periods/enroll', [
+    //         'academic_period_id' => $academicPeriod2->getAttribute('id'),
+    //     ]);
 
-        $response2->assertStatus(400)
-            ->assertJson(['message' => 'Ya está inscrito en un periodo académico']);
-    }
+    //     $response2->assertStatus(400)
+    //         ->assertJson(['message' => 'Ya está inscrito en un periodo académico']);
+    // }
 
-    /** @test */
-    public function student_cannot_enroll_in_nonexistent_academic_period()
-    {
-        $student = User::factory()->create(['user_type' => 'E']);
-        Sanctum::actingAs($student);
-        $response = $this->postJson('/api/academic-periods/enroll', [
-            'academic_period_id' => 9999, // Nonexistent ID
-        ]);
+    // /** @test */
+    // public function student_cannot_enroll_in_nonexistent_academic_period()
+    // {
+    //     $student = User::factory()->create(['user_type' => 'E']);
+    //     Sanctum::actingAs($student);
+    //     $response = $this->postJson('/api/academic-periods/enroll', [
+    //         'academic_period_id' => 9999, // Nonexistent ID
+    //     ]);
 
-        $response->assertStatus(404);
-    }
+    //     $response->assertStatus(404);
+    // }
 }

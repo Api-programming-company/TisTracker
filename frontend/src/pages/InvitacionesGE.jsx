@@ -169,48 +169,6 @@ const InvitacionesGE = () => {
                 </Typography>
               </Box>
 
-              {/* Lista de Integrantes, lado derecho */}
-              <Box sx={{ flex: 1 }}>
-                <List sx={{ paddingTop: 0 }}>
-                  <Typography component="p" sx={{ color: "black" }}>
-                    Integrantes
-                  </Typography>
-                  {invitation.integrantes.map((item) => (
-                    <ListItem
-                      key={item.id}
-                      button
-                      style={{
-                        backgroundColor: "#EAEAEA",
-                        marginBottom: "3px",
-                        color: "black",
-                      }}
-                    >
-                      <ListItemIcon>
-                        <img
-                          src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png"
-                          alt="Icono persona"
-                          style={{
-                            width: "25px",
-                            height: "25px",
-                          }}
-                        />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={item.name}
-                        secondary={
-                          <Typography
-                            sx={{ fontSize: "14px", color: "#57595A" }}
-                          >
-                            CODSIS: {item.codsis}
-                          </Typography>
-                        }
-                      />
-                    </ListItem>
-                  ))}
-                </List>
-              </Box>
-            </Box>
-
             {/* Botones de Aceptar y Rechazar */}
             <Box
               sx={{
@@ -219,6 +177,7 @@ const InvitacionesGE = () => {
                 mb: 3,
                 ml: 3,
                 mr: 3,
+                justifyContent: 'center'
               }}
             >
               <Button
@@ -247,6 +206,8 @@ const InvitacionesGE = () => {
                 RECHAZAR
               </Button>
             </Box>
+            </Box>
+
           </Box>
         ))}
       </Box>
