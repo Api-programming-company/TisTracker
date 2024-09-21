@@ -9,6 +9,7 @@ use App\Http\Controllers\CompanyController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\PlanningController;
 use App\Http\Controllers\MilestoneController;
+use App\Http\Controllers\DeliverableController;
 
 Route::post('user/register', [AuthController::class, 'register']);
 Route::get('user/check-email', [AuthController::class, 'checkEmail']);
@@ -61,6 +62,8 @@ Route::middleware('auth')->group(function () {
 Route::apiResource('/plannings', PlanningController::class);
 // Ruta milestone
 Route::apiResource('milestones', MilestoneController::class);
+//Ruta Deliverable
+Route::apiResource('deliverables', DeliverableController::class);
 
 Route::get('/simon', function () {
     return response()->json(['message' => 'hola simon']);
