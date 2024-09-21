@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AcademicPeriodController;
 use App\Http\Controllers\CompanyController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use App\Http\Controllers\PlanningController;
 
 Route::post('user/register', [AuthController::class, 'register']);
 Route::get('user/check-email', [AuthController::class, 'checkEmail']);
@@ -54,6 +55,9 @@ Route::middleware('auth')->group(function () {
     Route::get('company/{id}', [CompanyController::class, 'getCompanyById']);
     Route::get('academic-periods/companies/pending', [CompanyController::class, 'getPendingCompanies']);
 });
+
+// Ruta de planificacion
+Route::apiResource('/plannings', PlanningController::class);
 
 Route::get('/simon', function () {
     return response()->json(['message' => 'hola simon']);
