@@ -1,4 +1,5 @@
 import "./App.css";
+import logo from './assets/apiLogo.png';
 import { Routes, Route } from "react-router-dom";
 import { useContext } from "react";
 import AppContext from "./context/AppContext";
@@ -23,6 +24,7 @@ import {
   AcademicPeriodList,
   EnrollToAcademicPeriod,
 } from "./components";
+import { useEffect } from "react";
 
 import VerGE from "./pages/VerGE";
 import EditarHito from "./components/EditarHito";
@@ -30,6 +32,7 @@ import EditarHito from "./components/EditarHito";
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
   const userType = user ? user.user_type : "guest";
+
 
   return (
     <>
