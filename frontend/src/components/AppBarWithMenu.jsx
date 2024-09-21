@@ -15,6 +15,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import AppContext from "../context/AppContext";
+import logo from '../assets/logo.png';
 
 function AppBarWithMenu({ isDarkMode, toggleDarkMode, userType }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -33,7 +34,7 @@ function AppBarWithMenu({ isDarkMode, toggleDarkMode, userType }) {
 
   const handleNavigation = (path) => {
     if (path === "/logout") {
-      setOpenDialog(true); // Abre el diálogo de confirmación
+      setOpenDialog(true);
     } else {
       navigate(path);
       handleMenuClose();
@@ -41,26 +42,24 @@ function AppBarWithMenu({ isDarkMode, toggleDarkMode, userType }) {
   };
 
   const handleConfirmLogout = async () => {
-    setOpenDialog(false); // Cierra el diálogo
-    setLogoutConfirm(true); // Muestra el estado de carga
-    await handleLogout(); // Llama a la función de logout
-    setLogoutConfirm(false); // Oculta el estado de carga
+    setOpenDialog(false);
+    setLogoutConfirm(true);
+    await handleLogout();
+    setLogoutConfirm(false);
   };
 
   const handleCancelLogout = () => {
-    setOpenDialog(false); // Cierra el diálogo si el usuario cancela
+    setOpenDialog(false);
   };
 
   const menuOptions = {
     guest: [
       { label: "Iniciar sesión", path: "/login" },
       { label: "Registrarse", path: "/register" },
-      
     ],
     estudiante: [
       { label: "Perfil", path: "/profile" },
       { label: "Mis cursos", path: "/courses" },
-      
       { label: "Cerrar sesión", path: "/logout" },
     ],
     docente: [
@@ -75,6 +74,7 @@ function AppBarWithMenu({ isDarkMode, toggleDarkMode, userType }) {
     <>
       <AppBar position="static">
         <Toolbar>
+          <img src={logo} alt="Logo" style={{ height: '40px', marginRight: '8px' }} />
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             TisTracker
           </Typography>

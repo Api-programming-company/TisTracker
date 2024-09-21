@@ -1,5 +1,4 @@
 import "./App.css";
-import logo from './assets/apiLogo.png';
 import { Routes, Route } from "react-router-dom";
 import { useContext } from "react";
 import AppContext from "./context/AppContext";
