@@ -28,11 +28,6 @@ export const apiSlice = createApi({
     });
 
     const result = await baseQuery(args, api, extraOptions);
-
-    if (result.error && result.error.status === 401) {
-      localStorage.removeItem("user");
-    }
-
     return result;
   },
   tagTypes: ["Test"],

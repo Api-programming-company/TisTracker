@@ -14,17 +14,25 @@ import {
   Snackbar,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
-import { useGetPedingCompaniesQuery, useAcceptCompanyByIdMutation } from "../api/companyApi";
+import {
+  useGetPedingCompaniesQuery,
+  useAcceptCompanyByIdMutation,
+} from "../api/companyApi";
 
 const SolicitudesGE = () => {
   const { id } = useParams();
-  const { data, error, isError, isSuccess, isLoading } = useGetPedingCompaniesQuery(id);
+  const { data, error, isError, isSuccess, isLoading, isFetching } =
+    useGetPedingCompaniesQuery(id);
   const [acceptCompany] = useAcceptCompanyByIdMutation();
   const [companies, setCompanies] = useState([]);
   const [open, setOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   useEffect(() => {
     if (isSuccess) {
@@ -33,10 +41,7 @@ const SolicitudesGE = () => {
     if (isError) {
       console.log(error);
     }
-    if (isLoading) {
-      console.log("cargando");
-    }
-  }, [data, isError, isLoading, error]);
+  }, [data, isSuccess, isError, error]);
 
   const handleClickOpen = (companyId) => {
     setSelectedCompany(companyId);
@@ -54,11 +59,21 @@ const SolicitudesGE = () => {
 
     try {
       await acceptCompany(selectedCompany).unwrap();
-      setSnackbar({ open: true, message: 'Invitación aceptada', severity: 'success' });
-      setCompanies((prevCompanies) => prevCompanies.filter(company => company.id !== selectedCompany));
+      setSnackbar({
+        open: true,
+        message: "Invitación aceptada",
+        severity: "success",
+      });
+      setCompanies((prevCompanies) =>
+        prevCompanies.filter((company) => company.id !== selectedCompany)
+      );
     } catch (error) {
       console.error("Error al aceptar la solicitud:", error);
-      setSnackbar({ open: true, message: 'Ocurrió un error al aceptar la solicitud.', severity: 'error' });
+      setSnackbar({
+        open: true,
+        message: "Ocurrió un error al aceptar la solicitud.",
+        severity: "error",
+      });
     } finally {
       setLoading(false); // Stop loading
       handleClose();
@@ -73,6 +88,22 @@ const SolicitudesGE = () => {
   const handleSnackbarClose = () => {
     setSnackbar({ ...snackbar, open: false });
   };
+
+  if (isLoading || isFetching) {
+    return (
+      <Container
+        maxWidth="sm"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        <CircularProgress />
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="md">
@@ -156,7 +187,7 @@ const SolicitudesGE = () => {
                     mb: 2,
                     px: 12,
                     py: 1,
-                    position: 'relative',
+                    position: "relative",
                   }}
                 >
                   ACEPTAR
@@ -164,11 +195,11 @@ const SolicitudesGE = () => {
                     <CircularProgress
                       size={24}
                       sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        marginTop: '-12px',
-                        marginLeft: '-12px',
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        marginTop: "-12px",
+                        marginLeft: "-12px",
                       }}
                     />
                   )}
@@ -197,7 +228,9 @@ const SolicitudesGE = () => {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">{"Confirmar Aceptación"}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">
+            {"Confirmar Aceptación"}
+          </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               ¿Está seguro de que desea aceptar esta invitación?
