@@ -7,7 +7,7 @@ import {
   NotFound,
   UserRegister,
   RegistroGE,
-  RegistroPeriodoAcademico,
+  RegisterAcademicPeriod,
   ImageUpload,
   Login,
   VerifyEmail,
@@ -32,7 +32,6 @@ function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
   const userType = user ? user.user_type : "guest";
 
-
   return (
     <>
       <AppBarWithMenu
@@ -55,10 +54,7 @@ function App({ toggleTheme, isDarkMode }) {
         <Route path="/conformacionge" element={<ConformacionGE />} />
         <Route path="/editarlistage" element={<EditarListaGE />} />
         <Route path="/academic-periods" element={<AcademicPeriodList />} />
-        <Route
-          path="/registroperiodoacademico"
-          element={<RegistroPeriodoAcademico />}
-        />
+        <Route path="/register-ap" element={<RegisterAcademicPeriod />} />
         <Route path="/registerplan" element={<Planificacion />} />
         <Route path="/upload" element={<ImageUpload />} />
         <Route path="/edithito/:id" element={<EditarHito />} />

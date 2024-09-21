@@ -1,6 +1,6 @@
 export { default as Home } from "./Home";
 export { default as NotFound } from "./NotFound";
-export { default as RegistroPeriodoAcademico } from "./RegistroPeriodoAcademico";
+export { default as RegisterAcademicPeriod } from "./RegisterAcademicPeriod";
 export { default as ImageUpload } from "./ImageUpload";
 export { default as UserRegister } from "./UserRegister";
 export { default as RegistroGE } from "./RegistroGE";

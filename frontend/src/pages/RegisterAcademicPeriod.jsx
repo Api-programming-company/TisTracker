@@ -14,7 +14,7 @@ import { useCreateAcademicPeriodMutation } from "../api/academicPeriodApi";
 import { useNavigate } from "react-router-dom";
 import { differenceInDays } from "date-fns";
 
-const RegistroPeriodoAcademico = () => {
+const RegisterAcademicPeriod = () => {
   const MAX_DESCRIPTION_LENGTH = 255;
   const MIN_DAYS_DIFFERENCE = 3;
   const [name, setName] = useState("");
@@ -217,4 +217,4 @@ const RegistroPeriodoAcademico = () => {
   );
 };
 
-export default RegistroPeriodoAcademico;
+export default RegisterAcademicPeriod;
