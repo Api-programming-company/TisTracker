@@ -175,4 +175,46 @@ class AuthController extends Controller
 
         return '';
     }
+
+    public function searchStudentByEmail(Request $request)
+    {
+        try {
+            // Validar que se ha proporcionado un correo electrónico válido
+            $request->validate([
+                'email' => 'required|email',
+            ]);
+
+            // Buscar si el correo electrónico existe y pertenece a un estudiante
+            $student = User::where('email', $request->email)
+                            ->where('user_type', 'E') // 'E' para estudiantes
+                            ->first();
+
+            // Verificar si se encontró el estudiante
+            if (!$student) {
+                return response()->json([
+                    'message' => 'No se encontró ningún estudiante con el correo especificado.'
+                ], 404); // 404 Not Found
+            }
+
+            // Devolver la información del estudiante
+            return response()->json([
+                'message' => 'Estudiante encontrado.',
+                'student' => $student
+            ], 200); // 200 OK
+
+        } catch (ValidationException $e) {
+            // Manejar errores de validación
+            return response()->json([
+                'message' => 'Error de validación',
+                'errors' => $e->errors()
+            ], 422); // Error de validación
+        } catch (Exception $e) {
+            // Manejar otros errores
+            return response()->json([
+                'message' => 'Se ha producido un error inesperado',
+                'error' => $e->getMessage()
+            ], 500); // Error general
+        }
+    }
+
 }
