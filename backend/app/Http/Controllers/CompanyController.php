@@ -93,7 +93,7 @@ class CompanyController extends Controller
         }
     }
 
-    public function getCompanyById($id)
+    public function show($id)
     {
         try {
             // Buscar la compañía por su ID

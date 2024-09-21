@@ -55,7 +55,6 @@ Route::middleware('auth')->group(function () {
     Route::post('academic-periods/enroll', [AcademicPeriodController::class, 'enroll']);
     Route::apiResource('company', CompanyController::class);
     Route::get('academic-periods/{id}/companies', [CompanyController::class, 'getCompaniesByAcademicPeriod']);
-    Route::get('company/{id}', [CompanyController::class, 'getCompanyById']);
     Route::get('academic-periods/companies/pending', [CompanyController::class, 'getPendingCompanies']);
     Route::post('companies/accept/{id}', [CompanyController::class, 'acceptCompanyById']);
 });
