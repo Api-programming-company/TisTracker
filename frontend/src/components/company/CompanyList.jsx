@@ -7,6 +7,7 @@ import {
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
+import PendingActionsIcon from "@mui/icons-material/PendingActions"; // Importar el icono para solicitudes pendientes
 import React, { useContext, useEffect } from "react";
 import { useGetCompaniesByAcademicPeriodQuery } from "../../api/academicPeriodApi";
 import AppContext from "../../context/AppContext";
@@ -34,6 +35,10 @@ const CompanyList = () => {
 
   const handleAddCompany = () => {
     navigate("/registroge");
+  };
+
+  const handlePendingRequests = () => {
+    navigate(`/academic-period/${id}/pending`); // Navegar a solicitudes pendientes
   };
 
   if (isLoading) {
@@ -69,20 +74,37 @@ const CompanyList = () => {
         <Typography variant="h4" gutterBottom>
           Lista de Empresas
         </Typography>
-        <IconButton
-          color="primary"
-          aria-label="Agregar empresa"
-          onClick={handleAddCompany}
-          sx={{
-            backgroundColor: "primary.main",
-            color: "white",
-            "&:hover": {
-              backgroundColor: "primary.dark",
-            },
-          }}
-        >
-          <AddIcon fontSize="large" />
-        </IconButton>
+        <Box>
+          <IconButton
+            color="primary"
+            aria-label="Agregar empresa"
+            onClick={handleAddCompany}
+            sx={{
+              backgroundColor: "primary.main",
+              color: "white",
+              "&:hover": {
+                backgroundColor: "primary.dark",
+              },
+              mr: 1, // Espacio entre botones
+            }}
+          >
+            <AddIcon fontSize="large" />
+          </IconButton>
+          <IconButton
+            color="secondary" // Cambiar color si lo deseas
+            aria-label="Solicitudes pendientes"
+            onClick={handlePendingRequests}
+            sx={{
+              backgroundColor: "secondary.main",
+              color: "white",
+              "&:hover": {
+                backgroundColor: "secondary.dark",
+              },
+            }}
+          >
+            <PendingActionsIcon fontSize="large" />
+          </IconButton>
+        </Box>
       </Box>
       <Box
         display="flex"

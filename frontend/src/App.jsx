@@ -51,7 +51,6 @@ function App({ toggleTheme, isDarkMode }) {
         <Route path="/vergrupoe/:id" element={<VerGE />} />
         <Route path="/registroge" element={<RegistroGE />} />
         <Route path="/invitacionesge" element={<InvitacionesGE />} />
-        <Route path="/company-application/:id" element={<SolicitudesGE />} />
         <Route path="/conformacionge" element={<ConformacionGE />} />
         <Route path="/editarlistage" element={<EditarListaGE />} />
         <Route path="/academic-periods" element={<AcademicPeriodList />} />
@@ -59,7 +58,8 @@ function App({ toggleTheme, isDarkMode }) {
         <Route path="/registerplan" element={<Planificacion />} />
         
         <Route path="/edithito/:id" element={<EditarHito />} />
-        <Route path="/academic-period/:id" element={<CompanyList />} />
+        <Route path="/academic-period/:id/companies" element={<CompanyList />} />
+        <Route path="/academic-period/:id/pending" element={<SolicitudesGE />} />
 
         <Route path="/upload" element={<ImageUpload />} />
         <Route path="/example" element={<Example />} />

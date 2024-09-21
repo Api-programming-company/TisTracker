@@ -17,16 +17,15 @@ const formatDate = (date) => format(new Date(date), "dd MMM yyyy");
 const AcademicPeriodCard = ({ period, isEnroll = true }) => {
   const navigate = useNavigate();
   const handleClick = () => {
-    navigate(`/academic-period/${period.id}`);
+    navigate(`/academic-period/${period.id}/companies`);
   };
-  
+
   const [enrollInAcademicPeriod, { isLoading, isSuccess, isError, error }] =
     useEnrollInAcademicPeriodMutation();
   const [isEnrolled, setIsEnrolled] = useState(false);
   const { user } = useContext(AppContext);
 
   useEffect(() => {
-    // Check if the user is already enrolled in the current period
     if (user && user.academic_period_id === period.id) {
       setIsEnrolled(true);
     }
