@@ -27,10 +27,11 @@ const EnrollToAcademicPeriod = () => {
 
   useEffect(() => {
     if (user?.academic_period_id) {
-      console.log("Ya esta inscrito");
+      console.log("Ya está inscrito");
       navigate("/");
     }
   }, [user]);
+
   const {
     data: groupedPeriods = [],
     error,
@@ -52,6 +53,7 @@ const EnrollToAcademicPeriod = () => {
   const [selectedPeriod, setSelectedPeriod] = useState("");
   const [academicPeriods, setAcademicPeriods] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openSuccessDialog, setOpenSuccessDialog] = useState(false);
 
   useEffect(() => {
     if (selectedTeacher) {
@@ -67,8 +69,7 @@ const EnrollToAcademicPeriod = () => {
   useEffect(() => {
     if (isEnrollSuccess) {
       console.log(enrollData);
-      removeUserFromLocalStorage();
-      navigate("/");
+      setOpenSuccessDialog(true); // Mostrar diálogo de éxito
     }
     if (isEnrollError) {
       console.log(enrollError);
@@ -79,6 +80,12 @@ const EnrollToAcademicPeriod = () => {
     setOpenDialog(false);
     console.log(selectedPeriod);
     enrollInAcademicPeriod({ academic_period_id: selectedPeriod });
+  };
+
+  const handleCloseSuccessDialog = () => {
+    setOpenSuccessDialog(false);
+    removeUserFromLocalStorage();
+    navigate("/"); // Redirigir después de confirmar el éxito
   };
 
   if (isLoading || isEnrollLoading)
@@ -195,6 +202,24 @@ const EnrollToAcademicPeriod = () => {
           </Button>
           <Button onClick={handleInscribirse} color="primary" autoFocus>
             Confirmar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Diálogo de Éxito */}
+      <Dialog
+        open={openSuccessDialog}
+        onClose={handleCloseSuccessDialog}
+      >
+        <DialogTitle>Inscripción Exitosa</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Te has inscrito exitosamente en el período académico.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseSuccessDialog} color="primary">
+            Aceptar
           </Button>
         </DialogActions>
       </Dialog>

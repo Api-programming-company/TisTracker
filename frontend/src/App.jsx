@@ -25,7 +25,6 @@ import {
   CompanyList,
   StudentSearch,
 } from "./components";
-import { useEffect } from "react";
 
 import VerGE from "./pages/VerGE";
 import EditarHito from "./components/EditarHito";

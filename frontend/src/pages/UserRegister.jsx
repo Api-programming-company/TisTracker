@@ -13,8 +13,11 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { validarContraseña, validateEmail } from "../utils/validaciones";
 import { useRegisterUserMutation } from "../api/userApi";
+import AppContext from "../context/AppContext";
+import { useContext } from "react";
 
 const UserRegister = () => {
+  const { user } = useContext(AppContext);
   const [userType, setUserType] = useState("estudiante");
   const [formData, setFormData] = useState({
     first_name: "",
@@ -66,6 +69,11 @@ const UserRegister = () => {
       console.log("esta loadinga el registro!!!!");
     }
   }, [isSuccess, isError, error, isFetching, isLoading]);
+  useEffect(() => {
+    if (user !== null) {
+      navigate("/");
+    }
+  }, [user]);
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
