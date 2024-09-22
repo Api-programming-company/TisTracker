@@ -26,15 +26,28 @@ describe('Registrar estudiante/docente', () => {
 
   })
 
-  it ('Caso de exito, contraseña cuenta con 8 caracteres (mayus, minus, digito y caracter especial)',()=>{
+  it ('Caso de exito, contraseña cuenta con 8 caracteres (mayus, minus, digito y caracter especial)',
+    {defaultCommandTimeout:30000},()=>{
     cy.contains('No tienes una cuenta').click()
-    cy.get('[name=first_name]').type('asdfa')
-    cy.get('[name=last_name]').type('asdf')
-    cy.get('[name=email]').type('21212121@est.umss.edu')
+    cy.get('[name=first_name]').type('assdfa')
+    cy.get('[name=last_name]').type('assdf')
+    cy.get('[name=email]').type('233426729@est.umss.edu')
     cy.get('[name=password]').type('aaAA11**')
     cy.get('[name=password_confirmation]').type('aaAA11**')
     cy.contains('Registrar').click()
-    cy.contains('Iniciar Sesión')
+    cy.contains('¡Registro exitoso!')
+  })
+
+  it ('Al registrarte con correo en uso debe salir un mensaje de error',
+    {defaultCommandTimeout:10000},()=>{
+    cy.contains('No tienes una cuenta').click()
+    cy.get('[name=first_name]').type('assdfa')
+    cy.get('[name=last_name]').type('assdf')
+    cy.get('[name=email]').type('123456729@est.umss.edu')
+    cy.get('[name=password]').type('aaAA11**')
+    cy.get('[name=password_confirmation]').type('aaAA11**')
+    cy.contains('Registrar').click()
+    cy.contains('El valor del campo email ya está en uso')
   })
 
   it ('Caso Error, input colocado en contraseña tiene que ser el mismo en "confirmar contraseña"', ()=>{
@@ -78,7 +91,7 @@ describe('Registrar estudiante/docente', () => {
     cy.get('[name=password_confirmation]').type('aaAA11**')
     cy.contains('Registrar').click()
   })
-  it.only ('Caso error, al seleccionar Botón "Registrarse" se valide el email docente (formato @fcyt.est.umss.edu)',
+  it ('Caso error, al seleccionar Botón "Registrarse" se valide el email docente (formato @fcyt.est.umss.edu)',
     {defaultCommandTimeout: 10000}, ()=>{
     cy.contains('No tienes una cuenta').click()
     cy.get('#toggle').click()

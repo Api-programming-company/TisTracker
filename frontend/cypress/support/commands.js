@@ -11,9 +11,9 @@
 //
 // -- This is a parent command --
 // Cypress.Commands.add('login', (email, password) => { ... })
-Cypress.Commands.add('deleteCookies', ()=>{
+// Cypress.Commands.add('deleteCookies', ()=>{
     
-})
+// })
 //
 // -- This is a child command --
 // Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
