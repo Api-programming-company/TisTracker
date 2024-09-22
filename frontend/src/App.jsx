@@ -50,7 +50,8 @@ function App({ toggleTheme, isDarkMode }) {
         <Route path="/enroll-to-ap" element={<EnrollToAcademicPeriod />} />
         <Route path="/vergrupoe/:id" element={<VerGE />} />
         <Route path="/registroge" element={<RegistroGE />} />
-        <Route path="/invitacionesge" element={<InvitacionesGE />} />
+
+        <Route path="/company-requests" element={<InvitacionesGE />} />
         <Route path="/conformacionge" element={<ConformacionGE />} />
         <Route path="/editarlistage" element={<EditarListaGE />} />
         <Route path="/academic-periods" element={<AcademicPeriodList />} />
