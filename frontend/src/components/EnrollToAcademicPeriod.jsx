@@ -23,7 +23,7 @@ import { useNavigate } from "react-router-dom";
 
 const EnrollToAcademicPeriod = () => {
   const navigate = useNavigate();
-  const { user, removeUserFromLocalStorage } = useContext(AppContext);
+  const { user, checkUser } = useContext(AppContext);
 
   useEffect(() => {
     if (user?.academic_period_id) {
@@ -84,7 +84,7 @@ const EnrollToAcademicPeriod = () => {
 
   const handleCloseSuccessDialog = () => {
     setOpenSuccessDialog(false);
-    removeUserFromLocalStorage();
+    checkUser();
     navigate("/"); // Redirigir después de confirmar el éxito
   };
 

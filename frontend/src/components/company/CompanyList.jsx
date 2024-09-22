@@ -16,7 +16,7 @@ import { CompanyCard } from "../";
 const CompanyList = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user, removeUserFromLocalStorage } = useContext(AppContext);
+  const { user, checkUser } = useContext(AppContext);
   const { data, error, isLoading, isError, isSuccess } =
     useGetCompaniesByAcademicPeriodQuery(id, {
       refetchOnMountOrArgChange: true,
@@ -27,10 +27,10 @@ const CompanyList = () => {
       console.log(data);
     }
     if (isError) {
-      if (error.status === 400) {
-        console.log(error.message);
-        removeUserFromLocalStorage();
-        navigate("/enroll-to-ap");
+      console.log(error);
+      if (error.status === 400 || error.status === 403) {
+        checkUser();
+        navigate("/");
       }
     }
   }, [isSuccess, isError, data, error]);

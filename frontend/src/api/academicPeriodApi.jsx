@@ -30,7 +30,7 @@ const academicPeriodApi = apiSlice.injectEndpoints({
     }),
     getCompaniesByAcademicPeriod: builder.query({
       query: (academicPeriodId) =>
-        `academic-periods/${academicPeriodId}/companies`,
+        `academic-periods/companies?id=${academicPeriodId}`,
     }),
   }),
 });

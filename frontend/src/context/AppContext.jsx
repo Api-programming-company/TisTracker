@@ -10,8 +10,10 @@ export const AppProvider = ({ children }) => {
     localStorage.setItem("user", JSON.stringify(user));
   };
 
-  const [checkUser, { data, error, isError, isSuccess, isLoading }] =
-    useLazyCheckUserQuery();
+  const [
+    checkUser,
+    { data, error, isError, isSuccess, isLoading, isFetching },
+  ] = useLazyCheckUserQuery();
   const [logoutUser, { isLoading: isLoggingOut }] = useLogoutUserMutation();
   const navigate = useNavigate();
   // Iniciamos el user con los datos del localstorage si existen
@@ -29,7 +31,6 @@ export const AppProvider = ({ children }) => {
     if (user === null) {
       checkUser();
     }
-
   }, [user, checkUser]);
 
   useEffect(() => {
@@ -57,16 +58,16 @@ export const AppProvider = ({ children }) => {
   };
   return (
     <AppContext.Provider
-      value={{ user, setUser, handleLogout, removeUserFromLocalStorage }}
+      value={{ user, setUser, handleLogout, checkUser }}
     >
-      {isLoading || isLoggingOut ? (
+      {isLoading || isFetching || isLoggingOut ? (
         <Container
           maxWidth="sm"
           sx={{
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            height: "80vh",
+            height: "100vh",
           }}
         >
           <CircularProgress />
