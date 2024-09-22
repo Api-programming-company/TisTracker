@@ -112,10 +112,11 @@ class CompanyController extends Controller
     public function show($id)
     {
         try {
-            // Buscar la compañía por su ID, incluyendo miembros, planificaciones, hitos y entregables
+            // Buscar la compañía por su ID, incluyendo miembros, planificaciones, hitos y entregables, y periodo academico
             $company = Company::with([
                 'members',
-                'plannings.milestones.deliverables' // Carga anidada de hitos y entregables
+                'plannings.milestones.deliverables',
+                'academicPeriod.creator'
             ])->find($id);
 
             // Verificar si la compañía existe
