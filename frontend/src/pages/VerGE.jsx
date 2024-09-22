@@ -236,7 +236,7 @@ const VerGE = () => {
             overflow: "hidden",
           }}
         >
-          {formData.planning.milestones.map((milestone) => (
+          {formData.milestones.map((milestone) => (
             <VerHito
               key={milestone.id}
               entregable={milestone}
@@ -246,7 +246,7 @@ const VerGE = () => {
               onUpdate={handleUpdateInfo}
             />
           ))}
-          {formData.planning.milestones.length === 0 ? (
+          {formData.milestones.length === 0 ? (
             <Box sx={{ padding: 2 }}>
               {" "}
               <Typography variant="h6">
@@ -267,7 +267,7 @@ const VerGE = () => {
           </Box>
         </Box>
 
-        {formData.planning.milestones.length > 0 && (
+        {formData.milestones.length > 0 && (
           <Button
             variant="text"
             onClick={() => setExpandedPlanificacion(!expandedPlanificacion)}

@@ -127,12 +127,13 @@ class CompanyController extends Controller
             }
 
             $planning = $company->plannings->first();
+            $milestones = $planning ? $planning->milestones : [];
 
             // Preparar la información de los miembros y planificaciones
             return response()->json([
                 'message' => 'Compañía obtenida correctamente.',
                 'company' => $company,
-                "planning" => $planning,
+                "milestones" => $milestones,
             ], 200); // 200 OK
 
         } catch (Exception $e) {
