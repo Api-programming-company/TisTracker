@@ -432,5 +432,36 @@ public function muestra_mensaje_si_numero_de_telefono_ya_existe()
     $response->assertStatus(422);
     $response->assertJsonValidationErrors('phone');
 }
+
+/** @test */
+public function muestra_mensaje_si_correo_electronico_ya_existe()
+{
+    // Crear un usuario y un periodo académico
+    $academicPeriod = AcademicPeriod::factory()->create();
+    $user = User::factory()->create(['academic_period_id' => $academicPeriod->id]);
+
+    // Crear una empresa con el mismo correo electrónico
+    Company::factory()->create(['email' => 'empresa@prueba.com']);
+
+    // Autenticar al usuario usando Sanctum
+    Sanctum::actingAs($user);
+
+    // Datos de la solicitud
+    $data = [
+        'long_name' => 'Empresa de Prueba',
+        'short_name' => 'EmpPrb',
+        'email' => 'empresa@prueba.com',
+        'address' => '123 Calle Principal',
+        'phone' => '12345678',
+        'members' => [$user->id],
+    ];
+
+    // Realizar la solicitud para crear la compañía
+    $response = $this->postJson('/api/company', $data);
+
+    // Verificar la respuesta
+    $response->assertStatus(422);
+    $response->assertJsonValidationErrors('email');
+}
     
 }
