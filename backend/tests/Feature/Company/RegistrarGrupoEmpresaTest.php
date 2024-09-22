@@ -235,4 +235,30 @@ class RegistrarGrupoEmpresaTest extends TestCase
          // Verificar la respuesta
          $response->assertStatus(422);
      }
+
+     /** @test */
+    public function email_es_obligatorio()
+    {
+        // Crear un usuario y un periodo académico
+        $academicPeriod = AcademicPeriod::factory()->create();
+        $user = User::factory()->create(['academic_period_id' => $academicPeriod->id]);
+
+        // Autenticar al usuario usando Sanctum
+        Sanctum::actingAs($user);
+
+        // Datos de la solicitud sin 'email'
+        $data = [
+            'long_name' => 'Empresa de Prueba',
+            'short_name' => 'EmpPrb',
+            'address' => '123 Calle Principal',
+            'phone' => '12345678',
+            'members' => [$user->id],
+        ];
+
+        // Realizar la solicitud para crear la compañía
+        $response = $this->postJson('/api/company', $data);
+
+        // Verificar la respuesta
+        $response->assertStatus(422);
+    }
 }
