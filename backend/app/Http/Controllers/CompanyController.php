@@ -111,6 +111,7 @@ class CompanyController extends Controller
 
     public function show($id)
     {
+        // TODO optimizar, devolver si el Auth user puede editar permission = W
         try {
             // Buscar la compañía por su ID, incluyendo miembros, planificaciones, hitos y entregables, y periodo academico
             $company = Company::with([
@@ -144,8 +145,6 @@ class CompanyController extends Controller
             ], 500); // 500 Internal Server Error
         }
     }
-
-
 
     public function getPendingCompanies(Request $request)
     {
