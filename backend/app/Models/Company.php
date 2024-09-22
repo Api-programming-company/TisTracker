@@ -30,4 +30,9 @@ class Company extends Model
             ->withPivot('status', 'permission') // Incluye los campos adicionales
             ->withTimestamps();
     }
+
+    public function plannings()
+    {
+        return $this->hasMany(Planning::class);
+    }
 }

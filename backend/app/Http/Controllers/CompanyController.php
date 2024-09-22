@@ -112,8 +112,11 @@ class CompanyController extends Controller
     public function show($id)
     {
         try {
-            // Buscar la compañía por su ID
-            $company = Company::with('members')->find($id);
+            // Buscar la compañía por su ID, incluyendo miembros, planificaciones, hitos y entregables
+            $company = Company::with([
+                'members',
+                'plannings.milestones.deliverables' // Carga anidada de hitos y entregables
+            ])->find($id);
 
             // Verificar si la compañía existe
             if (!$company) {
@@ -122,36 +125,10 @@ class CompanyController extends Controller
                 ], 404); // 404 Not Found
             }
 
-            // Obtener el periodo académico asociado
-            $academicPeriod = $company->academicPeriod;
-
-            // Verificar si el periodo académico existe y obtener el creador
-            if ($academicPeriod) {
-                $creator = $academicPeriod->creator;
-                $creatorName = $creator ? "{$creator->first_name} {$creator->last_name}" : 'Creador no disponible';
-            } else {
-                $creatorName = 'Periodo académico no disponible';
-            }
-
-            // Preparar la información de los miembros
-            $members = $company->members->map(function ($member) {
-                return [
-                    'id' => $member->id,
-                    'email' => $member->email,
-                    'full_name' => $member->getFullNameAttribute(),
-                    'permission' => $member->pivot->permission,
-                ];
-            });
-
-            // Devolver la información de la compañía junto con el creador, el periodo académico y los miembros
+            // Preparar la información de los miembros y planificaciones
             return response()->json([
                 'message' => 'Compañía obtenida correctamente.',
                 'company' => $company,
-                'academic_period' => [
-                    'name' => $academicPeriod ? $academicPeriod->name : null,
-                    'creator_name' => $creatorName,
-                ],
-                'members' => $members, // Incluir los miembros
             ], 200); // 200 OK
 
         } catch (Exception $e) {
@@ -162,6 +139,8 @@ class CompanyController extends Controller
             ], 500); // 500 Internal Server Error
         }
     }
+
+
 
     public function getPendingCompanies(Request $request)
     {
