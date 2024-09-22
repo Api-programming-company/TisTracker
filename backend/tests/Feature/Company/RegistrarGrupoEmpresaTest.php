@@ -491,4 +491,31 @@ class RegistrarGrupoEmpresaTest extends TestCase
         // Verificar la respuesta
         $response->assertStatus(422);
     }
+
+     /** @test */
+     public function preuba_correo_arroba()
+     {
+         // Crear un usuario y un periodo académico
+         $academicPeriod = AcademicPeriod::factory()->create();
+         $user = User::factory()->create(['academic_period_id' => $academicPeriod->id]);
+ 
+         // Autenticar al usuario usando Sanctum
+         Sanctum::actingAs($user);
+ 
+         // Datos de la solicitud sin 'long_name'
+         $data = [
+             'long_name' => 'EmpPrbsad',
+             'short_name' => 'EmpPrb',
+             'email' => 'holagmial.com',
+             'address' => '123 Calle Principal',
+             'phone' => '12345678',
+             'members' => [$user->id],
+         ];
+ 
+         // Realizar la solicitud para crear la compañía
+         $response = $this->postJson('/api/company', $data);
+ 
+         // Verificar la respuesta
+         $response->assertStatus(422);
+     }
 }
