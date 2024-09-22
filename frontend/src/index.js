@@ -9,6 +9,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import store from "./app/store";
 import { AppProvider } from "./context/AppContext";
+import ValidStateProvider from "./context/validDataPlanification/ValidState";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -30,7 +31,9 @@ function Main() {
     <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
       <CssBaseline />
       <AppProvider>
-        <App toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
+        <ValidStateProvider>
+          <App toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
+        </ValidStateProvider>
       </AppProvider>
     </ThemeProvider>
   );

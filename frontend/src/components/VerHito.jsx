@@ -1,18 +1,15 @@
-import {
-  Box,
-  Typography,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import React, { useState } from "react";
 import Entregable from "./Entregable";
 
-const VerHito = ({ entregable, onDelete, editar, setEditar, onUpdate }) => {
+const VerHito = ({ entregable, onDelete, editar, onUpdate }) => {
   // en entregable esta id, nombre_hito, fecha_ini, fecha_entrega, cobro, hu: []
   const [formData, setFormData] = useState(entregable);
 
   const handleUpdateEntregable = (updatedData) => {
     setFormData((prevState) => {
       const newFormData = { ...prevState, ...updatedData };
-      onUpdate(newFormData)
+      onUpdate(newFormData);
       return newFormData;
     });
   };
@@ -21,6 +18,7 @@ const VerHito = ({ entregable, onDelete, editar, setEditar, onUpdate }) => {
     <Box
       sx={{
         border: "1px solid #ddd",
+        backgroundColor: "whitesmoke",
         padding: 2,
         borderRadius: 1,
         position: "relative",
@@ -31,7 +29,6 @@ const VerHito = ({ entregable, onDelete, editar, setEditar, onUpdate }) => {
         <Typography variant="h5" sx={{ fontWeight: "bold" }}>
           Hito
         </Typography>
-
       </Box>
 
       <Entregable

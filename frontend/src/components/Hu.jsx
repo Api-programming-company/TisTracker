@@ -1,18 +1,13 @@
 import { Box, TextField, IconButton } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTheme } from "@mui/material/styles";
 import DialogMod from "./DialogMod";
+import ValidContex from "../context/validDataPlanification/ValidContext";
 
-const Hu = ({
-  handleEliminarHu,
-  onUpdate,
-  info,
-  trigger,
-  setTrigger,
-  toEdit = false,
-}) => {
+const Hu = ({ handleEliminarHu, onUpdate, info, toEdit = false }) => {
   const theme = useTheme();
+  const { validateHito } = useContext(ValidContex);
   const [open, setOpen] = useState(false);
 
   const [huData, setHuData] = useState({
@@ -30,11 +25,11 @@ const Hu = ({
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setHuData((prevState)=>{ 
-      let newHuData = {...prevState, [name]: value} 
+    setHuData((prevState) => {
+      let newHuData = { ...prevState, [name]: value };
       setErrors({ ...errors, [name]: "" });
       onUpdate(newHuData);
-      return newHuData
+      return newHuData;
     });
   };
 
@@ -65,18 +60,16 @@ const Hu = ({
       }
     }
 
+    validateHito(hasError);
     if (hasError) {
       setErrors(newErrors);
-      setTrigger(false);
       return;
     }
   };
 
   useEffect(() => {
-    if (trigger) {
-      handleRegisterHu();
-    }
-  }, [trigger]);
+    handleRegisterHu();
+  }, [huData]);
 
   return (
     <Box
@@ -89,7 +82,8 @@ const Hu = ({
         gap: theme.spacing(2),
         padding: theme.spacing(2),
         alignItems: "center",
-        backgroundColor: theme.palette.background.paper,
+        // backgroundColor: theme.palette.background.paper,
+        backgroundColor: "whitesmoke",
       }}
     >
       <Box>
@@ -148,7 +142,7 @@ const Hu = ({
       </Box>
 
       <IconButton
-        onClick={() => setOpen(true)} 
+        onClick={() => setOpen(true)}
         color="error"
         aria-label="Eliminar hito"
         sx={{ justifySelf: "center" }}

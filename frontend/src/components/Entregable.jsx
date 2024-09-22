@@ -12,21 +12,16 @@ import {
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Hu from "./Hu";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DialogMod from "./DialogMod";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ValidContex from "../context/validDataPlanification/ValidContext";
 
-const Entregable = ({
-  entregable,
-  onUpdate,
-  onDelete,
-  trigger,
-  setTrigger,
-  toEdit = false,
-}) => {
+const Entregable = ({ entregable, onUpdate, onDelete, toEdit = false }) => {
+  const { validateEntregable } = useContext(ValidContex);
   const [formData, setFormData] = useState({
     id: entregable?.id,
     nombre_hito: entregable?.nombre_hito || "",
@@ -99,7 +94,12 @@ const Entregable = ({
       let x = "hu";
       let newHu = [
         ...prevState.hu,
-        { id: Date.now(), nombre_hu: "Entregable", responsable: "", objetivo: "" },
+        {
+          id: Date.now(),
+          nombre_hu: "Entregable",
+          responsable: "",
+          objetivo: "",
+        },
       ];
       let newFormData = { ...prevState, [x]: newHu };
       onUpdate(newFormData);
@@ -108,12 +108,12 @@ const Entregable = ({
   };
 
   const handleEliminarHu = (id) => {
-    setFormData((prevState)=>{
+    setFormData((prevState) => {
       let x = "hu";
-      let newHu = prevState.hu.filter((e)=>e.id!==id)
-      let newFormData = {...prevState, [x]: newHu}
-      onUpdate(newFormData)
-      return newFormData
+      let newHu = prevState.hu.filter((e) => e.id !== id);
+      let newFormData = { ...prevState, [x]: newHu };
+      onUpdate(newFormData);
+      return newFormData;
     });
   };
 
@@ -160,23 +160,21 @@ const Entregable = ({
       }
     }
 
+    validateEntregable(hasError);
+
     if (formData.hu.length === 0) {
-      setTrigger(false);
+      return;
     }
 
     if (hasError) {
       setErrors(newErrors);
-      setTrigger(false);
       return;
     }
   };
 
   useEffect(() => {
-    if (trigger) {
-      handleRegister();
-      setTrigger(false); // Asegúrate de restablecer el trigger
-    }
-  }, [trigger]);
+    handleRegister();
+  }, [formData]);
 
   return (
     <Box sx={{ maxWidth: 600, margin: "auto", padding: 2 }}>
@@ -281,20 +279,21 @@ const Entregable = ({
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel1-content"
               id="panel1-header"
+              sx={{ backgroundColor: "whitesmoke" }}
             >
               <Typography>{e.nombre_hu}</Typography>
             </AccordionSummary>
 
-            <AccordionDetails>
-              <Hu
-                key={e.id}
-                handleEliminarHu={handleEliminarHu}
-                onUpdate={handleUpdateHu}
-                info={e}
-                trigger={trigger}
-                setTrigger={setTrigger}
-                toEdit={toEdit}
-              />
+            <AccordionDetails sx={{ backgroundColor: "whitesmoke" }}>
+              <Box sx={{ backgroundColor: "whitesmoke" }}>
+                <Hu
+                  key={e.id}
+                  handleEliminarHu={handleEliminarHu}
+                  onUpdate={handleUpdateHu}
+                  info={e}
+                  toEdit={toEdit}
+                />
+              </Box>
             </AccordionDetails>
           </Accordion>
         ))}

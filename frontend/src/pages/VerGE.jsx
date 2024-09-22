@@ -1,7 +1,7 @@
 import { Divider, Box, Button, Typography } from "@mui/material";
 import { useGetCompanyByIdQuery } from "../api/companyApi";
 import { useParams } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import Socio from "../components/Socio";
 import VerHito from "../components/VerHito";
@@ -9,6 +9,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import EditIcon from "@mui/icons-material/Edit";
 import DialogMod from "../components/DialogMod";
+import ValidContex from "../context/validDataPlanification/ValidContext";
 
 const VerGE = () => {
   const { id } = useParams();
@@ -77,10 +78,9 @@ const VerGE = () => {
     ],
   };
   const [formData, setFormData] = useState(null);
-
+  const { isValidH, isValidE } = useContext(ValidContex);
   useEffect(() => {
     if (isSuccess) {
-      console.log(data);
       setFormData(data); // Asigna los datos de la empresa al estado
     }
     if (isError) {
@@ -102,8 +102,13 @@ const VerGE = () => {
     setOpen(false);
   };
   const handleAceptarGuardado = () => {
-    //post enviar formData para que guarde los datos modificados
-    console.log(formData);
+    if (!isValidE && !isValidH) {
+      window.alert("valido");
+      //post enviar formData para que guarde los datos modificados
+    } else {
+      window.alert("no valido");
+      setEditar(!editar);
+    }
     setOpen(false);
   };
   //----------------------------
