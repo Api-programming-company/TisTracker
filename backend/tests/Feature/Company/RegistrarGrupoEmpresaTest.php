@@ -466,7 +466,7 @@ class RegistrarGrupoEmpresaTest extends TestCase
 
 
     /** @test */
-    public function preuba_correo_sinprefijo()
+    public function prueba_correo_sinprefijo()
     {
         // Crear un usuario y un periodo académico
         $academicPeriod = AcademicPeriod::factory()->create();
@@ -493,7 +493,7 @@ class RegistrarGrupoEmpresaTest extends TestCase
     }
 
      /** @test */
-     public function preuba_correo_arroba()
+     public function prueba_correo_arroba()
      {
          // Crear un usuario y un periodo académico
          $academicPeriod = AcademicPeriod::factory()->create();
@@ -520,7 +520,7 @@ class RegistrarGrupoEmpresaTest extends TestCase
      }
 
       /** @test */
-    public function preuba_correo_sinDominio()
+    public function prueba_correo_sinDominio()
     {
         // Crear un usuario y un periodo académico
         $academicPeriod = AcademicPeriod::factory()->create();
@@ -547,7 +547,7 @@ class RegistrarGrupoEmpresaTest extends TestCase
     }
 
      /** @test */
-     public function preuba_correo_sinPuntoCom()
+     public function prueba_correo_sinPuntoCom()
      {
          // Crear un usuario y un periodo académico
          $academicPeriod = AcademicPeriod::factory()->create();
@@ -560,7 +560,7 @@ class RegistrarGrupoEmpresaTest extends TestCase
          $data = [
              'long_name' => 'EmpPrbsad',
              'short_name' => 'EmpPrb',
-             'email' => 'hola@gmail',
+             'email' => 'hola@uwu',
              'address' => '123 Calle Principal',
              'phone' => '12345678',
              'members' => [$user->id],

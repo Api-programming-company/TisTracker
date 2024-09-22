@@ -18,7 +18,7 @@ class CompanyController extends Controller
             $request->validate([
                 'long_name' => 'required|string|max:32|unique:companies,long_name',
                 'short_name' => 'required|string|max:8|unique:companies,short_name',
-                'email' => 'required|email|unique:companies,email',
+                'email' => 'required|email|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/|unique:companies,email',
                 'address' => 'required|string|max:255',
                 'phone' => 'required|string|regex:/^\d{1,8}$/|unique:companies,phone',
                 'members' => 'required|array', // Validar que se envíe un array de members
