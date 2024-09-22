@@ -16,14 +16,14 @@ import {
 import { useParams } from "react-router-dom";
 import {
   useGetPedingCompaniesQuery,
-  useAcceptCompanyByIdMutation,
+  useUpdateCompanyByIdMutation,
 } from "../api/companyApi";
 
 const SolicitudesGE = () => {
   const { id } = useParams();
   const { data, error, isError, isSuccess, isLoading, isFetching } =
     useGetPedingCompaniesQuery(id);
-  const [acceptCompany] = useAcceptCompanyByIdMutation();
+  const [updateCompany] = useUpdateCompanyByIdMutation();
   const [companies, setCompanies] = useState([]);
   const [open, setOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
@@ -55,10 +55,13 @@ const SolicitudesGE = () => {
 
   const handleAccept = async () => {
     if (!selectedCompany) return;
-    setLoading(true); // Start loading
+    setLoading(true);
 
     try {
-      await acceptCompany(selectedCompany).unwrap();
+      await updateCompany({
+        id: selectedCompany,
+        data: { status: "A" },
+      }).unwrap();
       setSnackbar({
         open: true,
         message: "Invitación aceptada",
@@ -75,14 +78,34 @@ const SolicitudesGE = () => {
         severity: "error",
       });
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
       handleClose();
     }
   };
 
-  const handleDecline = (nombreCorto) => {
-    alert(`Invitación de ${nombreCorto} rechazada`);
-    console.log(`Invitación de ${nombreCorto} rechazada`);
+  const handleDecline = async (companyId) => {
+    setLoading(true);
+
+    try {
+      await updateCompany({ id: companyId, data: { status: "R" } }).unwrap();
+      setSnackbar({
+        open: true,
+        message: "Invitación rechazada",
+        severity: "success",
+      });
+      setCompanies((prevCompanies) =>
+        prevCompanies.filter((company) => company.id !== companyId)
+      );
+    } catch (error) {
+      console.error("Error al rechazar la solicitud:", error);
+      setSnackbar({
+        open: true,
+        message: "Ocurrió un error al rechazar la solicitud.",
+        severity: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSnackbarClose = () => {
@@ -206,7 +229,7 @@ const SolicitudesGE = () => {
                 </Button>
 
                 <Button
-                  onClick={() => handleDecline(request.short_name)}
+                  onClick={() => handleDecline(request.id)}
                   variant="contained"
                   color="transparent"
                   sx={{

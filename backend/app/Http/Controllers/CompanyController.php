@@ -274,6 +274,7 @@ class CompanyController extends Controller
                 'email' => "sometimes|required|email|unique:companies,email,{$id}",
                 'address' => 'sometimes|required|string|max:255',
                 'phone' => 'sometimes|required|string|max:20',
+                'status' => 'sometimes|required|in:A,R,P', // Aceptado, Rechazado, Pendiente
             ]);
 
             // Buscar la compañía por su ID
