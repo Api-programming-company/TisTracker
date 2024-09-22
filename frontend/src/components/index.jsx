@@ -7,3 +7,4 @@ export { default as AcademicPeriodCard } from "./academicPeriod/AcademicPeriodCa
 export { default as CompanyList } from "./company/CompanyList";
 export { default as CompanyCard } from "./company/CompanyCard";
 export { default as AcademicPeriodList } from "./academicPeriod/AcademicPeriodList";
+export { default as StudentSearch } from "./student/StudentSearch";

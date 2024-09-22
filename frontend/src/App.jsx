@@ -22,7 +22,8 @@ import {
   AppBarWithMenu,
   AcademicPeriodList,
   EnrollToAcademicPeriod,
-  CompanyList
+  CompanyList,
+  StudentSearch,
 } from "./components";
 import { useEffect } from "react";
 
@@ -56,10 +57,18 @@ function App({ toggleTheme, isDarkMode }) {
         <Route path="/academic-periods" element={<AcademicPeriodList />} />
         <Route path="/register-ap" element={<RegisterAcademicPeriod />} />
         <Route path="/registerplan" element={<Planificacion />} />
-        
+
         <Route path="/edithito/:id" element={<EditarHito />} />
-        <Route path="/academic-period/:id/companies" element={<CompanyList />} />
-        <Route path="/academic-period/:id/pending" element={<SolicitudesGE />} />
+        <Route
+          path="/academic-period/:id/companies"
+          element={<CompanyList />}
+        />
+        <Route
+          path="/academic-period/:id/pending"
+          element={<SolicitudesGE />}
+        />
+
+        <Route path="/search" element={<StudentSearch />} />
 
         <Route path="/upload" element={<ImageUpload />} />
         <Route path="/example" element={<Example />} />
