@@ -35,8 +35,19 @@ const EnrollToAcademicPeriod = () => {
   const {
     data: groupedPeriods = [],
     error,
+    isSuccess,
+    isError,
     isLoading,
   } = useGetAcademicPeriodsGroupedByTeacherQuery();
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log(groupedPeriods);
+    }
+    if (isError) {
+      console.log(error);
+    }
+  }, [isSuccess, isError, error, groupedPeriods]);
 
   const [
     enrollInAcademicPeriod,
