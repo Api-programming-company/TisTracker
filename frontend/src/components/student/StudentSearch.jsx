@@ -16,7 +16,7 @@ const StudentSearch = ({ selectedItems, setSelectedItems }) => {
   const [searchStudent, { data, isFetching, isLoading, error, isError, isSuccess }] =
     useLazySearchStudentQuery();
   const [encargado, setEncargado] = useState(null);
-  const MAX_STUDENTS = 3;
+  const MAX_STUDENTS = 7;
 
   const handleSearch = () => {
     searchStudent(email);
