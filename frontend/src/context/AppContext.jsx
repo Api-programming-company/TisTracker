@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import { useLazyCheckUserQuery, useLogoutUserMutation } from "../api/userApi";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const AppContext = createContext();
@@ -8,10 +8,6 @@ const AppContext = createContext();
 export const AppProvider = ({ children }) => {
   const saveUserToLocalStorage = (user) => {
     localStorage.setItem("user", JSON.stringify(user));
-  };
-
-  const removeUserFromLocalStorage = () => {
-    localStorage.removeItem("user");
   };
 
   const [checkUser, { data, error, isError, isSuccess, isLoading }] =
@@ -24,10 +20,16 @@ export const AppProvider = ({ children }) => {
     return savedUser ? JSON.parse(savedUser) : null;
   });
 
+  const removeUserFromLocalStorage = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+  };
+
   useEffect(() => {
     if (user === null) {
       checkUser();
     }
+
   }, [user, checkUser]);
 
   useEffect(() => {
@@ -58,15 +60,17 @@ export const AppProvider = ({ children }) => {
       value={{ user, setUser, handleLogout, removeUserFromLocalStorage }}
     >
       {isLoading || isLoggingOut ? (
-        <div
-          style={{
+        <Container
+          maxWidth="sm"
+          sx={{
             display: "flex",
             justifyContent: "center",
-            marginTop: "20px",
+            alignItems: "center",
+            height: "80vh",
           }}
         >
           <CircularProgress />
-        </div>
+        </Container>
       ) : (
         children
       )}
