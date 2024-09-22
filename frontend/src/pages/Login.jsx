@@ -173,6 +173,7 @@ const Login = () => {
             </Alert>
           )}
           <Button
+            id="log"
             type="submit"
             fullWidth
             variant="contained"
