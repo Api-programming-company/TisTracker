@@ -11,9 +11,12 @@ use App\Http\Controllers\PlanningController;
 use App\Http\Controllers\MilestoneController;
 use App\Http\Controllers\DeliverableController;
 
+Route::get('/simon', function () {
+    return response()->json(['message' => 'hola simon']);
+});
+
 Route::post('user/register', [AuthController::class, 'register']);
 Route::get('user/check-email', [AuthController::class, 'checkEmail']);
-Route::post('search-student', [AuthController::class, 'searchStudentByEmail']); //buscador por correo solo estudiante
 //Route::post('user/verify-email', [EmailVerificationController::class, 'verifyEmail']); no es necesario
 Route::post('user/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->post('user/logout', [AuthController::class, 'logout']);
@@ -57,15 +60,12 @@ Route::middleware('auth')->group(function () {
     Route::get('academic-periods/{id}/companies', [CompanyController::class, 'getCompaniesByAcademicPeriod']);
     Route::get('academic-periods/companies/pending', [CompanyController::class, 'getPendingCompanies']);
     Route::post('companies/accept/{id}', [CompanyController::class, 'acceptCompanyById']);
-});
-
-// Ruta de planificacion
-Route::apiResource('/plannings', PlanningController::class);
-// Ruta milestone
-Route::apiResource('milestones', MilestoneController::class);
-//Ruta Deliverable
-Route::apiResource('deliverables', DeliverableController::class);
-
-Route::get('/simon', function () {
-    return response()->json(['message' => 'hola simon']);
+    // Ruta de planificacion
+    Route::apiResource('/plannings', PlanningController::class);
+    // Ruta milestone
+    Route::apiResource('milestones', MilestoneController::class);
+    //Ruta Deliverable
+    Route::apiResource('deliverables', DeliverableController::class);
+     //buscador por correo solo estudiante
+     Route::get('student/search/{email}', [AuthController::class, 'searchStudentByEmail']);
 });

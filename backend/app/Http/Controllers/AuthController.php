@@ -176,18 +176,20 @@ class AuthController extends Controller
         return '';
     }
 
-    public function searchStudentByEmail(Request $request)
+    public function searchStudentByEmail($email)
     {
         try {
             // Validar que se ha proporcionado un correo electrónico válido
-            $request->validate([
-                'email' => 'required|email',
-            ]);
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                return response()->json([
+                    'message' => 'El correo electrónico proporcionado no es válido.'
+                ], 422); // 422 Unprocessable Entity
+            }
 
             // Buscar si el correo electrónico existe y pertenece a un estudiante
-            $student = User::where('email', $request->email)
-                            ->where('user_type', 'E') // 'E' para estudiantes
-                            ->first();
+            $student = User::where('email', $email)
+                ->where('user_type', 'E') // 'E' para estudiantes
+                ->first();
 
             // Verificar si se encontró el estudiante
             if (!$student) {
@@ -202,12 +204,6 @@ class AuthController extends Controller
                 'student' => $student
             ], 200); // 200 OK
 
-        } catch (ValidationException $e) {
-            // Manejar errores de validación
-            return response()->json([
-                'message' => 'Error de validación',
-                'errors' => $e->errors()
-            ], 422); // Error de validación
         } catch (Exception $e) {
             // Manejar otros errores
             return response()->json([
@@ -216,5 +212,4 @@ class AuthController extends Controller
             ], 500); // Error general
         }
     }
-
 }
