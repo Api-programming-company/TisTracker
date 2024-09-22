@@ -64,4 +64,11 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsTo(AcademicPeriod::class, 'academic_period_id');
     }
+
+    public function companies()
+    {
+        return $this->belongsToMany(Company::class, 'company_user')
+            ->withPivot('status', 'permission') // Incluye los campos adicionales
+            ->withTimestamps();
+    }
 }

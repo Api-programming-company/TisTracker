@@ -13,8 +13,18 @@ import { StudentSearch } from "../components";
 
 const RegistroGE = () => {
   const navigate = useNavigate();
-  const [createCompany, { data, isSuccess, isError, isLoading }] =
+  const [createCompany, { data, error, isSuccess, isError, isLoading }] =
     useCreateCompanyMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log(data);
+    }
+    if (isError) {
+      console.log(error);
+      
+    }
+  }, [isSuccess, isError, error, data])
 
   // Campos del formulario
   const [nombreLargo, setNombreLargo] = useState("");
@@ -80,12 +90,6 @@ const RegistroGE = () => {
     }
   };
 
-  const handleRemoveItem = (itemId) => {
-    setSelectedItems((prevItems) =>
-      prevItems.filter((item) => item.id !== itemId)
-    );
-  };
-
   const handleSubmit = (event) => {
     event.preventDefault();
     if (selectedItems.length < 1) {
@@ -103,7 +107,7 @@ const RegistroGE = () => {
       members: selectedItems.map((item) => item.id),
     };
     console.log(companyData);
-    //createCompany(companyData).unwrap();
+    createCompany(companyData);
   };
 
   const handleSnackbarClose = () => {

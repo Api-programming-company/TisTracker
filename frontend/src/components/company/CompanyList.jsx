@@ -18,7 +18,9 @@ const CompanyList = () => {
   const navigate = useNavigate();
   const { user, removeUserFromLocalStorage } = useContext(AppContext);
   const { data, error, isLoading, isError, isSuccess } =
-    useGetCompaniesByAcademicPeriodQuery(id);
+    useGetCompaniesByAcademicPeriodQuery(id, {
+      refetchOnMountOrArgChange: true,
+    });
 
   useEffect(() => {
     if (isSuccess) {

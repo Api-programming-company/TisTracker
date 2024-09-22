@@ -21,6 +21,8 @@ class CompanyController extends Controller
                 'email' => 'required|email|unique:companies,email',
                 'address' => 'required|string|max:255',
                 'phone' => 'required|string|max:20',
+                'members' => 'required|array', // Validar que se envíe un array de members
+                'members.*' => 'exists:users,id' // Cada ID debe existir en la tabla users
             ]);
 
             // Obtener el usuario autenticado
@@ -39,9 +41,14 @@ class CompanyController extends Controller
             // Crear la compañía
             $company = Company::create(array_merge($request->all(), ['academic_period_id' => $academicPeriodId]));
 
+            // Asociar los miembros a la compañía
+            foreach ($request->members as $memberId) {
+                $company->members()->attach($memberId, ['status' => 'P', 'permission' => 'R']);
+            }
+
             // Devolver una respuesta JSON
             return response()->json([
-                'message' => 'Grupo empresa registrado correctamente.',
+                'message' => 'Empresa registrado correctamente.',
                 'company' => $company
             ], 201); // 201 Created
 
@@ -329,6 +336,4 @@ class CompanyController extends Controller
             ], 500); // 500 Internal Server Error
         }
     }
-
-
 }
