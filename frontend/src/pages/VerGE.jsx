@@ -22,68 +22,6 @@ const VerGE = () => {
   const { id } = useParams();
   const { data, error, isSuccess, isLoading, isError, isFetching } =
     useGetCompanyByIdQuery(id);
-  const getInfo = {
-    nombre_largo: "Vamos equipo S.R.L.",
-    nombre_corto: "Vamo",
-    correo: "vamos_equipo@vamos.com",
-    direccion: "Av. Petrolera",
-    telefono: "4444444",
-    consultor_tis: "L.B.",
-    gestion: "Gestion I-2024",
-    integrantes: [
-      { id: 1, nombre: "Roberto", apellidos: "Calorias" },
-      { id: 2, nombre: "Redondinho", apellidos: "Laicas" },
-      { id: 3, nombre: "David", apellidos: "Bacon" },
-      { id: 4, nombre: "Lola", apellidos: "Mento" },
-      { id: 5, nombre: "Jacky", apellidos: "Sieras" },
-      { id: 6, nombre: "Susana", apellidos: "Horia" },
-    ],
-    planificacion: [
-      {
-        id: 1,
-        nombre_hito: "Hito 1",
-        fecha_ini: "12/09/2024",
-        fecha_entrega: "16/09/2024",
-        cobro: "10",
-        hu: [
-          {
-            id: 1,
-            nombre_hu: "Documentacion Parte A",
-            responsable: "Susana Horia",
-            objetivo:
-              "Redactar la parte B de la documentacionRedactar la parte B de la documentacionRedactar la parte B de la documentacion",
-          },
-          {
-            id: 2,
-            nombre_hu: "Documentacion Parte B",
-            responsable: "David Bacon",
-            objetivo: "Redactar la parte B de la documentacion",
-          },
-        ],
-      },
-      {
-        id: 2,
-        nombre_hito: "Hito 2",
-        fecha_ini: "22/09/2024",
-        fecha_entrega: "26/09/2024",
-        cobro: "15",
-        hu: [
-          {
-            id: 1,
-            nombre_hu: "Documento de especificacion de requerimientos",
-            responsable: "Jacky Sieras",
-            objetivo: "Analizar los requerimientos del sistema",
-          },
-          {
-            id: 2,
-            nombre_hu: "Documentación de arquitectura de software",
-            responsable: "Lola Mento",
-            objetivo: "Diseñar la arquitectura de software",
-          },
-        ],
-      },
-    ],
-  };
   const [formData, setFormData] = useState(null);
   const { isValidH, isValidE } = useContext(ValidContex);
   useEffect(() => {
@@ -128,14 +66,16 @@ const VerGE = () => {
 
   const handleEliminarHitoEdit = (id) => {
     let x = "planificacion";
-    const newPlanificacion = getInfo.planificacion.filter((e) => e.id !== id);
+    const newPlanificacion = formData.company.plannings[0].filter(
+      (e) => e.id !== id
+    );
     setFormData({ ...formData, [x]: newPlanificacion });
   };
 
   const handleUpdateInfo = (infoHito) => {
     setFormData((prevState) => {
       let x = "planificacion";
-      let updatedPlanificacion = getInfo.planificacion.map((e) =>
+      let updatedPlanificacion = formData.company.plannings[0].map((e) =>
         e.id === infoHito.id ? infoHito : e
       );
       let newFormData = { ...prevState, [x]: updatedPlanificacion };
@@ -205,11 +145,13 @@ const VerGE = () => {
         <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
           <Box sx={{ flex: 1 }}>
             <Typography variant="h6">Consultor TIS</Typography>
-            <Typography>{formData.academic_period.creator_name}</Typography>
+            <Typography>
+              {formData.company.academic_period.creator.first_name}
+            </Typography>
           </Box>
           <Box sx={{ flex: 1 }}>
             <Typography variant="h6">Gestión</Typography>
-            <Typography>{formData.academic_period.name}</Typography>
+            <Typography>{formData.company.academic_period.name}</Typography>
           </Box>
         </Box>
       </Box>
@@ -219,7 +161,7 @@ const VerGE = () => {
       {/* Socios del Grupo */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h5" gutterBottom>
-          Socios del Grupo ({formData.members.length})
+          Socios del Grupo ({formData.company.members.length})
         </Typography>
         <Box
           sx={{
@@ -232,7 +174,7 @@ const VerGE = () => {
           }}
         >
           {expandedSocios &&
-            formData.members.map((e) => (
+            formData.company.members.map((e) => (
               <Socio
                 key={e.id}
                 primary={`${e.full_name}`}
@@ -294,17 +236,17 @@ const VerGE = () => {
             overflow: "hidden",
           }}
         >
-          {getInfo.planificacion.map((e) => (
+          {formData.planning.milestones.map((milestone) => (
             <VerHito
-              key={e.id}
-              entregable={e}
+              key={milestone.id}
+              entregable={milestone}
               onDelete={handleEliminarHitoEdit}
               editar={editar}
               setEditar={setEditar}
               onUpdate={handleUpdateInfo}
             />
           ))}
-          {getInfo.planificacion.length === 0 ? (
+          {formData.planning.milestones.length === 0 ? (
             <Box sx={{ padding: 2 }}>
               {" "}
               <Typography variant="h6">
@@ -325,7 +267,7 @@ const VerGE = () => {
           </Box>
         </Box>
 
-        {getInfo.planificacion.length > 0 && (
+        {formData.planning.milestones.length > 0 && (
           <Button
             variant="text"
             onClick={() => setExpandedPlanificacion(!expandedPlanificacion)}

@@ -12,9 +12,9 @@ const Hu = ({ handleEliminarHu, onUpdate, info, toEdit = false }) => {
 
   const [huData, setHuData] = useState({
     id: info?.id,
-    nombre_hu: info?.nombre_hu || "",
-    responsable: info?.responsable || "",
-    objetivo: info?.objetivo || "",
+    nombre_hu: info?.name || "",
+    responsable: info?.responsible || "",
+    objetivo: info?.objective || "",
   });
 
   const [errors, setErrors] = useState({

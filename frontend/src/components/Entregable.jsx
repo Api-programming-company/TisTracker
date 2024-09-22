@@ -24,11 +24,11 @@ const Entregable = ({ entregable, onUpdate, onDelete, toEdit = false }) => {
   const { validateEntregable } = useContext(ValidContex);
   const [formData, setFormData] = useState({
     id: entregable?.id,
-    nombre_hito: entregable?.nombre_hito || "",
-    fecha_ini: entregable?.fecha_ini || "",
-    fecha_entrega: entregable?.fecha_entrega || "",
-    cobro: entregable?.cobro || "",
-    hu: entregable?.hu || [],
+    nombre_hito: entregable?.name || "",
+    fecha_ini: entregable?.start_date || "",
+    fecha_entrega: entregable?.end_date || "",
+    cobro: entregable?.billing_percentage || "",
+    hu: entregable?.deliverables || [],
   });
 
   const [errors, setErrors] = useState({
@@ -281,7 +281,7 @@ const Entregable = ({ entregable, onUpdate, onDelete, toEdit = false }) => {
               id="panel1-header"
               sx={{ backgroundColor: "whitesmoke" }}
             >
-              <Typography>{e.nombre_hu}</Typography>
+              <Typography>{e.name}</Typography>
             </AccordionSummary>
 
             <AccordionDetails sx={{ backgroundColor: "whitesmoke" }}>

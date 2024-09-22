@@ -126,10 +126,13 @@ class CompanyController extends Controller
                 ], 404); // 404 Not Found
             }
 
+            $planning = $company->plannings->first();
+
             // Preparar la información de los miembros y planificaciones
             return response()->json([
                 'message' => 'Compañía obtenida correctamente.',
                 'company' => $company,
+                "planning" => $planning,
             ], 200); // 200 OK
 
         } catch (Exception $e) {
