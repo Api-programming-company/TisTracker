@@ -8,8 +8,6 @@ use App\Http\Controllers\AcademicPeriodController;
 use App\Http\Controllers\CompanyController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\PlanningController;
-use App\Http\Controllers\MilestoneController;
-use App\Http\Controllers\DeliverableController;
 
 Route::get('/simon', function () {
     return response()->json(['message' => 'hola simon']);
@@ -66,10 +64,6 @@ Route::middleware('auth')->group(function () {
     Route::post('companies/accept/{id}', [CompanyController::class, 'acceptCompanyById']);
     // Ruta de planificacion
     Route::apiResource('/plannings', PlanningController::class);
-    // Ruta milestone
-    Route::apiResource('milestones', MilestoneController::class);
-    //Ruta Deliverable
-    Route::apiResource('deliverables', DeliverableController::class);
     //buscador por correo solo estudiante
     Route::get('student/search/{email}', [AuthController::class, 'searchStudentByEmail']);
 });
