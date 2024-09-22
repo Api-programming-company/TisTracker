@@ -131,7 +131,7 @@ class CompanyController extends Controller
                     'id' => $member->id,
                     'email' => $member->email,
                     'full_name' => $member->getFullNameAttribute(),
-                    'permission' => $member->permission,
+                    'permission' => $member->pivot->permission,
                 ];
             });
 

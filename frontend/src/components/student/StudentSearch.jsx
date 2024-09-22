@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useLazySearchStudentQuery } from "../../api/studentApi";
 import {
   TextField,
@@ -9,13 +9,14 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
-import StudentCard from "./StudentCard"; // Asegúrate de importar el componente
+import StudentCard from "./StudentCard";
 
 const StudentSearch = ({ selectedItems, setSelectedItems }) => {
   const [email, setEmail] = useState("");
   const [searchStudent, { data, isFetching, isLoading, error, isError, isSuccess }] =
     useLazySearchStudentQuery();
-  const MAX_STUDENTS = 3; // Límite de estudiantes
+  const [encargado, setEncargado] = useState(null);
+  const MAX_STUDENTS = 3;
 
   const handleSearch = () => {
     searchStudent(email);
@@ -23,15 +24,32 @@ const StudentSearch = ({ selectedItems, setSelectedItems }) => {
 
   const handleAddStudent = () => {
     if (data && data.student) {
-      // Verificar si el estudiante ya está en la lista
       if (selectedItems.length < MAX_STUDENTS && !selectedItems.some(s => s.id === data.student.id)) {
-        setSelectedItems(prev => [...prev, data.student]);
+        setSelectedItems(prev => {
+          const newSelectedItems = [...prev, data.student];
+          // Asignar el primer integrante como encargado
+          if (newSelectedItems.length === 1) {
+            setEncargado(data.student.id);
+          }
+          return newSelectedItems;
+        });
       }
     }
   };
 
   const handleRemoveStudent = (id) => {
-    setSelectedItems(prev => prev.filter(student => student.id !== id));
+    setSelectedItems(prev => {
+      const newSelectedItems = prev.filter(student => student.id !== id);
+      // Resetear el encargado si se elimina
+      if (id === encargado) {
+        setEncargado(newSelectedItems[0]?.id || null); // Asignar el nuevo primer integrante como encargado
+      }
+      return newSelectedItems;
+    });
+  };
+
+  const handleSelectEncargado = (id) => {
+    setEncargado(id);
   };
 
   return (
@@ -80,7 +98,7 @@ const StudentSearch = ({ selectedItems, setSelectedItems }) => {
                   },
                   marginLeft: 2,
                 }}
-                disabled={selectedItems.length >= MAX_STUDENTS || selectedItems.some(s => s.id === data.student.id)} // Deshabilitar si se alcanza el límite o ya está agregado
+                disabled={selectedItems.length >= MAX_STUDENTS || selectedItems.some(s => s.id === data.student.id)}
               >
                 <AddIcon fontSize="large" />
               </IconButton>
@@ -106,6 +124,8 @@ const StudentSearch = ({ selectedItems, setSelectedItems }) => {
             key={student.id}
             student={student}
             onRemove={handleRemoveStudent}
+            isEncargado={encargado === student.id}
+            onSelectEncargado={() => handleSelectEncargado(student.id)}
           />
         ))}
       </Box>

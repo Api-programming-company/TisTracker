@@ -7,10 +7,12 @@ import {
   CardActions,
   Avatar,
   Box,
+  Radio,
+  FormControlLabel,
 } from '@mui/material';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 
-const StudentCard = ({ student, onRemove }) => {
+const StudentCard = ({ student, onRemove, isEncargado, onSelectEncargado }) => {
   return (
     <Card
       sx={{
@@ -22,7 +24,7 @@ const StudentCard = ({ student, onRemove }) => {
         borderRadius: 1,
         boxShadow: 1,
         padding: 1,
-        height: '60px', // Ajusta la altura del card
+        height: '60px',
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -39,6 +41,16 @@ const StudentCard = ({ student, onRemove }) => {
         </CardContent>
       </Box>
       <CardActions sx={{ padding: 0 }}>
+        <FormControlLabel
+          control={
+            <Radio
+              checked={isEncargado}
+              onChange={onSelectEncargado}
+              color="primary"
+            />
+          }
+          label="Encargado"
+        />
         <IconButton onClick={() => onRemove(student.id)} color="error" size="small">
           <DeleteIcon fontSize="small" />
         </IconButton>

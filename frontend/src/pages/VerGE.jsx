@@ -231,7 +231,7 @@ const VerGE = () => {
               <Socio
                 key={e.id}
                 primary={`${e.full_name}`}
-                secondary={"Socio"}
+                secondary={e.permission === "R" ? "Socio" : "Encargado"}
               />
             ))}
         </Box>

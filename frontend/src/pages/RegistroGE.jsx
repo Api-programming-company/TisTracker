@@ -107,7 +107,7 @@ const RegistroGE = () => {
       members: selectedItems.map((item) => item.id),
     };
     console.log(companyData);
-    createCompany(companyData);
+    //createCompany(companyData);
   };
 
   const handleSnackbarClose = () => {
