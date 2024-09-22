@@ -16,7 +16,7 @@ class CompanyController extends Controller
         try {
             // Validar la solicitud
             $request->validate([
-                'long_name' => 'required|string|max:32',
+                'long_name' => 'required|string|max:32|unique:companies,long_name',
                 'short_name' => 'required|string|max:8',
                 'email' => 'required|email|unique:companies,email',
                 'address' => 'required|string|max:255',
