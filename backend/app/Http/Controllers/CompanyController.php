@@ -68,50 +68,38 @@ class CompanyController extends Controller
         }
     }
 
-    public function getCompaniesByAcademicPeriod($id)
+    public function getCompaniesByAcademicPeriod(Request $request)
     {
         try {
+            $request->validate([
+                'id' => 'required|integer|exists:academic_periods,id',
+            ]);
             $user = auth()->user();
-
-            // Obtener el periodo académico
-            $academicPeriod = AcademicPeriod::find($id);
-
-            // Verificar si el periodo académico existe
-            if (!$academicPeriod) {
-                return response()->json([
-                    'message' => 'El periodo académico no existe.'
-                ], 404); // 404 Not Found
-            }
+            $academicPeriod = AcademicPeriod::find($request->id);
 
             // Verificar si el usuario es el creador del periodo académico
-            if ($academicPeriod->creator->id !== $user->id) {
-                // Si no es el creador, verificar si el usuario está inscrito en el periodo académico
-                if ($user->academic_period_id !== $academicPeriod->getAttribute("id")) {
-                    return response()->json([
-                        'message' => 'No tienes permiso para ver las compañías de este periodo académico.'
-                    ], 403); // 403 Forbidden
-                }
+            if ($academicPeriod->creator->id !== $user->id && $user->academic_period_id !== $academicPeriod->id) {
+                return response()->json(['message' => 'No tienes permiso para ver las compañías de este periodo académico.'], 403);
             }
 
-
-            // Obtener las compañías asociadas al periodo académico del usuario
-            $companies = Company::where('academic_period_id', $id)
+            // Obtener las compañías asociadas al periodo académico 
+            $companies = Company::withCount('members')
+                ->where('academic_period_id', $request->id)
                 ->where('status', 'A')
-                ->withCount('members')
                 ->get();
-
-            // Verificar si existen compañías para ese periodo
-            if ($companies->isEmpty()) {
-                return response()->json([
-                    'message' => 'No se encontraron compañías para el periodo académico especificado.'
-                ], 404); // 404 Not Found
-            }
 
             // Devolver la lista de compañías
             return response()->json([
                 'message' => 'Compañías obtenidas correctamente.',
                 'companies' => $companies
             ], 200); // 200 OK
+        } catch (ValidationException $e) {
+            // Manejar errores de validación
+            return response()->json([
+                'message' => 'Validation Error.',
+                'errors' => $e->validator->errors()
+            ], 422); // 422 Unprocessable Entity
+
         } catch (Exception $e) {
             // Manejar otros errores
             return response()->json([
