@@ -370,5 +370,36 @@ public function muestra_mensaje_si_nombre_largo_ya_existe()
     $response->assertStatus(422);
     $response->assertJsonValidationErrors('long_name');
 }
+
+/** @test */
+public function muestra_mensaje_si_nombre_corto_ya_existe()
+{
+    // Crear un usuario y un periodo académico
+    $academicPeriod = AcademicPeriod::factory()->create();
+    $user = User::factory()->create(['academic_period_id' => $academicPeriod->id]);
+
+    // Crear una empresa con el mismo nombre corto
+    Company::factory()->create(['short_name' => 'EmpPrb']);
+
+    // Autenticar al usuario usando Sanctum
+    Sanctum::actingAs($user);
+
+    // Datos de la solicitud
+    $data = [
+        'long_name' => 'Empresa de Prueba',
+        'short_name' => 'EmpPrb',
+        'email' => 'empresa@prueba.com',
+        'address' => '123 Calle Principal',
+        'phone' => '12345678',
+        'members' => [$user->id],
+    ];
+
+    // Realizar la solicitud para crear la compañía
+    $response = $this->postJson('/api/company', $data);
+
+    // Verificar la respuesta
+    $response->assertStatus(422);
+    $response->assertJsonValidationErrors('short_name');
+}
     
 }
