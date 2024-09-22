@@ -11,6 +11,10 @@ use App\Http\Controllers\PlanningController;
 use App\Http\Controllers\MilestoneController;
 use App\Http\Controllers\DeliverableController;
 
+Route::get('/simon', function () {
+    return response()->json(['message' => 'hola simon']);
+});
+
 Route::post('user/register', [AuthController::class, 'register']);
 Route::get('user/check-email', [AuthController::class, 'checkEmail']);
 //Route::post('user/verify-email', [EmailVerificationController::class, 'verifyEmail']); no es necesario
@@ -52,20 +56,16 @@ Route::middleware('auth')->group(function () {
     Route::post('docente/academic-periods', [AcademicPeriodController::class, 'store']);
     Route::get('academic-periods/grouped-by-teacher', [AcademicPeriodController::class, 'getAllGroupedByTeacher']);
     Route::post('academic-periods/enroll', [AcademicPeriodController::class, 'enroll']);
-    Route::post('company', [CompanyController::class, 'store']);
+    Route::apiResource('company', CompanyController::class);
     Route::get('academic-periods/{id}/companies', [CompanyController::class, 'getCompaniesByAcademicPeriod']);
-    Route::get('company/{id}', [CompanyController::class, 'getCompanyById']);
     Route::get('academic-periods/companies/pending', [CompanyController::class, 'getPendingCompanies']);
     Route::post('companies/accept/{id}', [CompanyController::class, 'acceptCompanyById']);
-});
-
-// Ruta de planificacion
-Route::apiResource('/plannings', PlanningController::class);
-// Ruta milestone
-Route::apiResource('milestones', MilestoneController::class);
-//Ruta Deliverable
-Route::apiResource('deliverables', DeliverableController::class);
-
-Route::get('/simon', function () {
-    return response()->json(['message' => 'hola simon']);
+    // Ruta de planificacion
+    Route::apiResource('/plannings', PlanningController::class);
+    // Ruta milestone
+    Route::apiResource('milestones', MilestoneController::class);
+    //Ruta Deliverable
+    Route::apiResource('deliverables', DeliverableController::class);
+     //buscador por correo solo estudiante
+     Route::get('student/search/{email}', [AuthController::class, 'searchStudentByEmail']);
 });

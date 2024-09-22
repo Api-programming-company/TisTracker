@@ -97,7 +97,7 @@ const AcademicPeriodList = () => {
               sm: "48%", // 2 items
               md: "30%", // 3 items
             }}
-            sx={{ minWidth: 0 }} // Permite que el flexGrow funcione correctamente
+            sx={{ minWidth: 0 }}
           >
             <AcademicPeriodCard period={period} isEnroll={false} />
           </Box>

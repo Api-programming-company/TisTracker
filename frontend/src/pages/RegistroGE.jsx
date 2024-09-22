@@ -1,29 +1,30 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   TextField,
   Button,
-  Container,
   Typography,
   Box,
-  FormControl,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  IconButton,
   Snackbar,
   CircularProgress,
-  Avatar,
 } from "@mui/material";
-import { Delete } from "@mui/icons-material";
-import { Person } from "@mui/icons-material";
 import { useCreateCompanyMutation } from "../api/companyApi";
-import { useNavigate } from "react-router-dom";
+import { StudentSearch } from "../components";
 
 const RegistroGE = () => {
   const navigate = useNavigate();
-  const [createCompany, { data, isSuccess, isError, isLoading }] =
+  const [createCompany, { data, error, isSuccess, isError, isLoading }] =
     useCreateCompanyMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log(data);
+    }
+    if (isError) {
+      console.log(error);
+      
+    }
+  }, [isSuccess, isError, error, data])
 
   // Campos del formulario
   const [nombreLargo, setNombreLargo] = useState("");
@@ -36,18 +37,8 @@ const RegistroGE = () => {
   const [addressError, setAddressError] = useState(false);
   const [telefono, setTelefono] = useState("");
 
-  // Buscador
-  const [searchTerm, setSearchTerm] = useState("");
+  // Integrantes seleccionados
   const [selectedItems, setSelectedItems] = useState([]);
-
-  const [allItems] = useState([
-    { id: 1, name: "Juan Alberto Peredo Pozo", codsis: "202000571" },
-    { id: 2, name: "Carlos José Padilla Poma", codsis: "202000572" },
-    { id: 3, name: "Daniela Torrico Torreón", codsis: "202000570" },
-    { id: 4, name: "Andres Castillo Lozada", codsis: "202100580" },
-    { id: 5, name: "Antonio Gomez Amaranto", codsis: "202200740" },
-    { id: 6, name: "Camila Torrez Gutierrez", codsis: "202100712" },
-  ]);
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -99,31 +90,9 @@ const RegistroGE = () => {
     }
   };
 
-  const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const filteredItems = allItems.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const handleAddItem = (itemId) => {
-    const itemToAdd = allItems.find((item) => item.id === itemId);
-    if (itemToAdd && !selectedItems.some((item) => item.id === itemId)) {
-      setSelectedItems((prevItems) => [...prevItems, itemToAdd]);
-    }
-    setSearchTerm("");
-  };
-
-  const handleRemoveItem = (itemId) => {
-    setSelectedItems((prevItems) =>
-      prevItems.filter((item) => item.id !== itemId)
-    );
-  };
-
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    if (selectedItems.length < 3) {
+    if (selectedItems.length < 1) {
       setSnackbarMessage("Deben ser mínimo 3 integrantes");
       setSnackbarOpen(true);
       return;
@@ -137,13 +106,8 @@ const RegistroGE = () => {
       phone: telefono,
       members: selectedItems.map((item) => item.id),
     };
-
-    try {
-      await createCompany(companyData).unwrap();
-    } catch (error) {
-      setSnackbarMessage("Error al enviar el formulario: " + error.message);
-      setSnackbarOpen(true);
-    }
+    console.log(companyData);
+    //createCompany(companyData);
   };
 
   const handleSnackbarClose = () => {
@@ -151,186 +115,119 @@ const RegistroGE = () => {
   };
 
   return (
-    <Container maxWidth="md">
-      <Box sx={{ mt: 5, mb: 10 }}>
-        <Typography
-          variant="h4"
-          component="h1"
-          gutterBottom
-          sx={{ textAlign: "center", mb: 3 }}
+    <Box sx={{ mt: 5, mb: 10, maxWidth: 600, mx: "auto" }}>
+      <Typography
+        variant="h4"
+        component="h1"
+        gutterBottom
+        sx={{ textAlign: "center", mb: 3 }}
+      >
+        Registrar Grupo-Empresa
+      </Typography>
+
+      <form onSubmit={handleSubmit}>
+        <Box sx={{ mb: 2 }}>
+          <TextField
+            label="Nombre largo"
+            variant="outlined"
+            fullWidth
+            required
+            helperText={
+              errorNombreLargo ? "Máx. 150 caracteres" : "* Obligatorio"
+            }
+            error={errorNombreLargo}
+            value={nombreLargo}
+            onChange={handleNombreLargoChange}
+          />
+        </Box>
+        <Box sx={{ mb: 2 }}>
+          <TextField
+            label="Nombre corto"
+            variant="outlined"
+            fullWidth
+            required
+            helperText={
+              errorNombreCorto ? "Máx. 150 caracteres" : "* Obligatorio"
+            }
+            error={errorNombreCorto}
+            value={nombreCorto}
+            onChange={handleNombreCortoChange}
+          />
+        </Box>
+        <Box sx={{ mb: 2 }}>
+          <TextField
+            label="Correo electrónico"
+            variant="outlined"
+            type="email"
+            fullWidth
+            required
+            value={emailGE}
+            onChange={handleEmailChange}
+            helperText={emailError ? "Máx. 150 caracteres" : "* Obligatorio"}
+            error={emailError}
+          />
+        </Box>
+        <Box sx={{ mb: 2 }}>
+          <TextField
+            label="Dirección"
+            variant="outlined"
+            fullWidth
+            required
+            value={address}
+            onChange={handleAddressChange}
+            helperText={addressError ? "Máx. 150 caracteres" : "* Obligatorio"}
+            error={addressError}
+          />
+        </Box>
+        <Box sx={{ mb: 2 }}>
+          <TextField
+            label="Teléfono"
+            variant="outlined"
+            required
+            fullWidth
+            value={telefono}
+            onChange={handleTelefonoChange}
+            helperText="* Obligatorio"
+          />
+        </Box>
+        <Box sx={{ mb: 2 }}>
+          {/* Integración del buscador de estudiantes */}
+          <StudentSearch
+            selectedItems={selectedItems}
+            setSelectedItems={setSelectedItems}
+          />
+        </Box>
+
+        {/* Botón de Registro */}
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          disabled={isLoading}
+          sx={{
+            display: "block",
+            mx: "auto",
+            mt: 3,
+            px: 12,
+            py: 1,
+          }}
         >
-          Registrar Grupo-Empresa
-        </Typography>
+          {isLoading ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            "REGISTRAR"
+          )}
+        </Button>
+      </form>
 
-        <form onSubmit={handleSubmit}>
-          <FormControl fullWidth sx={{ mb: 2 }}>
-            <Box
-              sx={{
-                display: { xs: "block", sm: "flex" },
-                justifyContent: "space-between",
-                gap: 2,
-              }}
-            >
-              <FormControl fullWidth sx={{ mb: 2 }}>
-                <TextField
-                  label="Nombre largo"
-                  variant="outlined"
-                  fullWidth
-                  required
-                  helperText={
-                    errorNombreLargo ? "Máx. 150 caracteres" : "* Obligatorio"
-                  }
-                  error={errorNombreLargo}
-                  value={nombreLargo}
-                  onChange={handleNombreLargoChange}
-                />
-                <TextField
-                  label="Nombre corto"
-                  variant="outlined"
-                  fullWidth
-                  required
-                  helperText={
-                    errorNombreCorto ? "Máx. 150 caracteres" : "* Obligatorio"
-                  }
-                  error={errorNombreCorto}
-                  value={nombreCorto}
-                  onChange={handleNombreCortoChange}
-                />
-                <TextField
-                  label="Correo electrónico"
-                  variant="outlined"
-                  type="email"
-                  fullWidth
-                  required
-                  value={emailGE}
-                  onChange={handleEmailChange}
-                  helperText={
-                    emailError ? "Máx. 150 caracteres" : "* Obligatorio"
-                  }
-                  error={emailError}
-                />
-                <TextField
-                  label="Dirección"
-                  variant="outlined"
-                  fullWidth
-                  required
-                  value={address}
-                  onChange={handleAddressChange}
-                  helperText={
-                    addressError ? "Máx. 150 caracteres" : "* Obligatorio"
-                  }
-                  error={addressError}
-                />
-                <TextField
-                  label="Teléfono"
-                  variant="outlined"
-                  required
-                  fullWidth
-                  value={telefono}
-                  onChange={handleTelefonoChange}
-                  helperText="* Obligatorio"
-                />
-              </FormControl>
-
-              <FormControl fullWidth sx={{ mb: 2 }}>
-                <TextField
-                  label="Buscar estudiante"
-                  variant="outlined"
-                  fullWidth
-                  value={searchTerm}
-                  onChange={handleSearch}
-                  helperText="min. 3 integrantes"
-                />
-                {searchTerm && (
-                  <List>
-                    {filteredItems.map((item) => (
-                      <ListItem
-                        key={item.id}
-                        button
-                        disabled={selectedItems.some(
-                          (selectedItem) => selectedItem.id === item.id
-                        )}
-                        onClick={() => handleAddItem(item.id)}
-                        sx={{ backgroundColor: "#F6F6F6", mb: 0.5 }}
-                      >
-                        <ListItemIcon>
-                          <Avatar>
-                            <Person />
-                          </Avatar>
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={item.name}
-                          secondary={`CODSIS: ${item.codsis}`}
-                        />
-                      </ListItem>
-                    ))}
-                  </List>
-                )}
-                <Typography variant="subtitle1" sx={{ mt: 2 }}>
-                  Integrantes
-                </Typography>
-                <List>
-                  {selectedItems.map((item) => (
-                    <ListItem
-                      key={item.id}
-                      secondaryAction={
-                        <IconButton
-                          edge="end"
-                          aria-label="delete"
-                          onClick={() => handleRemoveItem(item.id)}
-                        >
-                          <Delete />
-                        </IconButton>
-                      }
-                      sx={{ backgroundColor: "aliceblue", mb: 0.5 }}
-                    >
-                      <ListItemIcon>
-                        <Avatar>
-                          <Person />
-                        </Avatar>
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={item.name}
-                        secondary={`CODSIS: ${item.codsis}`}
-                      />
-                    </ListItem>
-                  ))}
-                </List>
-              </FormControl>
-            </Box>
-          </FormControl>
-
-          {/* Botón de Registro */}
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disabled={isLoading}
-            sx={{
-              display: "block",
-              mx: "auto",
-              mt: 2,
-              px: 12,
-              py: 1,
-            }}
-          >
-            {isLoading ? (
-              <CircularProgress size={24} color="inherit" />
-            ) : (
-              "REGISTRAR"
-            )}
-          </Button>
-        </form>
-
-        {/* Snackbar para mensajes */}
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={6000}
-          onClose={handleSnackbarClose}
-          message={snackbarMessage}
-        />
-      </Box>
-    </Container>
+      {/* Snackbar para mensajes */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        message={snackbarMessage}
+      />
+    </Box>
   );
 };
 

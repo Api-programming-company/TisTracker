@@ -18,7 +18,9 @@ const CompanyList = () => {
   const navigate = useNavigate();
   const { user, removeUserFromLocalStorage } = useContext(AppContext);
   const { data, error, isLoading, isError, isSuccess } =
-    useGetCompaniesByAcademicPeriodQuery(id);
+    useGetCompaniesByAcademicPeriodQuery(id, {
+      refetchOnMountOrArgChange: true,
+    });
 
   useEffect(() => {
     if (isSuccess) {
@@ -109,18 +111,18 @@ const CompanyList = () => {
       <Box
         display="flex"
         flexWrap="wrap"
-        justifyContent="space-between"
-        sx={{ mt: 2 }}
+        justifyContent="flex-start" // Mantener alineación de izquierda a derecha
+        sx={{ gap: 2 }} // Espacio entre tarjetas
       >
         {data.companies.map((company) => (
           <Box
             key={company.id}
             flexBasis={{
-              xs: "100%", // 100% width for extra small screens
-              sm: "48%", // Two items per row for small screens
-              md: "30%", // Three items per row for medium screens
+              xs: "100%", // 1 item
+              sm: "48%", // 2 items
+              md: "30%", // 3 items
             }}
-            mb={2}
+            sx={{ minWidth: 0 }}
           >
             <CompanyCard company={company} />
           </Box>

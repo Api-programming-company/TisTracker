@@ -1,4 +1,11 @@
-import { Divider, Box, Button, Typography } from "@mui/material";
+import {
+  Divider,
+  Box,
+  Button,
+  Typography,
+  CircularProgress,
+  Container,
+} from "@mui/material";
 import { useGetCompanyByIdQuery } from "../api/companyApi";
 import { useParams } from "react-router-dom";
 import React, { useState, useEffect, useContext } from "react";
@@ -13,7 +20,7 @@ import ValidContex from "../context/validDataPlanification/ValidContext";
 
 const VerGE = () => {
   const { id } = useParams();
-  const { data, error, isSuccess, isLoading, isError } =
+  const { data, error, isSuccess, isLoading, isError, isFetching } =
     useGetCompanyByIdQuery(id);
   const getInfo = {
     nombre_largo: "Vamos equipo S.R.L.",
@@ -155,7 +162,21 @@ const VerGE = () => {
     });
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading || isFetching) {
+    return (
+      <Container
+        maxWidth="sm"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        <CircularProgress />
+      </Container>
+    );
+  }
 
   // Si hay un error, muestra un mensaje de error
   if (isError) return <div>Error al cargar los datos de la empresa</div>;
@@ -198,7 +219,7 @@ const VerGE = () => {
       {/* Socios del Grupo */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h5" gutterBottom>
-          Socios del Grupo ({getInfo.integrantes.length})
+          Socios del Grupo ({formData.members.length})
         </Typography>
         <Box
           sx={{
@@ -211,11 +232,11 @@ const VerGE = () => {
           }}
         >
           {expandedSocios &&
-            getInfo.integrantes.map((e) => (
+            formData.members.map((e) => (
               <Socio
                 key={e.id}
-                primary={`${e.nombre} ${e.apellidos}`}
-                secondary={"Socio"}
+                primary={`${e.full_name}`}
+                secondary={e.permission === "R" ? "Socio" : "Encargado"}
               />
             ))}
         </Box>
