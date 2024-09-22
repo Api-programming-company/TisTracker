@@ -20,7 +20,7 @@ class CompanyController extends Controller
                 'short_name' => 'required|string|max:8|unique:companies,short_name',
                 'email' => 'required|email|unique:companies,email',
                 'address' => 'required|string|max:255',
-                'phone' => 'required|string|regex:/^\d{1,8}$/',
+                'phone' => 'required|string|regex:/^\d{1,8}$/|unique:companies,phone',
                 'members' => 'required|array', // Validar que se envíe un array de members
                 'members.*' => 'exists:users,id' // Cada ID debe existir en la tabla users
             ]);
