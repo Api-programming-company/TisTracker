@@ -87,8 +87,8 @@ class RegistrarGrupoEmpresaTest extends TestCase
  
          // Datos de la solicitud
          $data = [
-             'long_name' => '12345678901234567890123456789012',
-             'short_name' => 'EmpPrb',
+             'long_name' => '12345678901234567890123456789012123', // 41 caracteres
+             'short_name' => 'EmpP',
              'email' => 'empresa@prueba.com',
              'address' => '123 Calle Principal',
              'phone' => '12345678',
