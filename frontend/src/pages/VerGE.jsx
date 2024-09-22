@@ -214,7 +214,7 @@ const VerGE = () => {
       {/* Socios del Grupo */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h5" gutterBottom>
-          Socios del Grupo ({getInfo.integrantes.length})
+          Socios del Grupo ({formData.members.length})
         </Typography>
         <Box
           sx={{
@@ -227,10 +227,10 @@ const VerGE = () => {
           }}
         >
           {expandedSocios &&
-            getInfo.integrantes.map((e) => (
+            formData.members.map((e) => (
               <Socio
                 key={e.id}
-                primary={`${e.nombre} ${e.apellidos}`}
+                primary={`${e.full_name}`}
                 secondary={"Socio"}
               />
             ))}

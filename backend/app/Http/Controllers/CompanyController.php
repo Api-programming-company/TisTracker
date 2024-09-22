@@ -77,6 +77,7 @@ class CompanyController extends Controller
             // Obtener las compañías asociadas al periodo académico del usuario
             $companies = Company::where('academic_period_id', $id)
                 ->where('status', 'A')
+                ->withCount('members')
                 ->get();
 
             // Verificar si existen compañías para ese periodo
@@ -104,7 +105,7 @@ class CompanyController extends Controller
     {
         try {
             // Buscar la compañía por su ID
-            $company = Company::find($id);
+            $company = Company::with('members')->find($id);
 
             // Verificar si la compañía existe
             if (!$company) {
@@ -124,7 +125,17 @@ class CompanyController extends Controller
                 $creatorName = 'Periodo académico no disponible';
             }
 
-            // Devolver la información de la compañía junto con el creador y el periodo académico
+            // Preparar la información de los miembros
+            $members = $company->members->map(function ($member) {
+                return [
+                    'id' => $member->id,
+                    'email' => $member->email,
+                    'full_name' => $member->getFullNameAttribute(),
+                    'permission' => $member->permission,
+                ];
+            });
+
+            // Devolver la información de la compañía junto con el creador, el periodo académico y los miembros
             return response()->json([
                 'message' => 'Compañía obtenida correctamente.',
                 'company' => $company,
@@ -132,6 +143,7 @@ class CompanyController extends Controller
                     'name' => $academicPeriod ? $academicPeriod->name : null,
                     'creator_name' => $creatorName,
                 ],
+                'members' => $members, // Incluir los miembros
             ], 200); // 200 OK
 
         } catch (Exception $e) {
@@ -165,7 +177,8 @@ class CompanyController extends Controller
 
             // Obtener las compañías pendientes para el periodo académico especificado
             $companies = Company::where('academic_period_id', $request->academic_period_id)
-                ->where('status', 'P') // Asumiendo que 'P' es el código para pendiente
+                ->where('status', 'P') // Pending
+                ->withCount('members')
                 ->get();
 
             // Verificar si existen compañías pendientes

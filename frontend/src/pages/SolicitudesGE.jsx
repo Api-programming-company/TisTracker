@@ -161,7 +161,7 @@ const SolicitudesGE = () => {
                       }}
                     />
                   </Icon>{" "}
-                  {request.integrantes} integrantes
+                  {request.members_count} integrantes
                 </Typography>
                 <Typography
                   component="p"
