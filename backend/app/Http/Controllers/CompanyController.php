@@ -357,4 +357,44 @@ class CompanyController extends Controller
             ], 500); // 500 Internal Server Error
         }
     }
+
+    public function getPendingCompaniesForUser()
+    {
+        // TODO optimizar
+        try {
+            // Obtener el usuario autenticado
+            $user = Auth::user();
+
+            // Obtener las compañías donde el usuario está como miembro con estado 'P' (Pendiente)
+            $companies = Company::whereHas('members', function ($query) use ($user) {
+                $query->where('user_id', $user->id)
+                    ->where('status', 'P'); // Estado pendiente
+            })
+                ->with(['members' => function ($query) use ($user) {
+                    // Incluir solo la información del usuario autenticado
+                    $query->where('user_id', $user->id)
+                        ->withPivot('created_at') // Obtener la fecha de la invitación (asumiendo 'created_at')
+                        ->select('users.id as user_id', 'email');  // Renombrar 'id' para evitar ambigüedad
+                }])
+                ->withCount('members')
+                ->get();
+            $data = $companies->map(function ($company) use ($user) {
+                $member = $company->members->first(); // El miembro es el usuario autenticado
+                return [
+                    'company' => $company,
+                    'invitation_date' => $member->pivot->created_at, // Fecha de invitación
+                ];
+            });
+            return response()->json([
+                'message' => 'Compañías pendientes obtenidas correctamente.',
+                'companies' => $data
+            ], 200); // 200 OK
+        } catch (Exception $e) {
+            // Manejar otros errores
+            return response()->json([
+                'message' => 'Ocurrió un error al obtener las compañías pendientes.',
+                'error' => $e->getMessage()
+            ], 500); // 500 Internal Server Error
+        }
+    }
 }

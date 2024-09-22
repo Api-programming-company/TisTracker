@@ -1,16 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Container,
   Typography,
   Box,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
+  CircularProgress,
 } from "@mui/material";
+import { useGetPendingCompaniesRequestQuery } from "../api/studentApi";
 
 const InvitacionesGE = () => {
+  const { data, error, isSuccess, isFetching, isError } =
+    useGetPendingCompaniesRequestQuery();
+  useEffect(() => {
+    if (isSuccess) {
+      console.log(data);
+    }
+    if (isError) {
+      console.log(error);
+    }
+  }, [isSuccess, isError, error, data]);
+
   const [invitations] = useState([
     {
       id: 1,
@@ -100,6 +109,22 @@ const InvitacionesGE = () => {
     console.log(`Invitación de ${nombreCorto} rechazada`);
   };
 
+  if (isFetching) {
+    return (
+      <Container
+        maxWidth="sm"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        <CircularProgress />
+      </Container>
+    );
+  }
+
   return (
     <Container maxWidth="md">
       <Box sx={{ mt: 5, mb: 10 }}>
@@ -112,9 +137,9 @@ const InvitacionesGE = () => {
           Invitaciones de Grupo-Empresas
         </Typography>
 
-        {invitations.map((invitation) => (
+        {data.companies.map((invitation) => (
           <Box
-            key={invitation.id}
+            key={invitation.company.id}
             sx={{
               backgroundColor: "whitesmoke",
               borderRadius: "15px",
@@ -144,70 +169,69 @@ const InvitacionesGE = () => {
                   component="h1"
                   sx={{ color: "black", fontSize: "36px", lineHeight: "1" }}
                 >
-                  {invitation.nombreCorto}
+                  {invitation.company.short_name}
                 </Typography>
                 <Typography component="h2" sx={{ color: "black" }}>
-                  {invitation.nombreLargo}
+                  {invitation.company.long_name}
                 </Typography>
                 <Typography
                   component="p"
                   sx={{ color: "#8E9090", fontSize: "14px" }}
                 >
-                  Fecha: {invitation.fechaInvitacion}
+                  Fecha: {invitation.invitation_date}
                 </Typography>
                 <Typography
                   component="p"
                   sx={{ color: "#8E9090", fontSize: "14px" }}
                 >
-                  Docente: {invitation.docente}
+                  Docente: {"?"}
                 </Typography>
                 <Typography
                   component="p"
                   sx={{ color: "#8E9090", fontSize: "14px" }}
                 >
-                  Gestión: {invitation.gestion}
+                  Gestión: {"?"}
                 </Typography>
               </Box>
 
-            {/* Botones de Aceptar y Rechazar */}
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                mb: 3,
-                ml: 3,
-                mr: 3,
-                justifyContent: 'center'
-              }}
-            >
-              <Button
-                onClick={() => handleAccept(invitation.nombreCorto)}
-                variant="contained"
-                color="primary"
+              {/* Botones de Aceptar y Rechazar */}
+              <Box
                 sx={{
-                  mb: 2,
-                  px: 12,
-                  py: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  mb: 3,
+                  ml: 3,
+                  mr: 3,
+                  justifyContent: "center",
                 }}
               >
-                ACEPTAR
-              </Button>
+                <Button
+                  onClick={() => handleAccept(invitation.company.id)}
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    mb: 2,
+                    px: 12,
+                    py: 1,
+                  }}
+                >
+                  ACEPTAR
+                </Button>
 
-              <Button
-                onClick={() => handleDecline(invitation.nombreCorto)}
-                variant="contained"
-                color="transparent"
-                sx={{
-                  px: 12,
-                  py: 1,
-                  color: "black",
-                }}
-              >
-                RECHAZAR
-              </Button>
+                <Button
+                  onClick={() => handleDecline(invitation.company.id)}
+                  variant="contained"
+                  color="transparent"
+                  sx={{
+                    px: 12,
+                    py: 1,
+                    color: "black",
+                  }}
+                >
+                  RECHAZAR
+                </Button>
+              </Box>
             </Box>
-            </Box>
-
           </Box>
         ))}
       </Box>

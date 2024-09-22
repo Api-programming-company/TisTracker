@@ -57,7 +57,10 @@ function AppBarWithMenu({ isDarkMode, toggleDarkMode, userType }) {
       { label: "Iniciar sesión", path: "/login" },
       { label: "Registrarse", path: "/register" },
     ],
-    estudiante: [{ label: "Cerrar sesión", path: "/logout" }],
+    estudiante: [
+      { label: "Invitaciones", path: "/company-requests"},
+      { label: "Cerrar sesión", path: "/logout"},
+    ],
     docente: [
       { label: "Periodos Académicos", path: "/academic-periods" },
       { label: "Cerrar sesión", path: "/logout" },
