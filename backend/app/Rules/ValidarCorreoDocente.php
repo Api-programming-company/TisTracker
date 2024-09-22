@@ -36,6 +36,6 @@ class ValidarCorreoDocente implements Rule
      */
     public function message()
     {
-        return 'El correo de un docente tiene que tener el dominio @fcyt.umss.edu.bo';
+        return 'El correo de un docente debe tener el dominio @fcyt.umss.edu.bo';
     }
 }

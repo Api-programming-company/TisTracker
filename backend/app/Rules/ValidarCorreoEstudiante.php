@@ -6,6 +6,8 @@ use Illuminate\Contracts\Validation\Rule;
 
 class ValidarCorreoEstudiante implements Rule
 {
+    protected $errorMessage;
+
     /**
      * Create a new rule instance.
      *
@@ -25,8 +27,19 @@ class ValidarCorreoEstudiante implements Rule
      */
     public function passes($attribute, $value)
     {
-       //validar correo de estudiante
-       return preg_match('/^\d{9}@est\.umss\.edu$/', $value);
+        // Validar que el correo tenga el dominio correcto
+        if (!preg_match('/^.+@est\.umss\.edu$/', $value)) {
+            $this->errorMessage = 'El correo de un estudiante debe tener el dominio @est.umss.edu';
+            return false;
+        }
+
+        // Verificar si tiene 9 dígitos
+        if (!preg_match('/^\d{9}@/', $value)) {
+            $this->errorMessage = 'El correo debe tener exactamente 9 dígitos antes del dominio';
+            return false;
+        }
+
+        return true; // Si pasa ambas validaciones, devuelve true
     }
 
     /**
@@ -36,6 +49,6 @@ class ValidarCorreoEstudiante implements Rule
      */
     public function message()
     {
-        return 'el correo de un estudiante tiene que tener el dominio @est.umss.edu';
+        return $this->errorMessage ?? 'El correo de un estudiante es inválido';
     }
 }
