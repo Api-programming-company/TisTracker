@@ -298,6 +298,7 @@ const UserRegister = () => {
             </Button>
 
             <Button
+              id="toggle"
               variant="outlined"
               color="default"
               fullWidth

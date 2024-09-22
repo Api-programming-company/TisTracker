@@ -31,10 +31,14 @@
     "e2e": "cypress open"
   },
   "eslintConfig": {
+    "env": {
+      "cypress/globals": true
+    },
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "plugins": ["cypress"]
   },
   "browserslist": {
     "production": [
@@ -49,6 +53,7 @@
     ]
   },
   "devDependencies": {
-    "cypress": "^13.14.2"
+    "cypress": "^13.14.2",
+    "eslint-plugin-cypress": "^3.5.0"
   }
 }
