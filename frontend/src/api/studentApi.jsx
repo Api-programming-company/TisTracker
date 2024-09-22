@@ -8,6 +8,4 @@ const studentApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const {
-  useSearchStudentQuery,
-} = studentApi;
+export const { useSearchStudentQuery, useLazySearchStudentQuery } = studentApi;

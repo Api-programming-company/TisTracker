@@ -18,6 +18,7 @@ import {
 import { Delete } from "@mui/icons-material";
 import { Person } from "@mui/icons-material";
 import { useCreateCompanyMutation } from "../api/companyApi";
+import { useSearchStudentQuery } from "../api/studentApi"; // Importar el hook
 import { useNavigate } from "react-router-dom";
 
 const RegistroGE = () => {
@@ -40,14 +41,20 @@ const RegistroGE = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
 
-  const [allItems] = useState([
-    { id: 1, name: "Juan Alberto Peredo Pozo", codsis: "202000571" },
-    { id: 2, name: "Carlos José Padilla Poma", codsis: "202000572" },
-    { id: 3, name: "Daniela Torrico Torreón", codsis: "202000570" },
-    { id: 4, name: "Andres Castillo Lozada", codsis: "202100580" },
-    { id: 5, name: "Antonio Gomez Amaranto", codsis: "202200740" },
-    { id: 6, name: "Camila Torrez Gutierrez", codsis: "202100712" },
-  ]);
+  const { data: studentData, isFetching } = useSearchStudentQuery(searchTerm, {
+    skip: searchTerm.length < 3, // Solo ejecutar la consulta si el término tiene al menos 3 caracteres
+  });
+
+  useEffect(() => {
+    if (studentData && studentData.student) {
+      // Verificar si el estudiante ya está seleccionado
+      const student = studentData.student;
+      if (!selectedItems.some((item) => item.id === student.id)) {
+        setSelectedItems((prevItems) => [...prevItems, student]);
+      }
+      setSearchTerm(""); // Limpiar el campo de búsqueda
+    }
+  }, [studentData, selectedItems]);
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -103,18 +110,6 @@ const RegistroGE = () => {
     setSearchTerm(event.target.value);
   };
 
-  const filteredItems = allItems.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const handleAddItem = (itemId) => {
-    const itemToAdd = allItems.find((item) => item.id === itemId);
-    if (itemToAdd && !selectedItems.some((item) => item.id === itemId)) {
-      setSelectedItems((prevItems) => [...prevItems, itemToAdd]);
-    }
-    setSearchTerm("");
-  };
-
   const handleRemoveItem = (itemId) => {
     setSelectedItems((prevItems) =>
       prevItems.filter((item) => item.id !== itemId)
@@ -143,6 +138,13 @@ const RegistroGE = () => {
     } catch (error) {
       setSnackbarMessage("Error al enviar el formulario: " + error.message);
       setSnackbarOpen(true);
+    }
+  };
+
+  const handleAddItem = (student) => {
+    if (!selectedItems.some((item) => item.id === student.id)) {
+      setSelectedItems((prevItems) => [...prevItems, student]);
+      setSearchTerm(""); // Limpiar el campo de búsqueda después de agregar
     }
   };
 
@@ -239,31 +241,26 @@ const RegistroGE = () => {
                   fullWidth
                   value={searchTerm}
                   onChange={handleSearch}
-                  helperText="min. 3 integrantes"
+                  helperText="min. 3 caracteres"
                 />
-                {searchTerm && (
+                {isFetching && <CircularProgress size={24} />}
+                {studentData && studentData.student && (
                   <List>
-                    {filteredItems.map((item) => (
-                      <ListItem
-                        key={item.id}
-                        button
-                        disabled={selectedItems.some(
-                          (selectedItem) => selectedItem.id === item.id
-                        )}
-                        onClick={() => handleAddItem(item.id)}
-                        sx={{ backgroundColor: "#F6F6F6", mb: 0.5 }}
-                      >
-                        <ListItemIcon>
-                          <Avatar>
-                            <Person />
-                          </Avatar>
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={item.name}
-                          secondary={`CODSIS: ${item.codsis}`}
-                        />
-                      </ListItem>
-                    ))}
+                    <ListItem
+                      button
+                      onClick={() => handleAddItem(studentData.student)}
+                      sx={{ backgroundColor: "#F6F6F6", mb: 0.5 }}
+                    >
+                      <ListItemIcon>
+                        <Avatar>
+                          <Person />
+                        </Avatar>
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={`${studentData.student.first_name} ${studentData.student.last_name}`}
+                        secondary={`Email: ${studentData.student.email}`}
+                      />
+                    </ListItem>
                   </List>
                 )}
                 <Typography variant="subtitle1" sx={{ mt: 2 }}>
@@ -290,8 +287,8 @@ const RegistroGE = () => {
                         </Avatar>
                       </ListItemIcon>
                       <ListItemText
-                        primary={item.name}
-                        secondary={`CODSIS: ${item.codsis}`}
+                        primary={`${item.first_name} ${item.last_name}`}
+                        secondary={`Email: ${item.email}`}
                       />
                     </ListItem>
                   ))}
