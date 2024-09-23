@@ -8,6 +8,7 @@ use App\Http\Controllers\AcademicPeriodController;
 use App\Http\Controllers\CompanyController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\PlanningController;
+use App\Http\Controllers\CompanyUserController;
 
 Route::get('/simon', function () {
     return response()->json(['message' => 'hola simon']);
@@ -62,6 +63,8 @@ Route::middleware('auth')->group(function () {
     Route::get('academic-periods/companies', [CompanyController::class, 'getCompaniesByAcademicPeriod']);
     Route::get('academic-periods/companies/pending', [CompanyController::class, 'getPendingCompanies']);
     Route::post('companies/accept/{id}', [CompanyController::class, 'acceptCompanyById']);
+    Route::apiResource('invitations', CompanyUserController::class);
+
     // Ruta de planificacion
     Route::apiResource('plannings', PlanningController::class);
     //buscador por correo solo estudiante

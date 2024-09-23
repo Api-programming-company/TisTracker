@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
+use Exception;
+
 class CompanyUserController extends Controller
 {
     /**
@@ -101,29 +104,69 @@ class CompanyUserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'status' => 'required|in:A,P',
-            'permission' => 'required|in:R,W'
-        ]);
-
-        $company = Company::find($id);
-        $user = Auth::user(); // Obtener el usuario actual para realizar las verificaciones necesarias
-
-        if ($company->members()->where('user_id', $user->id)->exists()) {
-            $company->members()->updateExistingPivot($user->id, [
-                'status' => $request->status,
-                'permission' => $request->permission
+        try {
+            // Validación de los campos, si están presentes
+            $request->validate([
+                'status' => 'sometimes|in:A,P,R',
+                'permission' => 'sometimes|in:R,W' 
             ]);
-
+    
+            // Obtener la compañía
+            $company = Company::find($id);  // Usar find en lugar de findOrFail
+            if (!$company) {
+                return response()->json([
+                    'message' => 'Compañía no encontrada.'
+                ], 404);
+            }
+    
+            $user = Auth::user();  // Obtener el usuario actual
+    
+            // Verificar si el usuario es miembro de la compañía
+            if ($company->members()->where('user_id', $user->id)->exists()) {
+                $data = [];
+    
+                // Verificar si los campos están presentes y asignarlos
+                if ($request->has('status')) {
+                    $data['status'] = $request->status;
+                }
+                if ($request->has('permission')) {
+                    $data['permission'] = $request->permission;
+                }
+    
+                // Actualizar la relación solo si hay datos para actualizar
+                if (!empty($data)) {
+                    $company->members()->updateExistingPivot($user->id, $data);
+    
+                    return response()->json([
+                        'message' => 'Relación actualizada correctamente.'
+                    ], 200);
+                }
+    
+                return response()->json([
+                    'message' => 'No se proporcionaron datos para actualizar.'
+                ], 400);
+            }
+    
             return response()->json([
-                'message' => 'Relación actualizada correctamente.'
-            ], 200);
+                'message' => 'El usuario no pertenece a la compañía.'
+            ], 404);
+    
+        } catch (ValidationException $e) {
+            // Manejo específico de la excepción de validación
+            return response()->json([
+                'message' => 'Error de validación.',
+                'errors' => $e->errors()
+            ], 422);
+    
+        } catch (Exception $e) {
+            // Manejar cualquier otra excepción inesperada
+            return response()->json([
+                'message' => 'Ocurrió un error inesperado.',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        return response()->json([
-            'message' => 'El usuario no pertenece a la compañía.'
-        ], 404);
     }
+    
 
     /**
      * Remove the specified resource from storage.

@@ -7,10 +7,12 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useGetPendingCompaniesRequestQuery } from "../api/studentApi";
+import { useUpdateInvitationByCompanyIdMutation } from "../api/invitationApi";
 
 const InvitacionesGE = () => {
   const { data, error, isSuccess, isFetching, isError } =
     useGetPendingCompaniesRequestQuery();
+
   useEffect(() => {
     if (isSuccess) {
       console.log(data);
@@ -20,93 +22,34 @@ const InvitacionesGE = () => {
     }
   }, [isSuccess, isError, error, data]);
 
-  const [invitations] = useState([
+  const [
+    updateInvitation,
     {
-      id: 1,
-      nombreCorto: "API",
-      nombreLargo: "Agile Programming Innovators",
-      fechaInvitacion: "05/09/2024",
-      docente: "Docente 1",
-      gestion: "Gestión 2-2024",
-      integrantes: [
-        {
-          id: 1,
-          name: "Juan Alberto Peredo Pozo",
-          codsis: "202000571",
-          ingroup: "false",
-        },
-        {
-          id: 2,
-          name: "Carlos José Padilla Poma",
-          codsis: "202000572",
-          ingroup: "false",
-        },
-        {
-          id: 3,
-          name: "Daniela Torrico Torreón",
-          codsis: "202000570",
-          ingroup: "false",
-        },
-        {
-          id: 4,
-          name: "Andres Castillo Lozada",
-          codsis: "202100580",
-          ingroup: "false",
-        },
-        {
-          id: 5,
-          name: "Antonio Gomez Amaranto",
-          codsis: "202200740",
-          ingroup: "false",
-        },
-        {
-          id: 6,
-          name: "Camila Torrez Gutierrez",
-          codsis: "202100712",
-          ingroup: "false",
-        },
-      ],
+      data: invitationData,
+      error: invitationError,
+      isSuccess: isInvitationSuccess,
+      isFetching: isInvitationFetching,
+      isError: isInvitationError,
     },
-    {
-      id: 2,
-      nombreCorto: "Cascade Inc.",
-      nombreLargo: "Cascade Incorporation",
-      fechaInvitacion: "01/09/2024",
-      docente: "Docente 1",
-      gestion: "Gestión 2-2024",
-      integrantes: [
-        {
-          id: 2,
-          name: "Carlos José Padilla Poma",
-          codsis: "202000572",
-          ingroup: "false",
-        },
-        {
-          id: 4,
-          name: "Andres Castillo Lozada",
-          codsis: "202100580",
-          ingroup: "false",
-        },
-        {
-          id: 6,
-          name: "Camila Torrez Gutierrez",
-          codsis: "202100712",
-          ingroup: "false",
-        },
-      ],
-    },
-  ]);
+  ] = useUpdateInvitationByCompanyIdMutation();
 
-  //Función para el botón ACEPTAR
-  const handleAccept = (nombreCorto) => {
-    alert(`Invitación de ${nombreCorto} aceptada`);
-    console.log(`Invitación de ${nombreCorto} aceptada`);
+  useEffect(() => {
+    if (isInvitationSuccess) {
+      console.log(invitationData);
+    }
+    if (isInvitationError) {
+      console.log(invitationError);
+    }
+  }, [isInvitationSuccess, invitationError, isInvitationError, invitationData]);
+
+  const handleAccept = (id) => {
+    updateInvitation({ id, data: { status: "A" } });
+    console.log(`Invitación de ${id} aceptada`);
   };
 
-  //Función para el botón RECHAZAR
-  const handleDecline = (nombreCorto) => {
-    alert(`Invitación de ${nombreCorto} rechazada`);
-    console.log(`Invitación de ${nombreCorto} rechazada`);
+  const handleDecline = (id) => {
+    updateInvitation({ id, data: { status: "R" } });
+    console.log(`Invitación de ${id} rechazada`);
   };
 
   if (isFetching) {
@@ -137,7 +80,13 @@ const InvitacionesGE = () => {
           Invitaciones de Grupo-Empresas
         </Typography>
 
-        {data.companies.map((invitation) => (
+        {isSuccess && data.companies?.length === 0 && (
+          <Typography variant="h6" align="center" color="textSecondary">
+            No tienes invitaciones pendientes.
+          </Typography>
+        )}
+
+        {isSuccess && data.companies?.map((invitation) => (
           <Box
             key={invitation.company.id}
             sx={{
