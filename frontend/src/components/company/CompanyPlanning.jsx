@@ -1,18 +1,21 @@
 import React, { useState } from "react";
 import { Box, Typography, List, Button } from "@mui/material";
 import Milestone from "./Milestone";
+import { useUpdateCompanyPlanningByIdMutation } from "../../api/companyApi";
 
-const CompanyPlanning = ({ milestones, setFormData }) => {
+const CompanyPlanning = ({ milestones, setFormData, setSendData }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [tempMilestones, setTempMilestones] = useState([...milestones]); // Estado para los hitos en edición
 
+
   const handleEditToggle = () => {
     setIsEditing((prev) => !prev);
-    
+  
     // Si se cancela la edición, reinicia los hitos temporales
     if (isEditing) {
       setTempMilestones([...milestones]); // Reinicia a los hitos originales
     }
+    
   };
 
   const handleConfirm = () => {
@@ -21,6 +24,7 @@ const CompanyPlanning = ({ milestones, setFormData }) => {
       milestones: tempMilestones, // Confirma los hitos temporales al formData
     }));
     setIsEditing(false);
+    setSendData(true)
   };
 
   const handleMilestoneChange = (updatedMilestone) => {
@@ -33,7 +37,6 @@ const CompanyPlanning = ({ milestones, setFormData }) => {
 
   const handleAddMilestone = () => {
     const newMilestone = {
-      id: Date.now(), // Genera un ID único basado en la fecha actual
       name: "Nuevo Hito",
       start_date: new Date(),
       end_date: new Date(),
@@ -46,7 +49,7 @@ const CompanyPlanning = ({ milestones, setFormData }) => {
   return (
     <Box sx={{ padding: 2, border: "1px solid #ccc", borderRadius: 2, mt: 2 }}>
       <Typography variant="h4" gutterBottom>
-        Planificación de la Compañía
+        Planificación de la Empresa
       </Typography>
       <Button onClick={handleEditToggle}>
         {isEditing ? "Cancelar" : "Editar"}

@@ -4,12 +4,48 @@ import { useGetCompanyByIdQuery } from "../api/companyApi";
 import { useParams } from "react-router-dom";
 import CompanyDetails from "../components/company/CompanyDetails";
 import CompanyPlanning from "../components/company/CompanyPlanning";
+import { useUpdateCompanyPlanningByIdMutation } from "../api/companyApi";
 
 const VerGE = () => {
   const { id } = useParams();
   const { data, error, isSuccess, isLoading, isError, isFetching } =
     useGetCompanyByIdQuery(id);
+  const [
+    updateCompanyPlanning,
+    {
+      data: updateData,
+      isSuccess: isUpdateSuccess,
+      isError: isUpdateError,
+      error: updateError,
+    },
+  ] = useUpdateCompanyPlanningByIdMutation();
+
   const [formData, setFormData] = useState({});
+  const [sendData, setSendData] = useState(false);
+
+  useEffect(() => {
+    if (isUpdateSuccess) {
+      console.log(updateData);
+    }
+    if (isUpdateError) {
+      console.log(updateError);
+    }
+  }, [updateData, isUpdateSuccess, isUpdateError, updateError]);
+
+  useEffect(() => {
+    if (sendData) {
+      setFormData(data);
+      updateCompanyPlanning({
+        id: formData.planning_id,
+        data: { milestones: formData.milestones },
+      });
+      console.log({
+        id: formData.planning_id,
+        data: { milestones: formData.milestones },
+      });
+      setSendData(false);
+    }
+  }, [sendData]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -19,9 +55,11 @@ const VerGE = () => {
       console.error("Error fetching company data:", error);
     }
   }, [data, isSuccess, isError, error]);
+
   useEffect(() => {
     if (formData) {
       console.log(formData);
+      //
     }
   }, [formData]);
 
@@ -53,6 +91,7 @@ const VerGE = () => {
       <CompanyPlanning
         milestones={formData.milestones}
         setFormData={setFormData}
+        setSendData={setSendData}
       />
     </Box>
   );

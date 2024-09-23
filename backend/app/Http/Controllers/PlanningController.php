@@ -8,6 +8,9 @@ use App\Models\Milestone;
 use App\Models\Deliverable;
 use App\Models\CompanyUser;
 use App\Models\Company;
+use Illuminate\Validation\ValidationException;
+use Exception;
+
 class PlanningController extends Controller
 {
     /**
@@ -19,7 +22,7 @@ class PlanningController extends Controller
     public function index()
     {
         // Obtener todas las planificaciones con hitos y entregables
-        $plannings = Planning::with('milestones.deliverables')->get(); 
+        $plannings = Planning::with('milestones.deliverables')->get();
         return response()->json($plannings);
     }
 
@@ -139,57 +142,66 @@ class PlanningController extends Controller
     // Actualizar una planificación
     public function update(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'nombre_largo' => 'sometimes|required|string|max:255',
-            'nombre_corto' => 'sometimes|required|string|max:255',
-            'correo' => 'sometimes|required|email',
-            'direccion' => 'sometimes|required|string|max:255',
-            'telefono' => 'sometimes|required|string|max:20',
-            'consultor_tis' => 'sometimes|required|string|max:255',
-            'gestion' => 'sometimes|required|string|max:255',
-            'planificacion' => 'sometimes|array',
-            'planificacion.*.id' => 'sometimes|exists:milestones,id',
-            'planificacion.*.nombre_hito' => 'required_with:planificacion|string|max:255',
-            'planificacion.*.fecha_ini' => 'required_with:planificacion|date',
-            'planificacion.*.fecha_entrega' => 'required_with:planificacion|date',
-            'planificacion.*.cobro' => 'required_with:planificacion|numeric',
-            'planificacion.*.hu' => 'sometimes|array',
-            'planificacion.*.hu.*.id' => 'sometimes|exists:deliverables,id',
-            'planificacion.*.hu.*.nombre_hu' => 'required_with:planificacion.hu|string|max:255',
-            'planificacion.*.hu.*.responsable' => 'required_with:planificacion.hu|string|max:255',
-            'planificacion.*.hu.*.objetivo' => 'required_with:planificacion.hu|string',
-        ]);
+        try {
+            // Validar los datos de actualización
+            $validatedData = $request->validate([
+                'name' => 'sometimes|required|string|max:255',
+                'company_id' => 'sometimes|required|exists:companies,id',
+                'milestones' => 'sometimes|array',
+                'milestones.*.id' => 'nullable|exists:milestones,id',
+                'milestones.*.name' => 'required_with:milestones|string|max:255',
+                'milestones.*.start_date' => 'required_with:milestones|date',
+                'milestones.*.end_date' => 'required_with:milestones|date',
+                'milestones.*.billing_percentage' => 'required_with:milestones|numeric',
+                'milestones.*.deliverables' => 'nullable|array',
+                'milestones.*.deliverables.*.id' => 'sometimes|exists:deliverables,id',
+                'milestones.*.deliverables.*.name' => 'required_with:milestones.deliverables|string|max:255',
+                'milestones.*.deliverables.*.responsible' => 'required_with:milestones.deliverables|string|max:255',
+                'milestones.*.deliverables.*.objective' => 'required_with:milestones.deliverables|string',
+            ]);
 
-        $planning = Planning::findOrFail($id);
-        $planning->update($validatedData);
+            // Buscar la planificación
+            $planning = Planning::findOrFail($id);
+            $planning->update($validatedData);
 
-        // Actualizar hitos y entregables
-        if (isset($validatedData['planificacion'])) {
-            foreach ($validatedData['planificacion'] as $milestoneData) {
-                $milestone = Milestone::updateOrCreate(
-                    ['id' => $milestoneData['id'] ?? null],
-                    [
-                        'name' => $milestoneData['nombre_hito'],
-                        'start_date' => $milestoneData['fecha_ini'],
-                        'end_date' => $milestoneData['fecha_entrega'],
-                        'billing_percentage' => $milestoneData['cobro'],
-                        'planning_id' => $planning->id,
-                    ]
-                );
+            // Actualizar hitos y entregables
+            if (isset($validatedData['milestones'])) {
+                foreach ($validatedData['milestones'] as $milestoneData) {
+                    $milestone = Milestone::updateOrCreate(
+                        ['id' => $milestoneData['id'] ?? null],
+                        array_merge($milestoneData, ['planning_id' => $planning->id])
+                    );
 
-                if (isset($milestoneData['hu'])) {
-                    foreach ($milestoneData['hu'] as $deliverableData) {
-                        Deliverable::updateOrCreate(
-                            ['id' => $deliverableData['id'] ?? null],
-                            array_merge($deliverableData, ['milestone_id' => $milestone->id])
-                        );
+                    // Crear o actualizar entregables
+                    if (isset($milestoneData['deliverables'])) {
+                        foreach ($milestoneData['deliverables'] as $deliverableData) {
+                            Deliverable::updateOrCreate(
+                                ['id' => $deliverableData['id'] ?? null],
+                                array_merge($deliverableData, ['milestone_id' => $milestone->id])
+                            );
+                        }
                     }
                 }
             }
-        }
 
-        return response()->json($planning->load('milestones.deliverables'), 200);
+            // Responder con la planificación actualizada y sus relaciones
+            return response()->json($planning->load('milestones.deliverables'), 200);
+        } catch (ValidationException $e) {
+            // Manejar errores de validación
+            return response()->json([
+                'message' => 'Error de validación',
+                'errors' => $e->errors(),
+            ], 422);
+        } catch (Exception $e) {
+            // Manejar otros errores generales
+            return response()->json([
+                'message' => 'Ocurrió un error al actualizar la planificación',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
+
+
 
     /**
      * Remove the specified resource from storage.

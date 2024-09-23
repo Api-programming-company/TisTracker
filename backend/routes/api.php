@@ -49,7 +49,7 @@ Route::post('/email/verification-notification', function (Request $request) {
     return response()->json(['message' => 'Enlace de verificación reenviado.']);
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 // docente
-//Route::middleware('auth')->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('docente/academic-periods', [AcademicPeriodController::class, 'index']);
     Route::post('docente/academic-periods', [AcademicPeriodController::class, 'store']);
     Route::get('academic-periods/grouped-by-teacher', [AcademicPeriodController::class, 'getAllGroupedByTeacher']);
@@ -63,7 +63,7 @@ Route::post('/email/verification-notification', function (Request $request) {
     Route::get('academic-periods/companies/pending', [CompanyController::class, 'getPendingCompanies']);
     Route::post('companies/accept/{id}', [CompanyController::class, 'acceptCompanyById']);
     // Ruta de planificacion
-    Route::apiResource('/plannings', PlanningController::class);
+    Route::apiResource('plannings', PlanningController::class);
     //buscador por correo solo estudiante
     Route::get('student/search/{email}', [AuthController::class, 'searchStudentByEmail']);
-//});
+});

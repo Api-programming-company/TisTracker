@@ -20,6 +20,9 @@ const Milestone = ({ milestone, isEditing, onChange }) => {
   const [startDate, setStartDate] = useState(new Date(milestone.start_date));
   const [endDate, setEndDate] = useState(new Date(milestone.end_date));
   const [name, setName] = useState(milestone.name);
+  const [billingPercentage, setBillingPercentage] = useState(
+    milestone.billing_percentage
+  );
 
   const handleToggle = () => {
     setOpenDeliverables((prev) => !prev);
@@ -48,9 +51,13 @@ const Milestone = ({ milestone, isEditing, onChange }) => {
     onChange({ ...milestone, end_date: newEndDate });
   };
 
+  const handleBillingPercentageChange = (newBillingPercentage) => {
+    setBillingPercentage(newBillingPercentage);
+    onChange({ ...milestone, billing_percentage: newBillingPercentage });
+  };
+
   const handleAddDeliverable = () => {
     const newDeliverable = {
-      id: Date.now(), // Genera un ID único
       name: "Nuevo Entregable",
       responsible: "",
       objective: ""
@@ -96,6 +103,19 @@ const Milestone = ({ milestone, isEditing, onChange }) => {
                 onChange={handleEndDateChange}
                 renderInput={(params) => <TextField {...params} />}
               />
+            </ListItem>
+            <ListItem>
+              {isEditing ? (
+                <TextField
+                  label="Porcentaje de facturación"
+                  value={billingPercentage}
+                  onChange={(e) => handleBillingPercentageChange(e.target.value)}
+                  type="number"
+                  fullWidth
+                />
+              ) : (
+                <ListItemText primary={`% Facturación: ${billingPercentage}`} />
+              )}
             </ListItem>
             <ListItem>
               {isEditing && (
