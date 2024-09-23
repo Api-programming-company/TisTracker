@@ -8,6 +8,7 @@ use Illuminate\Validation\ValidationException;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use App\Models\AcademicPeriod;
+use App\Models\Planning;
 
 class CompanyController extends Controller
 {
@@ -45,6 +46,14 @@ class CompanyController extends Controller
             foreach ($request->members as $memberId) {
                 $company->members()->attach($memberId, ['status' => 'P', 'permission' => 'R']);
             }
+
+            // Crear un planning vacío con el long_name de la compañía
+            Planning::create([
+                'name' => $request->long_name,
+                'company_id' => $company->id,
+            ]);
+            
+            $company = $company->load('members', 'plannings');
 
             // Devolver una respuesta JSON
             return response()->json([
