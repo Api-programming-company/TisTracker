@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Company;
+namespace Tests\Feature\GrupoEmpresa;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Password;
