@@ -23,7 +23,8 @@ class CompanyController extends Controller
                 'address' => 'required|string|max:255',
                 'phone' => 'required|string|regex:/^\d{1,8}$/|unique:companies,phone',
                 'members' => 'required|array', // Validar que se envíe un array de members
-                'members.*' => 'exists:users,id' // Cada ID debe existir en la tabla users
+                'members.*.id' => 'required|exists:users,id', // Cada ID debe existir en la tabla users
+                'members.*.permission' => 'required|in:R,W', // Validar que permission sea "R" o "W"
             ]);
 
             // Obtener el usuario autenticado
@@ -43,8 +44,8 @@ class CompanyController extends Controller
             $company = Company::create(array_merge($request->all(), ['academic_period_id' => $academicPeriodId]));
 
             // Asociar los miembros a la compañía
-            foreach ($request->members as $memberId) {
-                $company->members()->attach($memberId, ['status' => 'P', 'permission' => 'R']);
+            foreach ($request->members as $member) {
+                $company->members()->attach($member['id'], ['status' => 'P', 'permission' => $member['permission']]);
             }
 
             // Crear un planning vacío con el long_name de la compañía
@@ -52,12 +53,12 @@ class CompanyController extends Controller
                 'name' => $request->long_name,
                 'company_id' => $company->id,
             ]);
-            
+
             $company = $company->load('members', 'plannings');
 
             // Devolver una respuesta JSON
             return response()->json([
-                'message' => 'Empresa registrado correctamente.',
+                'message' => 'Empresa registrada correctamente.',
                 'company' => $company
             ], 201); // 201 Created
 
@@ -76,6 +77,7 @@ class CompanyController extends Controller
             ], 500); // 500 Internal Server Error
         }
     }
+
 
     public function getCompaniesByAcademicPeriod(Request $request)
     {

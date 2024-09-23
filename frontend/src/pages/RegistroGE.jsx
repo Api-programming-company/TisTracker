@@ -16,7 +16,7 @@ const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
 const RegistroGE = () => {
   // Estado para manejar datos del formulario y errores
   const [formData, setFormData] = useState({});
-  const [errors, setErrors] = useState({}); 
+  const [errors, setErrors] = useState({});
   const [selectedItems, setSelectedItems] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -83,11 +83,8 @@ const RegistroGE = () => {
     };
 
     console.log(formData);
-    
-    for (const [
-      field,
-      { condition, message },
-    ] of Object.entries(validations)) {
+
+    for (const [field, { condition, message }] of Object.entries(validations)) {
       if (condition) {
         newErrors[field] = message;
         hasError = true;
@@ -104,8 +101,23 @@ const RegistroGE = () => {
       return;
     }
 
-    console.log("Enviando datos:", formData);
-    createCompany(formData);
+    // Prepara el nuevo formData con solo el ID y la permission de los miembros
+    const membersData = formData.members.map((item) => ({
+      id: item.id, // Asegúrate de que `item` tiene el campo `id`
+      permission: item.permission || "R", // Asegúrate de que `item` tiene el campo `permission`
+    }));
+
+    const dataToSend = {
+      long_name,
+      short_name,
+      email,
+      address,
+      phone,
+      members: membersData, // Incluye solo los miembros con ID y permission
+    };
+
+    console.log("Enviando datos:", dataToSend);
+    createCompany(dataToSend);
   };
 
   const handleSnackbarClose = () => {
