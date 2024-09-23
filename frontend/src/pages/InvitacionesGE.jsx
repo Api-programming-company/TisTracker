@@ -5,108 +5,100 @@ import {
   Typography,
   Box,
   CircularProgress,
+  Snackbar,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import { useGetPendingCompaniesRequestQuery } from "../api/studentApi";
+import { useUpdateInvitationByCompanyIdMutation } from "../api/invitationApi";
 
 const InvitacionesGE = () => {
   const { data, error, isSuccess, isFetching, isError } =
     useGetPendingCompaniesRequestQuery();
+
+  const [
+    updateInvitation,
+    {
+      data: invitationData,
+      error: invitationError,
+      isSuccess: isInvitationSuccess,
+      isLoading: isInvitationLoading,
+      isError: isInvitationError,
+    },
+  ] = useUpdateInvitationByCompanyIdMutation();
+
+  // Estados para manejar invitaciones y mensajes
+  const [invitations, setInvitations] = useState([]);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  // Estados para el diálogo de confirmación
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedInvitationId, setSelectedInvitationId] = useState(null);
+  const [actionType, setActionType] = useState(null); // 'accept' o 'decline'
+
   useEffect(() => {
     if (isSuccess) {
-      console.log(data);
+      setInvitations(data.companies); // Establece las invitaciones en el estado
     }
     if (isError) {
       console.log(error);
     }
   }, [isSuccess, isError, error, data]);
 
-  const [invitations] = useState([
-    {
-      id: 1,
-      nombreCorto: "API",
-      nombreLargo: "Agile Programming Innovators",
-      fechaInvitacion: "05/09/2024",
-      docente: "Docente 1",
-      gestion: "Gestión 2-2024",
-      integrantes: [
-        {
-          id: 1,
-          name: "Juan Alberto Peredo Pozo",
-          codsis: "202000571",
-          ingroup: "false",
-        },
-        {
-          id: 2,
-          name: "Carlos José Padilla Poma",
-          codsis: "202000572",
-          ingroup: "false",
-        },
-        {
-          id: 3,
-          name: "Daniela Torrico Torreón",
-          codsis: "202000570",
-          ingroup: "false",
-        },
-        {
-          id: 4,
-          name: "Andres Castillo Lozada",
-          codsis: "202100580",
-          ingroup: "false",
-        },
-        {
-          id: 5,
-          name: "Antonio Gomez Amaranto",
-          codsis: "202200740",
-          ingroup: "false",
-        },
-        {
-          id: 6,
-          name: "Camila Torrez Gutierrez",
-          codsis: "202100712",
-          ingroup: "false",
-        },
-      ],
-    },
-    {
-      id: 2,
-      nombreCorto: "Cascade Inc.",
-      nombreLargo: "Cascade Incorporation",
-      fechaInvitacion: "01/09/2024",
-      docente: "Docente 1",
-      gestion: "Gestión 2-2024",
-      integrantes: [
-        {
-          id: 2,
-          name: "Carlos José Padilla Poma",
-          codsis: "202000572",
-          ingroup: "false",
-        },
-        {
-          id: 4,
-          name: "Andres Castillo Lozada",
-          codsis: "202100580",
-          ingroup: "false",
-        },
-        {
-          id: 6,
-          name: "Camila Torrez Gutierrez",
-          codsis: "202100712",
-          ingroup: "false",
-        },
-      ],
-    },
-  ]);
+  useEffect(() => {
+    if (isInvitationSuccess) {
+      const statusMessage =
+        actionType === "accept"
+          ? "Invitación aceptada con éxito."
+          : "Invitación rechazada con éxito.";
+      setSuccessMessage(statusMessage);
+      setOpenSnackbar(true);
+      // Elimina la invitación aceptada/rechazada del estado
+      setInvitations((prev) =>
+        prev.filter((invitation) => invitation.company.id !== selectedInvitationId)
+      );
+    }
+    if (isInvitationError) {
+      console.log(invitationError);
+      setErrorMessage("Error al actualizar la invitación.");
+      setOpenSnackbar(true);
+    }
+  }, [isInvitationSuccess, isInvitationError, invitationError, actionType, selectedInvitationId]);
 
-  //Función para el botón ACEPTAR
-  const handleAccept = (nombreCorto) => {
-    alert(`Invitación de ${nombreCorto} aceptada`);
-    console.log(`Invitación de ${nombreCorto} aceptada`);
+  const handleAccept = (id) => {
+    setSelectedInvitationId(id);
+    setActionType("accept");
+    setOpenDialog(true);
   };
 
-  //Función para el botón RECHAZAR
-  const handleDecline = (nombreCorto) => {
-    alert(`Invitación de ${nombreCorto} rechazada`);
-    console.log(`Invitación de ${nombreCorto} rechazada`);
+  const handleDecline = (id) => {
+    setSelectedInvitationId(id);
+    setActionType("decline");
+    setOpenDialog(true);
+  };
+
+  const handleConfirm = () => {
+    if (actionType === "accept") {
+      updateInvitation({ id: selectedInvitationId, data: { status: "A" } });
+    } else if (actionType === "decline") {
+      updateInvitation({ id: selectedInvitationId, data: { status: "R" } });
+    }
+    setOpenDialog(false);
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+    setSuccessMessage("");
+    setErrorMessage("");
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
   };
 
   if (isFetching) {
@@ -137,7 +129,13 @@ const InvitacionesGE = () => {
           Invitaciones de Grupo-Empresas
         </Typography>
 
-        {data.companies.map((invitation) => (
+        {invitations.length === 0 && (
+          <Typography variant="h6" align="center" color="textSecondary">
+            No tienes invitaciones pendientes.
+          </Typography>
+        )}
+
+        {invitations.map((invitation) => (
           <Box
             key={invitation.company.id}
             sx={{
@@ -214,6 +212,7 @@ const InvitacionesGE = () => {
                     px: 12,
                     py: 1,
                   }}
+                  disabled={isInvitationLoading}
                 >
                   ACEPTAR
                 </Button>
@@ -222,6 +221,7 @@ const InvitacionesGE = () => {
                   onClick={() => handleDecline(invitation.company.id)}
                   variant="contained"
                   color="transparent"
+                  disabled={isInvitationLoading}
                   sx={{
                     px: 12,
                     py: 1,
@@ -235,6 +235,38 @@ const InvitacionesGE = () => {
           </Box>
         ))}
       </Box>
+
+      {/* Snackbar para mostrar mensajes de éxito o error */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        message={successMessage || errorMessage}
+      />
+
+      {/* Diálogo de confirmación */}
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>
+          {actionType === "accept"
+            ? "Aceptar Invitación"
+            : "Rechazar Invitación"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {actionType === "accept"
+              ? "¿Estás seguro de que deseas aceptar esta invitación?"
+              : "¿Estás seguro de que deseas rechazar esta invitación?"}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Cancelar
+          </Button>
+          <Button onClick={handleConfirm} color="primary">
+            {actionType === "accept" ? "Aceptar" : "Rechazar"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
