@@ -17,6 +17,7 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import EditIcon from "@mui/icons-material/Edit";
 import DialogMod from "../components/DialogMod";
 import ValidContex from "../context/validDataPlanification/ValidContext";
+import CompanyDetails from "../components/company/CompanyDetails";
 
 const VerGE = () => {
   const { id } = useParams();
@@ -27,6 +28,8 @@ const VerGE = () => {
   useEffect(() => {
     if (isSuccess) {
       setFormData(data); // Asigna los datos de la empresa al estado
+      console.log(data);
+      
     }
     if (isError) {
       console.error("Error fetching company data:", error);
@@ -127,36 +130,7 @@ const VerGE = () => {
   return (
     <Box sx={{ maxWidth: 900, margin: "auto", padding: 2 }}>
       {/* Información importante destacada */}
-      <Box sx={{ mb: 4, textAlign: "center" }}>
-        <Typography variant="h4">
-          {formData.company.long_name} ({formData.company.short_name})
-        </Typography>
-        <Typography variant="h6" color="textSecondary">
-          {formData.company.email} | {formData.company.phone} |{" "}
-          {formData.company.address}
-        </Typography>
-      </Box>
-
-      {/* Detalles del Grupo Empresa */}
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h5" gutterBottom>
-          Detalles del Grupo Empresa
-        </Typography>
-        <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
-          <Box sx={{ flex: 1 }}>
-            <Typography variant="h6">Consultor TIS</Typography>
-            <Typography>
-              {formData.company.academic_period.creator.first_name}
-            </Typography>
-          </Box>
-          <Box sx={{ flex: 1 }}>
-            <Typography variant="h6">Gestión</Typography>
-            <Typography>{formData.company.academic_period.name}</Typography>
-          </Box>
-        </Box>
-      </Box>
-
-      <Divider sx={{ my: 4 }} />
+      <CompanyDetails company={formData.company} />
 
       {/* Socios del Grupo */}
       <Box sx={{ mb: 4 }}>
