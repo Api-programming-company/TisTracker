@@ -18,7 +18,6 @@ import {
   ConformacionGE,
 } from "./pages";
 import {
-  Planificacion,
   AppBarWithMenu,
   AcademicPeriodList,
   EnrollToAcademicPeriod,
@@ -27,7 +26,6 @@ import {
 } from "./components";
 
 import VerGE from "./pages/VerGE";
-import EditarHito from "./components/EditarHito";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -56,9 +54,7 @@ function App({ toggleTheme, isDarkMode }) {
         <Route path="/editarlistage" element={<EditarListaGE />} />
         <Route path="/academic-periods" element={<AcademicPeriodList />} />
         <Route path="/register-ap" element={<RegisterAcademicPeriod />} />
-        <Route path="/registerplan" element={<Planificacion />} />
-
-        <Route path="/edithito/:id" element={<EditarHito />} />
+        
         <Route
           path="/academic-period/:id/companies"
           element={<CompanyList />}
