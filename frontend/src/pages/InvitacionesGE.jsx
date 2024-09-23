@@ -5,6 +5,7 @@ import {
   Typography,
   Box,
   CircularProgress,
+  Snackbar,
 } from "@mui/material";
 import { useGetPendingCompaniesRequestQuery } from "../api/studentApi";
 import { useUpdateInvitationByCompanyIdMutation } from "../api/invitationApi";
@@ -12,6 +13,21 @@ import { useUpdateInvitationByCompanyIdMutation } from "../api/invitationApi";
 const InvitacionesGE = () => {
   const { data, error, isSuccess, isFetching, isError } =
     useGetPendingCompaniesRequestQuery();
+    
+  const [
+    updateInvitation,
+    {
+      data: invitationData,
+      error: invitationError,
+      isSuccess: isInvitationSuccess,
+      isError: isInvitationError,
+    },
+  ] = useUpdateInvitationByCompanyIdMutation();
+
+  // Estados para los mensajes de éxito y error
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   useEffect(() => {
     if (isSuccess) {
@@ -22,23 +38,19 @@ const InvitacionesGE = () => {
     }
   }, [isSuccess, isError, error, data]);
 
-  const [
-    updateInvitation,
-    {
-      data: invitationData,
-      error: invitationError,
-      isSuccess: isInvitationSuccess,
-      isFetching: isInvitationFetching,
-      isError: isInvitationError,
-    },
-  ] = useUpdateInvitationByCompanyIdMutation();
-
   useEffect(() => {
     if (isInvitationSuccess) {
-      console.log(invitationData);
+      // Mostrar mensaje dependiendo de la acción realizada
+      const statusMessage = invitationData.status === "A"
+        ? "Invitación aceptada con éxito."
+        : "Invitación rechazada con éxito.";
+      setSuccessMessage(statusMessage);
+      setOpenSnackbar(true); // Abre el snackbar al recibir un éxito
     }
     if (isInvitationError) {
       console.log(invitationError);
+      setErrorMessage("Error al actualizar la invitación.");
+      setOpenSnackbar(true); // Abre el snackbar al recibir un error
     }
   }, [isInvitationSuccess, invitationError, isInvitationError, invitationData]);
 
@@ -50,6 +62,12 @@ const InvitacionesGE = () => {
   const handleDecline = (id) => {
     updateInvitation({ id, data: { status: "R" } });
     console.log(`Invitación de ${id} rechazada`);
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+    setSuccessMessage(""); // Limpia el mensaje de éxito
+    setErrorMessage(""); // Limpia el mensaje de error
   };
 
   if (isFetching) {
@@ -184,6 +202,14 @@ const InvitacionesGE = () => {
           </Box>
         ))}
       </Box>
+
+      {/* Snackbar para mostrar mensajes de éxito o error */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        message={successMessage || errorMessage}
+      />
     </Container>
   );
 };
