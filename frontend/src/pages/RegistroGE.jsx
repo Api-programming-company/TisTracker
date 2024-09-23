@@ -11,37 +11,18 @@ import {
 import { useCreateCompanyMutation } from "../api/companyApi";
 import { StudentSearch } from "../components";
 
+const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
+
 const RegistroGE = () => {
+  // Estado para manejar datos del formulario y errores
+  const [formData, setFormData] = useState({});
+  const [errors, setErrors] = useState({}); 
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
   const navigate = useNavigate();
   const [createCompany, { data, error, isSuccess, isError, isLoading }] =
     useCreateCompanyMutation();
-
-  useEffect(() => {
-    if (isSuccess) {
-      console.log(data);
-    }
-    if (isError) {
-      console.log(error);
-      
-    }
-  }, [isSuccess, isError, error, data])
-
-  // Campos del formulario
-  const [nombreLargo, setNombreLargo] = useState("");
-  const [errorNombreLargo, setErrorNombreLargo] = useState(false);
-  const [nombreCorto, setNombreCorto] = useState("");
-  const [errorNombreCorto, setErrorNombreCorto] = useState(false);
-  const [emailGE, setEmailGE] = useState("");
-  const [emailError, setEmailError] = useState(false);
-  const [address, setAddress] = useState("");
-  const [addressError, setAddressError] = useState(false);
-  const [telefono, setTelefono] = useState("");
-
-  // Integrantes seleccionados
-  const [selectedItems, setSelectedItems] = useState([]);
-
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   useEffect(() => {
     if (isSuccess) {
@@ -49,65 +30,82 @@ const RegistroGE = () => {
       setSnackbarOpen(true);
       navigate("/");
     }
-
     if (isError) {
       setSnackbarMessage("Error al enviar el formulario");
       setSnackbarOpen(true);
+      console.log(error);
     }
-  }, [isSuccess, isError, navigate]);
+  }, [isSuccess, isError, navigate, error]);
 
-  const handleInputChange = (event, setValue, setError, maxLength) => {
-    const value = event.target.value;
-    if (value.length <= maxLength) {
-      setValue(value);
-      setError(false);
-    } else {
-      setError(true);
-    }
-  };
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
 
-  const handleNombreCortoChange = (event) => {
-    handleInputChange(event, setNombreCorto, setErrorNombreCorto, 150);
-  };
-
-  const handleNombreLargoChange = (event) => {
-    handleInputChange(event, setNombreLargo, setErrorNombreLargo, 150);
-  };
-
-  const handleEmailChange = (event) => {
-    handleInputChange(event, setEmailGE, setEmailError, 150);
-  };
-
-  const handleAddressChange = (event) => {
-    handleInputChange(event, setAddress, setAddressError, 150);
-  };
-
-  const handleTelefonoChange = (event) => {
-    const value = event.target.value;
-    const phoneRegex = /^(\+|\d|\s)*$/;
-    if (phoneRegex.test(value) && value.length <= 15) {
-      setTelefono(value);
-    }
+    // Limpia el error del campo al cambiar el valor
+    setErrors((prev) => ({ ...prev, [name]: false }));
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (selectedItems.length < 1) {
-      setSnackbarMessage("Deben ser mínimo 3 integrantes");
-      setSnackbarOpen(true);
+    const { long_name, short_name, email, address, phone } = formData;
+    let hasError = false;
+    const newErrors = {};
+
+    const validations = {
+      long_name: {
+        condition: !long_name || long_name.length > 32,
+        message: !long_name
+          ? "El nombre largo es obligatorio."
+          : "El nombre largo no debe exceder 32 caracteres.",
+      },
+      short_name: {
+        condition: !short_name || short_name.length > 10,
+        message: !short_name
+          ? "El nombre corto es obligatorio."
+          : "El nombre corto no debe exceder 10 caracteres.",
+      },
+      email: {
+        condition: !email || !validateEmail(email),
+        message: !email
+          ? "El correo electrónico es obligatorio."
+          : "Ingrese un correo electrónico válido.",
+      },
+      address: {
+        condition: !address,
+        message: "La dirección es obligatoria.",
+      },
+      phone: {
+        condition: !phone || !/^\d+$/.test(phone) || phone.length < 7,
+        message: !phone
+          ? "El teléfono es obligatorio."
+          : "El teléfono debe contener solo dígitos y tener al menos 7 caracteres.",
+      },
+    };
+
+    console.log(formData);
+    
+    for (const [
+      field,
+      { condition, message },
+    ] of Object.entries(validations)) {
+      if (condition) {
+        newErrors[field] = message;
+        hasError = true;
+      }
+    }
+
+    if (formData.members?.length < 1) {
+      newErrors.members = "Deben ser mínimo 1 integrantes.";
+      hasError = true;
+    }
+
+    if (hasError) {
+      setErrors(newErrors);
       return;
     }
 
-    const companyData = {
-      long_name: nombreLargo,
-      short_name: nombreCorto,
-      email: emailGE,
-      address: address,
-      phone: telefono,
-      members: selectedItems.map((item) => item.id),
-    };
-    console.log(companyData);
-    //createCompany(companyData);
+    console.log("Enviando datos:", formData);
+    createCompany(formData);
   };
 
   const handleSnackbarClose = () => {
@@ -126,91 +124,49 @@ const RegistroGE = () => {
       </Typography>
 
       <form onSubmit={handleSubmit}>
+        {[
+          { label: "Nombre largo*", value: "long_name" },
+          { label: "Nombre corto*", value: "short_name" },
+          { label: "Correo electrónico*", value: "email" },
+          { label: "Dirección*", value: "address" },
+          { label: "Teléfono*", value: "phone" },
+        ].map(({ label, value }) => (
+          <Box sx={{ mb: 2 }} key={value}>
+            <TextField
+              label={label}
+              variant="outlined"
+              fullWidth
+              name={value}
+              value={formData[value] || ""}
+              onChange={handleInputChange}
+              helperText={errors[value]}
+              error={!!errors[value]}
+            />
+          </Box>
+        ))}
+
         <Box sx={{ mb: 2 }}>
-          <TextField
-            label="Nombre largo"
-            variant="outlined"
-            fullWidth
-            required
-            helperText={
-              errorNombreLargo ? "Máx. 150 caracteres" : "* Obligatorio"
-            }
-            error={errorNombreLargo}
-            value={nombreLargo}
-            onChange={handleNombreLargoChange}
-          />
-        </Box>
-        <Box sx={{ mb: 2 }}>
-          <TextField
-            label="Nombre corto"
-            variant="outlined"
-            fullWidth
-            required
-            helperText={
-              errorNombreCorto ? "Máx. 150 caracteres" : "* Obligatorio"
-            }
-            error={errorNombreCorto}
-            value={nombreCorto}
-            onChange={handleNombreCortoChange}
-          />
-        </Box>
-        <Box sx={{ mb: 2 }}>
-          <TextField
-            label="Correo electrónico"
-            variant="outlined"
-            type="email"
-            fullWidth
-            required
-            value={emailGE}
-            onChange={handleEmailChange}
-            helperText={emailError ? "Máx. 150 caracteres" : "* Obligatorio"}
-            error={emailError}
-          />
-        </Box>
-        <Box sx={{ mb: 2 }}>
-          <TextField
-            label="Dirección"
-            variant="outlined"
-            fullWidth
-            required
-            value={address}
-            onChange={handleAddressChange}
-            helperText={addressError ? "Máx. 150 caracteres" : "* Obligatorio"}
-            error={addressError}
-          />
-        </Box>
-        <Box sx={{ mb: 2 }}>
-          <TextField
-            label="Teléfono"
-            variant="outlined"
-            required
-            fullWidth
-            value={telefono}
-            onChange={handleTelefonoChange}
-            helperText="* Obligatorio"
-          />
-        </Box>
-        <Box sx={{ mb: 2 }}>
-          {/* Integración del buscador de estudiantes */}
           <StudentSearch
             selectedItems={selectedItems}
             setSelectedItems={setSelectedItems}
+            formData={formData}
+            setFormData={setFormData}
+            errors={errors}
+            setErrors={setErrors}
           />
+          {errors.members && (
+            <Typography color="error" variant="caption">
+              {errors.members}
+            </Typography>
+          )}
         </Box>
 
-        {/* Botón de Registro */}
         <Button
           type="submit"
           variant="contained"
           color="primary"
           disabled={isLoading}
-          sx={{
-            display: "block",
-            mx: "auto",
-            mt: 3,
-            px: 12,
-            py: 1,
-          }}
+          sx={{ display: "block", mx: "auto", mt: 3, px: 12, py: 1 }}
         >
           {isLoading ? (
             <CircularProgress size={24} color="inherit" />
@@ -220,7 +176,6 @@ const RegistroGE = () => {
         </Button>
       </form>
 
-      {/* Snackbar para mensajes */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
