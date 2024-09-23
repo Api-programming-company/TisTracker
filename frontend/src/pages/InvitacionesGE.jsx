@@ -6,6 +6,11 @@ import {
   Box,
   CircularProgress,
   Snackbar,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import { useGetPendingCompaniesRequestQuery } from "../api/studentApi";
 import { useUpdateInvitationByCompanyIdMutation } from "../api/invitationApi";
@@ -13,25 +18,32 @@ import { useUpdateInvitationByCompanyIdMutation } from "../api/invitationApi";
 const InvitacionesGE = () => {
   const { data, error, isSuccess, isFetching, isError } =
     useGetPendingCompaniesRequestQuery();
-    
+
   const [
     updateInvitation,
     {
       data: invitationData,
       error: invitationError,
       isSuccess: isInvitationSuccess,
+      isLoading: isInvitationLoading,
       isError: isInvitationError,
     },
   ] = useUpdateInvitationByCompanyIdMutation();
 
-  // Estados para los mensajes de éxito y error
+  // Estados para manejar invitaciones y mensajes
+  const [invitations, setInvitations] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
+  // Estados para el diálogo de confirmación
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedInvitationId, setSelectedInvitationId] = useState(null);
+  const [actionType, setActionType] = useState(null); // 'accept' o 'decline'
+
   useEffect(() => {
     if (isSuccess) {
-      console.log(data);
+      setInvitations(data.companies); // Establece las invitaciones en el estado
     }
     if (isError) {
       console.log(error);
@@ -40,34 +52,53 @@ const InvitacionesGE = () => {
 
   useEffect(() => {
     if (isInvitationSuccess) {
-      // Mostrar mensaje dependiendo de la acción realizada
-      const statusMessage = invitationData.status === "A"
-        ? "Invitación aceptada con éxito."
-        : "Invitación rechazada con éxito.";
+      const statusMessage =
+        actionType === "accept"
+          ? "Invitación aceptada con éxito."
+          : "Invitación rechazada con éxito.";
       setSuccessMessage(statusMessage);
-      setOpenSnackbar(true); // Abre el snackbar al recibir un éxito
+      setOpenSnackbar(true);
+      // Elimina la invitación aceptada/rechazada del estado
+      setInvitations((prev) =>
+        prev.filter((invitation) => invitation.company.id !== selectedInvitationId)
+      );
     }
     if (isInvitationError) {
       console.log(invitationError);
       setErrorMessage("Error al actualizar la invitación.");
-      setOpenSnackbar(true); // Abre el snackbar al recibir un error
+      setOpenSnackbar(true);
     }
-  }, [isInvitationSuccess, invitationError, isInvitationError, invitationData]);
+  }, [isInvitationSuccess, isInvitationError, invitationError, actionType, selectedInvitationId]);
 
   const handleAccept = (id) => {
-    updateInvitation({ id, data: { status: "A" } });
-    console.log(`Invitación de ${id} aceptada`);
+    setSelectedInvitationId(id);
+    setActionType("accept");
+    setOpenDialog(true);
   };
 
   const handleDecline = (id) => {
-    updateInvitation({ id, data: { status: "R" } });
-    console.log(`Invitación de ${id} rechazada`);
+    setSelectedInvitationId(id);
+    setActionType("decline");
+    setOpenDialog(true);
+  };
+
+  const handleConfirm = () => {
+    if (actionType === "accept") {
+      updateInvitation({ id: selectedInvitationId, data: { status: "A" } });
+    } else if (actionType === "decline") {
+      updateInvitation({ id: selectedInvitationId, data: { status: "R" } });
+    }
+    setOpenDialog(false);
   };
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
-    setSuccessMessage(""); // Limpia el mensaje de éxito
-    setErrorMessage(""); // Limpia el mensaje de error
+    setSuccessMessage("");
+    setErrorMessage("");
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
   };
 
   if (isFetching) {
@@ -98,13 +129,13 @@ const InvitacionesGE = () => {
           Invitaciones de Grupo-Empresas
         </Typography>
 
-        {isSuccess && data.companies?.length === 0 && (
+        {invitations.length === 0 && (
           <Typography variant="h6" align="center" color="textSecondary">
             No tienes invitaciones pendientes.
           </Typography>
         )}
 
-        {isSuccess && data.companies?.map((invitation) => (
+        {invitations.map((invitation) => (
           <Box
             key={invitation.company.id}
             sx={{
@@ -181,6 +212,7 @@ const InvitacionesGE = () => {
                     px: 12,
                     py: 1,
                   }}
+                  disabled={isInvitationLoading}
                 >
                   ACEPTAR
                 </Button>
@@ -189,6 +221,7 @@ const InvitacionesGE = () => {
                   onClick={() => handleDecline(invitation.company.id)}
                   variant="contained"
                   color="transparent"
+                  disabled={isInvitationLoading}
                   sx={{
                     px: 12,
                     py: 1,
@@ -210,6 +243,30 @@ const InvitacionesGE = () => {
         onClose={handleCloseSnackbar}
         message={successMessage || errorMessage}
       />
+
+      {/* Diálogo de confirmación */}
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>
+          {actionType === "accept"
+            ? "Aceptar Invitación"
+            : "Rechazar Invitación"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {actionType === "accept"
+              ? "¿Estás seguro de que deseas aceptar esta invitación?"
+              : "¿Estás seguro de que deseas rechazar esta invitación?"}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Cancelar
+          </Button>
+          <Button onClick={handleConfirm} color="primary">
+            {actionType === "accept" ? "Aceptar" : "Rechazar"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
