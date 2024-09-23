@@ -63,7 +63,7 @@ Route::middleware('auth')->group(function () {
     Route::get('academic-periods/companies/pending', [CompanyController::class, 'getPendingCompanies']);
     Route::post('companies/accept/{id}', [CompanyController::class, 'acceptCompanyById']);
     // Ruta de planificacion
-    Route::apiResource('/plannings', PlanningController::class);
+    Route::apiResource('plannings', PlanningController::class);
     //buscador por correo solo estudiante
     Route::get('student/search/{email}', [AuthController::class, 'searchStudentByEmail']);
 });

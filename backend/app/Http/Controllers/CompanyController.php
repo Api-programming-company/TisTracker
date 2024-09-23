@@ -134,6 +134,7 @@ class CompanyController extends Controller
             return response()->json([
                 'message' => 'Compañía obtenida correctamente.',
                 'company' => $company,
+                'planning_id' => $planning ? $planning->id : null,
                 "milestones" => $milestones,
             ], 200); // 200 OK
 
