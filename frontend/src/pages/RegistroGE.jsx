@@ -14,6 +14,12 @@ import { StudentSearch } from "../components";
 const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
 
 const RegistroGE = () => {
+  // Estado para manejar datos del formulario y errores
+  const [formData, setFormData] = useState({});
+  const [errors, setErrors] = useState({}); 
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
   const navigate = useNavigate();
   const [createCompany, { data, error, isSuccess, isError, isLoading }] =
     useCreateCompanyMutation();
@@ -30,13 +36,6 @@ const RegistroGE = () => {
       console.log(error);
     }
   }, [isSuccess, isError, navigate, error]);
-
-  // Estado para manejar datos del formulario y errores
-  const [formData, setFormData] = useState({});
-  const [errors, setErrors] = useState({}); // Inicializa como objeto vacío
-  const [selectedItems, setSelectedItems] = useState([]);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -83,6 +82,8 @@ const RegistroGE = () => {
       },
     };
 
+    console.log(formData);
+    
     for (const [
       field,
       { condition, message },
@@ -93,8 +94,8 @@ const RegistroGE = () => {
       }
     }
 
-    if (selectedItems.length < 7) {
-      newErrors.members = "Deben ser mínimo 7 integrantes.";
+    if (formData.members?.length < 1) {
+      newErrors.members = "Deben ser mínimo 1 integrantes.";
       hasError = true;
     }
 
@@ -103,17 +104,8 @@ const RegistroGE = () => {
       return;
     }
 
-    const companyData = {
-      long_name,
-      short_name,
-      email,
-      address,
-      phone,
-      members: selectedItems.map((item) => item.id),
-    };
-
-    console.log("Enviando datos:", companyData);
-    createCompany(companyData);
+    console.log("Enviando datos:", formData);
+    createCompany(formData);
   };
 
   const handleSnackbarClose = () => {
@@ -157,6 +149,10 @@ const RegistroGE = () => {
           <StudentSearch
             selectedItems={selectedItems}
             setSelectedItems={setSelectedItems}
+            formData={formData}
+            setFormData={setFormData}
+            errors={errors}
+            setErrors={setErrors}
           />
           {errors.members && (
             <Typography color="error" variant="caption">

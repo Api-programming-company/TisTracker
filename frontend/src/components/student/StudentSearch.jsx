@@ -11,11 +11,10 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import StudentCard from "./StudentCard";
 
-const StudentSearch = ({ selectedItems, setSelectedItems }) => {
+const StudentSearch = ({ formData, setFormData, errors, setErrors }) => {
   const [email, setEmail] = useState("");
-  const [searchStudent, { data, isFetching, isLoading, error, isError, isSuccess }] =
+  const [searchStudent, { data, isFetching, isLoading, isError, isSuccess }] =
     useLazySearchStudentQuery();
-  const [encargado, setEncargado] = useState(null);
   const MAX_STUDENTS = 7;
 
   const handleSearch = () => {
@@ -23,33 +22,36 @@ const StudentSearch = ({ selectedItems, setSelectedItems }) => {
   };
 
   const handleAddStudent = () => {
+    console.log(data);
+
     if (data && data.student) {
-      if (selectedItems.length < MAX_STUDENTS && !selectedItems.some(s => s.id === data.student.id)) {
-        setSelectedItems(prev => {
-          const newSelectedItems = [...prev, data.student];
-          // Asignar el primer integrante como encargado
-          if (newSelectedItems.length === 1) {
-            setEncargado(data.student.id);
-          }
-          return newSelectedItems;
+      const members = formData.members || [];
+      if (
+        members.length < MAX_STUDENTS &&
+        !members.some((m) => m.id === data.student.id)
+      ) {
+        const newMember = {
+          ...data.student,
+          permission: members.length === 0 ? "W" : undefined, // Asigna "W" si es el primer miembro
+        };
+
+        setFormData((prev) => {
+          const updatedMembers = [...members, newMember];
+          console.log("Members después de agregar:", updatedMembers);
+          return {
+            ...prev,
+            members: updatedMembers,
+          };
         });
       }
     }
   };
 
   const handleRemoveStudent = (id) => {
-    setSelectedItems(prev => {
-      const newSelectedItems = prev.filter(student => student.id !== id);
-      // Resetear el encargado si se elimina
-      if (id === encargado) {
-        setEncargado(newSelectedItems[0]?.id || null); // Asignar el nuevo primer integrante como encargado
-      }
-      return newSelectedItems;
-    });
-  };
-
-  const handleSelectEncargado = (id) => {
-    setEncargado(id);
+    setFormData((prev) => ({
+      ...prev,
+      members: (prev.members || []).filter((member) => member.id !== id),
+    }));
   };
 
   return (
@@ -69,7 +71,11 @@ const StudentSearch = ({ selectedItems, setSelectedItems }) => {
           onClick={handleSearch}
           sx={{ marginLeft: 2 }}
         >
-          {isLoading || isFetching ? <CircularProgress size={24} /> : <SearchIcon />}
+          {isLoading || isFetching ? (
+            <CircularProgress size={24} />
+          ) : (
+            <SearchIcon />
+          )}
         </IconButton>
       </Box>
 
@@ -98,7 +104,10 @@ const StudentSearch = ({ selectedItems, setSelectedItems }) => {
                   },
                   marginLeft: 2,
                 }}
-                disabled={selectedItems.length >= MAX_STUDENTS || selectedItems.some(s => s.id === data.student.id)}
+                disabled={
+                  (formData.members || []).length >= MAX_STUDENTS ||
+                  (formData.members || []).some((m) => m.id === data.student.id)
+                }
               >
                 <AddIcon fontSize="large" />
               </IconButton>
@@ -111,7 +120,7 @@ const StudentSearch = ({ selectedItems, setSelectedItems }) => {
         </Box>
       )}
 
-      {selectedItems.length >= MAX_STUDENTS && (
+      {(formData.members || []).length >= MAX_STUDENTS && (
         <Typography variant="body1" color="warning" sx={{ marginTop: 2 }}>
           Has alcanzado el límite de {MAX_STUDENTS} integrantes.
         </Typography>
@@ -119,13 +128,11 @@ const StudentSearch = ({ selectedItems, setSelectedItems }) => {
 
       <Box sx={{ marginTop: 4 }}>
         <Typography variant="h6">Integrantes Agregados</Typography>
-        {selectedItems.map(student => (
+        {(formData.members || []).map((member) => (
           <StudentCard
-            key={student.id}
-            student={student}
+            key={member.id}
+            student={member}
             onRemove={handleRemoveStudent}
-            isEncargado={encargado === student.id}
-            onSelectEncargado={() => handleSelectEncargado(student.id)}
           />
         ))}
       </Box>
