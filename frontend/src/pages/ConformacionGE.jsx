@@ -167,7 +167,7 @@ const ConformacionGE = () => {
             {isLoading ? (
               <CircularProgress size={24} color="inherit" />
             ) : (
-              "REALIZAR CAMBIOS"
+              "ENVIAR"
             )}
           </Button>
         </form>
