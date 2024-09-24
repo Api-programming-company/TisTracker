@@ -146,70 +146,60 @@ class CompanyUserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $companyId, $userId)
     {
         try {
-            // Validación de los campos, si están presentes
+            // Validar la solicitud
             $request->validate([
-                'status' => 'sometimes|in:A,P,R',
-                'permission' => 'sometimes|in:R,W' 
+                'status' => 'required|in:A,R', // Aceptado, Rechazado
             ]);
-    
-            // Obtener la compañía
-            $company = Company::find($id);  // Usar find en lugar de findOrFail
-            if (!$company) {
+
+            // Obtener el usuario autenticado
+            $user = Auth::user();
+
+            // Verificar si el usuario ya pertenece a una compañía en estado "A"
+            $existingCompany = Company::whereHas('members', function ($query) use ($userId) {
+                $query->where('user_id', $userId)->where('status', 'A');
+            })->first();
+
+            if ($existingCompany) {
                 return response()->json([
-                    'message' => 'Compañía no encontrada.'
-                ], 404);
+                    'message' => 'El usuario ya pertenece a otra empresa aceptada.'
+                ], 403); // 403 Forbidden
             }
-    
-            $user = Auth::user();  // Obtener el usuario actual
-    
-            // Verificar si el usuario es miembro de la compañía
-            if ($company->members()->where('user_id', $user->id)->exists()) {
-                $data = [];
-    
-                // Verificar si los campos están presentes y asignarlos
-                if ($request->has('status')) {
-                    $data['status'] = $request->status;
-                }
-                if ($request->has('permission')) {
-                    $data['permission'] = $request->permission;
-                }
-    
-                // Actualizar la relación solo si hay datos para actualizar
-                if (!empty($data)) {
-                    $company->members()->updateExistingPivot($user->id, $data);
-    
-                    return response()->json([
-                        'message' => 'Relación actualizada correctamente.'
-                    ], 200);
-                }
-    
+
+            // Buscar la compañía y el usuario en esa compañía
+            $companyUser = CompanyUserController::where('company_id', $companyId)->where('user_id', $userId)->first();
+
+            // Verificar si la compañía está en estado "P"
+            if (!$companyUser || $companyUser->status !== 'P') {
                 return response()->json([
-                    'message' => 'No se proporcionaron datos para actualizar.'
-                ], 400);
+                    'message' => 'No se puede actualizar el estado porque la compañía no está pendiente.'
+                ], 403); // 403 Forbidden
             }
-    
+
+            // Actualizar el estado del usuario en la compañía
+            $companyUser->update(['status' => $request->status]);
+
             return response()->json([
-                'message' => 'El usuario no pertenece a la compañía.'
-            ], 404);
-    
+                'message' => 'El estado del usuario se actualizó correctamente.',
+                'company_user' => $companyUser
+            ], 200); // 200 OK
+
         } catch (ValidationException $e) {
-            // Manejo específico de la excepción de validación
             return response()->json([
-                'message' => 'Error de validación.',
-                'errors' => $e->errors()
-            ], 422);
-    
+                'message' => 'Validation Error.',
+                'errors' => $e->validator->errors()
+            ], 422); // 422 Unprocessable Entity
+
         } catch (Exception $e) {
-            // Manejar cualquier otra excepción inesperada
             return response()->json([
-                'message' => 'Ocurrió un error inesperado.',
+                'message' => 'Ocurrió un error al actualizar el estado del usuario.',
                 'error' => $e->getMessage()
-            ], 500);
+            ], 500); // 500 Internal Server Error
         }
     }
+
     
 
     /**

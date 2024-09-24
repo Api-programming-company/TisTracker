@@ -310,30 +310,47 @@ class CompanyController extends Controller
                 ], 404); // 404 Not Found
             }
 
+            // Verificar si el estado actual de la compañía es "P"
+            if ($company->status !== 'P') {
+                return response()->json([
+                    'message' => 'Solo se puede actualizar el estado de una compañía pendiente.'
+                ], 403); // 403 Forbidden
+            }
+
+            // Verificar si el usuario pertenece a otra compañía aceptada
+            $user = auth()->user();
+            $existingCompany = Company::whereHas('members', function ($query) use ($user) {
+                $query->where('user_id', $user->id)->where('status', 'A');
+            })->first();
+
+            if ($existingCompany) {
+                return response()->json([
+                    'message' => 'Ya perteneces a otra compañía aceptada.'
+                ], 403); // 403 Forbidden
+            }
+
             // Actualizar la compañía
             $company->update($request->all());
 
-            // Devolver una respuesta de éxito
             return response()->json([
                 'message' => 'Compañía actualizada correctamente.',
                 'company' => $company
             ], 200); // 200 OK
 
         } catch (ValidationException $e) {
-            // Manejar errores de validación
             return response()->json([
-                'message' => 'Validation Error',
+                'message' => 'Validation Error.',
                 'errors' => $e->validator->errors()
             ], 422); // 422 Unprocessable Entity
 
         } catch (Exception $e) {
-            // Manejar otros errores
             return response()->json([
                 'message' => 'Ocurrió un error al actualizar la compañía.',
                 'error' => $e->getMessage()
             ], 500); // 500 Internal Server Error
         }
     }
+
 
     public function destroy($id)
     {
