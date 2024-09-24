@@ -34,6 +34,31 @@ const RegistroGE = () => {
       setSnackbarMessage("Error al enviar el formulario");
       setSnackbarOpen(true);
       console.log(error);
+
+      // Manejo de errores de validación
+      if (error?.status === 422 && error.data?.errors) {
+        const serverErrors = error.data.errors;
+        const newErrors = {};
+
+        // Mapear los errores del servidor a los errores de estado
+        for (const [key, messages] of Object.entries(serverErrors)) {
+          // Aquí puedes personalizar los mensajes de error
+          const customMessages = {
+            long_name: "El nombre largo ya está en uso.",
+            short_name: "El nombre corto ya está en uso.",
+            email: "El correo electrónico ya está en uso.",
+            address: "La dirección ya está en uso.",
+            phone: "El teléfono ya está en uso.",
+            members: "Los miembros no son válidos.",
+          };
+          newErrors[key] = customMessages[key] || messages[0]; // Asigna tu mensaje personalizado o el primero del servidor
+        }
+
+        setErrors(newErrors); // Actualizar el estado de errores
+        console.log("nuevos errores");
+        console.log(newErrors);
+        
+      }
     }
   }, [isSuccess, isError, navigate, error]);
 
@@ -75,10 +100,10 @@ const RegistroGE = () => {
         message: "La dirección es obligatoria.",
       },
       phone: {
-        condition: !phone || !/^\d+$/.test(phone) || phone.length < 7,
+        condition: !phone || !/^\d+$/.test(phone) || phone.length < 8,
         message: !phone
           ? "El teléfono es obligatorio."
-          : "El teléfono debe contener solo dígitos y tener al menos 7 caracteres.",
+          : "El teléfono debe contener solo dígitos y tener al menos 8 caracteres.",
       },
     };
 
