@@ -45,7 +45,7 @@ const StudentCard = ({ student, onRemove, isEncargado, onSelectEncargado }) => {
           control={
             <Radio
               checked={isEncargado}
-              onChange={onSelectEncargado}
+              onChange={onSelectEncargado} // Usa el manejador pasado como prop
               color="primary"
             />
           }

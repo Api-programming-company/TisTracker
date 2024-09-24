@@ -15,6 +15,7 @@ const StudentSearch = ({ formData, setFormData, errors, setErrors }) => {
   const [email, setEmail] = useState("");
   const [searchStudent, { data, isFetching, isLoading, isError, isSuccess }] =
     useLazySearchStudentQuery();
+  const [selectedId, setSelectedId] = useState(null); // Estado para el estudiante encargado
   const MAX_STUDENTS = 7;
 
   const handleSearch = () => {
@@ -22,8 +23,6 @@ const StudentSearch = ({ formData, setFormData, errors, setErrors }) => {
   };
 
   const handleAddStudent = () => {
-    console.log(data);
-
     if (data && data.student) {
       const members = formData.members || [];
       if (
@@ -35,14 +34,12 @@ const StudentSearch = ({ formData, setFormData, errors, setErrors }) => {
           permission: members.length === 0 ? "W" : undefined, // Asigna "W" si es el primer miembro
         };
 
-        setFormData((prev) => {
-          const updatedMembers = [...members, newMember];
-          console.log("Members después de agregar:", updatedMembers);
-          return {
-            ...prev,
-            members: updatedMembers,
-          };
-        });
+        setFormData((prev) => ({
+          ...prev,
+          members: [...members, newMember],
+        }));
+        // Resetea el id seleccionado
+        setSelectedId(null);
       }
     }
   };
@@ -51,6 +48,22 @@ const StudentSearch = ({ formData, setFormData, errors, setErrors }) => {
     setFormData((prev) => ({
       ...prev,
       members: (prev.members || []).filter((member) => member.id !== id),
+    }));
+
+    // Si se elimina el encargado, resetea el id seleccionado
+    if (selectedId === id) {
+      setSelectedId(null);
+    }
+  };
+
+  const handleSelectEncargado = (id) => {
+    setSelectedId(id);
+    setFormData((prev) => ({
+      ...prev,
+      members: prev.members.map((member) => ({
+        ...member,
+        permission: member.id === id ? "W" : "R", // Asigna "W" al encargado, "R" a los demás
+      })),
     }));
   };
 
@@ -133,6 +146,8 @@ const StudentSearch = ({ formData, setFormData, errors, setErrors }) => {
             key={member.id}
             student={member}
             onRemove={handleRemoveStudent}
+            isEncargado={selectedId === member.id}
+            onSelectEncargado={() => handleSelectEncargado(member.id)}
           />
         ))}
       </Box>
