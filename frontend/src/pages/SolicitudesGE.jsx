@@ -5,11 +5,6 @@ import {
   Typography,
   Box,
   Icon,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   CircularProgress,
   Snackbar,
 } from "@mui/material";
@@ -18,6 +13,7 @@ import {
   useGetPedingCompaniesQuery,
   useUpdateCompanyByIdMutation,
 } from "../api/companyApi";
+import DialogMod from "../components/DialogMod";
 
 const SolicitudesGE = () => {
   const { id } = useParams();
@@ -35,7 +31,8 @@ const SolicitudesGE = () => {
   ] = useUpdateCompanyByIdMutation();
 
   const [companies, setCompanies] = useState([]);
-  const [open, setOpen] = useState(false);
+  const [openA, setOpenA] = useState(false);
+  const [openR, setOpenR] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [loading, setLoading] = useState(false);
   const [snackbar, setSnackbar] = useState({
@@ -53,21 +50,10 @@ const SolicitudesGE = () => {
     }
   }, [data, isSuccess, isError, error]);
 
-  const handleClickOpen = (companyId) => {
-    setSelectedCompany(companyId);
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setSelectedCompany(null);
-  };
-
   const handleAccept = async () => {
-    setOpen(false);
     if (!selectedCompany) return;
     setLoading(true);
-
+    setOpenA(false);
     try {
       await updateCompany({
         id: selectedCompany,
@@ -75,7 +61,7 @@ const SolicitudesGE = () => {
       }).unwrap();
       setSnackbar({
         open: true,
-        message: "Invitación aceptada",
+        message: "Solicitud aceptada",
         severity: "success",
       });
       setCompanies((prevCompanies) =>
@@ -90,18 +76,18 @@ const SolicitudesGE = () => {
       });
     } finally {
       setLoading(false);
-      handleClose();
     }
   };
 
   const handleDecline = async (companyId) => {
     setLoading(true);
-
+    setOpenR(false);
+    setOpenR(false);
     try {
       await updateCompany({ id: companyId, data: { status: "R" } }).unwrap();
       setSnackbar({
         open: true,
-        message: "Invitación rechazada",
+        message: "Solicitud rechazada",
         severity: "success",
       });
       setCompanies((prevCompanies) =>
@@ -223,10 +209,13 @@ const SolicitudesGE = () => {
                   }}
                 >
                   <Button
-                    onClick={() => handleClickOpen(request.id)}
+                    onClick={() => {
+                      setSelectedCompany(request.id);
+                      setOpenA(true);
+                    }} 
                     variant="contained"
-                    color="primary"
                     disabled={isUpdateLoading}
+                    color="primary"
                     sx={{
                       mb: 2,
                       px: 12,
@@ -236,9 +225,19 @@ const SolicitudesGE = () => {
                   >
                     ACEPTAR
                   </Button>
+                  <DialogMod
+                    open={openA}
+                    setOpen={setOpenA}
+                    title={"Confirmar"}
+                    content={
+                      "¿Está seguro de que desea aceptar esta solicitud?"
+                    }
+                    onAccept={handleAccept}
+                    paramsAccept={request.id}
+                  />
 
                   <Button
-                    onClick={() => handleDecline(request.id)}
+                    onClick={() => setOpenR(true)}
                     variant="contained"
                     color="transparent"
                     disabled={isUpdateLoading}
@@ -251,35 +250,21 @@ const SolicitudesGE = () => {
                   >
                     RECHAZAR
                   </Button>
+                  <DialogMod
+                    open={openR}
+                    setOpen={setOpenR}
+                    title={"Rechazar"}
+                    content={
+                      "¿Está seguro de que desea rechazar esta solicitud?"
+                    }
+                    onAccept={handleDecline}
+                    paramsAccept={request.id}
+                  />
                 </Box>
               </Box>
             </Box>
           ))
         )}
-
-        <Dialog
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            {"Confirmar Aceptación"}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              ¿Está seguro de que desea aceptar esta invitación?
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="primary">
-              Cancelar
-            </Button>
-            <Button onClick={handleAccept} color="primary" autoFocus>
-              Aceptar
-            </Button>
-          </DialogActions>
-        </Dialog>
 
         <Snackbar
           open={snackbar.open}

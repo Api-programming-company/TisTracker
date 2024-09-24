@@ -49,7 +49,7 @@ const CompanyPlanning = ({ milestones, setFormData, setSendData }) => {
 
   const handleDeleteMilestone = (id) => {
     const updatedMilestones = tempMilestones.filter((e)=> e.id !== id)
-    setTempMilestones([...updatedMilestones])
+    setTempMilestones(updatedMilestones)
   }
 
   return (
