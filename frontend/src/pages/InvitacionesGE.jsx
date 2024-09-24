@@ -47,6 +47,7 @@ const InvitacionesGE = () => {
     }
     if (isError) {
       console.log(error);
+      
     }
   }, [isSuccess, isError, error, data]);
 
