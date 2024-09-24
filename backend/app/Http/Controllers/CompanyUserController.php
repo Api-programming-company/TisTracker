@@ -44,23 +44,67 @@ class CompanyUserController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'company_id' => 'required|exists:companies,id',
-            'user_id' => 'required|exists:users,id',
-            'status' => 'required|in:A,P', // Aceptado o Pendiente
-            'permission' => 'required|in:R,W' // Read o Write
-        ]);
+        try {
+            // Validar los datos de entrada
+            $request->validate([
+                'company_id' => 'required|exists:companies,id',
+                'user_ids' => 'required|array',  // Aceptar un array de IDs de usuarios
+                'user_ids.*' => 'exists:users,id',  // Validar que cada ID de usuario existe
+                'status' => 'required|in:A,P', // Aceptado o Pendiente
+                'permission' => 'required|in:R,W' // Read o Write
+            ]);
 
-        $company = Company::find($request->company_id);
-        $company->members()->attach($request->user_id, [
-            'status' => $request->status,
-            'permission' => $request->permission
-        ]);
+            // Obtener el usuario autenticado que envía la solicitud
+            $user = Auth::user();
 
-        return response()->json([
-            'message' => 'Miembro agregado correctamente a la compañía.'
-        ], 201);
+            // Verificar que el usuario que envía la solicitud tiene un periodo académico
+            if (!$user->academic_period_id) {
+                return response()->json([
+                    'message' => 'El usuario que envía la solicitud no tiene un periodo académico asignado.'
+                ], 400);
+            }
+
+            // Verificar que todos los miembros del grupo pertenezcan al mismo periodo académico que el usuario que envía la solicitud
+            $members = User::whereIn('id', $request->user_ids)->get();
+            
+            foreach ($members as $member) {
+                if ($member->academic_period_id !== $user->academic_period_id) {
+                    return response()->json([
+                        'message' => "El usuario {$member->first_name} {$member->last_name} no pertenece al mismo periodo académico."
+                    ], 400);  // 400 Bad Request
+                }
+            }
+
+            // Obtener la compañía (grupo)
+            $company = Company::find($request->company_id);
+
+            // Asignar los usuarios a la compañía
+            foreach ($request->user_ids as $userId) {
+                $company->members()->attach($userId, [
+                    'status' => $request->status,
+                    'permission' => $request->permission
+                ]);
+            }
+
+            return response()->json([
+                'message' => 'Miembros agregados correctamente a la compañía.'
+            ], 201);  // 201 Created
+
+        } catch (ValidationException $e) {
+            // Manejo de errores de validación
+            return response()->json([
+                'message' => 'Error de validación',
+                'errors' => $e->errors()
+            ], 422);  // 422 Unprocessable Entity
+        } catch (Exception $e) {
+            // Manejo de errores generales
+            return response()->json([
+                'message' => 'Se ha producido un error inesperado',
+                'error' => $e->getMessage()
+            ], 500); 
+        }
     }
+
 
     /**
      * Display the specified resource.
@@ -213,21 +257,21 @@ class CompanyUserController extends Controller
             if (!$company) {
                 return response()->json([
                     'message' => 'No se encontró un grupo para el estudiante en este periodo académico.'
-                ], 404);  // 404 Not Found
+                ], 404);  
             }
 
             // Retornar la compañía del estudiante
             return response()->json([
                 'message' => 'Grupo encontrado correctamente.',
                 'data' => $company
-            ], 200);  // 200 OK
+            ], 200);  
 
         } catch (Exception $e) {
-            // Manejo de errores generales
+            
             return response()->json([
                 'message' => 'Se ha producido un error inesperado.',
                 'error' => $e->getMessage()
-            ], 500);  // 500 Internal Server Error
+            ], 500);  
         }
     }
 
