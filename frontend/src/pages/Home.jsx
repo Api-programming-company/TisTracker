@@ -9,7 +9,7 @@ const Home = () => {
 
   useEffect(() => {
     if (user === null) {
-      navigate("/register");
+      navigate("/login");
     } else if (user.user_type === "docente") {
       navigate("/academic-periods");
     } else if (user.user_type === "estudiante") {
