@@ -27,6 +27,17 @@ class CompanyController extends Controller
                 'members.*.permission' => 'required|in:R,W', // Validar que permission sea "R" o "W"
             ]);
 
+            // Verificar que haya al menos un miembro con permiso "W"
+            $hasWritePermission = collect($request->members)->contains(function ($member) {
+                return $member['permission'] === 'W';
+            });
+
+            if (!$hasWritePermission) {
+                return response()->json([
+                    'message' => 'Debe haber al menos un miembro con permiso de escritura (W).'
+                ], 422); // 422 Unprocessable Entity
+            }
+
             // Obtener el usuario autenticado
             $user = Auth::user();
 

@@ -96,18 +96,24 @@ class AcademicPeriodController extends Controller
         /** @var \App\Models\User $user **/
         $user = Auth::user();
 
+        // Solo los estudiantes pueden inscribirse
         if ($user->user_type !== 'E') {
             return response()->json(['message' => 'Solo estudiantes pueden inscribirse.'], 403);
         }
 
-        // Verifica que el estudiante no esté ya inscrito en un periodo académico
+         // Verifica que el estudiante no esté ya inscrito en un periodo académico
         if ($user->academic_period_id) {
             return response()->json(['message' => 'Ya está inscrito en un periodo académico'], 400);
         }
 
-        $academicPeriodId = $request->input('academic_period_id'); // Obtén el ID desde el cuerpo de la solicitud
-
+        $academicPeriodId = $request->input('academic_period_id');
         $academicPeriod = AcademicPeriod::findOrFail($academicPeriodId);
+        $currentDate = now();
+
+        // Verificar si la fecha actual está entre start_date y end_date del periodo académico
+        if ($currentDate->lt($academicPeriod->start_date) || $currentDate->gt($academicPeriod->end_date)) {
+            return response()->json(['message' => 'No se puede inscribir, el periodo académico no está en curso.'], 403);
+        }
 
         // Inscribe al estudiante en el periodo académico
         $user->academic_period_id = $academicPeriod->id;
