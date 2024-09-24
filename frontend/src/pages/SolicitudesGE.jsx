@@ -23,7 +23,17 @@ const SolicitudesGE = () => {
   const { id } = useParams();
   const { data, error, isError, isSuccess, isLoading, isFetching } =
     useGetPedingCompaniesQuery(id);
-  const [updateCompany] = useUpdateCompanyByIdMutation();
+  const [
+    updateCompany,
+    {
+      data: updateData,
+      error: updateError,
+      isError: isUpdateError,
+      isSuccess: isUpdateSuccess,
+      isLoading: isUpdateLoading,
+    },
+  ] = useUpdateCompanyByIdMutation();
+
   const [companies, setCompanies] = useState([]);
   const [open, setOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
@@ -54,6 +64,7 @@ const SolicitudesGE = () => {
   };
 
   const handleAccept = async () => {
+    setOpen(false);
     if (!selectedCompany) return;
     setLoading(true);
 
@@ -140,111 +151,111 @@ const SolicitudesGE = () => {
           Solicitudes de creación de Grupo Empresas
         </Typography>
 
-        {companies.map((request) => (
-          <Box
-            key={request.id}
-            sx={{
-              backgroundColor: "whitesmoke",
-              borderRadius: "15px",
-              padding: 2,
-              mb: 5,
-            }}
+        {companies.length === 0 ? (
+          <Typography
+            variant="h6"
+            component="p"
+            sx={{ textAlign: "center", mt: 5 }}
           >
+            No hay solicitudes pendientes
+          </Typography>
+        ) : (
+          companies.map((request) => (
             <Box
+              key={request.id}
               sx={{
-                display: { xs: "block", sm: "flex" },
-                justifyContent: "space-between",
-                mb: 1,
-                mt: 3,
-                mr: 3,
-                ml: 3,
+                backgroundColor: "whitesmoke",
+                borderRadius: "15px",
+                padding: 2,
+                mb: 5,
               }}
             >
-              <Box sx={{ flex: 1, mr: 2, mb: 3 }}>
-                <Typography
-                  component="h1"
-                  sx={{ color: "black", fontSize: "36px", lineHeight: "1" }}
-                >
-                  {request.short_name}
-                </Typography>
-                <Typography component="h2" sx={{ color: "black" }}>
-                  {request.long_name}
-                </Typography>
-                <Typography
-                  component="p"
-                  sx={{ color: "#8E9090", fontSize: "14px" }}
-                >
-                  <Icon>
-                    <img
-                      src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png"
-                      alt="Icono persona"
-                      style={{
-                        width: "17px",
-                        height: "17px",
-                      }}
-                    />
-                  </Icon>{" "}
-                  {request.members_count} integrantes
-                </Typography>
-                <Typography
-                  component="p"
-                  sx={{ color: "#8E9090", fontSize: "14px" }}
-                >
-                  Desean formar parte del grupo de TIS
-                </Typography>
-              </Box>
-
               <Box
                 sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  flex: 1,
-                  mb: 3,
+                  display: { xs: "block", sm: "flex" },
+                  justifyContent: "space-between",
+                  mb: 1,
+                  mt: 3,
+                  mr: 3,
+                  ml: 3,
                 }}
               >
-                <Button
-                  onClick={() => handleClickOpen(request.id)}
-                  variant="contained"
-                  color="primary"
-                  sx={{
-                    mb: 2,
-                    px: 12,
-                    py: 1,
-                    position: "relative",
-                  }}
-                >
-                  ACEPTAR
-                  {loading && (
-                    <CircularProgress
-                      size={24}
-                      sx={{
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        marginTop: "-12px",
-                        marginLeft: "-12px",
-                      }}
-                    />
-                  )}
-                </Button>
+                <Box sx={{ flex: 1, mr: 2, mb: 3 }}>
+                  <Typography
+                    component="h1"
+                    sx={{ color: "black", fontSize: "36px", lineHeight: "1" }}
+                  >
+                    {request.short_name}
+                  </Typography>
+                  <Typography component="h2" sx={{ color: "black" }}>
+                    {request.long_name}
+                  </Typography>
+                  <Typography
+                    component="p"
+                    sx={{ color: "#8E9090", fontSize: "14px" }}
+                  >
+                    <Icon>
+                      <img
+                        src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png"
+                        alt="Icono persona"
+                        style={{
+                          width: "17px",
+                          height: "17px",
+                        }}
+                      />
+                    </Icon>{" "}
+                    {request.members_count} integrantes
+                  </Typography>
+                  <Typography
+                    component="p"
+                    sx={{ color: "#8E9090", fontSize: "14px" }}
+                  >
+                    Desean formar parte del grupo de TIS
+                  </Typography>
+                </Box>
 
-                <Button
-                  onClick={() => handleDecline(request.id)}
-                  variant="contained"
-                  color="transparent"
+                <Box
                   sx={{
-                    px: 12,
-                    py: 1,
-                    color: "black",
-                    border: "1px solid black",
+                    display: "flex",
+                    flexDirection: "column",
+                    flex: 1,
+                    mb: 3,
                   }}
                 >
-                  RECHAZAR
-                </Button>
+                  <Button
+                    onClick={() => handleClickOpen(request.id)}
+                    variant="contained"
+                    color="primary"
+                    disabled={isUpdateLoading}
+                    sx={{
+                      mb: 2,
+                      px: 12,
+                      py: 1,
+                      position: "relative",
+                    }}
+                  >
+                    ACEPTAR
+                  </Button>
+
+                  <Button
+                    onClick={() => handleDecline(request.id)}
+                    variant="contained"
+                    color="transparent"
+                    disabled={isUpdateLoading}
+                    sx={{
+                      px: 12,
+                      py: 1,
+                      color: "black",
+                      border: "1px solid black",
+                    }}
+                  >
+                    RECHAZAR
+                  </Button>
+                </Box>
               </Box>
             </Box>
-          </Box>
-        ))}
+          ))
+        )}
 
         <Dialog
           open={open}
