@@ -122,11 +122,16 @@ class CompanyController extends Controller
 
     public function show($id)
     {
-        // TODO optimizar, devolver si el Auth user puede editar permission = W
         try {
-            // Buscar la compañía por su ID, incluyendo miembros, planificaciones, hitos y entregables, y periodo academico
+            // Obtener el usuario autenticado
+            $user = Auth::user();
+
+            // Buscar la compañía por su ID, incluyendo miembros, planificaciones, hitos y entregables, y periodo académico
             $company = Company::with([
-                'members',
+                'members' => function($query) use ($user) {
+                    // Incluir el permiso del usuario autenticado
+                    $query->where('user_id', $user->id);
+                },
                 'plannings.milestones.deliverables',
                 'academicPeriod.creator'
             ])->find($id);
@@ -135,26 +140,32 @@ class CompanyController extends Controller
             if (!$company) {
                 return response()->json([
                     'message' => 'No se encontró la compañía especificada.'
-                ], 404); // 404 Not Found
+                ], 404); 
             }
 
+            // Obtener el primer planning y sus hitos
             $planning = $company->plannings->first();
             $milestones = $planning ? $planning->milestones : [];
 
-            // Preparar la información de los miembros y planificaciones
+            // Obtener el permiso del usuario autenticado (si es miembro)
+            $member = $company->members->first();
+            $userPermission = $member ? $member->pivot->permission : null;
+
+            // Preparar la información de la compañía, miembros, planificaciones y permisos
             return response()->json([
                 'message' => 'Compañía obtenida correctamente.',
                 'company' => $company,
                 'planning_id' => $planning ? $planning->id : null,
-                "milestones" => $milestones,
-            ], 200); // 200 OK
+                'milestones' => $milestones,
+                'user_permission' => $userPermission, // Devolver el permiso del usuario autenticado
+            ], 200); 
 
         } catch (Exception $e) {
             // Manejar otros errores
             return response()->json([
                 'message' => 'Ocurrió un error al obtener la información de la compañía.',
                 'error' => $e->getMessage()
-            ], 500); // 500 Internal Server Error
+            ], 500); 
         }
     }
 
