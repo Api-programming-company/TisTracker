@@ -46,7 +46,7 @@ const darkTheme = createTheme({
     },
     info: {
       main: "#81d4fa", // Azul pastel
-      gray: "#000000", //Gris claro
+      gray: "#000000", // Transparente
     },
     success: {
       main: "#c5e1a5", // Verde claro pastel

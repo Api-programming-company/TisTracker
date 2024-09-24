@@ -137,7 +137,7 @@ const SolicitudesGE = () => {
           gutterBottom
           sx={{ textAlign: "center", mb: 3 }}
         >
-          Solicitudes de creación de Grupo-Empresas
+          Solicitudes de creación de Grupo Empresas
         </Typography>
 
         {companies.map((request) => (

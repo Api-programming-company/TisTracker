@@ -136,7 +136,7 @@ const EditarListaGE = () => {
           sx={{ textAlign: "center", mb: 3 }}
         >
           Lista de integrantes para <br />
-          conformación de Grupo Empresa
+          conformación de grupo empresa
         </Typography>
 
         <form onSubmit={handleSubmit}>

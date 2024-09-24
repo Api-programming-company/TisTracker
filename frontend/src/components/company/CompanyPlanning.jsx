@@ -50,7 +50,7 @@ const CompanyPlanning = ({ milestones, setFormData, setSendData }) => {
   return (
     <Box sx={{ padding: 2, border: "1px solid #ccc", borderRadius: 2, mt: 2 }}>
       <Typography variant="h4" gutterBottom>
-        Planificación de la Empresa
+        Planificación de la Grupo Empresa
       </Typography>
       <Button
         onClick={handleEditToggle}
