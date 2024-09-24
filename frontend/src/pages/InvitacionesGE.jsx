@@ -47,7 +47,7 @@ const InvitacionesGE = () => {
     }
     if (isError) {
       console.log(error);
-      
+      //setErrorMessage(error?.data?.message)
     }
   }, [isSuccess, isError, error, data]);
 
@@ -68,7 +68,7 @@ const InvitacionesGE = () => {
     }
     if (isInvitationError) {
       console.log(invitationError);
-      setErrorMessage("Error al actualizar la invitación.");
+      setErrorMessage(invitationError?.data?.message);
       setOpenSnackbar(true);
     }
   }, [

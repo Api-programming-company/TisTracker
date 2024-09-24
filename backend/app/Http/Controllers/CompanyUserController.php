@@ -167,7 +167,7 @@ class CompanyUserController extends Controller
 
             if ($existingCompany) {
                 return response()->json([
-                    'message' => 'El usuario ya pertenece a otra empresa aceptada.'
+                    'message' => 'Ya pertenece a otra empresa'
                 ], 403); // 403 Forbidden
             }
 
