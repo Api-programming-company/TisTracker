@@ -11,6 +11,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Snackbar,
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState, useContext } from "react";
@@ -24,6 +25,9 @@ import { useNavigate } from "react-router-dom";
 const EnrollToAcademicPeriod = () => {
   const navigate = useNavigate();
   const { user, checkUser } = useContext(AppContext);
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   useEffect(() => {
     if (user?.academic_period_id) {
@@ -46,6 +50,8 @@ const EnrollToAcademicPeriod = () => {
     }
     if (isError) {
       console.log(error);
+      setSnackbarMessage(error.data.message || "Error al obtener los períodos académicos");
+      setSnackbarOpen(true);
     }
   }, [isSuccess, isError, error, groupedPeriods]);
 
@@ -84,6 +90,8 @@ const EnrollToAcademicPeriod = () => {
     }
     if (isEnrollError) {
       console.log(enrollError);
+      setSnackbarMessage(enrollError.data.message || "Error al inscribirse");
+      setSnackbarOpen(true);
     }
   }, [isEnrollSuccess, isEnrollError, enrollData, enrollError]);
 
@@ -99,36 +107,9 @@ const EnrollToAcademicPeriod = () => {
     navigate("/"); // Redirigir después de confirmar el éxito
   };
 
-  if (isLoading || isEnrollLoading)
-    return (
-      <Container
-        maxWidth="sm"
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "80vh",
-        }}
-      >
-        <CircularProgress />
-      </Container>
-    );
-
-  if (error || enrollError) {
-    const errorMessage = error
-      ? error.data.message
-      : enrollError
-      ? enrollError.data.message
-      : "";
-
-    return (
-      <Container maxWidth="sm" sx={{ mt: 5 }}>
-        <Typography variant="h6" color="error">
-          {errorMessage}
-        </Typography>
-      </Container>
-    );
-  }
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
 
   return (
     <Container
@@ -152,7 +133,7 @@ const EnrollToAcademicPeriod = () => {
       </Typography>
 
       {/* Selector de docentes */}
-      <FormControl fullWidth sx={{ mb: 3 }}>
+      <FormControl fullWidth sx={{ mb: 3 }} disabled={isEnrollLoading}>
         <InputLabel>Consultor TIS</InputLabel>
         <Select
           value={selectedTeacher}
@@ -169,7 +150,7 @@ const EnrollToAcademicPeriod = () => {
 
       {/* Selector de periodos académicos */}
       {selectedTeacher && (
-        <FormControl fullWidth sx={{ mb: 3 }}>
+        <FormControl fullWidth sx={{ mb: 3 }} disabled={isEnrollLoading}>
           <InputLabel>Gestión</InputLabel>
           <Select
             value={selectedPeriod}
@@ -189,10 +170,10 @@ const EnrollToAcademicPeriod = () => {
       <Button
         variant="contained"
         color="primary"
-        disabled={!selectedPeriod}
+        disabled={!selectedPeriod || isEnrollLoading}
         onClick={() => setOpenDialog(true)} // Abrir diálogo de confirmación
       >
-        Inscribirse
+        {isEnrollLoading ? <CircularProgress size={24} /> : "Inscribirse"}
       </Button>
 
       {/* Diálogo de Confirmación */}
@@ -234,6 +215,15 @@ const EnrollToAcademicPeriod = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Snackbar para errores */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        message={snackbarMessage}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      />
     </Container>
   );
 };
