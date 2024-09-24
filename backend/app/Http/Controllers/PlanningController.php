@@ -36,70 +36,39 @@ class PlanningController extends Controller
     // Guardar una nueva planificación
     public function store(Request $request)
     {
-        /// Validar los datos de la planificación
+        // Validar los datos de la planificación
         $validatedData = $request->validate([
-            'nombre_largo' => 'required|string|max:255',
-            'nombre_corto' => 'required|string|max:255',
-            'correo' => 'required|email',
-            'direccion' => 'required|string|max:255',
-            'telefono' => 'required|string|max:20',
-            'consultor_tis' => 'required|string|max:255',
-            'gestion' => 'required|string|max:255',
-            'planificacion' => 'required|array',
-            'planificacion.*.nombre_hito' => 'required_with:planificacion|string|max:255',
-            'planificacion.*.fecha_ini' => 'required_with:planificacion|date',
-            'planificacion.*.fecha_entrega' => 'required_with:planificacion|date',
-            'planificacion.*.cobro' => 'required_with:planificacion|numeric',
-            'planificacion.*.hu' => 'sometimes|array',
-            'planificacion.*.hu.*.nombre_hu' => 'required_with:planificacion.hu|string|max:255',
-            'planificacion.*.hu.*.responsable' => 'required_with:planificacion.hu|string|max:255',
-            'planificacion.*.hu.*.objetivo' => 'required_with:planificacion.hu|string',
-            'integrantes' => 'sometimes|array',
-            'integrantes.*.id' => 'required|exists:users,id',
-        ]);
-
-        // Crear la compañía
-        $company = Company::create([
-            'nombre_largo' => $validatedData['nombre_largo'],
-            'nombre_corto' => $validatedData['nombre_corto'],
-            'correo' => $validatedData['correo'],
-            'direccion' => $validatedData['direccion'],
-            'telefono' => $validatedData['telefono'],
-            'consultor_tis' => $validatedData['consultor_tis'],
-            'gestion' => $validatedData['gestion'],
+            'name' => 'required|string|max:255',
+            'company_id' => 'required|exists:companies,id',
+            'milestones' => 'sometimes|array', // Validación para hitos
+            'milestones.*.name' => 'required_with:milestones|string|max:255',
+            'milestones.*.start_date' => 'required_with:milestones|date',
+            'milestones.*.end_date' => 'required_with:milestones|date',
+            'milestones.*.billing_percentage' => 'required_with:milestones|numeric',
+            'milestones.*.deliverables' => 'sometimes|array', // Validación para entregables
+            'milestones.*.deliverables.*.name' => 'required_with:milestones.deliverables|string|max:255',
+            'milestones.*.deliverables.*.responsible' => 'required_with:milestones.deliverables|string|max:255',
+            'milestones.*.deliverables.*.objective' => 'required_with:milestones.deliverables|string',
         ]);
 
         // Crear la planificación
         $planning = Planning::create([
-            'name' => $validatedData['gestion'], // Asumiendo que 'gestion' es el nombre de la planificación
-            'company_id' => $company->id
+            'name' => $validatedData['name'],
+            'company_id' => $validatedData['company_id']
         ]);
 
-        // Asignar integrantes a la compañía
-        if (isset($validatedData['integrantes'])) {
-            foreach ($validatedData['integrantes'] as $integrante) {
-                CompanyUser::create([
-                    'company_id' => $company->id,
-                    'user_id' => $integrante['id'],
-                ]);
-            }
-        }
+        // Crear los hitos (si existen)
+        if (isset($validatedData['milestones'])) {
+            foreach ($validatedData['milestones'] as $milestoneData) {
+                $milestone = new Milestone($milestoneData);
+                $planning->milestones()->save($milestone);
 
-        // Crear los hitos
-        foreach ($validatedData['planificacion'] as $milestoneData) {
-            $milestone = new Milestone([
-                'name' => $milestoneData['nombre_hito'],
-                'start_date' => $milestoneData['fecha_ini'],
-                'end_date' => $milestoneData['fecha_entrega'],
-                'billing_percentage' => $milestoneData['cobro']
-            ]);
-            $planning->milestones()->save($milestone);
-
-            // Crear los entregables
-            if (isset($milestoneData['hu'])) {
-                foreach ($milestoneData['hu'] as $deliverableData) {
-                    $deliverable = new Deliverable($deliverableData);
-                    $milestone->deliverables()->save($deliverable);
+                // Crear los entregables (si existen)
+                if (isset($milestoneData['deliverables'])) {
+                    foreach ($milestoneData['deliverables'] as $deliverableData) {
+                        $deliverable = new Deliverable($deliverableData);
+                        $milestone->deliverables()->save($deliverable);
+                    }
                 }
             }
         }

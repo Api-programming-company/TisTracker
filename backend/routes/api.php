@@ -69,4 +69,6 @@ Route::middleware('auth')->group(function () {
     Route::apiResource('plannings', PlanningController::class);
     //buscador por correo solo estudiante
     Route::get('student/search/{email}', [AuthController::class, 'searchStudentByEmail']);
+    Route::get('/student/company/{academicPeriodId}', [CompanyUserController::class, 'getStudentCompanyByAcademicPeriod']);
+
 });
