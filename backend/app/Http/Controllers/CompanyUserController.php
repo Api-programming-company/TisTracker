@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Company;
 use App\Models\User;
+use App\Models\CompanyUser;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Exception;
+
 
 class CompanyUserController extends Controller
 {
@@ -146,7 +148,7 @@ class CompanyUserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $companyId, $userId)
+    public function update(Request $request, $id)
     {
         try {
             // Validar la solicitud
@@ -156,6 +158,7 @@ class CompanyUserController extends Controller
 
             // Obtener el usuario autenticado
             $user = Auth::user();
+            $userId = $user->id;
 
             // Verificar si el usuario ya pertenece a una compañía en estado "A"
             $existingCompany = Company::whereHas('members', function ($query) use ($userId) {
@@ -169,7 +172,7 @@ class CompanyUserController extends Controller
             }
 
             // Buscar la compañía y el usuario en esa compañía
-            $companyUser = CompanyUserController::where('company_id', $companyId)->where('user_id', $userId)->first();
+            $companyUser = CompanyUser::where('company_id', $id)->where('user_id', $userId)->first();
 
             // Verificar si la compañía está en estado "P"
             if (!$companyUser || $companyUser->status !== 'P') {
