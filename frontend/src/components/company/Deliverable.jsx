@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { ListItem, ListItemText, TextField } from "@mui/material";
+import { Button, ListItem, ListItemText, TextField } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import DialogMod from "../DialogMod";
 
-const Deliverable = ({ deliverable, isEditing, onChange }) => {
+const Deliverable = ({ deliverable, isEditing, onChange, onDelete }) => {
   const [name, setName] = useState(deliverable.name);
   const [responsible, setResponsible] = useState(deliverable.responsible);
   const [objective, setObjective] = useState(deliverable.objective);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     onChange({ ...deliverable, name, responsible, objective });
@@ -39,6 +42,32 @@ const Deliverable = ({ deliverable, isEditing, onChange }) => {
             label="Objetivo"
             fullWidth
             sx={{ mr: 2, mb: 2 }}
+          />
+
+          <Button
+            variant="outlined"
+            sx={{
+              backgroundColor: "transparent",
+              border: "1px solid black",
+              "&:hover": {
+                color: "white",
+                backgroundColor: "primary.dark",
+              },
+              mr: 2,
+              mb: 2,
+            }}
+            startIcon={<DeleteIcon />}
+            onClick={() => setOpen(true)}
+          ></Button>
+
+          <DialogMod
+            open={open}
+            setOpen={setOpen}
+            title={"Eliminar hito"}
+            content={"¿Está seguro de realizar esta acción?"}
+            onAccept={onDelete}
+            paramsAccept={deliverable.id}
+            onCancel={() => setOpen(false)}
           />
         </>
       ) : (

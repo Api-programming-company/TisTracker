@@ -73,10 +73,9 @@ const Milestone = ({ milestone, isEditing, onChange, onDelete }) => {
     onChange({ ...milestone, deliverables: updatedDeliverables });
   };
 
-  const handleDeleteDeliverable = () => {
-    const updatedDeliverables = milestone.deliverables.filter((e)=> e.id !== milestone.id)
+  const handleDeleteDeliverable = (id) => {
+    const updatedDeliverables = milestone.deliverables.filter((e)=> e.id !== id)
     onChange({...milestone, deliverables: updatedDeliverables})
-    setOpen(false)
   }
 
   return (
@@ -188,6 +187,7 @@ const Milestone = ({ milestone, isEditing, onChange, onDelete }) => {
                       deliverable={deliverable}
                       isEditing={isEditing}
                       onChange={handleDeliverableChange}
+                      onDelete={handleDeleteDeliverable}
                     />
                   ))
                 ) : (
