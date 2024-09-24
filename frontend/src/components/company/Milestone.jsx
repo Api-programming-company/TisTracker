@@ -30,7 +30,9 @@ const Milestone = ({ milestone, isEditing, onChange }) => {
 
   const handleDeliverableChange = (updatedDeliverable) => {
     const updatedDeliverables = milestone.deliverables.map((deliverable) =>
-      deliverable.id === updatedDeliverable.id ? updatedDeliverable : deliverable
+      deliverable.id === updatedDeliverable.id
+        ? updatedDeliverable
+        : deliverable
     );
 
     onChange({ ...milestone, deliverables: updatedDeliverables });
@@ -60,7 +62,7 @@ const Milestone = ({ milestone, isEditing, onChange }) => {
     const newDeliverable = {
       name: "Nuevo Entregable",
       responsible: "",
-      objective: ""
+      objective: "",
     };
 
     const updatedDeliverables = [...milestone.deliverables, newDeliverable];
@@ -96,6 +98,7 @@ const Milestone = ({ milestone, isEditing, onChange }) => {
                 value={startDate}
                 onChange={handleStartDateChange}
                 renderInput={(params) => <TextField {...params} />}
+                sx={{ mr: 2 }}
               />
               <DatePicker
                 label="Fecha de fin"
@@ -109,7 +112,9 @@ const Milestone = ({ milestone, isEditing, onChange }) => {
                 <TextField
                   label="Porcentaje de facturación"
                   value={billingPercentage}
-                  onChange={(e) => handleBillingPercentageChange(e.target.value)}
+                  onChange={(e) =>
+                    handleBillingPercentageChange(e.target.value)
+                  }
                   type="number"
                   fullWidth
                 />
@@ -117,9 +122,21 @@ const Milestone = ({ milestone, isEditing, onChange }) => {
                 <ListItemText primary={`% Facturación: ${billingPercentage}`} />
               )}
             </ListItem>
-            <ListItem>
+            <ListItem
+              sx={{ display: "flex", justifyContent: "center", width: "100%" }}
+            >
               {isEditing && (
-                <Button onClick={handleAddDeliverable} sx={{ mb: 1 }}>
+                <Button
+                  onClick={handleAddDeliverable}
+                  sx={{
+                    backgroundColor: "primary.main",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "primary.dark",
+                    },
+                    mb: 1,
+                  }}
+                >
                   Agregar Entregable
                 </Button>
               )}

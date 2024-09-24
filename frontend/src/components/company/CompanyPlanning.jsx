@@ -7,7 +7,7 @@ import DialogMod from "../DialogMod";
 const CompanyPlanning = ({ milestones, setFormData, setSendData }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [tempMilestones, setTempMilestones] = useState([...milestones]); // Estado para los hitos en edición
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   const handleEditToggle = () => {
     setIsEditing((prev) => !prev);
@@ -16,7 +16,6 @@ const CompanyPlanning = ({ milestones, setFormData, setSendData }) => {
     if (isEditing) {
       setTempMilestones([...milestones]); // Reinicia a los hitos originales
     }
-
   };
 
   const handleConfirm = () => {
@@ -25,7 +24,7 @@ const CompanyPlanning = ({ milestones, setFormData, setSendData }) => {
       milestones: tempMilestones, // Confirma los hitos temporales al formData
     }));
     setIsEditing(false);
-    
+
     // setSendData(true)
   };
 
@@ -42,7 +41,7 @@ const CompanyPlanning = ({ milestones, setFormData, setSendData }) => {
       name: "Nuevo Hito",
       start_date: new Date(),
       end_date: new Date(),
-      deliverables: []
+      deliverables: [],
     };
 
     setTempMilestones((prev) => [...prev, newMilestone]); // Agrega el nuevo hito a la lista temporal
@@ -53,21 +52,71 @@ const CompanyPlanning = ({ milestones, setFormData, setSendData }) => {
       <Typography variant="h4" gutterBottom>
         Planificación de la Empresa
       </Typography>
-      <Button onClick={handleEditToggle}>
+      <Button
+        onClick={handleEditToggle}
+        sx={{
+          ...(isEditing
+            ? {
+                backgroundColor: "transparent",
+                border: "1px solid black",
+                "&:hover": {
+                  color: "white",
+                  backgroundColor: "primary.dark",
+                },
+              }
+            : {
+                backgroundColor: "primary.main",
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "primary.dark",
+                },
+              }),
+          mb: 2,
+          mr: 2,
+        }}
+      >
         {isEditing ? "Cancelar" : "Editar"}
       </Button>
+
       {isEditing && (
         <>
-          <Button onClick={()=>setOpen(true)}>Confirmar</Button>
-          <DialogMod 
-            open={ open } 
-            setOpen={ setOpen } 
-            title={ 'Confirmar' } 
-            content={ "¿Esta seguro de realiza esta acción?" } 
-            onAccept={ handleConfirm } 
-            onCancel={ ()=>setOpen(false) } 
+          <Button
+            onClick={() => setOpen(true)}
+            sx={{
+              backgroundColor: "transparent",
+              border: "1px solid black",
+              "&:hover": {
+                color: "white",
+                backgroundColor: "primary.dark",
+              },
+              mb: 2,
+              mr: 2,
+            }}
+          >
+            Confirmar
+          </Button>
+          <DialogMod
+            open={open}
+            setOpen={setOpen}
+            title={"Confirmar"}
+            content={"¿Está seguro de realizar esta acción?"}
+            onAccept={handleConfirm}
+            onCancel={() => setOpen(false)}
           />
-          <Button onClick={handleAddMilestone} sx={{ ml: 2 }}>
+          <Button
+            color="primary"
+            onClick={handleAddMilestone}
+            sx={{
+              backgroundColor: "transparent",
+              border: "1px solid black",
+              "&:hover": {
+                color: "white",
+                backgroundColor: "primary.dark",
+              },
+              mr: 2,
+              mb: 2,
+            }}
+          >
             Agregar Hito
           </Button>
         </>

@@ -85,7 +85,7 @@ const VerGE = () => {
   }
 
   return (
-    <Box sx={{ maxWidth: 900, margin: "auto", padding: 2 }}>
+    <Box sx={{ maxWidth: 900, margin: "auto", padding: 2, mb: 15 }}>
       <CompanyDetails company={formData.company} />
       <Divider sx={{ my: 4 }} />
       <CompanyPlanning

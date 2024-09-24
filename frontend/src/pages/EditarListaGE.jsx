@@ -96,13 +96,13 @@ const EditarListaGE = () => {
     //Colorear un item al agregarse
     setItemColor((prevColors) => ({
       ...prevColors,
-      [itemId]: "aliceblue",
+      [itemId]: "success.soft",
     }));
 
     setTimeout(() => {
       setItemColor((prevColors) => ({
         ...prevColors,
-        [itemId]: "#F6F6F6",
+        [itemId]: "info.gray",
       }));
     }, 2000);
   };
@@ -167,7 +167,7 @@ const EditarListaGE = () => {
                           (selectedItem) => selectedItem.id === item.id
                         )}
                         onClick={() => handleAddItem(item.id)}
-                        sx={{ backgroundColor: "#F6F6F6", mb: 0.5 }}
+                        sx={{ backgroundColor: "info.gray", mb: 0.5 }}
                       >
                         <ListItemIcon>
                           <Avatar>
@@ -199,7 +199,7 @@ const EditarListaGE = () => {
                         </IconButton>
                       }
                       sx={{
-                        backgroundColor: itemColor[item.id] || "#F6F6F6",
+                        backgroundColor: itemColor[item.id] || "info.gray",
                         mb: 0.5,
                       }}
                     >
@@ -226,7 +226,7 @@ const EditarListaGE = () => {
                       disabled={selectedItems.some(
                         (selectedItem) => selectedItem.id === item.id
                       )}
-                      sx={{ backgroundColor: "#F6F6F6", mb: 0.5 }}
+                      sx={{ backgroundColor: "info.gray", mb: 0.5 }}
                     >
                       <ListItemIcon>
                         <Avatar>

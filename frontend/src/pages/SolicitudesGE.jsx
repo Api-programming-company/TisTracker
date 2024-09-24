@@ -236,6 +236,7 @@ const SolicitudesGE = () => {
                     px: 12,
                     py: 1,
                     color: "black",
+                    border: "1px solid black",
                   }}
                 >
                   RECHAZAR

@@ -4,7 +4,7 @@ const lightTheme = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: "#a5d6a7", // Verde pastel
+      main: "#2A628F", // Azul
     },
     secondary: {
       main: "#ffab91", // Coral pastel
@@ -17,9 +17,11 @@ const lightTheme = createTheme({
     },
     info: {
       main: "#81d4fa", // Azul pastel
+      gray: "#f6f6f6", //Gris claro
     },
     success: {
       main: "#c5e1a5", // Verde claro pastel
+      soft: "aliceblue",
     },
   },
   typography: {
@@ -31,7 +33,7 @@ const darkTheme = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: "#80e27e", // Verde pastel claro
+      main: "#0B3F69", // Azul oscuro
     },
     secondary: {
       main: "#ffab91", // Coral pastel
@@ -44,9 +46,11 @@ const darkTheme = createTheme({
     },
     info: {
       main: "#81d4fa", // Azul pastel
+      gray: "#000000", //Gris claro
     },
     success: {
       main: "#c5e1a5", // Verde claro pastel
+      soft: "aliceblue",
     },
   },
   typography: {
