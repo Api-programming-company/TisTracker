@@ -137,7 +137,7 @@ const SolicitudesGE = () => {
           gutterBottom
           sx={{ textAlign: "center", mb: 3 }}
         >
-          Solicitudes de creación de Grupo-Empresas
+          Solicitudes de creación de Grupo Empresas
         </Typography>
 
         {companies.map((request) => (
@@ -236,6 +236,7 @@ const SolicitudesGE = () => {
                     px: 12,
                     py: 1,
                     color: "black",
+                    border: "1px solid black",
                   }}
                 >
                   RECHAZAR

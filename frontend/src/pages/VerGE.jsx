@@ -79,13 +79,13 @@ const VerGE = () => {
     );
   }
 
-  if (isError) return <div>Error al cargar los datos de la empresa</div>;
+  if (isError) return <div>Error al cargar los datos de la grupo empresa</div>;
   if (!formData.company) {
     return <div>No hay datos disponibles.</div>;
   }
 
   return (
-    <Box sx={{ maxWidth: 900, margin: "auto", padding: 2 }}>
+    <Box sx={{ maxWidth: 900, margin: "auto", padding: 2, mb: 15 }}>
       <CompanyDetails company={formData.company} />
       <Divider sx={{ my: 4 }} />
       <CompanyPlanning

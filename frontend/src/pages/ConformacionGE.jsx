@@ -142,7 +142,7 @@ const ConformacionGE = () => {
 
             <Typography
               component="p"
-              sx={{ color: "#8E9090", fontSize: "14px" }}
+              sx={{ color: "#8E9090", fontSize: "14px", mt: 2 }}
             >
               Nota: Solamente se enviará la solicitud de conformación de la
               grupo empresa, tu docente todavía debe aceptar a tu equipo de
@@ -167,7 +167,7 @@ const ConformacionGE = () => {
             {isLoading ? (
               <CircularProgress size={24} color="inherit" />
             ) : (
-              "REALIZAR CAMBIOS"
+              "ENVIAR"
             )}
           </Button>
         </form>

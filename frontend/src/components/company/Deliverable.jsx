@@ -11,7 +11,12 @@ const Deliverable = ({ deliverable, isEditing, onChange }) => {
   }, [name, responsible, objective]);
 
   return (
-    <ListItem>
+    <ListItem
+      sx={{
+        display: { xs: "block", sm: "flex" },
+        justifyContent: "space-between",
+      }}
+    >
       {isEditing ? (
         <>
           <TextField
@@ -19,18 +24,21 @@ const Deliverable = ({ deliverable, isEditing, onChange }) => {
             onChange={(e) => setName(e.target.value)}
             label="Nombre"
             fullWidth
+            sx={{ mr: 2, mb: 2 }}
           />
           <TextField
             value={responsible}
             onChange={(e) => setResponsible(e.target.value)}
             label="Responsable"
             fullWidth
+            sx={{ mr: 2, mb: 2 }}
           />
           <TextField
             value={objective}
             onChange={(e) => setObjective(e.target.value)}
             label="Objetivo"
             fullWidth
+            sx={{ mr: 2, mb: 2 }}
           />
         </>
       ) : (

@@ -93,14 +93,14 @@ const CompanyList = () => {
             <AddIcon fontSize="large" />
           </IconButton>
           <IconButton
-            color="secondary" // Cambiar color si lo deseas
+            color="primary" // Cambiar color si lo deseas
             aria-label="Solicitudes pendientes"
             onClick={handlePendingRequests}
             sx={{
-              backgroundColor: "secondary.main",
+              backgroundColor: "primary.main",
               color: "white",
               "&:hover": {
-                backgroundColor: "secondary.dark",
+                backgroundColor: "primary.dark",
               },
             }}
           >

@@ -132,7 +132,7 @@ const RegistroGE = () => {
         gutterBottom
         sx={{ textAlign: "center", mb: 3 }}
       >
-        Registrar Grupo-Empresa
+        Registrar Grupo Empresa
       </Typography>
 
       <form onSubmit={handleSubmit}>

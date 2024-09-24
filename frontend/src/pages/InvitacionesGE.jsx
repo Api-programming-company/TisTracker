@@ -60,7 +60,9 @@ const InvitacionesGE = () => {
       setOpenSnackbar(true);
       // Elimina la invitación aceptada/rechazada del estado
       setInvitations((prev) =>
-        prev.filter((invitation) => invitation.company.id !== selectedInvitationId)
+        prev.filter(
+          (invitation) => invitation.company.id !== selectedInvitationId
+        )
       );
     }
     if (isInvitationError) {
@@ -68,7 +70,13 @@ const InvitacionesGE = () => {
       setErrorMessage("Error al actualizar la invitación.");
       setOpenSnackbar(true);
     }
-  }, [isInvitationSuccess, isInvitationError, invitationError, actionType, selectedInvitationId]);
+  }, [
+    isInvitationSuccess,
+    isInvitationError,
+    invitationError,
+    actionType,
+    selectedInvitationId,
+  ]);
 
   const handleAccept = (id) => {
     setSelectedInvitationId(id);
@@ -126,7 +134,7 @@ const InvitacionesGE = () => {
           gutterBottom
           sx={{ textAlign: "center", mb: 3 }}
         >
-          Invitaciones de Grupo-Empresas
+          Invitaciones de Grupo Empresas
         </Typography>
 
         {invitations.length === 0 && (
@@ -155,7 +163,7 @@ const InvitacionesGE = () => {
                 ml: 3,
               }}
             >
-              {/* Detalles de la Grupo-Empresa, lado izquierdo */}
+              {/* Detalles de la grupo empresa*/}
               <Box sx={{ flex: 1, mr: 2, mb: 3 }}>
                 <Typography
                   component="p"
