@@ -77,35 +77,40 @@ const CompanyList = () => {
           Lista de Empresas
         </Typography>
         <Box>
-          <IconButton
-            color="primary"
-            aria-label="Agregar empresa"
-            onClick={handleAddCompany}
-            sx={{
-              backgroundColor: "primary.main",
-              color: "white",
-              "&:hover": {
-                backgroundColor: "primary.dark",
-              },
-              mr: 1, // Espacio entre botones
-            }}
-          >
-            <AddIcon fontSize="large" />
-          </IconButton>
-          <IconButton
-            color="primary" // Cambiar color si lo deseas
-            aria-label="Solicitudes pendientes"
-            onClick={handlePendingRequests}
-            sx={{
-              backgroundColor: "primary.main",
-              color: "white",
-              "&:hover": {
-                backgroundColor: "primary.dark",
-              },
-            }}
-          >
-            <PendingActionsIcon fontSize="large" />
-          </IconButton>
+          {user?.user_type === "estudiante" && (
+            <IconButton
+              color="primary"
+              aria-label="Agregar empresa"
+              onClick={handleAddCompany}
+              sx={{
+                backgroundColor: "primary.main",
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "primary.dark",
+                },
+                mr: 1,
+              }}
+            >
+              <AddIcon fontSize="large" />
+            </IconButton>
+          )}
+
+          {user?.user_type === "docente" && (
+            <IconButton
+              color="primary"
+              aria-label="Solicitudes pendientes"
+              onClick={handlePendingRequests}
+              sx={{
+                backgroundColor: "primary.main",
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "primary.dark",
+                },
+              }}
+            >
+              <PendingActionsIcon fontSize="large" />
+            </IconButton>
+          )}
         </Box>
       </Box>
       <Box
