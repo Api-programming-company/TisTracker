@@ -7,6 +7,7 @@ import {
   List,
   TextField,
   Button,
+  Box,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
@@ -14,6 +15,8 @@ import Deliverable from "./Deliverable";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import DeleteIcon from "@mui/icons-material/Delete";
+import DialogMod from "../DialogMod";
 
 const Milestone = ({ milestone, isEditing, onChange }) => {
   const [openDeliverables, setOpenDeliverables] = useState(false);
@@ -30,7 +33,9 @@ const Milestone = ({ milestone, isEditing, onChange }) => {
 
   const handleDeliverableChange = (updatedDeliverable) => {
     const updatedDeliverables = milestone.deliverables.map((deliverable) =>
-      deliverable.id === updatedDeliverable.id ? updatedDeliverable : deliverable
+      deliverable.id === updatedDeliverable.id
+        ? updatedDeliverable
+        : deliverable
     );
 
     onChange({ ...milestone, deliverables: updatedDeliverables });
@@ -60,7 +65,7 @@ const Milestone = ({ milestone, isEditing, onChange }) => {
     const newDeliverable = {
       name: "Nuevo Entregable",
       responsible: "",
-      objective: ""
+      objective: "",
     };
 
     const updatedDeliverables = [...milestone.deliverables, newDeliverable];
@@ -73,11 +78,17 @@ const Milestone = ({ milestone, isEditing, onChange }) => {
         <ListItemText
           primary={
             isEditing ? (
-              <TextField
-                value={name}
-                onChange={(e) => handleNameChange(e.target.value)}
-                fullWidth
-              />
+              <Box sx={{ display: "flex", gap: 2 }}>
+                <TextField
+                  value={name}
+                  onChange={(e) => handleNameChange(e.target.value)}
+                  fullWidth
+                />
+                <Button variant="outlined" startIcon={<DeleteIcon />}>
+                  Eliminar hito
+                </Button>
+                {/* <DialogMod /> */}
+              </Box>
             ) : (
               name
             )
@@ -109,7 +120,9 @@ const Milestone = ({ milestone, isEditing, onChange }) => {
                 <TextField
                   label="Porcentaje de facturación"
                   value={billingPercentage}
-                  onChange={(e) => handleBillingPercentageChange(e.target.value)}
+                  onChange={(e) =>
+                    handleBillingPercentageChange(e.target.value)
+                  }
                   type="number"
                   fullWidth
                 />

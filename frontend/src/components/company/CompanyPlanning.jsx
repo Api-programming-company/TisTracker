@@ -63,7 +63,7 @@ const CompanyPlanning = ({ milestones, setFormData, setSendData }) => {
             open={ open } 
             setOpen={ setOpen } 
             title={ 'Confirmar' } 
-            content={ "¿Esta seguro de realiza esta acción?" } 
+            content={ "¿Esta seguro de realizar esta acción?" } 
             onAccept={ handleConfirm } 
             onCancel={ ()=>setOpen(false) } 
           />
