@@ -5,11 +5,6 @@ import {
   Typography,
   Box,
   Icon,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   CircularProgress,
   Snackbar,
 } from "@mui/material";
@@ -81,7 +76,6 @@ const SolicitudesGE = () => {
       });
     } finally {
       setLoading(false);
-      // handleClose();
     }
   };
 
@@ -218,7 +212,7 @@ const SolicitudesGE = () => {
                     onClick={() => {
                       setSelectedCompany(request.id);
                       setOpenA(true);
-                    }} //() => handleClickOpen(request.id)
+                    }} 
                     variant="contained"
                     disabled={isUpdateLoading}
                     color="primary"
