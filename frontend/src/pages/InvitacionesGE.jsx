@@ -163,7 +163,7 @@ const InvitacionesGE = () => {
                 ml: 3,
               }}
             >
-              {/* Detalles de la grupo empresa, lado izquierdo */}
+              {/* Detalles de la grupo empresa*/}
               <Box sx={{ flex: 1, mr: 2, mb: 3 }}>
                 <Typography
                   component="p"
