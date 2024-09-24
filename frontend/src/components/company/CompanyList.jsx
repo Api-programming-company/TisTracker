@@ -119,19 +119,25 @@ const CompanyList = () => {
         justifyContent="flex-start" // Mantener alineación de izquierda a derecha
         sx={{ gap: 2 }} // Espacio entre tarjetas
       >
-        {data.companies.map((company) => (
-          <Box
-            key={company.id}
-            flexBasis={{
-              xs: "100%", // 1 item
-              sm: "48%", // 2 items
-              md: "30%", // 3 items
-            }}
-            sx={{ minWidth: 0 }}
-          >
-            <CompanyCard company={company} />
-          </Box>
-        ))}
+        {data?.companies?.length === 0 ? (
+          <Typography variant="h6" color="textSecondary">
+            No hay empresas registradas en este período académico.
+          </Typography>
+        ) : (
+          data?.companies?.map((company) => (
+            <Box
+              key={company.id}
+              flexBasis={{
+                xs: "100%", // 1 item
+                sm: "48%", // 2 items
+                md: "30%", // 3 items
+              }}
+              sx={{ minWidth: 0 }}
+            >
+              <CompanyCard company={company} />
+            </Box>
+          ))
+        )}
       </Box>
     </Container>
   );
