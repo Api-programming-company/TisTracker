@@ -27,6 +27,7 @@ const Deliverable = ({ deliverable, isEditing, onChange, onDelete }) => {
             onChange={(e) => setName(e.target.value)}
             label="Nombre"
             fullWidth
+            multiline
             sx={{ mr: 2, mb: 2 }}
           />
           <TextField
@@ -34,6 +35,7 @@ const Deliverable = ({ deliverable, isEditing, onChange, onDelete }) => {
             onChange={(e) => setResponsible(e.target.value)}
             label="Responsable"
             fullWidth
+            multiline
             sx={{ mr: 2, mb: 2 }}
           />
           <TextField
@@ -41,6 +43,7 @@ const Deliverable = ({ deliverable, isEditing, onChange, onDelete }) => {
             onChange={(e) => setObjective(e.target.value)}
             label="Objetivo"
             fullWidth
+            multiline
             sx={{ mr: 2, mb: 2 }}
           />
 

@@ -25,7 +25,7 @@ const CompanyPlanning = ({ milestones, setFormData, setSendData }) => {
     }));
     setIsEditing(false);
 
-    // setSendData(true)
+    setSendData(true)
   };
 
   const handleMilestoneChange = (updatedMilestone) => {
