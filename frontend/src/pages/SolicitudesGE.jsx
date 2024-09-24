@@ -56,7 +56,6 @@ const SolicitudesGE = () => {
   }, [data, isSuccess, isError, error]);
 
   const handleAccept = async () => {
-    setOpen(false);
     if (!selectedCompany) return;
     setLoading(true);
     setOpenA(false);
@@ -87,8 +86,8 @@ const SolicitudesGE = () => {
   };
 
   const handleDecline = async (companyId) => {
-      setLoading(true);
-      setOpenR(false);
+    setLoading(true);
+    setOpenR(false);
     setOpenR(false);
     try {
       await updateCompany({ id: companyId, data: { status: "R" } }).unwrap();
@@ -207,77 +206,71 @@ const SolicitudesGE = () => {
                   </Typography>
                 </Box>
 
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  flex: 1,
-                  mb: 3,
-                }}
-              >
-                <Button
-                  onClick={() => {
-                    setSelectedCompany(request.id);
-                    setOpenA(true);
-                  }} //() => handleClickOpen(request.id)
-                  variant="contained"
-                  color="primary"
+                <Box
                   sx={{
-                    mb: 2,
-                    px: 12,
-                    py: 1,
-                    position: "relative",
+                    display: "flex",
+                    flexDirection: "column",
+                    flex: 1,
+                    mb: 3,
                   }}
                 >
-                  ACEPTAR
-                  {loading && (
-                    <CircularProgress
-                      size={24}
-                      sx={{
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        marginTop: "-12px",
-                        marginLeft: "-12px",
-                      }}
-                    />
-                  )}
-                </Button>
-                <DialogMod
-                  open={openA}
-                  setOpen={setOpenA}
-                  title={"Confirmar"}
-                  content={"¿Está seguro de que desea aceptar esta solicitud?"}
-                  onAccept={handleAccept}
-                  paramsAccept={request.id}
-                />
+                  <Button
+                    onClick={() => {
+                      setSelectedCompany(request.id);
+                      setOpenA(true);
+                    }} //() => handleClickOpen(request.id)
+                    variant="contained"
+                    disabled={isUpdateLoading}
+                    color="primary"
+                    sx={{
+                      mb: 2,
+                      px: 12,
+                      py: 1,
+                      position: "relative",
+                    }}
+                  >
+                    ACEPTAR
+                  </Button>
+                  <DialogMod
+                    open={openA}
+                    setOpen={setOpenA}
+                    title={"Confirmar"}
+                    content={
+                      "¿Está seguro de que desea aceptar esta solicitud?"
+                    }
+                    onAccept={handleAccept}
+                    paramsAccept={request.id}
+                  />
 
-                <Button
-                  onClick={() => setOpenR(true)} 
-                  variant="contained"
-                  color="transparent"
-                  sx={{
-                    px: 12,
-                    py: 1,
-                    color: "black",
-                    border: "1px solid black",
-                  }}
-                >
-                  RECHAZAR
-                </Button>
-                <DialogMod
-                  open={openR}
-                  setOpen={setOpenR}
-                  title={"Rechazar"}
-                  content={"¿Está seguro de que desea rechazar esta solicitud?"}
-                  onAccept={handleDecline}
-                  paramsAccept={request.id}
-                />
+                  <Button
+                    onClick={() => setOpenR(true)}
+                    variant="contained"
+                    color="transparent"
+                    disabled={isUpdateLoading}
+                    sx={{
+                      px: 12,
+                      py: 1,
+                      color: "black",
+                      border: "1px solid black",
+                    }}
+                  >
+                    RECHAZAR
+                  </Button>
+                  <DialogMod
+                    open={openR}
+                    setOpen={setOpenR}
+                    title={"Rechazar"}
+                    content={
+                      "¿Está seguro de que desea rechazar esta solicitud?"
+                    }
+                    onAccept={handleDecline}
+                    paramsAccept={request.id}
+                  />
+                </Box>
               </Box>
             </Box>
-          </Box>
-        ))}
-      
+          ))
+        )}
 
         <Snackbar
           open={snackbar.open}
