@@ -189,4 +189,46 @@ class CompanyUserController extends Controller
 
         return response()->json(['message' => 'Miembro eliminado correctamente de la compañía.'], 200);
     }
+
+    public function getStudentCompanyByAcademicPeriod($academicPeriodId)
+    {
+        try {
+            // Obtener el usuario autenticado
+            $user = Auth::user();
+
+            // Verificar si el usuario es un estudiante
+            if ($user->user_type !== 'E') {  // 'E' para estudiante
+                return response()->json([
+                    'message' => 'El usuario no es un estudiante.'
+                ], 403);  // 403 Forbidden
+            }
+
+            // Buscar la compañía a la que el estudiante está inscrito en el periodo académico especificado
+            $company = Company::where('academic_period_id', $academicPeriodId)
+                ->whereHas('members', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                })->first();
+
+            // Verificar si se encontró una compañía (grupo)
+            if (!$company) {
+                return response()->json([
+                    'message' => 'No se encontró un grupo para el estudiante en este periodo académico.'
+                ], 404);  // 404 Not Found
+            }
+
+            // Retornar la compañía del estudiante
+            return response()->json([
+                'message' => 'Grupo encontrado correctamente.',
+                'data' => $company
+            ], 200);  // 200 OK
+
+        } catch (Exception $e) {
+            // Manejo de errores generales
+            return response()->json([
+                'message' => 'Se ha producido un error inesperado.',
+                'error' => $e->getMessage()
+            ], 500);  // 500 Internal Server Error
+        }
+    }
+
 }
