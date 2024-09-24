@@ -47,6 +47,11 @@ const CompanyPlanning = ({ milestones, setFormData, setSendData }) => {
     setTempMilestones((prev) => [...prev, newMilestone]); // Agrega el nuevo hito a la lista temporal
   };
 
+  const handleDeleteMilestone = (id) => {
+    const updatedMilestones = tempMilestones.filter((e)=> e.id !== id)
+    setTempMilestones([...updatedMilestones])
+  }
+
   return (
     <Box sx={{ padding: 2, border: "1px solid #ccc", borderRadius: 2, mt: 2 }}>
       <Typography variant="h4" gutterBottom>
@@ -129,6 +134,7 @@ const CompanyPlanning = ({ milestones, setFormData, setSendData }) => {
               milestone={milestone}
               isEditing={isEditing}
               onChange={handleMilestoneChange}
+              onDelete={handleDeleteMilestone}
             />
           ))
         ) : (

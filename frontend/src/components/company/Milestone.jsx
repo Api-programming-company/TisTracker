@@ -18,11 +18,12 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DialogMod from "../DialogMod";
 
-const Milestone = ({ milestone, isEditing, onChange }) => {
+const Milestone = ({ milestone, isEditing, onChange, onDelete }) => {
   const [openDeliverables, setOpenDeliverables] = useState(false);
   const [startDate, setStartDate] = useState(new Date(milestone.start_date));
   const [endDate, setEndDate] = useState(new Date(milestone.end_date));
   const [name, setName] = useState(milestone.name);
+  const [open, setOpen] = useState(false)
   const [billingPercentage, setBillingPercentage] = useState(
     milestone.billing_percentage
   );
@@ -72,6 +73,12 @@ const Milestone = ({ milestone, isEditing, onChange }) => {
     onChange({ ...milestone, deliverables: updatedDeliverables });
   };
 
+  const handleDeleteDeliverable = () => {
+    const updatedDeliverables = milestone.deliverables.filter((e)=> e.id !== milestone.id)
+    onChange({...milestone, deliverables: updatedDeliverables})
+    setOpen(false)
+  }
+
   return (
     <div style={{ marginBottom: "16px" }}>
       <ListItem button onClick={handleToggle}>
@@ -84,10 +91,32 @@ const Milestone = ({ milestone, isEditing, onChange }) => {
                   onChange={(e) => handleNameChange(e.target.value)}
                   fullWidth
                 />
-                <Button variant="outlined" startIcon={<DeleteIcon />}>
+                <Button
+                  variant="outlined"
+                  sx={{
+                    backgroundColor: "transparent",
+                    border: "1px solid black",
+                    "&:hover": {
+                      color: "white",
+                      backgroundColor: "primary.dark",
+                    },
+                    mr: 2,
+                    mb: 2,
+                  }}
+                  startIcon={<DeleteIcon />}
+                  onClick={()=>setOpen(true)}
+                >
                   Eliminar hito
                 </Button>
-                {/* <DialogMod /> */}
+                <DialogMod
+                  open={open}
+                  setOpen={setOpen}
+                  title={"Eliminar hito"}
+                  content={"¿Está seguro de realizar esta acción?"}
+                  onAccept={onDelete}
+                  paramsAccept={milestone.id}
+                  onCancel={() => setOpen(false)}
+                />
               </Box>
             ) : (
               name
