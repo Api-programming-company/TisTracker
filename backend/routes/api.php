@@ -9,6 +9,9 @@ use App\Http\Controllers\CompanyController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\PlanningController;
 use App\Http\Controllers\CompanyUserController;
+use App\Http\Controllers\WebhookController;
+
+Route::post('/webhook', [WebhookController::class, 'handle']);
 
 Route::get('/simon', function () {
     return response()->json(['message' => 'hola simon']);
