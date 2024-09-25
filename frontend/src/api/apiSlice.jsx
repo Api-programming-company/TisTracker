@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 // Función para obtener el token CSRF
 const fetchCsrfToken = async () => {
   try {
-    const response = await fetch("http://localhost:8000/sanctum/csrf-cookie", {
+    const response = await fetch("/sanctum/csrf-cookie", {
       method: "GET",
       credentials: "include",
     });
@@ -23,7 +23,7 @@ export const apiSlice = createApi({
 
     // Realiza la solicitud con fetchBaseQuery
     const baseQuery = fetchBaseQuery({
-      baseUrl: "http://localhost:8000/api/",
+      baseUrl: "/api/",
       credentials: "include", // incluir las cookies en todas las solicitudes
     });
 
