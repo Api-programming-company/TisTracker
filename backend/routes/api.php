@@ -14,7 +14,7 @@ use App\Http\Controllers\WebhookController;
 Route::post('/webhook', [WebhookController::class, 'handle']);
 
 Route::get('/simon', function () {
-    return response()->json(['message' => 'hola simon']);
+    return response()->json(['message' => 'hola esto es una prueba de webhook']);
 });
 
 Route::post('user/register', [AuthController::class, 'register']);
