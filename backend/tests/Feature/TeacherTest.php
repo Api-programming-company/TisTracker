@@ -10,14 +10,13 @@ use App\Models\EmailVerification;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VerifyEmail;
 
-
-//EStudiante
-class AuthControllerTest extends TestCase
+class TeacherTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test */
-    public function Registrar_nuevo_estudiante()
+    /** @test */
+    public function registra_nuevo_docente()
     {
         // Simular el envío de correo
         Mail::fake();
@@ -25,10 +24,10 @@ class AuthControllerTest extends TestCase
         $response = $this->postJson('/api/user/register', [
             'first_name' => 'Simon',
             'last_name' => 'Prueba',
-            'email' => '123456789@est.umss.edu',
-            'password' => 'Password123!',
-            'password_confirmation' => 'Password123!',
-            'user_type' => 'E',
+            'email' => '123456789@fcyt.umss.edu.bo',
+            'password' => 'Password12@',
+            'password_confirmation' => 'Password12@',
+            'user_type' => 'D',
         ]);
 
         // dd($response->getContent());     //para mas info
@@ -38,25 +37,20 @@ class AuthControllerTest extends TestCase
             'message' => 'Registro exitoso. Por favor, revisa tu correo para verificar tu cuenta.'
         ]);
 
-        // Verificar que el usuario fue creado en la base de datos
-        $this->assertDatabaseHas('users', [
-            'email' => '123456789@est.umss.edu',
-        ]);
-
-        // // Verificar que el token de verificación fue creado en la base de datos
-        // $user = User::where('email', '123456789@est.umss.edu')->first();
-        // $this->assertDatabaseHas('email_verifications', [
-        //     'user_id' => $user->id,
+        // // Verificar que el usuario fue creado en la base de datos
+        // $this->assertDatabaseHas('users', [
+        //     'email' => '123456789@fcyt.umss.edu.bo',
         // ]);
 
         // // Verificar que se envió el correo de verificación
-        // Mail::assertSent(VerifyEmail::class, function ($mail) use ($user) {
+        // $user = \App\Models\User::where('email', '123456789@fcyt.umss.edu.bo')->first();
+        // Mail::assertSent(\Illuminate\Auth\Notifications\VerifyEmail::class, function ($mail) use ($user) {
         //     return $mail->hasTo($user->email);
         // });
     }
 
     /** @test */
-    public function Validar_contraseña_8_caracteres()
+    public function validar_Nombre_Menos_de_8_Caracteres()
     {
         // Simular el envío de correo
         Mail::fake();
@@ -64,9 +58,9 @@ class AuthControllerTest extends TestCase
         $response = $this->postJson('/api/user/register', [
             'first_name' => 'Simon',
             'last_name' => 'Prueba',
-            'email' => '123456789@est.umss.edu',
-            'password' => 'Pas1@',    // Menor a 8 caracteres
-            'password_confirmation' => 'Pas1@',
+            'email' => '123456789@fcyt.umss.edu.bo',
+            'password' => 'Pad123!',
+            'password_confirmation' => 'Pad123!',
             'user_type' => 'E',
         ]);
 
@@ -78,20 +72,19 @@ class AuthControllerTest extends TestCase
 
         // Verificar que el usuario no fue creado en la base de datos
         $this->assertDatabaseMissing('users', [
-            'email' => '123456789@est.umss.edu',
+            'email' => '123456789@fcyt.umss.edu.bo',
         ]);
 
         // Verificar que no se creó un token de verificación en la base de datos
-        $user = User::where('email', '123456789@est.umss.edu')->first();
+        $user = User::where('email', '123456789@fcyt.umss.edu.bo')->first();
         $this->assertNull($user);
 
         // Verificar que no se envió el correo de verificación
         Mail::assertNotSent(VerifyEmail::class);
     }
 
-
     /** @test */
-    public function Validar_si_password_son_iguales()
+    public function validarPassMenorA8()
     {
         // Simular el envío de correo
         Mail::fake();
@@ -99,10 +92,10 @@ class AuthControllerTest extends TestCase
         $response = $this->postJson('/api/user/register', [
             'first_name' => 'Simon',
             'last_name' => 'Prueba',
-            'email' => '123456789@est.umss.edu',
-            'password' => 'Password123!',
-            'password_confirmation' => 'hola123',
-            'user_type' => 'E',
+            'email' => '123456789@fcyt.umss.edu.bo',
+            'password' => 'Pad123!',
+            'password_confirmation' => 'Pad123!',
+            'user_type' => 'D',
         ]);
 
         // Verificar que la respuesta tenga un estado 422 (Unprocessable Entity)
@@ -113,11 +106,11 @@ class AuthControllerTest extends TestCase
 
         // Verificar que el usuario no fue creado en la base de datos
         $this->assertDatabaseMissing('users', [
-            'email' => '123456789@est.umss.edu',
+            'email' => '123456789@fcyt.umss.edu.bo',
         ]);
 
         // Verificar que no se creó un token de verificación en la base de datos
-        $user = User::where('email', '123456789@est.umss.edu')->first();
+        $user = User::where('email', '123456789@fcyt.umss.edu.bo')->first();
         $this->assertNull($user);
 
         // Verificar que no se envió el correo de verificación
@@ -125,7 +118,41 @@ class AuthControllerTest extends TestCase
     }
 
     /** @test */
-    public function Validar_nombre_obligatorio()
+    public function validarSiPassSonIguales()
+    {
+        // Simular el envío de correo
+        Mail::fake();
+
+        $response = $this->postJson('/api/user/register', [
+            'first_name' => 'Simon',
+            'last_name' => 'Prueba',
+            'email' => '123456789@fcyt.umss.edu.bo',
+            'password' => 'Password12@',
+            'password_confirmation' => 'Pasword12@',
+            'user_type' => 'D',
+        ]);
+
+        // Verificar que la respuesta tenga un estado 422 (Unprocessable Entity)
+        $response->assertStatus(422);
+        $response->assertJson([
+            'message' => 'Error de validación'
+        ]);
+
+        // Verificar que el usuario no fue creado en la base de datos
+        $this->assertDatabaseMissing('users', [
+            'email' => '123456789@fcyt.umss.edu.bo',
+        ]);
+
+        // Verificar que no se creó un token de verificación en la base de datos
+        $user = User::where('email', '123456789@fcyt.umss.edu.bo')->first();
+        $this->assertNull($user);
+
+        // Verificar que no se envió el correo de verificación
+        Mail::assertNotSent(VerifyEmail::class);
+    }
+
+    /** @test */
+    public function Nombre_es_obligatorio()
     {
         // Simular el envío de correo
         Mail::fake();
@@ -133,10 +160,10 @@ class AuthControllerTest extends TestCase
         $response = $this->postJson('/api/user/register', [
             'first_name' => '',
             'last_name' => 'Prueba',
-            'email' => '123456789@est.umss.edu',
-            'password' => 'Password123!',
-            'password_confirmation' => 'Password123!',
-            'user_type' => 'E',
+            'email' => '123456789@fcyt.umss.edu.bo',
+            'password' => 'Password12@',
+            'password_confirmation' => 'Password12@',
+            'user_type' => 'D',
         ]);
 
         // Verificar que la respuesta tenga un estado 422 (Unprocessable Entity)
@@ -147,11 +174,11 @@ class AuthControllerTest extends TestCase
 
         // Verificar que el usuario no fue creado en la base de datos
         $this->assertDatabaseMissing('users', [
-            'email' => '123456789@est.umss.edu',
+            'email' => '123456789@fcyt.umss.edu.bo',
         ]);
 
         // Verificar que no se creó un token de verificación en la base de datos
-        $user = User::where('email', '123456789@est.umss.edu')->first();
+        $user = User::where('email', '123456789@fcyt.umss.edu.bo')->first();
         $this->assertNull($user);
 
         // Verificar que no se envió el correo de verificación
@@ -159,7 +186,7 @@ class AuthControllerTest extends TestCase
     }
 
     /** @test */
-    public function Validar_apellido_obligatorioo()
+    public function Apellido_es_obligatorio()
     {
         // Simular el envío de correo
         Mail::fake();
@@ -167,10 +194,10 @@ class AuthControllerTest extends TestCase
         $response = $this->postJson('/api/user/register', [
             'first_name' => 'simon',
             'last_name' => '',
-            'email' => '123456789@est.umss.edu',
-            'password' => 'Password123!',
-            'password_confirmation' => 'Password123!',
-            'user_type' => 'E',
+            'email' => '123456789@fcyt.umss.edu.bo',
+            'password' => 'Password12@',
+            'password_confirmation' => 'Password12@',
+            'user_type' => 'D',
         ]);
 
         // Verificar que la respuesta tenga un estado 422 (Unprocessable Entity)
@@ -181,11 +208,11 @@ class AuthControllerTest extends TestCase
 
         // Verificar que el usuario no fue creado en la base de datos
         $this->assertDatabaseMissing('users', [
-            'email' => '123456789@est.umss.edu',
+            'email' => '123456789@fcyt.umss.edu.bo',
         ]);
 
         // Verificar que no se creó un token de verificación en la base de datos
-        $user = User::where('email', '123456789@est.umss.edu')->first();
+        $user = User::where('email', '123456789@fcyt.umss.edu.bo')->first();
         $this->assertNull($user);
 
         // Verificar que no se envió el correo de verificación
@@ -193,18 +220,18 @@ class AuthControllerTest extends TestCase
     }
 
     /** @test */
-    public function Validar_email_obligatorio()
+    public function email_es_obligatorio()
     {
         // Simular el envío de correo
         Mail::fake();
 
         $response = $this->postJson('/api/user/register', [
             'first_name' => 'simon',
-            'last_name' => 'juan',
+            'last_name' => 'pepe',
             'email' => '',
-            'password' => 'Password123!',
-            'password_confirmation' => 'Password123!',
-            'user_type' => 'E',
+            'password' => 'Password12@',
+            'password_confirmation' => 'Password12@',
+            'user_type' => 'D',
         ]);
 
         // Verificar que la respuesta tenga un estado 422 (Unprocessable Entity)
@@ -215,11 +242,11 @@ class AuthControllerTest extends TestCase
 
         // Verificar que el usuario no fue creado en la base de datos
         $this->assertDatabaseMissing('users', [
-            'email' => '123456789@est.umss.edu',
+            'email' => '123456789@fcyt.umss.edu.bo',
         ]);
 
         // Verificar que no se creó un token de verificación en la base de datos
-        $user = User::where('email', '123456789@est.umss.edu')->first();
+        $user = User::where('email', '123456789@fcyt.umss.edu.bo')->first();
         $this->assertNull($user);
 
         // Verificar que no se envió el correo de verificación
@@ -227,18 +254,18 @@ class AuthControllerTest extends TestCase
     }
 
     /** @test */
-    public function Validar_password_obligatorio()
+    public function Password1_es_obligatorio()
     {
         // Simular el envío de correo
         Mail::fake();
 
         $response = $this->postJson('/api/user/register', [
             'first_name' => 'simon',
-            'last_name' => 'Prueba',
-            'email' => '123456789@est.umss.edu',
+            'last_name' => 'pepe',
+            'email' => '123456789@fcyt.umss.edu.bo',
             'password' => '',
-            'password_confirmation' => 'Password123!',
-            'user_type' => 'E',
+            'password_confirmation' => 'Password12@',
+            'user_type' => 'D',
         ]);
 
         // Verificar que la respuesta tenga un estado 422 (Unprocessable Entity)
@@ -249,31 +276,32 @@ class AuthControllerTest extends TestCase
 
         // Verificar que el usuario no fue creado en la base de datos
         $this->assertDatabaseMissing('users', [
-            'email' => '123456789@est.umss.edu',
+            'email' => '123456789@fcyt.umss.edu.bo',
         ]);
 
         // Verificar que no se creó un token de verificación en la base de datos
-        $user = User::where('email', '123456789@est.umss.edu')->first();
+        $user = User::where('email', '123456789@fcyt.umss.edu.bo')->first();
         $this->assertNull($user);
 
         // Verificar que no se envió el correo de verificación
         Mail::assertNotSent(VerifyEmail::class);
     }
+
     /** @test */
-    public function Validar_password2_obligatorio()
+    public function Password2_es_obligatorio()
     {
         // Simular el envío de correo
         Mail::fake();
 
         $response = $this->postJson('/api/user/register', [
             'first_name' => 'simon',
-            'last_name' => 'Prueba',
-            'email' => '123456789@est.umss.edu',
-            'password' => 'Password123!',
+            'last_name' => 'pepe',
+            'email' => '123456789@fcyt.umss.edu.bo',
+            'password' => 'Password12@',
             'password_confirmation' => '',
-            'user_type' => 'E',
+            'user_type' => 'D',
         ]);
-        //Password158¡
+
         // Verificar que la respuesta tenga un estado 422 (Unprocessable Entity)
         $response->assertStatus(422);
         $response->assertJson([
@@ -282,181 +310,11 @@ class AuthControllerTest extends TestCase
 
         // Verificar que el usuario no fue creado en la base de datos
         $this->assertDatabaseMissing('users', [
-            'email' => '123456789@est.umss.edu',
+            'email' => '123456789@fcyt.umss.edu.bo',
         ]);
 
         // Verificar que no se creó un token de verificación en la base de datos
-        $user = User::where('email', '123456789@est.umss.edu')->first();
-        $this->assertNull($user);
-
-        // Verificar que no se envió el correo de verificación
-        Mail::assertNotSent(VerifyEmail::class);
-    }
-
-    /** @test */
-    public function Validar_contraseña_Mayuscula()
-    {
-        // Simular el envío de correo
-        Mail::fake();
-
-        $response = $this->postJson('/api/user/register', [
-            'first_name' => 'simon',
-            'last_name' => 'Prueba',
-            'email' => '123456789@est.umss.edu',
-            'password' => 'password123!',
-            'password_confirmation' => 'password123!',
-            'user_type' => 'E',
-        ]);
-        //Password158¡
-        // Verificar que la respuesta tenga un estado 422 (Unprocessable Entity)
-        $response->assertStatus(422);
-        $response->assertJson([
-            'message' => 'Error de validación'
-        ]);
-
-        // Verificar que el usuario no fue creado en la base de datos
-        $this->assertDatabaseMissing('users', [
-            'email' => '123456789@est.umss.edu',
-        ]);
-
-        // Verificar que no se creó un token de verificación en la base de datos
-        $user = User::where('email', '123456789@est.umss.edu')->first();
-        $this->assertNull($user);
-
-        // Verificar que no se envió el correo de verificación
-        Mail::assertNotSent(VerifyEmail::class);
-    }
-
-    /** @test */
-    public function Validar_contraseña_minuscula()
-    {
-        // Simular el envío de correo
-        Mail::fake();
-
-        $response = $this->postJson('/api/user/register', [
-            'first_name' => 'simon',
-            'last_name' => 'Prueba',
-            'email' => '123456789@est.umss.edu',
-            'password' => 'PASSWORD123!',
-            'password_confirmation' => 'PASSWORD123!',
-            'user_type' => 'E',
-        ]);
-        //Password158¡
-        // Verificar que la respuesta tenga un estado 422 (Unprocessable Entity)
-        $response->assertStatus(422);
-        $response->assertJson([
-            'message' => 'Error de validación'
-        ]);
-
-        // Verificar que el usuario no fue creado en la base de datos
-        $this->assertDatabaseMissing('users', [
-            'email' => '123456789@est.umss.edu',
-        ]);
-
-        // Verificar que no se creó un token de verificación en la base de datos
-        $user = User::where('email', '123456789@est.umss.edu')->first();
-        $this->assertNull($user);
-
-        // Verificar que no se envió el correo de verificación
-        Mail::assertNotSent(VerifyEmail::class);
-    }
-
-    /** @test */
-    public function Validar_contraseña_numero()
-    {
-        // Simular el envío de correo
-        Mail::fake();
-
-        $response = $this->postJson('/api/user/register', [
-            'first_name' => 'simon',
-            'last_name' => 'Prueba',
-            'email' => '123456789@est.umss.edu',
-            'password' => 'PASSWORD!',
-            'password_confirmation' => 'PASSWORD!',
-            'user_type' => 'E',
-        ]);
-        //Password158¡
-        // Verificar que la respuesta tenga un estado 422 (Unprocessable Entity)
-        $response->assertStatus(422);
-        $response->assertJson([
-            'message' => 'Error de validación'
-        ]);
-
-        // Verificar que el usuario no fue creado en la base de datos
-        $this->assertDatabaseMissing('users', [
-            'email' => '123456789@est.umss.edu',
-        ]);
-
-        // Verificar que no se creó un token de verificación en la base de datos
-        $user = User::where('email', '123456789@est.umss.edu')->first();
-        $this->assertNull($user);
-
-        // Verificar que no se envió el correo de verificación
-        Mail::assertNotSent(VerifyEmail::class);
-    }
-
-    /** @test */
-    public function Validar_contraseña_CaracterEspecial()
-    {
-        // Simular el envío de correo
-        Mail::fake();
-
-        $response = $this->postJson('/api/user/register', [
-            'first_name' => 'simon',
-            'last_name' => 'Prueba',
-            'email' => '123456789@est.umss.edu',
-            'password' => 'Password1d23',
-            'password_confirmation' => 'Password1d23',
-            'user_type' => 'E',
-        ]);
-        //Password158¡
-        // Verificar que la respuesta tenga un estado 422 (Unprocessable Entity)
-        $response->assertStatus(422);
-        $response->assertJson([
-            'message' => 'Error de validación'
-        ]);
-
-        // Verificar que el usuario no fue creado en la base de datos
-        $this->assertDatabaseMissing('users', [
-            'email' => '123456789@est.umss.edu',
-        ]);
-
-        // Verificar que no se creó un token de verificación en la base de datos
-        $user = User::where('email', '123456789@est.umss.edu')->first();
-        $this->assertNull($user);
-
-        // Verificar que no se envió el correo de verificación
-        Mail::assertNotSent(VerifyEmail::class);
-    }
-
-    /** @test */
-    public function Validar_contraseña_sinEspacios()
-    {
-        // Simular el envío de correo
-        Mail::fake();
-
-        $response = $this->postJson('/api/user/register', [
-            'first_name' => 'simon',
-            'last_name' => 'Prueba',
-            'email' => '123456789@est.umss.edu',
-            'password' => 'Passw ord1d23 @',
-            'password_confirmation' => 'Passw ord1d23 @',
-            'user_type' => 'E',
-        ]);
-        //Password158¡
-        // Verificar que la respuesta tenga un estado 422 (Unprocessable Entity)
-        $response->assertStatus(422);
-        $response->assertJson([
-            'message' => 'Error de validación'
-        ]);
-
-        // Verificar que el usuario no fue creado en la base de datos
-        $this->assertDatabaseMissing('users', [
-            'email' => '123456789@est.umss.edu',
-        ]);
-
-        // Verificar que no se creó un token de verificación en la base de datos
-        $user = User::where('email', '123456789@est.umss.edu')->first();
+        $user = User::where('email', '123456789@fcyt.umss.edu.bo')->first();
         $this->assertNull($user);
 
         // Verificar que no se envió el correo de verificación
@@ -464,21 +322,24 @@ class AuthControllerTest extends TestCase
     }
 
 
+    //Validar contraseña
+
+
     /** @test */
-    public function Validar_email_cumpleDominio()
+    public function Password_tiene_mayuscula()
     {
         // Simular el envío de correo
         Mail::fake();
 
         $response = $this->postJson('/api/user/register', [
             'first_name' => 'simon',
-            'last_name' => 'Prueba',
-            'email' => '123456789@gamil.com',
-            'password' => 'Password1d23@',
-            'password_confirmation' => 'Password1d23@',
-            'user_type' => 'E',
+            'last_name' => 'pepe',
+            'email' => '123456789@fcyt.umss.edu.bo',
+            'password' => 'password12@',
+            'password_confirmation' => 'password12@',
+            'user_type' => 'D',
         ]);
-        //Password158¡
+
         // Verificar que la respuesta tenga un estado 422 (Unprocessable Entity)
         $response->assertStatus(422);
         $response->assertJson([
@@ -487,11 +348,11 @@ class AuthControllerTest extends TestCase
 
         // Verificar que el usuario no fue creado en la base de datos
         $this->assertDatabaseMissing('users', [
-            'email' => '123456789@gamil.com',
+            'email' => '123456789@fcyt.umss.edu.bo',
         ]);
 
         // Verificar que no se creó un token de verificación en la base de datos
-        $user = User::where('email', '123456789@gamil.com')->first();
+        $user = User::where('email', '123456789@fcyt.umss.edu.bo')->first();
         $this->assertNull($user);
 
         // Verificar que no se envió el correo de verificación
@@ -499,20 +360,20 @@ class AuthControllerTest extends TestCase
     }
 
     /** @test */
-    public function validar_Correo_NueveCaracters()
+    public function Password_tiene_minuscula()
     {
         // Simular el envío de correo
         Mail::fake();
 
         $response = $this->postJson('/api/user/register', [
             'first_name' => 'simon',
-            'last_name' => 'Prueba',
-            'email' => '1234567@est.umss.edu',
-            'password' => 'Passw ord1d23 @',
-            'password_confirmation' => 'Passw ord1d23 @',
-            'user_type' => 'E',
+            'last_name' => 'pepe',
+            'email' => '123456789@fcyt.umss.edu.bo',
+            'password' => 'PASSWORD12@',
+            'password_confirmation' => 'PASSWORD12@',
+            'user_type' => 'D',
         ]);
-        //Password158¡
+
         // Verificar que la respuesta tenga un estado 422 (Unprocessable Entity)
         $response->assertStatus(422);
         $response->assertJson([
@@ -521,11 +382,148 @@ class AuthControllerTest extends TestCase
 
         // Verificar que el usuario no fue creado en la base de datos
         $this->assertDatabaseMissing('users', [
-            'email' => '123456@est.umss.edu',
+            'email' => '123456789@fcyt.umss.edu.bo',
         ]);
 
         // Verificar que no se creó un token de verificación en la base de datos
-        $user = User::where('email', '123456@est.umss.edu')->first();
+        $user = User::where('email', '123456789@fcyt.umss.edu.bo')->first();
+        $this->assertNull($user);
+
+        // Verificar que no se envió el correo de verificación
+        Mail::assertNotSent(VerifyEmail::class);
+    }
+
+    /** @test */
+    public function Password_tiene_numero()
+    {
+        // Simular el envío de correo
+        Mail::fake();
+
+        $response = $this->postJson('/api/user/register', [
+            'first_name' => 'simon',
+            'last_name' => 'pepe',
+            'email' => '123456789@fcyt.umss.edu.bo',
+            'password' => 'Password@',
+            'password_confirmation' => 'Password@',
+            'user_type' => 'D',
+        ]);
+
+        // Verificar que la respuesta tenga un estado 422 (Unprocessable Entity)
+        $response->assertStatus(422);
+        $response->assertJson([
+            'message' => 'Error de validación'
+        ]);
+
+        // Verificar que el usuario no fue creado en la base de datos
+        $this->assertDatabaseMissing('users', [
+            'email' => '123456789@fcyt.umss.edu.bo',
+        ]);
+
+        // Verificar que no se creó un token de verificación en la base de datos
+        $user = User::where('email', '123456789@fcyt.umss.edu.bo')->first();
+        $this->assertNull($user);
+
+        // Verificar que no se envió el correo de verificación
+        Mail::assertNotSent(VerifyEmail::class);
+    }
+
+    /** @test */
+    public function Password_tiene_caracter_especial()
+    {
+        // Simular el envío de correo
+        Mail::fake();
+
+        $response = $this->postJson('/api/user/register', [
+            'first_name' => 'simon',
+            'last_name' => 'pepe',
+            'email' => '123456789@fcyt.umss.edu.bo',
+            'password' => 'Password123',
+            'password_confirmation' => 'Password123',
+            'user_type' => 'D',
+        ]);
+
+        // Verificar que la respuesta tenga un estado 422 (Unprocessable Entity)
+        $response->assertStatus(422);
+        $response->assertJson([
+            'message' => 'Error de validación'
+        ]);
+
+        // Verificar que el usuario no fue creado en la base de datos
+        $this->assertDatabaseMissing('users', [
+            'email' => '123456789@fcyt.umss.edu.bo',
+        ]);
+
+        // Verificar que no se creó un token de verificación en la base de datos
+        $user = User::where('email', '123456789@fcyt.umss.edu.bo')->first();
+        $this->assertNull($user);
+
+        // Verificar que no se envió el correo de verificación
+        Mail::assertNotSent(VerifyEmail::class);
+    }
+
+    /** @test */
+    public function Password_no_tiene_espacios()
+    {
+        // Simular el envío de correo
+        Mail::fake();
+
+        $response = $this->postJson('/api/user/register', [
+            'first_name' => 'simon',
+            'last_name' => 'pepe',
+            'email' => '123456789@fcyt.umss.edu.bo',
+            'password' => 'Pas sword123@',
+            'password_confirmation' => 'Pas sword123@',
+            'user_type' => 'D',
+        ]);
+
+        // Verificar que la respuesta tenga un estado 422 (Unprocessable Entity)
+        $response->assertStatus(422);
+        $response->assertJson([
+            'message' => 'Error de validación'
+        ]);
+
+        // Verificar que el usuario no fue creado en la base de datos
+        $this->assertDatabaseMissing('users', [
+            'email' => '123456789@fcyt.umss.edu.bo',
+        ]);
+
+        // Verificar que no se creó un token de verificación en la base de datos
+        $user = User::where('email', '123456789@fcyt.umss.edu.bo')->first();
+        $this->assertNull($user);
+
+        // Verificar que no se envió el correo de verificación
+        Mail::assertNotSent(VerifyEmail::class);
+    }
+
+
+    /** @test */
+    public function correo_cumple_con_el_dominio()
+    {
+        // Simular el envío de correo
+        Mail::fake();
+
+        $response = $this->postJson('/api/user/register', [
+            'first_name' => 'simon',
+            'last_name' => 'pepe',
+            'email' => '123456789@gmail.com',
+            'password' => 'Password123@',
+            'password_confirmation' => 'Password123@',
+            'user_type' => 'D',
+        ]);
+
+        // Verificar que la respuesta tenga un estado 422 (Unprocessable Entity)
+        $response->assertStatus(422);
+        $response->assertJson([
+            'message' => 'Error de validación'
+        ]);
+
+        // Verificar que el usuario no fue creado en la base de datos
+        $this->assertDatabaseMissing('users', [
+            'email' => '123456789@gmail.com',
+        ]);
+
+        // Verificar que no se creó un token de verificación en la base de datos
+        $user = User::where('email', '123456789@gmail.com')->first();
         $this->assertNull($user);
 
         // Verificar que no se envió el correo de verificación

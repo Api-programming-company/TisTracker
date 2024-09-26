@@ -13,10 +13,6 @@ use App\Http\Controllers\WebhookController;
 
 Route::post('/webhook', [WebhookController::class, 'handle']);
 
-Route::get('/simon', function () {
-    return response()->json(['message' => 'hola esto es una prueba de webhook']);
-});
-
 Route::post('user/register', [AuthController::class, 'register']);
 Route::get('user/check-email', [AuthController::class, 'checkEmail']);
 //Route::post('user/verify-email', [EmailVerificationController::class, 'verifyEmail']); no es necesario
