@@ -26,6 +26,7 @@ import {
 } from "./components";
 
 import VerGE from "./pages/VerGE";
+import PlannificationRegister from "./pages/PlannificationRegister";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -48,6 +49,9 @@ function App({ toggleTheme, isDarkMode }) {
         <Route path="/enroll-to-ap" element={<EnrollToAcademicPeriod />} />
         <Route path="/vergrupoe/:id" element={<VerGE />} />
         <Route path="/registroge" element={<RegistroGE />} />
+
+        <Route path="/plannification-register/:id" element={<PlannificationRegister />} />
+
 
         <Route path="/company-requests" element={<InvitacionesGE />} />
         <Route path="/conformacionge" element={<ConformacionGE />} />
