@@ -177,9 +177,6 @@ const ConformacionGE = () => {
                           <Typography variant="body2">
                             Correo: {item.correo}
                           </Typography>
-                          <Typography variant="body2">
-                            CODSIS: {item.codsis}
-                          </Typography>
                         </Box>
                       }
                     />
