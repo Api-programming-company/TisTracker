@@ -99,7 +99,7 @@ const PlannificationRegister = () => {
   });
   return (
     <CompanyPlanning
-      milestones={formData.milestones}
+      milestones={jsonData.company.planning.milestones}
       setFormData={setFormData}
       setSendData={setSendData}
     />
