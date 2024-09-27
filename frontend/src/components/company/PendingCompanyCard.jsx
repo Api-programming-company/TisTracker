@@ -3,7 +3,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import PersonIcon from "@mui/icons-material/Person";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { formatDate } from "../utils/validaciones";
+import { formatDate } from "../../utils/validaciones";
 
 const PendingCompanyCard = ({ request }) => {
   const navigate = useNavigate();

@@ -10,7 +10,7 @@ import React, { useEffect, useState } from "react";
 import { useActionData, useLocation } from "react-router-dom";
 import DialogMod from "../DialogMod";
 import { useUpdateInvitationByCompanyIdMutation } from "../../api/invitationApi";
-import { formatDate } from "../utils/validaciones";
+import { formatDate } from "../../utils/validaciones";
 
 const AcceptDeclineInvitation = () => {
   const [

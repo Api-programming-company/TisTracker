@@ -10,7 +10,7 @@ import React, { useState } from "react";
 import MemberAccordion from "./MemberAccordion";
 import DialogMod from "../DialogMod";
 import { useUpdateCompanyByIdMutation } from "../../api/companyApi";
-import { formatDate } from "../utils/validaciones";
+import { formatDate } from "../../utils/validaciones";
 
 const AcceptDeclineCompany = () => {
   const invitacionesEjemplo = {

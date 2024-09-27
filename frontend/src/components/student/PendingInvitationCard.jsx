@@ -3,7 +3,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import PersonIcon from "@mui/icons-material/Person";
-import { formatDate } from "../utils/validaciones";
+import { formatDate } from "../../utils/validaciones";
 
 const PendingInvitationCard = ({ request }) => {
   const navigate = useNavigate();
