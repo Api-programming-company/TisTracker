@@ -31,8 +31,8 @@ class Company extends Model
             ->withTimestamps();
     }
 
-    public function plannings()
+    public function planning()
     {
-        return $this->hasMany(Planning::class);
+        return $this->hasOne(Planning::class);
     }
 }

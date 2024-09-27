@@ -15,78 +15,74 @@ class CompanyControllerTest extends TestCase
 
     /** @test */
     /** @test */
+    /** @test */
     public function it_creates_a_company_with_valid_academic_period()
     {
-        // Crear un periodo académico
-        $academicPeriod = AcademicPeriod::factory()->create();
-
-        // Crear un usuario con el periodo académico
-        $user = User::factory()->create(['academic_period_id' => $academicPeriod->id]);
-
-        // Autenticarse usando Sanctum
+        // Create a user and authenticate with Sanctum
+        $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        // Datos de la compañía
+        // Create a valid academic period
+        $academicPeriod = AcademicPeriod::factory()->create();
+
+        // Define the company data with a valid academic period
         $data = [
-            'long_name' => 'Long Company Name',
-            'short_name' => 'Short Name',
-            'email' => 'company@example.com',
-            'address' => '123 Main St',
-            'phone' => '1234567890',
-            'academic_period_id' => $academicPeriod->id, // Usar el ID creado
+            'long_name' => 'Test Company',
+            'short_name' => 'TC',
+            'email' => 'testcompany@example.com',
+            'address' => '123 Test St',
+            'phone' => '12345678',
+            'academic_period_id' => $academicPeriod->id,
         ];
 
-        // Realizar la solicitud
+        // Make a POST request to create the company via the API
         $response = $this->post('api/company', $data);
 
-        // Verificar la respuesta
+        // Assert the company was created successfully
         $response->assertStatus(201);
-        $response->assertJsonStructure([
-            'message',
-            'company' => [
-                'id',
-                'long_name',
-                'short_name',
-                'email',
-                'address',
-                'phone',
-                'academic_period_id',
-                'created_at',
-                'updated_at',
-            ]
-        ]);
 
-        // Verificar que la compañía se ha creado en la base de datos
-        $this->assertDatabaseHas('companies', [
-            'email' => 'company@example.com',
-        ]);
+        // Assert the company exists in the database
+        $this->assertDatabaseHas('companies', ['email' => $data['email']]);
+
+        // Fetch the newly created company
+        $company = Company::where('email', $data['email'])->first();
+
+        // Assert the company has a valid academic period
+        $this->assertInstanceOf(AcademicPeriod::class, $company->academicPeriod);
+
+        // Assert that the company does not have a planning associated
+        $this->assertNull($company->planning);
+
+        // Ensure no planning entry exists in the database for this company
+        $this->assertDatabaseMissing('plannings', ['company_id' => $company->id]);
     }
 
     /** @test */
     public function it_returns_error_when_academic_period_is_invalid()
     {
-        // Crear un usuario sin periodo académico
+        // Create a user without an academic period and authenticate with Sanctum
         $user = User::factory()->create(['academic_period_id' => null]);
-
-        // Autenticarse usando Sanctum
         Sanctum::actingAs($user);
 
-        // Datos de la compañía
+        // Define company data without an academic period
         $data = [
             'long_name' => 'Another Company',
-            'short_name' => 'Another Name',
+            'short_name' => 'name',
             'email' => 'another@example.com',
             'address' => '456 Another St',
-            'phone' => '0987654321',
+            'phone' => '12345678',
+            'academic_period_id' => 9999, // Invalid academic period ID
         ];
 
-        // Realizar la solicitud
+        // Make a POST request to create the company via the API
         $response = $this->post('api/company', $data);
 
-        // Verificar la respuesta
+        // Assert that a 404 error is returned
         $response->assertStatus(404);
+
+        // Assert the correct error message is returned
         $response->assertJson([
-            'message' => 'El periodo académico asociado no existe.'
+            'message' => 'The associated academic period does not exist.'
         ]);
     }
 

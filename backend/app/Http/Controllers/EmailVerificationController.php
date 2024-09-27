@@ -8,6 +8,9 @@ use App\Models\User;
 use Illuminate\Validation\ValidationException;
 use Exception;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Support\Facades\Auth;
+
 class EmailVerificationController extends Controller
 {
     /**
