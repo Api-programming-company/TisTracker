@@ -70,7 +70,7 @@ function AppBarWithMenu({ isDarkMode, toggleDarkMode, userType }) {
 
   return (
     <>
-      <AppBar position="static">
+      <AppBar position="fixed">
         <Toolbar>
           <img
             src={logo}
