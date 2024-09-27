@@ -149,7 +149,7 @@ const AcceptDeclineCompany = () => {
           gutterBottom
           sx={{ textAlign: "center", mb: 3 }}
         >
-          Detales de la solicitud
+          Detalles de la solicitud
         </Typography>
       </Box>
       <Box
