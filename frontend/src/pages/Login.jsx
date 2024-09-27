@@ -122,7 +122,8 @@ const Login = () => {
     <Container maxWidth="xs">
       <Box
         sx={{
-          marginTop: 8,
+          mt: 12,
+          mb: 5,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
