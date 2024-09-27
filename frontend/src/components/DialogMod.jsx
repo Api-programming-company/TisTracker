@@ -15,19 +15,19 @@ const DialogMod = ({
   content,
   onAccept,
   paramsAccept = null,
-  onCancel=null,
-  paramsCancel=null,
+  onCancel = null,
+  paramsCancel = null,
 }) => {
   const handleClickOpen = () => {
     setOpen(true);
   };
 
   const handleClose = () => {
-    if(onCancel===null){
-        setOpen(false);
-        return
-    } 
-    onCancel(paramsCancel)
+    if (onCancel === null) {
+      setOpen(false);
+      return;
+    }
+    onCancel(paramsCancel);
   };
   return (
     <Dialog
@@ -43,7 +43,7 @@ const DialogMod = ({
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Rechazar</Button>
+        <Button onClick={handleClose}>Cancelar</Button>
         <Button onClick={() => onAccept(paramsAccept)} autoFocus>
           Aceptar
         </Button>
