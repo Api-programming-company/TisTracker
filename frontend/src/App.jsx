@@ -60,8 +60,8 @@ function App({ toggleTheme, isDarkMode }) {
           />
 
           <Route path="/company-requests" element={<InvitacionesGE />} />
-          <Route path="/conformacionge/:id" element={<ConformacionGE />} />
-          <Route path="/editarlistage/:id" element={<EditarListaGE />} />
+          <Route path="/conformacionge" element={<ConformacionGE />} />
+          <Route path="/editarlistage" element={<EditarListaGE />} />
           <Route path="/academic-periods" element={<AcademicPeriodList />} />
           <Route path="/register-ap" element={<RegisterAcademicPeriod />} />
 
@@ -73,7 +73,10 @@ function App({ toggleTheme, isDarkMode }) {
             path="/academic-period/:id/pending"
             element={<SolicitudesGE />}
           />
-          <Route path="/request/:id/pending" element={<AcceptDeclineCompany />} />
+          <Route
+            path="/request/:id/pending"
+            element={<AcceptDeclineCompany />}
+          />
 
           <Route path="/search" element={<StudentSearch />} />
 

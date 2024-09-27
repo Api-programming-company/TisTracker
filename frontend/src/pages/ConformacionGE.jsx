@@ -23,27 +23,55 @@ const ConformacionGE = () => {
 
   //Lista de invitados de la grupo empresa
   const [allItems] = useState([
-    { id: 1, name: "Juan Alberto Peredo Pozo", codsis: "202000571" },
-    { id: 2, name: "Carlos José Padilla Poma", codsis: "202000572" },
-    { id: 3, name: "Daniela Torrico Torreón", codsis: "202000570" },
-    { id: 4, name: "Andres Castillo Lozada", codsis: "202100580" },
-    { id: 5, name: "Antonio Gomez Amaranto", codsis: "202200740" },
-    { id: 6, name: "Camila Torrez Gutierrez", codsis: "202100712" },
+    {
+      id: 1,
+      name: "Juan Alberto Peredo Pozo",
+      codsis: "202000571",
+      correo: "juan@example.com",
+      estado: "Aceptado",
+    },
+    {
+      id: 2,
+      name: "Carlos José Padilla Poma",
+      codsis: "202000572",
+      correo: "juan@example.com",
+      estado: "Aceptado",
+    },
+    {
+      id: 3,
+      name: "Daniela Torrico Torreón",
+      codsis: "202000570",
+      correo: "juan@example.com",
+      estado: "Aceptado",
+    },
+    {
+      id: 4,
+      name: "Andres Castillo Lozada",
+      codsis: "202100580",
+      correo: "juan@example.com",
+      estado: "Aceptado",
+    },
+    {
+      id: 5,
+      name: "Antonio Gomez Amaranto",
+      codsis: "202200740",
+      correo: "juan@example.com",
+      estado: "Aceptado",
+    },
+    {
+      id: 6,
+      name: "Camila Torrez Gutierrez",
+      codsis: "202100712",
+      correo: "juan@example.com",
+      estado: "Aceptado",
+    },
   ]);
 
-  //Lista de invitados que ya han aceptado
-  const [allAcceptedItems] = useState([
-    { id: 1, name: "Juan Alberto Peredo Pozo", codsis: "202000571" },
-    { id: 2, name: "Carlos José Padilla Poma", codsis: "202000572" },
-    { id: 3, name: "Daniela Torrico Torreón", codsis: "202000570" },
-    { id: 4, name: "Andres Castillo Lozada", codsis: "202100580" },
-    { id: 5, name: "Antonio Gomez Amaranto", codsis: "202200740" },
-    { id: 6, name: "Camila Torrez Gutierrez", codsis: "202100712" },
-  ]);
+  const allAcceptedItems = allItems.filter(
+    (item) => item.estado === "Aceptado"
+  );
 
-  const [allToAcceptedItems] = useState([
-    //{ id: 6, name: "Camila Torrez Gutierrez", codsis: "202100712" },
-  ]);
+  const hasPendingItems = allItems.some((item) => item.estado === "Pendiente");
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -64,8 +92,17 @@ const ConformacionGE = () => {
   //Modificar aqui
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (allAcceptedItems.length !== allItems.length) {
-      setSnackbarMessage("Todos los integrantes deben aceptar la invitación");
+    if (allAcceptedItems.length < 3) {
+      setSnackbarMessage(
+        "Deben aceptar la invitación como mínimo 3 estudiantes"
+      );
+      setSnackbarOpen(true);
+      return;
+    }
+    if (hasPendingItems) {
+      setSnackbarMessage(
+        "Tienes compañeros que faltan responder a la invitación"
+      );
       setSnackbarOpen(true);
       return;
     } else {
@@ -102,7 +139,7 @@ const ConformacionGE = () => {
                 }}
               >
                 <Typography>
-                  Estudiantes que aceptaron la invitación:
+                  Estudiantes invitados a la grupo empresa:
                 </Typography>
                 <Typography
                   sx={{
@@ -117,9 +154,14 @@ const ConformacionGE = () => {
               </Box>
 
               <List>
-                {allAcceptedItems.map((item) => (
+                {allItems.map((item) => (
                   <ListItem
                     key={item.id}
+                    secondaryAction={
+                      <Typography variant="body2" sx={{ ml: 2 }}>
+                        {item.estado}
+                      </Typography>
+                    }
                     button
                     sx={{ backgroundColor: "#F6F6F6", mb: 0.5 }}
                   >
@@ -130,34 +172,16 @@ const ConformacionGE = () => {
                     </ListItemIcon>
                     <ListItemText
                       primary={item.name}
-                      secondary={`CODSIS: ${item.codsis}`}
-                    />
-                  </ListItem>
-                ))}
-              </List>
-
-              <Typography
-                sx={{
-                  display: allToAcceptedItems.length === 0 ? "none" : "block",
-                }}
-              >
-                Estudiantes pendientes:
-              </Typography>
-              <List>
-                {allToAcceptedItems.map((item) => (
-                  <ListItem
-                    key={item.id}
-                    button
-                    sx={{ backgroundColor: "#F6F6F6", mb: 0.5 }}
-                  >
-                    <ListItemIcon>
-                      <Avatar>
-                        <Person />
-                      </Avatar>
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={item.name}
-                      secondary={`CODSIS: ${item.codsis}`}
+                      secondary={
+                        <Box>
+                          <Typography variant="body2">
+                            Correo: {item.correo}
+                          </Typography>
+                          <Typography variant="body2">
+                            CODSIS: {item.codsis}
+                          </Typography>
+                        </Box>
+                      }
                     />
                   </ListItem>
                 ))}
@@ -165,8 +189,8 @@ const ConformacionGE = () => {
             </Box>
             <Typography component="p">
               {allAcceptedItems.length === allItems.length
-                ? "Todos los estudiantes aceptaron formar parte en tu grupo empresa. ¿Deseas enviar la lista oficial a tu docente de TIS?"
-                : `Todos los estudiantes deben aceptar la invitación para conformar la lista oficial de la grupo empresa, antes de eso no podrás enviarle la solicitud de conformación a tu docente TIS.`}
+                ? "Todos los estudiantes que aceptaron formarán parte en tu grupo empresa. ¿Deseas enviar la lista oficial a tu docente de TIS?"
+                : `Todos los estudiantes deben aceptar o rechazar la invitación para conformar la lista oficial de la grupo empresa, antes de eso no podrás enviarle la solicitud de conformación a tu docente TIS.`}
             </Typography>
 
             <Typography
@@ -188,7 +212,6 @@ const ConformacionGE = () => {
             sx={{
               display: "block",
               mx: "auto",
-              mt: 2,
               px: 12,
               py: 1,
             }}
@@ -196,7 +219,7 @@ const ConformacionGE = () => {
             {isLoading ? (
               <CircularProgress size={24} color="inherit" />
             ) : (
-              "ENVIAR"
+              "CONFIRMAR INTEGRANTES"
             )}
           </Button>
         </form>
