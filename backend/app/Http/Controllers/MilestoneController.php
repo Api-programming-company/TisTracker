@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Milestone;
+use Exception;
+use Illuminate\Support\Facades\Log;
 
 class MilestoneController extends Controller
 {
@@ -15,18 +17,13 @@ class MilestoneController extends Controller
     // Listar todos los hitos
     public function index()
     {
-        $milestones = Milestone::all(); 
-        return response()->json($milestones);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        try {
+            $milestones = Milestone::all(); 
+            return response()->json($milestones);
+        } catch (Exception $e) {
+            Log::error('Error al listar los hitos: ' . $e->getMessage());
+            return response()->json(['error' => 'Ocurrió un error al listar los hitos'], 500);
+        }
     }
 
     /**
@@ -38,17 +35,22 @@ class MilestoneController extends Controller
     // Guardar un nuevo hito
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'billing_percentage' => 'required|numeric',
-            'planning_id' => 'required|exists:plannings,id',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'start_date' => 'required|date',
+                'end_date' => 'required|date',
+                'billing_percentage' => 'required|numeric',
+                'planning_id' => 'required|exists:plannings,id',
+            ]);
 
-        $milestone = Milestone::create($validatedData);
+            $milestone = Milestone::create($validatedData);
 
-        return response()->json($milestone, 201);
+            return response()->json($milestone, 201);
+        } catch (Exception $e) {
+            Log::error('Error al crear un nuevo hito: ' . $e->getMessage());
+            return response()->json(['error' => 'Ocurrió un error al crear el hito'], 500);
+        }
     }
 
     /**
@@ -60,19 +62,13 @@ class MilestoneController extends Controller
     // Mostrar un hito específico
     public function show($id)
     {
-        $milestone = Milestone::findOrFail($id);
-        return response()->json($milestone);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        try {
+            $milestone = Milestone::findOrFail($id);
+            return response()->json($milestone);
+        } catch (Exception $e) {
+            Log::error('Error al mostrar el hito: ' . $e->getMessage());
+            return response()->json(['error' => 'Ocurrió un error al mostrar el hito'], 500);
+        }
     }
 
     /**
@@ -85,18 +81,23 @@ class MilestoneController extends Controller
     // Actualizar un hito
     public function update(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'start_date' => 'sometimes|required|date',
-            'end_date' => 'sometimes|required|date',
-            'billing_percentage' => 'sometimes|required|numeric',
-            'planning_id' => 'sometimes|required|exists:plannings,id',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'name' => 'sometimes|required|string|max:255',
+                'start_date' => 'sometimes|required|date',
+                'end_date' => 'sometimes|required|date',
+                'billing_percentage' => 'sometimes|required|numeric',
+                'planning_id' => 'sometimes|required|exists:plannings,id',
+            ]);
 
-        $milestone = Milestone::findOrFail($id);
-        $milestone->update($validatedData);
+            $milestone = Milestone::findOrFail($id);
+            $milestone->update($validatedData);
 
-        return response()->json($milestone, 200);
+            return response()->json($milestone, 200);
+        } catch (Exception $e) {
+            Log::error('Error al actualizar el hito: ' . $e->getMessage());
+            return response()->json(['error' => 'Ocurrió un error al actualizar el hito'], 500);
+        }
     }
 
     /**
@@ -108,9 +109,14 @@ class MilestoneController extends Controller
     // Eliminar un hito
     public function destroy($id)
     {
-        $milestone = Milestone::findOrFail($id);
-        $milestone->delete();
+        try {
+            $milestone = Milestone::findOrFail($id);
+            $milestone->delete();
 
-        return response()->json(['message' => 'Milestone eliminado correctamente'], 200);
+            return response()->json(['message' => 'Milestone eliminado correctamente'], 200);
+        } catch (Exception $e) {
+            Log::error('Error al eliminar el hito: ' . $e->getMessage());
+            return response()->json(['error' => 'Ocurrió un error al eliminar el hito'], 500);
+        }
     }
 }
