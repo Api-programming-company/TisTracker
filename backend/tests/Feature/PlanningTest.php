@@ -8,6 +8,8 @@ use App\Models\Milestone;
 use App\Models\Deliverable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Models\User;
+use Laravel\Sanctum\Sanctum;
 
 class PlanningTest extends TestCase
 {
@@ -15,7 +17,10 @@ class PlanningTest extends TestCase
 
     public function test_can_register_different_milestones()
     {
-        $company = Company::factory()->create(); // Crear una compañía
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+        
+        $company = Company::factory()->create();
 
         $planningData = [
             'name' => 'Planning Test',
