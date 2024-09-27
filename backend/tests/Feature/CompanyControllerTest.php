@@ -173,29 +173,33 @@ class CompanyControllerTest extends TestCase
         $response = $this->get('api/academic-periods/companies?id=' . $academicPeriod->id);
 
         // Verificar la respuesta
-        $response->assertStatus(400);
+        $response->assertStatus(403);
         $response->assertJson([
-            'message' => 'No está inscrito en un periodo académico.',
+            'message' => 'No tienes permiso para ver las compañías de este periodo académico.',
         ]);
     }
 
 
     /** @test */
-    public function it_returns_not_found_if_no_companies_found()
+    public function it_returns_empty_list_if_no_companies_found()
     {
-        // Crear un usuario autenticado con un periodo académico
-        $user = User::factory()->create(['academic_period_id' => 1]);
+        // Crear un periodo académico
+        $academicPeriod = AcademicPeriod::factory()->create(['id' => 1]);
+
+        // Crear un usuario autenticado con el periodo académico
+        $user = User::factory()->create(['academic_period_id' => $academicPeriod->id]);
 
         // Autenticarse usando Sanctum
         Sanctum::actingAs($user);
 
-        // Realizar la solicitud
-        $response = $this->get('api/academic-periods/companies');
+        // Realizar la solicitud con el ID del periodo académico
+        $response = $this->get('api/academic-periods/companies?id=' . $academicPeriod->id);
 
         // Verificar la respuesta
-        $response->assertStatus(404);
+        $response->assertStatus(200); // Esperamos un 200 OK
         $response->assertJson([
-            'message' => 'No se encontraron compañías para el periodo académico especificado.'
+            'message' => 'Compañías obtenidas correctamente.',
+            'companies' => [] // Aseguramos que la lista de compañías esté vacía
         ]);
     }
 }

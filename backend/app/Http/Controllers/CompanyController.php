@@ -89,7 +89,6 @@ class CompanyController extends Controller
         }
     }
 
-
     public function getCompaniesByAcademicPeriod(Request $request)
     {
         try {
