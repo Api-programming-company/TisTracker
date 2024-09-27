@@ -18,14 +18,21 @@ class AcademicPeriodController extends Controller
 
     public function index()
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        if ($user->user_type !== 'D') {
-            return response()->json(['error' => 'Unauthorized'], 403);
+            if ($user->user_type !== 'D') {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+
+            $academicPeriods = AcademicPeriod::where('user_id', $user->id)->get();
+            return response()->json($academicPeriods);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Ocurrio un error',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $academicPeriods = AcademicPeriod::where('user_id', $user->id)->get();
-        return response()->json($academicPeriods);
     }
 
     public function store(Request $request)
@@ -58,67 +65,79 @@ class AcademicPeriodController extends Controller
             // Devolver respuesta de éxito
             return response()->json($academicPeriod, 201);
         } catch (ValidationException $e) {
-            // Manejar errores de validación
             return response()->json([
                 'message' => 'Validation Error',
                 'errors' => $e->validator->errors()
-            ], 422); // 422 Unprocessable Entity
-
+            ], 422);
         } catch (Exception $e) {
-            // Manejar otros errores
             return response()->json([
                 'message' => 'An error occurred',
                 'error' => $e->getMessage()
-            ], 500); // 500 Internal Server Error
+            ], 500);
         }
     }
 
     public function getAllGroupedByTeacher()
     {
-        $academicPeriods = AcademicPeriod::with('creator')->get();
+        try {
+            $academicPeriods = AcademicPeriod::with('creator')->get();
 
-        // Agrupar los periodos por docente (user_id)
-        $groupedByTeacher = $academicPeriods->groupBy('user_id')->map(function ($periods, $userId) {
-            // Obtener información del docente
-            $teacher = User::find($userId);
+            // Agrupar los periodos por docente (user_id)
+            $groupedByTeacher = $academicPeriods->groupBy('user_id')->map(function ($periods, $userId) {
+                // Obtener información del docente
+                $teacher = User::find($userId);
 
-            return [
-                'teacher_name' => $teacher->getFullNameAttribute(),
-                'teacher_email' => $teacher->getAttribute('email'),
-                'academic_periods' => $periods->toArray()
-            ];
-        })->values(); // Convertir el resultado en una lista
+                return [
+                    'teacher_name' => $teacher->getFullNameAttribute(),
+                    'teacher_email' => $teacher->getAttribute('email'),
+                    'academic_periods' => $periods->toArray()
+                ];
+            })->values();
 
-        return response()->json($groupedByTeacher);
+            return response()->json($groupedByTeacher);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Ocurrio un error',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
+
     public function enroll(Request $request)
     {
-        /** @var \App\Models\User $user **/
-        $user = Auth::user();
+        try {
+            /** @var \App\Models\User $user **/
+            $user = Auth::user();
 
-        // Solo los estudiantes pueden inscribirse
-        if ($user->user_type !== 'E') {
-            return response()->json(['message' => 'Solo estudiantes pueden inscribirse.'], 403);
+            // Solo los estudiantes pueden inscribirse
+            if ($user->user_type !== 'E') {
+                return response()->json(['message' => 'Solo estudiantes pueden inscribirse.'], 403);
+            }
+
+            // Verifica que el estudiante no esté ya inscrito en un periodo académico
+            if ($user->academic_period_id) {
+                return response()->json(['message' => 'Ya está inscrito en un periodo académico'], 400);
+            }
+
+            $academicPeriodId = $request->input('academic_period_id');
+            $academicPeriod = AcademicPeriod::findOrFail($academicPeriodId);
+            $currentDate = now();
+
+            // Verificar si la fecha actual está entre start_date y end_date del periodo académico
+            if ($currentDate->lt($academicPeriod->start_date) || $currentDate->gt($academicPeriod->end_date)) {
+                return response()->json(['message' => 'No se puede inscribir, el periodo académico no está en curso.'], 403);
+            }
+
+            // Inscribe al estudiante en el periodo académico
+            $user->academic_period_id = $academicPeriod->id;
+            $user->save();
+
+            return response()->json(['message' => 'Se inscribió correctamente en el periodo académico']);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Ocurrio un error',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-         // Verifica que el estudiante no esté ya inscrito en un periodo académico
-        if ($user->academic_period_id) {
-            return response()->json(['message' => 'Ya está inscrito en un periodo académico'], 400);
-        }
-
-        $academicPeriodId = $request->input('academic_period_id');
-        $academicPeriod = AcademicPeriod::findOrFail($academicPeriodId);
-        $currentDate = now();
-
-        // Verificar si la fecha actual está entre start_date y end_date del periodo académico
-        if ($currentDate->lt($academicPeriod->start_date) || $currentDate->gt($academicPeriod->end_date)) {
-            return response()->json(['message' => 'No se puede inscribir, el periodo académico no está en curso.'], 403);
-        }
-
-        // Inscribe al estudiante en el periodo académico
-        $user->academic_period_id = $academicPeriod->id;
-        $user->save();
-
-        return response()->json(['message' => 'Se inscribió correctamente en el periodo académico']);
     }
 }

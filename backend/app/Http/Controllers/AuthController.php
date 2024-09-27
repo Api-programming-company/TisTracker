@@ -16,7 +16,6 @@ use Illuminate\Validation\ValidationException;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 
-
 class AuthController extends Controller
 {
     /**
@@ -121,19 +120,24 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        try {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
 
-        return response()->json(['message' => 'Sesión cerrada']);
-        // Revocar el token actual
-        // $request->user()->currentAccessToken()->delete();
-
-        //return response()->json([
-        //    'message' => 'Sesión cerrada correctamente.'
-        //]);
+            return response()->json(['message' => 'Sesión cerrada']);
+        } catch (Exception $e) {
+            // Manejo de otros errores
+            return response()->json([
+                'message' => 'Se ha producido un error inesperado',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
+    /**
+     * verifica email.
+     */
     public function checkEmail(Request $request)
     {
         try {
@@ -165,17 +169,23 @@ class AuthController extends Controller
 
     protected function getEmailValidationRule($userType)
     {
-        if ($userType === 'E') {
-            return new ValidarCorreoEstudiante;
-        }
+        try {
+            if ($userType === 'E') {
+                return new ValidarCorreoEstudiante;
+            }
 
-        if ($userType === 'D') {
-            return new ValidarCorreoDocente;
-        }
+            if ($userType === 'D') {
+                return new ValidarCorreoDocente;
+            }
 
-        return '';
+            return '';
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Se ha producido un error inesperado al validar el tipo de correo',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
-
     public function searchStudentByEmail($email)
     {
         try {
