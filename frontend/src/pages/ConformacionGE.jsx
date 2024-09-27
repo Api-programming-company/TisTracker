@@ -38,6 +38,10 @@ const ConformacionGE = () => {
     { id: 3, name: "Daniela Torrico Torreón", codsis: "202000570" },
     { id: 4, name: "Andres Castillo Lozada", codsis: "202100580" },
     { id: 5, name: "Antonio Gomez Amaranto", codsis: "202200740" },
+    { id: 6, name: "Camila Torrez Gutierrez", codsis: "202100712" },
+  ]);
+
+  const [allToAcceptedItems] = useState([
     //{ id: 6, name: "Camila Torrez Gutierrez", codsis: "202100712" },
   ]);
 
@@ -61,9 +65,7 @@ const ConformacionGE = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (allAcceptedItems.length !== allItems.length) {
-      setSnackbarMessage(
-        "Todos los integrantes deben aceptar la invitación antes de poder mandar la lista al docente TIS"
-      );
+      setSnackbarMessage("Todos los integrantes deben aceptar la invitación");
       setSnackbarOpen(true);
       return;
     } else {
@@ -78,7 +80,7 @@ const ConformacionGE = () => {
 
   return (
     <Container maxWidth="sm">
-      <Box sx={{ mt: 5, mb: 10 }}>
+      <Box sx={{ mt: 12, mb: 10 }}>
         <Typography
           variant="h4"
           component="h1"
@@ -116,6 +118,33 @@ const ConformacionGE = () => {
 
               <List>
                 {allAcceptedItems.map((item) => (
+                  <ListItem
+                    key={item.id}
+                    button
+                    sx={{ backgroundColor: "#F6F6F6", mb: 0.5 }}
+                  >
+                    <ListItemIcon>
+                      <Avatar>
+                        <Person />
+                      </Avatar>
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.name}
+                      secondary={`CODSIS: ${item.codsis}`}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+
+              <Typography
+                sx={{
+                  display: allToAcceptedItems.length === 0 ? "none" : "block",
+                }}
+              >
+                Estudiantes pendientes:
+              </Typography>
+              <List>
+                {allToAcceptedItems.map((item) => (
                   <ListItem
                     key={item.id}
                     button
