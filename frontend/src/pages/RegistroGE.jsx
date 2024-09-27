@@ -9,15 +9,12 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useCreateCompanyMutation } from "../api/companyApi";
-import { StudentSearch } from "../components";
 
 const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
 
 const RegistroGE = () => {
-  // Estado para manejar datos del formulario y errores
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
-  const [selectedItems, setSelectedItems] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const navigate = useNavigate();
@@ -42,7 +39,6 @@ const RegistroGE = () => {
 
         // Mapear los errores del servidor a los errores de estado
         for (const [key, messages] of Object.entries(serverErrors)) {
-          // Aquí puedes personalizar los mensajes de error
           const customMessages = {
             long_name: "El nombre largo ya está en uso.",
             short_name: "El nombre corto ya está en uso.",
@@ -51,13 +47,11 @@ const RegistroGE = () => {
             phone: "El teléfono ya está en uso.",
             members: "Los miembros no son válidos.",
           };
-          newErrors[key] = customMessages[key] || messages[0]; // Asigna tu mensaje personalizado o el primero del servidor
+          newErrors[key] = customMessages[key] || messages[0];
         }
-
-        setErrors(newErrors); // Actualizar el estado de errores
+        setErrors(newErrors);
         console.log("nuevos errores");
         console.log(newErrors);
-        
       }
     }
   }, [isSuccess, isError, navigate, error]);
@@ -65,7 +59,6 @@ const RegistroGE = () => {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-
     // Limpia el error del campo al cambiar el valor
     setErrors((prev) => ({ ...prev, [name]: false }));
   };
@@ -116,21 +109,10 @@ const RegistroGE = () => {
       }
     }
 
-    if (formData.members?.length < 1) {
-      newErrors.members = "Deben ser mínimo 1 integrantes.";
-      hasError = true;
-    }
-
     if (hasError) {
       setErrors(newErrors);
       return;
     }
-
-    // Prepara el nuevo formData con solo el ID y la permission de los miembros
-    const membersData = formData.members.map((item) => ({
-      id: item.id, // Asegúrate de que `item` tiene el campo `id`
-      permission: item.permission || "R", // Asegúrate de que `item` tiene el campo `permission`
-    }));
 
     const dataToSend = {
       long_name,
@@ -138,7 +120,6 @@ const RegistroGE = () => {
       email,
       address,
       phone,
-      members: membersData, // Incluye solo los miembros con ID y permission
     };
 
     console.log("Enviando datos:", dataToSend);
@@ -181,22 +162,6 @@ const RegistroGE = () => {
             />
           </Box>
         ))}
-
-        <Box sx={{ mb: 2 }}>
-          <StudentSearch
-            selectedItems={selectedItems}
-            setSelectedItems={setSelectedItems}
-            formData={formData}
-            setFormData={setFormData}
-            errors={errors}
-            setErrors={setErrors}
-          />
-          {errors.members && (
-            <Typography color="error" variant="caption">
-              {errors.members}
-            </Typography>
-          )}
-        </Box>
 
         <Button
           type="submit"
