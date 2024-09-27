@@ -4,12 +4,10 @@ import {
   Typography,
   Box,
   CircularProgress,
-  Snackbar,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import {
   useGetPedingCompaniesQuery,
-  useUpdateCompanyByIdMutation,
 } from "../api/companyApi";
 import PendingCompanyCard from "../components/company/PendingCompanyCard";
 
