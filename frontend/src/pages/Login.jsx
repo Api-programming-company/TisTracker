@@ -9,6 +9,8 @@ import {
   InputAdornment,
   Alert,
   CircularProgress,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useLoginUserMutation } from "../api/userApi";
@@ -21,6 +23,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
+  const [anchorEl, setAnchorEl] = useState(null);
   const { setUser } = useContext(AppContext);
   const navigate = useNavigate();
 
@@ -87,8 +90,8 @@ const Login = () => {
     loginUser({ email, password });
   };
 
-  const handleRegisterRedirect = () => {
-    navigate("/register");
+  const handleRegisterRedirect = (type) => {
+    navigate(`/registro-${type}`);
   };
 
   const handleChange = (field) => (e) => {
@@ -107,11 +110,20 @@ const Login = () => {
     });
   };
 
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <Container maxWidth="xs">
       <Box
         sx={{
-          marginTop: 8,
+          mt: 12,
+          mb: 5,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -192,10 +204,18 @@ const Login = () => {
             <Button
               variant="text"
               color="primary"
-              onClick={handleRegisterRedirect}
+              onClick={() => handleRegisterRedirect("docente")}
               disabled={isLoading}
             >
-              ¿No tienes una cuenta? Regístrate
+              Regístrate como Docente
+            </Button>
+            <Button
+              variant="text"
+              color="primary"
+              onClick={() => handleRegisterRedirect("estudiante")}
+              disabled={isLoading}
+            >
+              Regístrate como Estudiante
             </Button>
           </Box>
         </Box>

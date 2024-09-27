@@ -67,12 +67,12 @@ const UserRegister = () => {
     if (isLoading) {
       console.log("esta loadinga el registro!!!!");
     }
-  }, [isSuccess, isError, error, isFetching, isLoading]);
+  }, [isSuccess, isError, error, isFetching, isLoading, data]);
   useEffect(() => {
     if (user !== null) {
       navigate("/");
     }
-  }, [user]);
+  }, [user, navigate]);
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
@@ -149,7 +149,7 @@ const UserRegister = () => {
 
   return (
     <Container maxWidth="sm">
-      <Box sx={{ mt: 5, position: "relative" }}>
+      <Box sx={{ mt: 12, mb: 5, position: "relative" }}>
         <Typography
           variant="h4"
           component="h1"
