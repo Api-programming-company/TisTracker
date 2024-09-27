@@ -3,20 +3,10 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import PersonIcon from "@mui/icons-material/Person";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { formatDate } from "../utils/validaciones";
 
 const PendingCompanyCard = ({ request }) => {
   const navigate = useNavigate();
-  const formatDate = (date) => {
-    const newDate = new Date(date);
-    const formatedDate =
-      newDate.getDate() +
-      1 +
-      "/" +
-      (newDate.getMonth() + 1) +
-      "/" +
-      newDate.getFullYear();
-    return formatedDate;
-  };
 
   return (
     <Box

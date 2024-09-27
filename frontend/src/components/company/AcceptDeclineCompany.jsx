@@ -10,6 +10,7 @@ import React, { useState } from "react";
 import MemberAccordion from "./MemberAccordion";
 import DialogMod from "../DialogMod";
 import { useUpdateCompanyByIdMutation } from "../../api/companyApi";
+import { formatDate } from "../utils/validaciones";
 
 const AcceptDeclineCompany = () => {
   const invitacionesEjemplo = {
@@ -85,17 +86,7 @@ const AcceptDeclineCompany = () => {
   });
   const [openA, setOpenA] = useState(false);
   const [openR, setOpenR] = useState(false);
-  const formatDate = (date) => {
-    const newDate = new Date(date);
-    const formatedDate =
-      newDate.getDate() +
-      1 +
-      "/" +
-      (newDate.getMonth() + 1) +
-      "/" +
-      newDate.getFullYear();
-    return formatedDate;
-  };
+
 
   const handleAccept = async () => {
     setOpenA(false);

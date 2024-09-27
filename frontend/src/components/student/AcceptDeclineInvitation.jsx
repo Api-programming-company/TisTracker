@@ -10,6 +10,7 @@ import React, { useEffect, useState } from "react";
 import { useActionData, useLocation } from "react-router-dom";
 import DialogMod from "../DialogMod";
 import { useUpdateInvitationByCompanyIdMutation } from "../../api/invitationApi";
+import { formatDate } from "../utils/validaciones";
 
 const AcceptDeclineInvitation = () => {
   const [
@@ -34,18 +35,6 @@ const AcceptDeclineInvitation = () => {
     message: "",
     severity: "success",
   });
-  // dar formato a la fecha
-  const formatDate = (date) => {
-    const newDate = new Date(date);
-    const formatedDate =
-      newDate.getDate() +
-      1 +
-      "/" +
-      (newDate.getMonth() + 1) +
-      "/" +
-      newDate.getFullYear();
-    return formatedDate;
-  };
 
   const handleAccept = async () => {
     setOpenA(false);

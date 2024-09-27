@@ -2,11 +2,6 @@ import {
   Button,
   CircularProgress,
   Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   FormControl,
   InputLabel,
   MenuItem,
@@ -21,14 +16,13 @@ import {
 } from "../api/academicPeriodApi";
 import AppContext from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
+import { formatDate } from "../utils/validaciones";
+import DialogMod from "./DialogMod";
 
 const EnrollToAcademicPeriod = () => {
   const navigate = useNavigate();
+  // verificar si ya esta en una gestion academica
   const { user, checkUser } = useContext(AppContext);
-
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-
   useEffect(() => {
     if (user?.academic_period_id) {
       console.log("Ya está inscrito");
@@ -36,6 +30,11 @@ const EnrollToAcademicPeriod = () => {
     }
   }, [user]);
 
+  // para snackbar
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  // recuperar periodos academicos
   const {
     data: groupedPeriods = [],
     error,
@@ -50,11 +49,14 @@ const EnrollToAcademicPeriod = () => {
     }
     if (isError) {
       console.log(error);
-      setSnackbarMessage(error.data.message || "Error al obtener los períodos académicos");
+      setSnackbarMessage(
+        error.data.message || "Error al obtener los períodos académicos"
+      );
       setSnackbarOpen(true);
     }
   }, [isSuccess, isError, error, groupedPeriods]);
 
+  // inscribirse a periodo academico
   const [
     enrollInAcademicPeriod,
     {
@@ -66,6 +68,7 @@ const EnrollToAcademicPeriod = () => {
     },
   ] = useEnrollInAcademicPeriodMutation();
 
+  // data
   const [selectedTeacher, setSelectedTeacher] = useState("");
   const [selectedPeriod, setSelectedPeriod] = useState("");
   const [academicPeriods, setAcademicPeriods] = useState([]);
@@ -159,7 +162,8 @@ const EnrollToAcademicPeriod = () => {
           >
             {academicPeriods.map((period) => (
               <MenuItem key={period.id} value={period.id}>
-                {period.name} - {period.start_date} a {period.end_date}
+                {period.name} - Del {formatDate(period.start_date)} a{" "}
+                {formatDate(period.end_date)}
               </MenuItem>
             ))}
           </Select>
@@ -177,52 +181,34 @@ const EnrollToAcademicPeriod = () => {
       </Button>
 
       {/* Diálogo de Confirmación */}
-      <Dialog
+      <DialogMod
         open={openDialog}
-        onClose={() => setOpenDialog(false)} // Cerrar el diálogo al cancelar
-      >
-        <DialogTitle>Confirmar Inscripción</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            ¿Estás seguro que deseas inscribirte en el período académico
-            seleccionado?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} color="secondary">
-            Cancelar
-          </Button>
-          <Button onClick={handleInscribirse} color="primary" autoFocus>
-            Confirmar
-          </Button>
-        </DialogActions>
-      </Dialog>
+        setOpen={setOpenDialog}
+        title={"Confirmar Inscripción"}
+        content={
+          "¿Estás seguro que deseas inscribirte en el período académico seleccionado?"
+        }
+        onAccept={handleInscribirse}
+      />
 
       {/* Diálogo de Éxito */}
-      <Dialog
+      <DialogMod
         open={openSuccessDialog}
-        onClose={handleCloseSuccessDialog}
-      >
-        <DialogTitle>Inscripción Exitosa</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Te has inscrito exitosamente en el período académico.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseSuccessDialog} color="primary">
-            Aceptar
-          </Button>
-        </DialogActions>
-      </Dialog>
+        setOpen={setOpenSuccessDialog}
+        title={"Inscripción Exitosa"}
+        content={"Te has inscrito exitosamente en el período académico."}
+        onAccept={handleCloseSuccessDialog}
+        onCancel={handleCloseSuccessDialog}
+        showButtonCancel={false}
+      />
 
       {/* Snackbar para errores */}
       <Snackbar
         open={snackbarOpen}
-        autoHideDuration={6000}
+        autoHideDuration={10000}
         onClose={handleSnackbarClose}
         message={snackbarMessage}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       />
     </Container>
   );

@@ -17,6 +17,7 @@ const DialogMod = ({
   paramsAccept = null,
   onCancel = null,
   paramsCancel = null,
+  showButtonCancel = true,
 }) => {
   const handleClickOpen = () => {
     setOpen(true);
@@ -43,7 +44,7 @@ const DialogMod = ({
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cancelar</Button>
+        {showButtonCancel ? <Button onClick={handleClose}>Cancelar</Button> : null}
         <Button onClick={() => onAccept(paramsAccept)} autoFocus>
           Aceptar
         </Button>

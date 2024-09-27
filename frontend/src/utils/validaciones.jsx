@@ -18,3 +18,10 @@ export const validateEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
+
+export const formatDate = (date) => {
+  const newDate = new Date(date);
+  newDate.setDate(newDate.getDate() + 1);
+  const formatedDate = newDate.toLocaleDateString();
+  return formatedDate;
+};
