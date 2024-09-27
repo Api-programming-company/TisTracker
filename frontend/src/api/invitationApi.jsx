@@ -12,9 +12,13 @@ const invitationApi = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    invitationDetailsById: builder.query({
+      query: (id) => `invitations/${id}`,
+    }),
   }),
 });
 
 export const {
-  useUpdateInvitationByCompanyIdMutation
+  useUpdateInvitationByCompanyIdMutation,
+  useInvitationDetailsByIdQuery
 } = invitationApi;
