@@ -17,7 +17,7 @@ const AcademicPeriodList = () => {
     data: periods = [],
     error,
     isFetching,
-    isLoading
+    isLoading,
   } = useGetAcademicPeriodsQuery(undefined, {
     refetchOnMountOrArgChange: true, // Recargar al montar el componente
   });
@@ -62,7 +62,7 @@ const AcademicPeriodList = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 5 }}>
+    <Container maxWidth="lg" sx={{ mt: 5, mb: 10 }}>
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Typography variant="h4" gutterBottom>
           Lista de Períodos Académicos
