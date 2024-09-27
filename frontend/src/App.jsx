@@ -16,6 +16,7 @@ import {
   SolicitudesGE,
   EditarListaGE,
   ConformacionGE,
+  RegistroDocente,
 } from "./pages";
 import {
   AppBarWithMenu,
@@ -41,7 +42,8 @@ function App({ toggleTheme, isDarkMode }) {
       />
 
       <Routes>
-        <Route path="/register" element={<UserRegister />} />
+        <Route path="/registro-estudiante" element={<UserRegister />} />
+        <Route path="/registro-docente" element={<RegistroDocente />} />
         <Route path="/login" element={<Login />} />
         <Route path="/verify-email/:token" element={<VerifyEmail />} />
         <Route path="/" element={<Home />} />
@@ -50,15 +52,17 @@ function App({ toggleTheme, isDarkMode }) {
         <Route path="/vergrupoe/:id" element={<VerGE />} />
         <Route path="/registroge" element={<RegistroGE />} />
 
-        <Route path="/plannification-register/:id" element={<PlannificationRegister />} />
-
+        <Route
+          path="/plannification-register/:id"
+          element={<PlannificationRegister />}
+        />
 
         <Route path="/company-requests" element={<InvitacionesGE />} />
         <Route path="/conformacionge" element={<ConformacionGE />} />
         <Route path="/editarlistage" element={<EditarListaGE />} />
         <Route path="/academic-periods" element={<AcademicPeriodList />} />
         <Route path="/register-ap" element={<RegisterAcademicPeriod />} />
-        
+
         <Route
           path="/academic-period/:id/companies"
           element={<CompanyList />}
