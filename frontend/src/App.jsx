@@ -30,6 +30,7 @@ import { Box } from "@mui/material";
 import VerGE from "./pages/VerGE";
 import PlannificationRegister from "./pages/PlannificationRegister";
 import AcceptDeclineCompany from "./components/company/AcceptDeclineCompany";
+import AcceptDeclineInvitation from "./components/student/AcceptDeclineInvitation";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -74,6 +75,7 @@ function App({ toggleTheme, isDarkMode }) {
             element={<SolicitudesGE />}
           />
           <Route path="/request/:id/pending" element={<AcceptDeclineCompany />} />
+          <Route path="/invitation/:id/pending" element={<AcceptDeclineInvitation />} />
 
           <Route path="/search" element={<StudentSearch />} />
 

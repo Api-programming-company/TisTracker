@@ -6,85 +6,35 @@ import {
   Snackbar,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
-import MemberAccordion from "./MemberAccordion";
+import React, { useEffect, useState } from "react";
+import { useActionData, useLocation } from "react-router-dom";
 import DialogMod from "../DialogMod";
-import { useUpdateCompanyByIdMutation } from "../../api/companyApi";
+import { useUpdateInvitationByCompanyIdMutation } from "../../api/invitationApi";
 
-const AcceptDeclineCompany = () => {
-  const invitacionesEjemplo = {
-    message: "Compañías pendientes obtenidas correctamente.",
-    company: {
-      id: 33,
-      long_name: "asdfasasdasf",
-      short_name: "asdas",
-      email: "asdasd@sadas.com",
-      address: "sdasdasd",
-      phone: "77665453",
-      academic_period_id: 1,
-      created_at: "2024-09-24T05:58:41.000000Z",
-      updated_at: "2024-09-27T02:56:01.000000Z",
-      status: "A",
-      members_count: 2,
-      members: [
-        {
-          user_id: 8,
-          email: "123456789@est.umss.edu",
-          pivot: {
-            company_id: 33,
-            user_id: 8,
-            status: "P",
-            permission: "W",
-            created_at: "2024-09-24T05:58:42.000000Z",
-            updated_at: "2024-09-24T05:58:42.000000Z",
-          },
-        },
-        {
-          user_id: 9,
-          email: "123456789@est.umss.edu",
-          pivot: {
-            company_id: 33,
-            user_id: 9,
-            status: "P",
-            permission: "W",
-            created_at: "2024-09-24T05:58:42.000000Z",
-            updated_at: "2024-09-24T05:58:42.000000Z",
-          },
-        },
-        {
-          user_id: 10,
-          email: "123456789@est.umss.edu",
-          pivot: {
-            company_id: 33,
-            user_id: 10,
-            status: "P",
-            permission: "W",
-            created_at: "2024-09-24T05:58:42.000000Z",
-            updated_at: "2024-09-24T05:58:42.000000Z",
-          },
-        },
-      ],
-    },
-    invitation_date: "2024-09-24T05:58:42.000000Z",
-  };
-  //---------------------------------------------------------------------
+const AcceptDeclineInvitation = () => {
   const [
-    updateCompany,
+    updateInvitation,
     {
-      data: updateData,
-      error: updateError,
-      isError: isUpdateError,
-      isSuccess: isUpdateSuccess,
-      isLoading: isUpdateLoading,
+      data: invitationData,
+      error: invitationError,
+      isSuccess: isInvitationSuccess,
+      isLoading: isInvitationLoading,
+      isError: isInvitationError,
     },
-  ] = useUpdateCompanyByIdMutation();
+  ] = useUpdateInvitationByCompanyIdMutation();
+  // recuperando data de la empresa
+  const companyInfo = useLocation().state.request;
+  console.log(companyInfo);
+  // para dialogs
+  const [openA, setOpenA] = useState(false);
+  const [openR, setOpenR] = useState(false);
+  // para snackbar
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
     severity: "success",
   });
-  const [openA, setOpenA] = useState(false);
-  const [openR, setOpenR] = useState(false);
+  // dar formato a la fecha
   const formatDate = (date) => {
     const newDate = new Date(date);
     const formatedDate =
@@ -100,29 +50,30 @@ const AcceptDeclineCompany = () => {
   const handleAccept = async () => {
     setOpenA(false);
     try {
-      await updateCompany({
-        id: invitacionesEjemplo.company.id,
-        data: { status: "A" },
-      }).unwrap();
-      setSnackbar({
-        open: true,
-        message: "Solicitud aceptada",
-        severity: "success",
-      });
-    } catch (error) {
-      console.error("Error al aceptar la solicitud:", error);
-      setSnackbar({
-        open: true,
-        message: "Ocurrió un error al aceptar la solicitud.",
-        severity: "error",
-      });
-    }
-  };
+        await updateInvitation({
+          id: companyInfo.company.id,
+          data: { status: "A" },
+        }).unwrap();
+        setSnackbar({
+          open: true,
+          message: "Solicitud aceptada",
+          severity: "success",
+        });
+      } catch (error) {
+        console.error("Error al aceptar la solicitud:", error);
+        setSnackbar({
+          open: true,
+          message: "Ocurrió un error al aceptar la solicitud.",
+          severity: "error",
+        });
+      }
+  }
+
   const handleDecline = async () => {
     setOpenR(false);
     try {
-      await updateCompany({
-        id: invitacionesEjemplo.company.id,
+      await updateInvitation({
+        id: companyInfo.company.id,
         data: { status: "R" },
       }).unwrap();
       setSnackbar({
@@ -138,7 +89,7 @@ const AcceptDeclineCompany = () => {
         severity: "error",
       });
     }
-  };
+  }
 
   return (
     <Container maxWidth="md">
@@ -167,7 +118,7 @@ const AcceptDeclineCompany = () => {
           </Grid2>
           <Grid2 size={{ xs: 12, md: 8 }}>
             <Typography variant="body1">
-              {invitacionesEjemplo.company.long_name}
+              {companyInfo.company.long_name}
             </Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 4 }}>
@@ -175,47 +126,36 @@ const AcceptDeclineCompany = () => {
           </Grid2>
           <Grid2 size={{ xs: 12, md: 8 }}>
             <Typography variant="body1">
-              {invitacionesEjemplo.company.short_name}
+              {companyInfo.company.short_name}
             </Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 4 }}>
             <Typography variant="h6">Correo electrónico</Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 8 }}>
-            <Typography variant="body1">
-              {invitacionesEjemplo.company.email}
-            </Typography>
+            <Typography variant="body1">{companyInfo.company.email}</Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 4 }}>
             <Typography variant="h6">Dirección</Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 8 }}>
             <Typography variant="body1">
-              {invitacionesEjemplo.company.address}
+              {companyInfo.company.address}
             </Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 4 }}>
             <Typography variant="h6">Teléfono</Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 8 }}>
-            <Typography variant="body1">
-              {invitacionesEjemplo.company.phone}
-            </Typography>
+            <Typography variant="body1">{companyInfo.company.phone}</Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 4 }}>
             <Typography variant="h6">Fecha de solicitud</Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 8 }}>
             <Typography variant="body1">
-              {formatDate(invitacionesEjemplo.invitation_date)}
+              {formatDate(companyInfo.invitation_date)}
             </Typography>
-          </Grid2>
-          {/* <Grid2 size={{ xs: 12, md: 4 }}>
-            <Typography variant="h6">Integrantes</Typography>
-          </Grid2> */}
-          <Grid2 size={12}>
-            {/* desplegable */}
-            <MemberAccordion members={invitacionesEjemplo.company.members} />
           </Grid2>
         </Grid2>
       </Box>
@@ -231,7 +171,7 @@ const AcceptDeclineCompany = () => {
           onClick={() => setOpenA(true)}
           variant="contained"
           color="primary"
-          disabled={isUpdateLoading}
+            disabled={isInvitationLoading}
           sx={{ mb: 2, px: 12, py: 1 }}
         >
           Aceptar
@@ -241,13 +181,13 @@ const AcceptDeclineCompany = () => {
           setOpen={setOpenA}
           title={"Aceptar"}
           content={"¿Estas seguro que deseas aceptar esta invitación?"}
-          onAccept={handleAccept}
+            onAccept={handleAccept}
         />
         {/* Rechazar solicitud */}
         <Button
           onClick={() => setOpenR(true)}
           variant="outlined"
-          disabled={isUpdateLoading}
+            disabled={isInvitationLoading}
           color="transparent"
           sx={{ mb: 2, px: 11, py: 1 }}
         >
@@ -258,7 +198,7 @@ const AcceptDeclineCompany = () => {
           setOpen={setOpenR}
           title={"Rechazar"}
           content={"¿Estas seguro que deseas rechazar esta invitación?"}
-          onAccept={handleDecline}
+            onAccept={handleDecline}
         />
         {/* Snackbar */}
         <Snackbar
@@ -273,4 +213,4 @@ const AcceptDeclineCompany = () => {
   );
 };
 
-export default AcceptDeclineCompany;
+export default AcceptDeclineInvitation;
