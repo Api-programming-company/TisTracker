@@ -62,13 +62,10 @@ const PendingCompanyCard = ({ request }) => {
             <CalendarMonthIcon />
             La solicitud se realizó el {formatDate(request.created_at)}.
           </Typography>
-          <Typography component="p" sx={{ color: "#8E9090", fontSize: "14px" }}>
-            Desean formar parte del grupo de TIS
-          </Typography>
         </Box>
 
         <Button
-          onClick={() => navigate('/')}
+          onClick={() => navigate(`/request/${request.id}/pending`, {state: {request}})}
           variant="contained"
           color="primary"
           sx={{
