@@ -18,14 +18,13 @@ import { useContext } from "react";
 
 const UserRegister = () => {
   const { user } = useContext(AppContext);
-  const [userType, setUserType] = useState("estudiante");
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
     email: "",
     password: "",
     password_confirmation: "",
-    user_type: userType === "docente" ? "D" : "E",
+    user_type: "E",
   });
   const [errors, setErrors] = useState({
     first_name: "",
@@ -83,22 +82,6 @@ const UserRegister = () => {
     setShowConfirmPassword((prev) => !prev);
   };
 
-  const handleSwitchUserType = () => {
-    setUserType((prevUserType) => {
-      const newUserType = prevUserType === "docente" ? "estudiante" : "docente";
-      setFormData({
-        first_name: "",
-        last_name: "",
-        email: "",
-        password: "",
-        password_confirmation: "",
-        user_type: newUserType === "docente" ? "D" : "E",
-      });
-      return newUserType;
-    });
-    setErrors({}); // Borra los errores
-  };
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -114,11 +97,11 @@ const UserRegister = () => {
     const validations = {
       first_name: {
         condition: !first_name,
-        message: "El first_name es obligatorio.",
+        message: "El nombre es obligatorio.",
       },
       last_name: {
         condition: !last_name,
-        message: "Los last_name son obligatorios.",
+        message: "Los apellidos son obligatorios.",
       },
       email: {
         condition: !email || !validateEmail(email),
@@ -128,14 +111,14 @@ const UserRegister = () => {
       },
       password: {
         condition: !password,
-        message: "La password es obligatoria.",
+        message: "La contraseña es obligatoria.",
         additionalCheck:
           !validarContraseña(password) &&
           "Debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial.",
       },
       password_confirmation: {
         condition: !password_confirmation,
-        message: "Debe confirmar su password.",
+        message: "Debe confirmar su contraseña.",
         additionalCheck:
           password !== password_confirmation && "Las contraseñas no coinciden.",
       },
@@ -173,7 +156,7 @@ const UserRegister = () => {
           gutterBottom
           sx={{ textAlign: "center" }}
         >
-          Regístrate como {userType.charAt(0).toUpperCase() + userType.slice(1)}
+          Regístrate como Estudiante
         </Typography>
 
         {isLoading ? (
@@ -221,7 +204,7 @@ const UserRegister = () => {
             />
 
             <TextField
-              label="Email*"
+              label="Correo electrónico*"
               name="email"
               type="email"
               value={formData.email}
@@ -295,17 +278,6 @@ const UserRegister = () => {
               sx={{ mt: 2 }}
             >
               Registrar
-            </Button>
-
-            <Button
-              id="toggle"
-              variant="outlined"
-              color="default"
-              fullWidth
-              onClick={handleSwitchUserType}
-              sx={{ mt: 2 }}
-            >
-              Cambiar a {userType === "docente" ? "Estudiante" : "Docente"}
             </Button>
           </Box>
         )}
