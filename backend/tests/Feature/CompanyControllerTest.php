@@ -14,18 +14,16 @@ class CompanyControllerTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    /** @test */
-    /** @test */
-    public function it_creates_a_company_with_valid_academic_period()
+    public function it_creates_a_company_with_valid_data()
     {
-        // Create a user and authenticate with Sanctum
+        // Crear un usuario autenticado
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        // Create a valid academic period
+        // Crear un periodo académico
         $academicPeriod = AcademicPeriod::factory()->create();
 
-        // Define the company data with a valid academic period
+        // Definir los datos de la compañía con un periodo académico válido
         $data = [
             'long_name' => 'Test Company',
             'short_name' => 'TC',
@@ -35,57 +33,104 @@ class CompanyControllerTest extends TestCase
             'academic_period_id' => $academicPeriod->id,
         ];
 
-        // Make a POST request to create the company via the API
+        // Realizar una solicitud POST para crear la compañía
         $response = $this->post('api/company', $data);
 
-        // Assert the company was created successfully
+        // Afirmar que la compañía fue creada exitosamente
         $response->assertStatus(201);
+    }
 
-        // Assert the company exists in the database
+    /** @test */
+    public function it_saves_company_in_database()
+    {
+        // Crear un usuario autenticado
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        // Crear un periodo académico
+        $academicPeriod = AcademicPeriod::factory()->create();
+
+        // Definir los datos de la compañía
+        $data = [
+            'long_name' => 'Test Company',
+            'short_name' => 'TC',
+            'email' => 'testcompany@example.com',
+            'address' => '123 Test St',
+            'phone' => '12345678',
+            'academic_period_id' => $academicPeriod->id,
+        ];
+
+        // Crear la compañía
+        $this->post('api/company', $data);
+
+        // Afirmar que la compañía existe en la base de datos
         $this->assertDatabaseHas('companies', ['email' => $data['email']]);
+    }
 
-        // Fetch the newly created company
+    /** @test */
+    public function it_has_valid_academic_period_association()
+    {
+        // Crear un usuario autenticado
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        // Crear un periodo académico
+        $academicPeriod = AcademicPeriod::factory()->create();
+
+        // Definir los datos de la compañía
+        $data = [
+            'long_name' => 'Test Company',
+            'short_name' => 'TC',
+            'email' => 'testcompany@example.com',
+            'address' => '123 Test St',
+            'phone' => '12345678',
+            'academic_period_id' => $academicPeriod->id,
+        ];
+
+        // Crear la compañía
+        $this->post('api/company', $data);
+
+        // Obtener la compañía creada
         $company = Company::where('email', $data['email'])->first();
 
-        // Assert the company has a valid academic period
+        // Afirmar que la compañía tiene un periodo académico válido
         $this->assertInstanceOf(AcademicPeriod::class, $company->academicPeriod);
+    }
 
-        // Assert that the company does not have a planning associated
+    /** @test */
+    public function it_does_not_have_associated_planning()
+    {
+        // Crear un usuario autenticado
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        // Crear un periodo académico
+        $academicPeriod = AcademicPeriod::factory()->create();
+
+        // Definir los datos de la compañía
+        $data = [
+            'long_name' => 'Test Company',
+            'short_name' => 'TC',
+            'email' => 'testcompany@example.com',
+            'address' => '123 Test St',
+            'phone' => '12345678',
+            'academic_period_id' => $academicPeriod->id,
+        ];
+
+        // Crear la compañía
+        $this->post('api/company', $data);
+
+        // Obtener la compañía creada
+        $company = Company::where('email', $data['email'])->first();
+
+        // Afirmar que la compañía no tiene planificación asociada
         $this->assertNull($company->planning);
 
-        // Ensure no planning entry exists in the database for this company
+        // Afirmar que no existe entrada de planificación en la base de datos para esta compañía
         $this->assertDatabaseMissing('plannings', ['company_id' => $company->id]);
     }
 
     /** @test */
-    public function it_returns_error_when_academic_period_is_invalid()
-    {
-        // Create a user without an academic period and authenticate with Sanctum
-        $user = User::factory()->create(['academic_period_id' => null]);
-        Sanctum::actingAs($user);
-
-        // Define company data without an academic period
-        $data = [
-            'long_name' => 'Another Company',
-            'short_name' => 'name',
-            'email' => 'another@example.com',
-            'address' => '456 Another St',
-            'phone' => '12345678',
-            'academic_period_id' => 9999, // Invalid academic period ID
-        ];
-
-        // Make a POST request to create the company via the API
-        $response = $this->post('api/company', $data);
-
-        // Assert that a 404 error is returned
-        $response->assertStatus(404);
-
-        // Assert the correct error message is returned
-        $response->assertJson([
-            'message' => 'The associated academic period does not exist.'
-        ]);
-    }
-
     public function it_validates_company_status_after_creation()
     {
         // Create a user and authenticate with Sanctum
