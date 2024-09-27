@@ -20,12 +20,19 @@ class CompanyUserController extends Controller
      */
     public function index()
     {
-        // Obtener todos los miembros de una compañía específica
-        $companyUsers = Company::with('members')->get();
-        return response()->json([
-            'message' => 'Lista de miembros de las compañías obtenida correctamente.',
-            'data' => $companyUsers
-        ], 200);
+        try {
+            // Obtener todos los miembros de una compañía específica
+            $companyUsers = Company::with('members')->get();
+            return response()->json([
+                'message' => 'Lista de miembros de las compañías obtenida correctamente.',
+                'data' => $companyUsers
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Se ha producido un error inesperado al obtener los miembros.',
+                'error' => $e->getMessage()
+            ], 500); 
+        }
     }
 
     /**
@@ -116,18 +123,25 @@ class CompanyUserController extends Controller
      */
     public function show($id)
     {
-        $company = Company::with('members')->find($id);
+        try {
+            $company = Company::with('members')->find($id);
 
-        if (!$company) {
+            if (!$company) {
+                return response()->json([
+                    'message' => 'Compañía no encontrada.'
+                ], 404);
+            }
+
             return response()->json([
-                'message' => 'Compañía no encontrada.'
-            ], 404);
+                'message' => 'Miembros de la compañía obtenidos correctamente.',
+                'data' => $company->members
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Se ha producido un error inesperado al obtener los miembros de la compañía.',
+                'error' => $e->getMessage()
+            ], 500); 
         }
-
-        return response()->json([
-            'message' => 'Miembros de la compañía obtenidos correctamente.',
-            'data' => $company->members
-        ], 200);
     }
 
     /**
@@ -213,18 +227,30 @@ class CompanyUserController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        // Validar el ID del usuario a eliminar
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-        ]);
+        try {
+            // Validar el ID del usuario a eliminar
+            $request->validate([
+                'user_id' => 'required|exists:users,id',
+            ]);
 
-        // Buscar la compañía
-        $company = Company::findOrFail($id); // Usa $id para buscar la compañía
+            // Buscar la compañía
+            $company = Company::findOrFail($id); // Usa $id para buscar la compañía
 
-        // Desvincular al usuario de la compañía
-        $company->members()->detach($request->user_id);
+            // Desvincular al usuario de la compañía
+            $company->members()->detach($request->user_id);
 
-        return response()->json(['message' => 'Miembro eliminado correctamente de la compañía.'], 200);
+            return response()->json(['message' => 'Miembro eliminado correctamente de la compañía.'], 200);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Error de validación',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Se ha producido un error inesperado al eliminar al miembro.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function getStudentCompanyByAcademicPeriod($academicPeriodId)
