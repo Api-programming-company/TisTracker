@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Deliverable;
+use Illuminate\Validation\ValidationException;
+use Exception;
+
 class DeliverableController extends Controller
 {
     /**
@@ -14,8 +17,15 @@ class DeliverableController extends Controller
     // Listar todos los entregables
     public function index()
     {
-        $deliverables = Deliverable::all(); 
-        return response()->json($deliverables);
+        try {
+            $deliverables = Deliverable::all();
+            return response()->json($deliverables);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Error al listar los entregables',
+                'error' => $e->getMessage()
+            ], 500); // 500 Internal Server Error
+        }
     }
 
     /**
@@ -37,16 +47,28 @@ class DeliverableController extends Controller
     // Guardar un nuevo entregable
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'responsible' => 'required|string|max:255',
-            'objective' => 'required|string',
-            'milestone_id' => 'required|exists:milestones,id',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'responsible' => 'required|string|max:255',
+                'objective' => 'required|string',
+                'milestone_id' => 'required|exists:milestones,id',
+            ]);
 
-        $deliverable = Deliverable::create($validatedData);
+            $deliverable = Deliverable::create($validatedData);
 
-        return response()->json($deliverable, 201);
+            return response()->json($deliverable, 201); // 201 Created
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Error de validación',
+                'errors' => $e->errors()
+            ], 422); // 422 Unprocessable Entity
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Se ha producido un error al crear el entregable',
+                'error' => $e->getMessage()
+            ], 500); // 500 Internal Server Error
+        }
     }
 
     /**
@@ -58,8 +80,15 @@ class DeliverableController extends Controller
     // Mostrar un entregable específico
     public function show($id)
     {
-        $deliverable = Deliverable::findOrFail($id);
-        return response()->json($deliverable);
+        try {
+            $deliverable = Deliverable::findOrFail($id);
+            return response()->json($deliverable);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Error al obtener el entregable',
+                'error' => $e->getMessage()
+            ], 500); // 500 Internal Server Error
+        }
     }
 
     /**
@@ -83,17 +112,29 @@ class DeliverableController extends Controller
     // Actualizar un entregable
     public function update(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'responsible' => 'sometimes|required|string|max:255',
-            'objective' => 'sometimes|required|string',
-            'milestone_id' => 'sometimes|required|exists:milestones,id',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'name' => 'sometimes|required|string|max:255',
+                'responsible' => 'sometimes|required|string|max:255',
+                'objective' => 'sometimes|required|string',
+                'milestone_id' => 'sometimes|required|exists:milestones,id',
+            ]);
 
-        $deliverable = Deliverable::findOrFail($id);
-        $deliverable->update($validatedData);
+            $deliverable = Deliverable::findOrFail($id);
+            $deliverable->update($validatedData);
 
-        return response()->json($deliverable, 200);
+            return response()->json($deliverable, 200); // 200 OK
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Error de validación',
+                'errors' => $e->errors()
+            ], 422); // 422 Unprocessable Entity
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Error al actualizar el entregable',
+                'error' => $e->getMessage()
+            ], 500); // 500 Internal Server Error
+        }
     }
 
     /**
@@ -105,9 +146,16 @@ class DeliverableController extends Controller
     // Eliminar un entregable
     public function destroy($id)
     {
-        $deliverable = Deliverable::findOrFail($id);
-        $deliverable->delete();
+        try {
+            $deliverable = Deliverable::findOrFail($id);
+            $deliverable->delete();
 
-        return response()->json(['message' => 'Deliverable eliminado correctamente'], 200);
+            return response()->json(['message' => 'Deliverable eliminado correctamente'], 200); // 200 OK
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Error al eliminar el entregable',
+                'error' => $e->getMessage()
+            ], 500); // 500 Internal Server Error
+        }
     }
 }
