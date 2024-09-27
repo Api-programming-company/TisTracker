@@ -17,26 +17,45 @@ import {
 import { Delete } from "@mui/icons-material";
 import { Person } from "@mui/icons-material";
 import { useCreateCompanyMutation } from "../api/companyApi";
+import DialogMod from "../components/DialogMod";
 import { useNavigate } from "react-router-dom";
 
 const EditarListaGE = () => {
   const navigate = useNavigate();
+  const [openA, setOpenA] = useState(false);
   const [{ isSuccess, isError, isLoading }] = useCreateCompanyMutation();
-  // Buscador
+  const [itemIdToRemove, setItemIdToRemove] = useState(null);
+
   const [selectedItems, setSelectedItems] = useState([]);
 
   //Lista de invitados que aun no han aceptado
   const [allToAcceptItems] = useState([
-    { id: 2, name: "Carlos José Padilla Poma", codsis: "202000572" },
-    { id: 4, name: "Andres Castillo Lozada", codsis: "202100580" },
-    { id: 5, name: "Antonio Gomez Amaranto", codsis: "202200740" },
-    { id: 6, name: "Camila Torrez Gutierrez", codsis: "202100712" },
-  ]);
-
-  //Lista de invitados que ya han aceptado
-  const [allAcceptedItems] = useState([
-    { id: 1, name: "Juan Alberto Peredo Pozo", codsis: "202000571" },
-    { id: 3, name: "Daniela Torrico Torreón", codsis: "202000570" },
+    {
+      id: 3,
+      name: "Daniela Torrico Torreón",
+      fechainvitacion: "07/12/2021",
+      correo: "daniela@example.com",
+      estado: "Aceptado",
+    },
+    {
+      id: 4,
+      name: "Andres Castillo Lozada",
+      fechainvitacion: "07/12/2021",
+      correo: "andres@example.com",
+      estado: "Aceptado",
+    },
+    {
+      id: 5,
+      name: "Antonio Gomez Amaranto",
+      fechainvitacion: "07/12/2021",
+      correo: "antonio@example.com",
+    },
+    {
+      id: 6,
+      name: "Camila Torrez Gutierrez",
+      fechainvitacion: "07/12/2021",
+      correo: "camila@example.com",
+    },
   ]);
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -57,6 +76,10 @@ const EditarListaGE = () => {
     }
   }, [isSuccess, isError, navigate, allToAcceptItems]);
 
+  const handleConfirmRemoveItem = (itemId) => {
+    setOpenA(false);
+    handleRemoveItem(itemId);
+  };
   const handleRemoveItem = (itemId) => {
     setSelectedItems((prevItems) =>
       prevItems.filter((item) => item.id !== itemId)
@@ -65,13 +88,16 @@ const EditarListaGE = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (selectedItems.length + allAcceptedItems.length < 3) {
+    {
+      /* if (condicion) {
       setSnackbarMessage(
-        "Deben ser mínimo 3 integrantes para conformar la grupo empresa"
+        "Mensaje"
       );
       setSnackbarOpen(true);
       return;
+    } */
     }
+    alert("Invitaciones retiradas correctamente");
   };
 
   const handleSnackbarClose = () => {
@@ -87,8 +113,7 @@ const EditarListaGE = () => {
           gutterBottom
           sx={{ textAlign: "center" }}
         >
-          Lista de integrantes para <br />
-          conformación de Grupo Empresa
+          Invitaciones Pendientes
         </Typography>
 
         <form onSubmit={handleSubmit}>
@@ -101,7 +126,9 @@ const EditarListaGE = () => {
               }}
             >
               <FormControl fullWidth>
-                <Typography variant="subtitle1">Por confirmar:</Typography>
+                <Typography variant="subtitle1">
+                  Lista de Invitaciones a Retirar:
+                </Typography>
                 <List>
                   {selectedItems.map((item) => (
                     <ListItem
@@ -110,7 +137,10 @@ const EditarListaGE = () => {
                         <IconButton
                           edge="end"
                           aria-label="delete"
-                          onClick={() => handleRemoveItem(item.id)}
+                          onClick={() => {
+                            setItemIdToRemove(item.id);
+                            setOpenA(true);
+                          }}
                         >
                           <Delete />
                         </IconButton>
@@ -127,32 +157,31 @@ const EditarListaGE = () => {
                       </ListItemIcon>
                       <ListItemText
                         primary={item.name}
-                        secondary={`CODSIS: ${item.codsis}`}
+                        secondary={
+                          <Box>
+                            <Typography variant="body2">
+                              Correo: {item.correo}
+                            </Typography>
+                            <Typography variant="body2">
+                              Invitación realizada en: {item.fechainvitacion}
+                            </Typography>
+                          </Box>
+                        }
                       />
                     </ListItem>
                   ))}
                 </List>
-                <Typography>
-                  Estudiantes que aceptaron la invitación:
-                </Typography>
-                <List>
-                  {allAcceptedItems.map((item) => (
-                    <ListItem
-                      key={item.id}
-                      sx={{ backgroundColor: "info.gray", mb: 0.5 }}
-                    >
-                      <ListItemIcon>
-                        <Avatar>
-                          <Person />
-                        </Avatar>
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={item.name}
-                        secondary={`CODSIS: ${item.codsis}`}
-                      />
-                    </ListItem>
-                  ))}
-                </List>
+                <DialogMod
+                  open={openA}
+                  setOpen={setOpenA}
+                  title={"Confirmar retiro de invitación"}
+                  content={"¿Estas seguro que deseas retirar esta invitación?"}
+                  onAccept={() => {
+                    if (itemIdToRemove !== null) {
+                      handleConfirmRemoveItem(itemIdToRemove);
+                    }
+                  }}
+                />
               </FormControl>
             </Box>
           </FormControl>
