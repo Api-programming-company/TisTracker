@@ -16,6 +16,20 @@ class CompanyController extends Controller
     public function store(Request $request)
     {
         try {
+            // Obtener el usuario autenticado
+            $user = Auth::user();
+
+            // Verificar si el usuario ya tiene permisos de escritura en alguna compañía
+            $hasWritePermission = $user->companies()
+                ->wherePivot('permission', 'W')
+                ->exists();
+
+            if ($hasWritePermission) {
+                return response()->json([
+                    'message' => 'No puedes crear más empresas, ya eres miembro con permiso de escritura en otra compañía.'
+                ], 403); // 403 Forbidden
+            }
+
             // Validar los datos de entrada
             $validatedData = $request->validate([
                 'long_name' => 'required|string|max:32|unique:companies,long_name',
@@ -40,9 +54,6 @@ class CompanyController extends Controller
                 'status' => 'C', // Establece el estado de la compañía como 'C'
             ]);
 
-            // Obtener el usuario autenticado
-            $user = Auth::user();
-
             // Registrar al usuario autenticado como miembro de la compañía con permiso 'W' (escritura)
             $company->members()->attach($user->id, [
                 'status' => 'A',  // Estado 'A' para aceptado
@@ -52,7 +63,8 @@ class CompanyController extends Controller
             return response()->json([
                 'message' => 'Compañía creada y usuario registrado como miembro con permisos de escritura.',
                 'company' => $company,
-            ], 201); 
+            ], 201);
+
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Error de validación',
@@ -65,6 +77,7 @@ class CompanyController extends Controller
             ], 500);  
         }
     }
+
 
     public function getCompaniesByAcademicPeriod(Request $request)
     {
