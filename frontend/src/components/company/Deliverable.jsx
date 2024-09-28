@@ -20,7 +20,7 @@ const Deliverable = ({ deliverable, isEditing, onChange, onDelete }) => {
         justifyContent: "space-between",
       }}
     >
-      {isEditing ? (
+      
         <>
           <TextField
             value={name}
@@ -73,12 +73,6 @@ const Deliverable = ({ deliverable, isEditing, onChange, onDelete }) => {
             onCancel={() => setOpen(false)}
           />
         </>
-      ) : (
-        <ListItemText
-          primary={name}
-          secondary={`Responsable: ${responsible} | Objetivo: ${objective}`}
-        />
-      )}
     </ListItem>
   );
 };
