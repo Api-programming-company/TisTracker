@@ -98,6 +98,19 @@ class CompanyUserController extends Controller
             // Obtener la compañía (grupo)
             $company = Company::find($request->company_id);
 
+            // Verificar el número de miembros con estado 'A' o 'P' ya existentes
+            $activeOrPendingCount = $company->members()
+                ->whereIn('status', ['A', 'P']) // Filtrar los miembros activos o pendientes
+                ->count();
+
+            // Verificar si al agregar los nuevos miembros se excede el límite de 7
+            $newMembersCount = count($request->user_ids);
+            if (($activeOrPendingCount + $newMembersCount) > 7) {
+                return response()->json([
+                    'message' => 'No se pueden enviar más de 7 invitaciones. Las invitaciones rechazadas no cuentan.'
+                ], 400);  // 400 Bad Request
+            }
+
             // Asignar los usuarios a la compañía
             foreach ($request->user_ids as $userId) {
                 $company->members()->attach($userId, [
@@ -124,6 +137,7 @@ class CompanyUserController extends Controller
             ], 500);
         }
     }
+
 
 
     /**
