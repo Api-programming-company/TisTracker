@@ -256,6 +256,22 @@ class CompanyController extends Controller
                 return response()->json(['message' => 'No se encontró la compañía especificada.'], 404);
             }
 
+            // Si el estado de la compañía va a cambiar a "A", verificar las condiciones
+            if ($request->status === 'A') {
+                // Contar los miembros de la compañía con estado 'A' en la tabla pivote CompanyUser
+                $acceptedMembersCount = $company->members()->wherePivot('status', 'A')->count();
+
+                // Verificar que al menos 3 miembros tienen estado 'A'
+                if ($acceptedMembersCount < 3) {
+                    return response()->json([
+                        'message' => 'Debe haber al menos 3 miembros con estado "A" para aceptar la compañía.'
+                    ], 400); // Bad Request
+                }
+
+                // Eliminar miembros que no tienen estado 'A' en la tabla pivote CompanyUser
+                $company->members()->wherePivot('status', '!=', 'A')->detach();
+            }
+
             // Actualizar la compañía con los datos validados
             $company->update($request->all());
 
