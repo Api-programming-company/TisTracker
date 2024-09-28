@@ -3,7 +3,7 @@ import { Button, ListItem, ListItemText, TextField } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DialogMod from "../DialogMod";
 
-const Deliverable = ({ deliverable, isEditing, onChange, onDelete }) => {
+const Deliverable = ({ deliverable, onChange, onDelete }) => {
   const [name, setName] = useState(deliverable.name);
   const [responsible, setResponsible] = useState(deliverable.responsible);
   const [objective, setObjective] = useState(deliverable.objective);
@@ -11,7 +11,7 @@ const Deliverable = ({ deliverable, isEditing, onChange, onDelete }) => {
 
   useEffect(() => {
     onChange({ ...deliverable, name, responsible, objective });
-  }, [name, responsible, objective]);
+  }, [name, deliverable, responsible, objective, onChange]);
 
   return (
     <ListItem

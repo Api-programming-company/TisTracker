@@ -18,7 +18,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DialogMod from "../DialogMod";
 
-const Milestone = ({ milestone, isEditing, onChange, onDelete }) => {
+const Milestone = ({ milestone, onChange, onDelete }) => {
   const [openDeliverables, setOpenDeliverables] = useState(false);
   const [startDate, setStartDate] = useState(new Date(milestone.start_date));
   const [endDate, setEndDate] = useState(new Date(milestone.end_date));
@@ -161,7 +161,6 @@ const Milestone = ({ milestone, isEditing, onChange, onDelete }) => {
                     <Deliverable
                       key={deliverable.id}
                       deliverable={deliverable}
-                      isEditing={isEditing}
                       onChange={handleDeliverableChange}
                       onDelete={handleDeleteDeliverable}
                     />

@@ -7,33 +7,25 @@ import { CiCirclePlus } from "react-icons/ci";
 
 
 const CompanyPlanning = ({ setFormData, setSendData }) => {
-  const [isEditing, setIsEditing] = useState(false);
   //const [milestones, setMilestones] = useState([...milestones]); // Estado para los hitos en edición
   const [open, setOpen] = useState(false);
   const [milestones,setMilestones] = useState([]);
 
-
-  const handleEditToggle = () => {
-    setIsEditing((prev) => !prev);
-
-    // Si se cancela la edición, reinicia los hitos temporales
-    if (isEditing) {
-        }
-  };
 
   const handleConfirm = () => {
     setFormData((prev) => ({
       ...prev,
       milestones: milestones, // Confirma los hitos temporales al formData
     }));
-    setIsEditing(false);
-
     setSendData(true)
   };
 
   const handleMilestoneChange = (updatedMilestone) => {
-    const updatedMilestones = milestones.map((milestone) =>
-      milestone.id === updatedMilestone.id ? updatedMilestone : milestone
+    const updatedMilestones = milestones.map((milestone) =>{
+      console.log(updatedMilestone,milestone);
+      return milestone.id === updatedMilestone.id ? updatedMilestone : milestone
+    }
+      
     );
 
     setMilestones(updatedMilestones); // Actualiza la lista temporal
@@ -68,7 +60,6 @@ const CompanyPlanning = ({ setFormData, setSendData }) => {
             <Milestone
               key={milestone.id}
               milestone={milestone}
-              isEditing={isEditing}
               onChange={handleMilestoneChange}
               onDelete={handleDeleteMilestone}
             />
