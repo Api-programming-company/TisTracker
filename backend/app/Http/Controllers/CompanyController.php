@@ -258,22 +258,31 @@ class CompanyController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            // Validar los datos entrantes
-            $request->validate([
-                'long_name' => 'sometimes|required|string|max:255',
-                'short_name' => 'sometimes|required|string|max:100',
-                'email' => "sometimes|required|email|unique:companies,email,{$id}",
-                'address' => 'sometimes|required|string|max:255',
-                'phone' => 'sometimes|required|string|max:20',
-                'status' => 'sometimes|required|in:A,R,P',
-            ]);
-
             // Buscar la compañía por ID
             $company = Company::find($id);
 
             if (!$company) {
                 return response()->json(['message' => 'No se encontró la compañía especificada.'], 404);
             }
+
+            // Obtener el usuario autenticado
+            $user = Auth::user();
+
+            // Verificar si el usuario tiene permiso de escritura ('W') en la compañía
+            $member = $company->members()->where('user_id', $user->id)->first();
+            if (!$member || $member->pivot->permission !== 'W') {
+                return response()->json(['message' => 'No tienes permisos de escritura para actualizar esta compañía.'], 403);
+            }
+
+            // Validar los datos entrantes
+            $request->validate([
+                'long_name' => 'sometimes|required|string|max:32',  // Ajustado a 32 caracteres como en store
+                'short_name' => 'sometimes|required|string|max:8',  // Ajustado a 8 caracteres como en store
+                'email' => "sometimes|required|email|unique:companies,email,{$id}",
+                'address' => 'sometimes|required|string|max:255',
+                'phone' => 'sometimes|required|int|max:99999999|min:10000000|unique:companies,phone',  // Consistente con store
+                'status' => 'sometimes|required|in:A,R,P',
+            ]);
 
             // Si el estado de la compañía va a cambiar a "A", verificar las condiciones
             if ($request->status === 'A') {
@@ -310,6 +319,7 @@ class CompanyController extends Controller
             ], 500);
         }
     }
+
 
     public function destroy($id)
     {
