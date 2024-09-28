@@ -40,23 +40,29 @@ class CompanyController extends Controller
                 'status' => 'C', // Establece el estado de la compañía como 'C'
             ]);
 
-            // Retornar la respuesta indicando éxito en la creación
+            // Obtener el usuario autenticado
+            $user = Auth::user();
+
+            // Registrar al usuario autenticado como miembro de la compañía con permiso 'W' (escritura)
+            $company->members()->attach($user->id, [
+                'status' => 'A',  // Estado 'A' para aceptado
+                'permission' => 'W'  // Permiso 'W' para escritura
+            ]);
+
             return response()->json([
-                'message' => 'Compañía creada exitosamente.',
+                'message' => 'Compañía creada y usuario registrado como miembro con permisos de escritura.',
                 'company' => $company,
-            ], 201);
+            ], 201); 
         } catch (ValidationException $e) {
-            // Retornar errores de validación
             return response()->json([
-                'message' => 'Error de validación.',
-                'errors' => $e->errors(),
+                'message' => 'Error de validación',
+                'errors' => $e->errors()
             ], 422);
         } catch (Exception $e) {
-            // Manejar otras excepciones
             return response()->json([
-                'message' => 'Ocurrió un error al crear la compañía.',
+                'message' => 'Se ha producido un error inesperado al crear la compañía.',
                 'error' => $e->getMessage(),
-            ], 500);
+            ], 500);  
         }
     }
 
