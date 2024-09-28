@@ -112,9 +112,10 @@ const UserRegister = () => {
       password: {
         condition: !password,
         message: "La contraseña es obligatoria.",
-        additionalCheck:
-          !validarContraseña(password) &&
-          "Debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial.",
+        additionalCheck: password.includes(" ")
+          ? "La contraseña no puede contener espacios."
+          : !validarContraseña(password) &&
+            "Debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial.",
       },
       password_confirmation: {
         condition: !password_confirmation,
