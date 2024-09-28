@@ -5,14 +5,30 @@ import {
   Grid2,
   Snackbar,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useActionData, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import DialogMod from "../DialogMod";
 import { useUpdateInvitationByCompanyIdMutation } from "../../api/invitationApi";
 import { formatDate } from "../../utils/validaciones";
+import { useGetCompanyByIdQuery } from "../../api/companyApi";
 
 const AcceptDeclineInvitation = () => {
+  const { id } = useParams();
+
+  const { data, error, isError, isSuccess, isLoading, isFetching } =
+    useGetCompanyByIdQuery(id);
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log(data);
+    }
+    if (isError) {
+      console.log(error);
+    }
+  }, [isSuccess, isError]);
+
   const [
     updateInvitation,
     {
@@ -23,9 +39,25 @@ const AcceptDeclineInvitation = () => {
       isError: isInvitationError,
     },
   ] = useUpdateInvitationByCompanyIdMutation();
-  // recuperando data de la empresa
-  const companyInfo = useLocation().state.request;
-  console.log(companyInfo);
+
+  useEffect(() => {
+    if (isInvitationSuccess) {
+      console.log(invitationData);
+      setSnackbar({
+        open: true,
+        message: invitationData?.message,
+        severity: "sucess",
+      });
+    }
+    if (isInvitationError) {
+      console.log(invitationError);
+      setSnackbar({
+        open: true,
+        message: invitationError?.data?.message,
+        severity: "error",
+      });
+    }
+  }, [isInvitationError, isInvitationSuccess, invitationData, invitationError]);
   // para dialogs
   const [openA, setOpenA] = useState(false);
   const [openR, setOpenR] = useState(false);
@@ -38,46 +70,51 @@ const AcceptDeclineInvitation = () => {
 
   const handleAccept = async () => {
     setOpenA(false);
-    try {
-        await updateInvitation({
-          id: companyInfo.company.id,
-          data: { status: "A" },
-        }).unwrap();
-        setSnackbar({
-          open: true,
-          message: "Solicitud aceptada",
-          severity: "success",
-        });
-      } catch (error) {
-        console.error("Error al aceptar la solicitud:", error);
-        setSnackbar({
-          open: true,
-          message: "Ocurrió un error al aceptar la solicitud.",
-          severity: "error",
-        });
-      }
-  }
+
+    await updateInvitation({
+      id: data.company.id,
+      data: { status: "A" },
+    });
+  };
 
   const handleDecline = async () => {
     setOpenR(false);
-    try {
-      await updateInvitation({
-        id: companyInfo.company.id,
-        data: { status: "R" },
-      }).unwrap();
-      setSnackbar({
-        open: true,
-        message: "Solicitud rechazada",
-        severity: "success",
-      });
-    } catch (error) {
-      console.error("Error al rechazar la solicitud:", error);
-      setSnackbar({
-        open: true,
-        message: "Ocurrió un error al rechazar la solicitud.",
-        severity: "error",
-      });
-    }
+    updateInvitation({
+      id: data.company.id,
+      data: { status: "R" },
+    });
+  };
+
+  if (isFetching || isInvitationLoading) {
+    return (
+      <Container
+        maxWidth="sm"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        <CircularProgress />
+      </Container>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Container
+        maxWidth="sm"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        {error.data.message}
+      </Container>
+    );
   }
 
   return (
@@ -106,44 +143,38 @@ const AcceptDeclineInvitation = () => {
             <Typography variant="h6">Nombre largo</Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 8 }}>
-            <Typography variant="body1">
-              {companyInfo.company.long_name}
-            </Typography>
+            <Typography variant="body1">{data.company.long_name}</Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 4 }}>
             <Typography variant="h6">Nombre corto</Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 8 }}>
-            <Typography variant="body1">
-              {companyInfo.company.short_name}
-            </Typography>
+            <Typography variant="body1">{data.company.short_name}</Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 4 }}>
             <Typography variant="h6">Correo electrónico</Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 8 }}>
-            <Typography variant="body1">{companyInfo.company.email}</Typography>
+            <Typography variant="body1">{data.company.email}</Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 4 }}>
             <Typography variant="h6">Dirección</Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 8 }}>
-            <Typography variant="body1">
-              {companyInfo.company.address}
-            </Typography>
+            <Typography variant="body1">{data.company.address}</Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 4 }}>
             <Typography variant="h6">Teléfono</Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 8 }}>
-            <Typography variant="body1">{companyInfo.company.phone}</Typography>
+            <Typography variant="body1">{data.company.phone}</Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 4 }}>
             <Typography variant="h6">Fecha de solicitud</Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 8 }}>
             <Typography variant="body1">
-              {formatDate(companyInfo.invitation_date)}
+              {formatDate(data.company.updated_at)}
             </Typography>
           </Grid2>
         </Grid2>
@@ -160,7 +191,7 @@ const AcceptDeclineInvitation = () => {
           onClick={() => setOpenA(true)}
           variant="contained"
           color="primary"
-            disabled={isInvitationLoading}
+          disabled={isInvitationLoading}
           sx={{ mb: 2, px: 12, py: 1 }}
         >
           Aceptar
@@ -170,13 +201,13 @@ const AcceptDeclineInvitation = () => {
           setOpen={setOpenA}
           title={"Aceptar"}
           content={"¿Estas seguro que deseas aceptar esta invitación?"}
-            onAccept={handleAccept}
+          onAccept={handleAccept}
         />
         {/* Rechazar solicitud */}
         <Button
           onClick={() => setOpenR(true)}
           variant="outlined"
-            disabled={isInvitationLoading}
+          disabled={isInvitationLoading}
           color="transparent"
           sx={{ mb: 2, px: 11, py: 1 }}
         >
@@ -187,7 +218,7 @@ const AcceptDeclineInvitation = () => {
           setOpen={setOpenR}
           title={"Rechazar"}
           content={"¿Estas seguro que deseas rechazar esta invitación?"}
-            onAccept={handleDecline}
+          onAccept={handleDecline}
         />
         {/* Snackbar */}
         <Snackbar

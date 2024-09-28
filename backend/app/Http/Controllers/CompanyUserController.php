@@ -190,7 +190,7 @@ class CompanyUserController extends Controller
 
             if ($existingCompany) {
                 return response()->json([
-                    'message' => 'Ya pertenece a otra empresa'
+                    'message' => 'Ya eres miembro de una empresa'
                 ], 403); // 403 Forbidden
             }
 
@@ -207,11 +207,15 @@ class CompanyUserController extends Controller
             // Actualizar el estado del usuario en la compañía
             $companyUser->update(['status' => $request->status]);
 
-            return response()->json([
-                'message' => 'El estado del usuario se actualizó correctamente.',
-                'company_user' => $companyUser
-            ], 200); // 200 OK
+            // Determinar el mensaje basado en el nuevo estado
+            $message = $request->status === 'A'
+                ? 'Solicitud aceptada correctamente.'
+                : 'Solicitud rechazada correctamente.';
 
+            return response()->json([
+                'message' => $message,
+                'company_user' => $companyUser
+            ], 200);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validation Error.',
