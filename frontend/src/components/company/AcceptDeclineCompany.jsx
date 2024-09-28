@@ -5,15 +5,22 @@ import {
   Grid2,
   Snackbar,
   Typography,
+  CircularProgress,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MemberAccordion from "./MemberAccordion";
+import { useParams } from "react-router-dom";
 import DialogMod from "../DialogMod";
-import { useUpdateCompanyByIdMutation } from "../../api/companyApi";
+import {
+  useUpdateCompanyByIdMutation,
+  useGetCompanyByIdQuery,
+} from "../../api/companyApi";
+
 import { formatDate } from "../../utils/validaciones";
 
 const AcceptDeclineCompany = () => {
-  const invitacionesEjemplo = {
+  const { id } = useParams();
+  const comasdaspanyData = {
     message: "Compañías pendientes obtenidas correctamente.",
     company: {
       id: 33,
@@ -69,6 +76,24 @@ const AcceptDeclineCompany = () => {
     invitation_date: "2024-09-24T05:58:42.000000Z",
   };
   //---------------------------------------------------------------------
+  const {
+    data: companyData,
+    error: companyError,
+    isSuccess: isCompanySuccess,
+    isError: isCompanyError,
+    isFetching: isCompanyFetching,
+  } = useGetCompanyByIdQuery(id);
+
+  useEffect(() => {
+    if (isCompanySuccess) {
+      console.log("Company data:", companyData);
+    }
+
+    if (isCompanyError) {
+      console.error("Error fetching company:", companyError);
+    }
+  }, [isCompanySuccess, isCompanyError, companyData, companyError]);
+
   const [
     updateCompany,
     {
@@ -79,6 +104,7 @@ const AcceptDeclineCompany = () => {
       isLoading: isUpdateLoading,
     },
   ] = useUpdateCompanyByIdMutation();
+
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -87,12 +113,11 @@ const AcceptDeclineCompany = () => {
   const [openA, setOpenA] = useState(false);
   const [openR, setOpenR] = useState(false);
 
-
   const handleAccept = async () => {
     setOpenA(false);
     try {
       await updateCompany({
-        id: invitacionesEjemplo.company.id,
+        id: companyData.company.id,
         data: { status: "A" },
       }).unwrap();
       setSnackbar({
@@ -113,7 +138,7 @@ const AcceptDeclineCompany = () => {
     setOpenR(false);
     try {
       await updateCompany({
-        id: invitacionesEjemplo.company.id,
+        id: companyData.company.id,
         data: { status: "R" },
       }).unwrap();
       setSnackbar({
@@ -130,6 +155,22 @@ const AcceptDeclineCompany = () => {
       });
     }
   };
+
+  if (isUpdateLoading || isCompanyFetching) {
+    return (
+      <Container
+        maxWidth="sm"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        <CircularProgress />
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="md">
@@ -158,7 +199,7 @@ const AcceptDeclineCompany = () => {
           </Grid2>
           <Grid2 size={{ xs: 12, md: 8 }}>
             <Typography variant="body1">
-              {invitacionesEjemplo.company.long_name}
+              {companyData.company.long_name}
             </Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 4 }}>
@@ -166,7 +207,7 @@ const AcceptDeclineCompany = () => {
           </Grid2>
           <Grid2 size={{ xs: 12, md: 8 }}>
             <Typography variant="body1">
-              {invitacionesEjemplo.company.short_name}
+              {companyData.company.short_name}
             </Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 4 }}>
@@ -174,7 +215,7 @@ const AcceptDeclineCompany = () => {
           </Grid2>
           <Grid2 size={{ xs: 12, md: 8 }}>
             <Typography variant="body1">
-              {invitacionesEjemplo.company.email}
+              {companyData.company.email}
             </Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 4 }}>
@@ -182,7 +223,7 @@ const AcceptDeclineCompany = () => {
           </Grid2>
           <Grid2 size={{ xs: 12, md: 8 }}>
             <Typography variant="body1">
-              {invitacionesEjemplo.company.address}
+              {companyData.company.address}
             </Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 4 }}>
@@ -190,7 +231,7 @@ const AcceptDeclineCompany = () => {
           </Grid2>
           <Grid2 size={{ xs: 12, md: 8 }}>
             <Typography variant="body1">
-              {invitacionesEjemplo.company.phone}
+              {companyData.company.phone}
             </Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 4 }}>
@@ -198,7 +239,7 @@ const AcceptDeclineCompany = () => {
           </Grid2>
           <Grid2 size={{ xs: 12, md: 8 }}>
             <Typography variant="body1">
-              {formatDate(invitacionesEjemplo.invitation_date)}
+              {formatDate(companyData.company.updated_at)}
             </Typography>
           </Grid2>
           {/* <Grid2 size={{ xs: 12, md: 4 }}>
@@ -206,7 +247,7 @@ const AcceptDeclineCompany = () => {
           </Grid2> */}
           <Grid2 size={12}>
             {/* desplegable */}
-            <MemberAccordion members={invitacionesEjemplo.company.members} />
+            <MemberAccordion members={companyData.company.members} />
           </Grid2>
         </Grid2>
       </Box>
