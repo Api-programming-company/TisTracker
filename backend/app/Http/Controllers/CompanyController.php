@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use App\Models\AcademicPeriod;
 use App\Models\Planning;
+use Illuminate\Support\Facades\Validator;
 
 class CompanyController extends Controller
 {
@@ -104,6 +105,17 @@ class CompanyController extends Controller
     public function show($id)
     {
         try {
+            $validator = Validator::make(['id' => $id], [
+                'id' => 'required|integer|exists:companies,id',
+            ]);
+    
+            // Si la validación falla, retornar un error 400 con los mensajes de validación
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Error de validación.',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
             // Obtener el usuario autenticado
             $user = Auth::user();
 
@@ -121,20 +133,9 @@ class CompanyController extends Controller
                 return response()->json(['message' => 'No se encontró la compañía especificada.'], 404);
             }
 
-            // Obtener la planificación y los hitos
-            $planning = $company->planning;
-            $milestones = $planning ? $planning->milestones : [];
-
-            // Verificar el permiso del usuario
-            $member = $company->members->first();
-            $userPermission = $member ? $member->pivot->permission : null;
-
             return response()->json([
                 'message' => 'Compañía obtenida correctamente.',
                 'company' => $company,
-                'planning_id' => $planning ? $planning->id : null,
-                'milestones' => $milestones,
-                'user_permission' => $userPermission
             ], 200);
         } catch (Exception $e) {
             return response()->json([
