@@ -156,7 +156,17 @@ const RegistroGE = () => {
               fullWidth
               name={value}
               value={formData[value] || ""}
-              onChange={handleInputChange}
+              onChange={(e) => {
+                // Permite solo números para el campo "phone"
+                if (value === "phone") {
+                  const re = /^[0-9\b]+$/;
+                  if (e.target.value === "" || re.test(e.target.value)) {
+                    handleInputChange(e);
+                  }
+                } else {
+                  handleInputChange(e);
+                }
+              }}
               helperText={errors[value]}
               error={!!errors[value]}
             />
