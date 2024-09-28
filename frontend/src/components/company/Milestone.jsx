@@ -17,8 +17,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DialogMod from "../DialogMod";
+import { id } from "date-fns/locale";
 
-const Milestone = ({ milestone, onChange, onDelete }) => {
+const Milestone = ({ milestone, onChange, onDelete,milestone_id}) => {
   const [openDeliverables, setOpenDeliverables] = useState(false);
   const [startDate, setStartDate] = useState(new Date(milestone.start_date));
   const [endDate, setEndDate] = useState(new Date(milestone.end_date));
@@ -70,7 +71,7 @@ const Milestone = ({ milestone, onChange, onDelete }) => {
     };
 
     const updatedDeliverables = [...milestone.deliverables, newDeliverable];
-    onChange({ ...milestone, deliverables: updatedDeliverables });
+    onChange({ ...milestone, deliverables: updatedDeliverables }, milestone_id);
   };
 
   const handleDeleteDeliverable = (id) => {
@@ -79,7 +80,7 @@ const Milestone = ({ milestone, onChange, onDelete }) => {
   }
 
   return (
-    <div className="milestone-item">
+    <div className="milestone-item" key={milestone.id}>
       <ListItem button onClick={handleToggle}>
         <ListItemText
           primary={

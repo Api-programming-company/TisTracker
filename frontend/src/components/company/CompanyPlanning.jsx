@@ -20,10 +20,10 @@ const CompanyPlanning = ({ setFormData, setSendData }) => {
     setSendData(true)
   };
 
-  const handleMilestoneChange = (updatedMilestone) => {
-    const updatedMilestones = milestones.map((milestone) =>{
-      console.log(updatedMilestone,milestone);
-      return milestone.id === updatedMilestone.id ? updatedMilestone : milestone
+  const handleMilestoneChange = (updatedMilestone,milestone_id) => {
+    const updatedMilestones = milestones.map((milestone,index) =>{
+      console.log(milestone_id,index);
+      return milestone_id === index ? updatedMilestone : milestone
     }
       
     );
@@ -56,9 +56,10 @@ const CompanyPlanning = ({ setFormData, setSendData }) => {
           >Planificación de equipo</Typography>
       <List>
         {milestones.length > 0 ? (
-          milestones.map((milestone) => (
+          milestones.map((milestone,index) => (
             <Milestone
-              key={milestone.id}
+              key={index}
+              milestone_id={index}
               milestone={milestone}
               onChange={handleMilestoneChange}
               onDelete={handleDeleteMilestone}
