@@ -65,7 +65,7 @@ class CompanyController extends Controller
                 'company_id' => $company->id,
             ]);
 
-            $company = $company->load('members', 'plannings');
+            $company = $company->load('members', 'planning');
 
             // Devolver una respuesta JSON
             return response()->json([
@@ -142,7 +142,7 @@ class CompanyController extends Controller
                     // Incluir el permiso del usuario autenticado
                     $query->where('user_id', $user->id);
                 },
-                'plannings.milestones.deliverables',
+                'planning.milestones.deliverables',
                 'academicPeriod.creator'
             ])->find($id);
 
@@ -154,7 +154,7 @@ class CompanyController extends Controller
             }
 
             // Obtener el primer planning y sus hitos
-            $planning = $company->plannings->first();
+            $planning = $company->planning;
             $milestones = $planning ? $planning->milestones : [];
 
             // Obtener el permiso del usuario autenticado (si es miembro)
