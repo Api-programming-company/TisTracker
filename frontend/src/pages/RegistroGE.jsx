@@ -9,10 +9,13 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useCreateCompanyMutation } from "../api/companyApi";
+import AppContext from "../context/AppContext";
+import { useContext } from "react";
 
 const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
 
 const RegistroGE = () => {
+  const {user} = useContext(AppContext);
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -74,13 +77,13 @@ const RegistroGE = () => {
         condition: !long_name || long_name.length > 32,
         message: !long_name
           ? "El nombre largo es obligatorio."
-          : "El nombre largo no debe exceder 32 caracteres.",
+          : "El nombre largo no debe exceder los 32 caracteres.",
       },
       short_name: {
-        condition: !short_name || short_name.length > 10,
+        condition: !short_name || short_name.length > 8,
         message: !short_name
           ? "El nombre corto es obligatorio."
-          : "El nombre corto no debe exceder 10 caracteres.",
+          : "El nombre corto no debe exceder los 8 caracteres.",
       },
       email: {
         condition: !email || !validateEmail(email),
@@ -93,13 +96,13 @@ const RegistroGE = () => {
         message: "La dirección es obligatoria.",
       },
       phone: {
-        condition: !phone || !/^\d+$/.test(phone) || phone.length < 8,
+        condition: !phone || !/^\d+$/.test(phone) || phone.length !== 8,
         message: !phone
           ? "El teléfono es obligatorio."
-          : "El teléfono debe contener solo dígitos y tener al menos 8 caracteres.",
+          : "El teléfono debe contener exactamente 8 dígitos.",
       },
     };
-
+    
     console.log(formData);
 
     for (const [field, { condition, message }] of Object.entries(validations)) {
@@ -120,6 +123,7 @@ const RegistroGE = () => {
       email,
       address,
       phone,
+      academic_period_id: user?.academic_period_id,
     };
 
     console.log("Enviando datos:", dataToSend);

@@ -17,11 +17,11 @@ class CompanyController extends Controller
         try {
             // Validar los datos de entrada
             $validatedData = $request->validate([
-                'long_name' => 'required|string|max:255',
-                'short_name' => 'required|string|max:255',
+                'long_name' => 'required|string|max:32|unique:companies,long_name',
+                'short_name' => 'required|string|max:8|unique:companies,short_name',
                 'email' => 'required|email|unique:companies,email',
                 'address' => 'required|string|max:255',
-                'phone' => 'required|string|max:20',
+                'phone' => 'required|int|max:99999999|min:10000000|unique:companies,phone',
                 'academic_period_id' => 'required|exists:academic_periods,id',
             ]);
 
@@ -44,14 +44,13 @@ class CompanyController extends Controller
                 'message' => 'Compañía creada exitosamente.',
                 'company' => $company,
             ], 201);
-
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             // Retornar errores de validación
             return response()->json([
                 'message' => 'Error de validación.',
                 'errors' => $e->errors(),
             ], 422);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Manejar otras excepciones
             return response()->json([
                 'message' => 'Ocurrió un error al crear la compañía.',
@@ -59,7 +58,6 @@ class CompanyController extends Controller
             ], 500);
         }
     }
-
 
     public function getCompaniesByAcademicPeriod(Request $request)
     {
@@ -90,13 +88,11 @@ class CompanyController extends Controller
                 'message' => 'Compañías obtenidas correctamente.',
                 'companies' => $companies
             ], 200);
-
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Error de validación.',
                 'errors' => $e->errors()
             ], 422);
-
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Ocurrió un error al obtener las compañías.',
@@ -104,7 +100,6 @@ class CompanyController extends Controller
             ], 500);
         }
     }
-
 
     public function show($id)
     {
@@ -114,7 +109,7 @@ class CompanyController extends Controller
 
             // Buscar la compañía por ID, incluyendo relaciones necesarias
             $company = Company::with([
-                'members' => function($query) use ($user) {
+                'members' => function ($query) use ($user) {
                     $query->where('user_id', $user->id);
                 },
                 'planning.milestones.deliverables',
@@ -141,7 +136,6 @@ class CompanyController extends Controller
                 'milestones' => $milestones,
                 'user_permission' => $userPermission
             ], 200);
-
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Ocurrió un error al obtener la información de la compañía.',
@@ -149,7 +143,6 @@ class CompanyController extends Controller
             ], 500);
         }
     }
-
 
     public function getPendingCompanies(Request $request)
     {
@@ -178,7 +171,6 @@ class CompanyController extends Controller
                 'message' => 'Compañías pendientes obtenidas correctamente.',
                 'companies' => $companies
             ], 200);
-
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Ocurrió un error al obtener las compañías pendientes.',
@@ -186,7 +178,6 @@ class CompanyController extends Controller
             ], 500);
         }
     }
-
 
     public function acceptCompanyById($id)
     {
@@ -216,7 +207,6 @@ class CompanyController extends Controller
                 'message' => 'Compañía aceptada correctamente.',
                 'company' => $company
             ], 200);
-
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Ocurrió un error al aceptar la compañía.',
@@ -224,7 +214,6 @@ class CompanyController extends Controller
             ], 500);
         }
     }
-
 
     public function index()
     {
@@ -245,6 +234,7 @@ class CompanyController extends Controller
             ], 500); // 500 Internal Server Error
         }
     }
+
     public function update(Request $request, $id)
     {
         try {
@@ -272,13 +262,11 @@ class CompanyController extends Controller
                 'message' => 'Compañía actualizada correctamente.',
                 'company' => $company
             ], 200);
-
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Error de validación.',
                 'errors' => $e->errors()
             ], 422);
-
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Ocurrió un error al actualizar la compañía.',
@@ -286,8 +274,6 @@ class CompanyController extends Controller
             ], 500);
         }
     }
-
-
 
     public function destroy($id)
     {
