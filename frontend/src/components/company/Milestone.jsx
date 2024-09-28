@@ -79,11 +79,11 @@ const Milestone = ({ milestone, isEditing, onChange, onDelete }) => {
   }
 
   return (
-    <div style={{ marginBottom: "16px" }}>
+    <div className="milestone-item">
       <ListItem button onClick={handleToggle}>
         <ListItemText
           primary={
-            isEditing ? (
+            
               <Box sx={{ display: "flex", gap: 2 }}>
                 <TextField
                   value={name}
@@ -105,7 +105,6 @@ const Milestone = ({ milestone, isEditing, onChange, onDelete }) => {
                   startIcon={<DeleteIcon />}
                   onClick={()=>setOpen(true)}
                 >
-                  Eliminar hito
                 </Button>
                 <DialogMod
                   open={open}
@@ -117,9 +116,7 @@ const Milestone = ({ milestone, isEditing, onChange, onDelete }) => {
                   onCancel={() => setOpen(false)}
                 />
               </Box>
-            ) : (
-              name
-            )
+            
           }
         />
         <IconButton>
@@ -145,7 +142,7 @@ const Milestone = ({ milestone, isEditing, onChange, onDelete }) => {
               />
             </ListItem>
             <ListItem>
-              {isEditing ? (
+              
                 <TextField
                   label="Porcentaje de facturación"
                   value={billingPercentage}
@@ -155,28 +152,7 @@ const Milestone = ({ milestone, isEditing, onChange, onDelete }) => {
                   type="number"
                   fullWidth
                 />
-              ) : (
-                <ListItemText primary={`% Facturación: ${billingPercentage}`} />
-              )}
-            </ListItem>
-            <ListItem
-              sx={{ display: "flex", justifyContent: "center", width: "100%" }}
-            >
-              {isEditing && (
-                <Button
-                  onClick={handleAddDeliverable}
-                  sx={{
-                    backgroundColor: "primary.main",
-                    color: "white",
-                    "&:hover": {
-                      backgroundColor: "primary.dark",
-                    },
-                    mb: 1,
-                  }}
-                >
-                  Agregar Entregable
-                </Button>
-              )}
+            
             </ListItem>
             <ListItem>
               <List>
@@ -194,6 +170,24 @@ const Milestone = ({ milestone, isEditing, onChange, onDelete }) => {
                   <ListItemText primary="No hay entregables asignados." />
                 )}
               </List>
+            </ListItem>
+            <ListItem
+              sx={{ display: "flex", justifyContent: "center", width: "100%" }}
+            >
+              
+                <Button
+                  onClick={handleAddDeliverable}
+                  sx={{
+                    backgroundColor: "primary.main",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "primary.dark",
+                    },
+                    mb: 1,
+                  }}
+                >
+                  Agregar Entregable
+                </Button>
             </ListItem>
           </LocalizationProvider>
         </List>

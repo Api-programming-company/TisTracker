@@ -3,25 +3,28 @@ import { Box, Typography, List, Button } from "@mui/material";
 import Milestone from "./Milestone";
 import { useUpdateCompanyPlanningByIdMutation } from "../../api/companyApi";
 import DialogMod from "../DialogMod";
+import { CiCirclePlus } from "react-icons/ci";
 
-const CompanyPlanning = ({ milestones, setFormData, setSendData }) => {
+
+const CompanyPlanning = ({ setFormData, setSendData }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [tempMilestones, setTempMilestones] = useState([...milestones]); // Estado para los hitos en edición
+  //const [milestones, setMilestones] = useState([...milestones]); // Estado para los hitos en edición
   const [open, setOpen] = useState(false);
+  const [milestones,setMilestones] = useState([]);
+
 
   const handleEditToggle = () => {
     setIsEditing((prev) => !prev);
 
     // Si se cancela la edición, reinicia los hitos temporales
     if (isEditing) {
-      setTempMilestones([...milestones]); // Reinicia a los hitos originales
-    }
+        }
   };
 
   const handleConfirm = () => {
     setFormData((prev) => ({
       ...prev,
-      milestones: tempMilestones, // Confirma los hitos temporales al formData
+      milestones: milestones, // Confirma los hitos temporales al formData
     }));
     setIsEditing(false);
 
@@ -29,11 +32,11 @@ const CompanyPlanning = ({ milestones, setFormData, setSendData }) => {
   };
 
   const handleMilestoneChange = (updatedMilestone) => {
-    const updatedMilestones = tempMilestones.map((milestone) =>
+    const updatedMilestones = milestones.map((milestone) =>
       milestone.id === updatedMilestone.id ? updatedMilestone : milestone
     );
 
-    setTempMilestones(updatedMilestones); // Actualiza la lista temporal
+    setMilestones(updatedMilestones); // Actualiza la lista temporal
   };
 
   const handleAddMilestone = () => {
@@ -44,47 +47,54 @@ const CompanyPlanning = ({ milestones, setFormData, setSendData }) => {
       deliverables: [],
     };
 
-    setTempMilestones((prev) => [...prev, newMilestone]); // Agrega el nuevo hito a la lista temporal
+    setMilestones((prev) => [...prev, newMilestone]); // Agrega el nuevo hito a la lista temporal
   };
 
   const handleDeleteMilestone = (id) => {
-    const updatedMilestones = tempMilestones.filter((e)=> e.id !== id)
-    setTempMilestones(updatedMilestones)
+    const updatedMilestones = milestones.filter((e)=> e.id !== id)
+    setMilestones(updatedMilestones)
   }
 
   return (
-    <Box sx={{ padding: 2, border: "1px solid #ccc", borderRadius: 2, mt: 2 }}>
-      <Typography variant="h4" gutterBottom>
-        Planificación de la Grupo Empresa
-      </Typography>
-      <Button
-        onClick={handleEditToggle}
-        sx={{
-          ...(isEditing
-            ? {
-                backgroundColor: "transparent",
-                border: "1px solid black",
-                "&:hover": {
-                  color: "white",
-                  backgroundColor: "primary.dark",
-                },
-              }
-            : {
-                backgroundColor: "primary.main",
+    <div className="container">
+      
+      <Typography
+            component="h1"
+            sx={{ color: "black", fontSize: "40px", lineHeight: "1" }}
+          >Planificación de equipo</Typography>
+      <List>
+        {milestones.length > 0 ? (
+          milestones.map((milestone) => (
+            <Milestone
+              key={milestone.id}
+              milestone={milestone}
+              isEditing={isEditing}
+              onChange={handleMilestoneChange}
+              onDelete={handleDeleteMilestone}
+            />
+          ))
+        ) : (
+          <p>No hay hitos asignados</p>
+        )}
+      </List>
+      
+          
+          <Button
+            color="primary"
+            onClick={handleAddMilestone}
+            sx={{
+              backgroundColor: "transparent",
+              "&:hover": {
                 color: "white",
-                "&:hover": {
-                  backgroundColor: "primary.dark",
-                },
-              }),
-          mb: 2,
-          mr: 2,
-        }}
-      >
-        {isEditing ? "Cancelar" : "Editar"}
-      </Button>
+                backgroundColor: "primary.dark",
+              },
+              mr: 2,
+              mb: 2,
+            }}
+          >
+            <i><CiCirclePlus /></i> Agregar Hito
+          </Button>
 
-      {isEditing && (
-        <>
           <Button
             onClick={() => setOpen(true)}
             sx={{
@@ -100,6 +110,7 @@ const CompanyPlanning = ({ milestones, setFormData, setSendData }) => {
           >
             Confirmar
           </Button>
+
           <DialogMod
             open={open}
             setOpen={setOpen}
@@ -108,41 +119,8 @@ const CompanyPlanning = ({ milestones, setFormData, setSendData }) => {
             onAccept={handleConfirm}
             onCancel={() => setOpen(false)}
           />
-          <Button
-            color="primary"
-            onClick={handleAddMilestone}
-            sx={{
-              backgroundColor: "transparent",
-              border: "1px solid black",
-              "&:hover": {
-                color: "white",
-                backgroundColor: "primary.dark",
-              },
-              mr: 2,
-              mb: 2,
-            }}
-          >
-            Agregar Hito
-          </Button>
-        </>
-      )}
-      <List>
-        {tempMilestones.length > 0 ? (
-          tempMilestones.map((milestone) => (
-            <Milestone
-              key={milestone.id}
-              milestone={milestone}
-              isEditing={isEditing}
-              onChange={handleMilestoneChange}
-              onDelete={handleDeleteMilestone}
-            />
-          ))
-        ) : (
-          <Typography>No hay hitos asignados.</Typography>
-        )}
-      </List>
-    </Box>
-  );
+    </div>
+    );
 };
 
 export default CompanyPlanning;
