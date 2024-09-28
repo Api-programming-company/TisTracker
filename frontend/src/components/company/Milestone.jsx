@@ -40,27 +40,27 @@ const Milestone = ({ milestone, onChange, onDelete,milestone_id}) => {
         : deliverable
     );
 
-    onChange({ ...milestone, deliverables: updatedDeliverables });
+    onChange({ ...milestone, deliverables: updatedDeliverables },milestone_id);
   };
 
   const handleNameChange = (newName) => {
     setName(newName);
-    onChange({ ...milestone, name: newName });
+    onChange({ ...milestone, name: newName },milestone_id);
   };
 
   const handleStartDateChange = (newStartDate) => {
     setStartDate(newStartDate);
-    onChange({ ...milestone, start_date: newStartDate });
+    onChange({ ...milestone, start_date: newStartDate },milestone_id);
   };
 
   const handleEndDateChange = (newEndDate) => {
     setEndDate(newEndDate);
-    onChange({ ...milestone, end_date: newEndDate });
+    onChange({ ...milestone, end_date: newEndDate },milestone_id);
   };
 
   const handleBillingPercentageChange = (newBillingPercentage) => {
     setBillingPercentage(newBillingPercentage);
-    onChange({ ...milestone, billing_percentage: newBillingPercentage });
+    onChange({ ...milestone, billing_percentage: newBillingPercentage },milestone_id);
   };
 
   const handleAddDeliverable = () => {
@@ -76,7 +76,7 @@ const Milestone = ({ milestone, onChange, onDelete,milestone_id}) => {
 
   const handleDeleteDeliverable = (id) => {
     const updatedDeliverables = milestone.deliverables.filter((e)=> e.id !== id)
-    onChange({...milestone, deliverables: updatedDeliverables})
+    onChange({...milestone, deliverables: updatedDeliverables},milestone_id)
   }
 
   return (
@@ -158,9 +158,11 @@ const Milestone = ({ milestone, onChange, onDelete,milestone_id}) => {
             <ListItem>
               <List>
                 {milestone.deliverables.length > 0 ? (
-                  milestone.deliverables.map((deliverable) => (
+                  milestone.deliverables.map((deliverable,index) => (
                     <Deliverable
-                      key={deliverable.id}
+                      key={index}
+                      milestone_id={milestone_id}
+                      deliverable_id={index}
                       deliverable={deliverable}
                       onChange={handleDeliverableChange}
                       onDelete={handleDeleteDeliverable}
