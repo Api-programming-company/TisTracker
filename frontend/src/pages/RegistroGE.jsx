@@ -7,6 +7,11 @@ import {
   Box,
   Snackbar,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import { useCreateCompanyMutation } from "../api/companyApi";
 import AppContext from "../context/AppContext";
@@ -15,21 +20,21 @@ import { useContext } from "react";
 const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
 
 const RegistroGE = () => {
-  const {user} = useContext(AppContext);
+  const { user } = useContext(AppContext);
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [confirmationOpen, setConfirmationOpen] = useState(false); // Estado para el dialog
   const navigate = useNavigate();
   const [createCompany, { data, error, isSuccess, isError, isLoading }] =
     useCreateCompanyMutation();
 
   useEffect(() => {
     if (isSuccess) {
-      setSnackbarMessage("Formulario enviado con éxito");
-      setSnackbarOpen(true);
-      navigate("/");
+      setConfirmationOpen(true); // Abrir el dialog cuando la creación sea exitosa
     }
+
     if (isError) {
       setSnackbarMessage("Error al enviar el formulario");
       setSnackbarOpen(true);
@@ -53,8 +58,6 @@ const RegistroGE = () => {
           newErrors[key] = customMessages[key] || messages[0];
         }
         setErrors(newErrors);
-        console.log("nuevos errores");
-        console.log(newErrors);
       }
     }
   }, [isSuccess, isError, navigate, error]);
@@ -102,8 +105,6 @@ const RegistroGE = () => {
           : "El teléfono debe contener exactamente 8 dígitos.",
       },
     };
-    
-    console.log(formData);
 
     for (const [field, { condition, message }] of Object.entries(validations)) {
       if (condition) {
@@ -126,12 +127,16 @@ const RegistroGE = () => {
       academic_period_id: user?.academic_period_id,
     };
 
-    console.log("Enviando datos:", dataToSend);
     createCompany(dataToSend);
   };
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
+  };
+
+  const handleDialogClose = () => {
+    setConfirmationOpen(false);
+    navigate("/"); // Redirigir al cerrar el cuadro de diálogo
   };
 
   return (
@@ -198,6 +203,26 @@ const RegistroGE = () => {
         onClose={handleSnackbarClose}
         message={snackbarMessage}
       />
+
+      {/* Dialog de confirmación */}
+      <Dialog
+        open={confirmationOpen}
+        onClose={handleDialogClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Registro exitoso"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            La empresa se ha creado con éxito.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="primary" autoFocus>
+            Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
