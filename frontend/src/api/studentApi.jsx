@@ -6,7 +6,7 @@ const studentApi = apiSlice.injectEndpoints({
       query: (email) => `student/search/${encodeURIComponent(email)}`,
     }),
     getPendingCompaniesRequest: builder.query({
-      query: () => `student/pending-companies`,
+      query: () => `invitations`,
     }),
   }),
 });

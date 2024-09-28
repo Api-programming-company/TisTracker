@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useLazySearchStudentQuery } from "../../api/studentApi";
 import {
   TextField,
@@ -10,12 +10,16 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import StudentCard from "./StudentCard";
+import { useParams } from "react-router-dom";
+import AppContext from "../../context/AppContext";
 
-const StudentSearch = ({ formData, setFormData, errors, setErrors }) => {
+const StudentSearch = () => {
+  const { id } = useParams();
+  const { user } = useContext(AppContext);
+  const [members, setMembers] = useState([]);
   const [email, setEmail] = useState("");
-  const [searchStudent, { data, isFetching, isLoading, isError, isSuccess }] =
+  const [searchStudent, { data, isFetching, isLoading, isError, isSuccess , error}] =
     useLazySearchStudentQuery();
-  const [selectedId, setSelectedId] = useState(null); // Estado para el estudiante encargado
   const MAX_STUDENTS = 7;
 
   const handleSearch = () => {
@@ -24,47 +28,22 @@ const StudentSearch = ({ formData, setFormData, errors, setErrors }) => {
 
   const handleAddStudent = () => {
     if (data && data.student) {
-      const members = formData.members || [];
       if (
         members.length < MAX_STUDENTS &&
         !members.some((m) => m.id === data.student.id)
       ) {
         const newMember = {
           ...data.student,
-          permission: members.length === 0 ? "W" : undefined, // Asigna "W" si es el primer miembro
+          permission: members.length === 0 ? "W" : "R", // Asigna "W" si es el primer miembro, "R" en otros casos
         };
 
-        setFormData((prev) => ({
-          ...prev,
-          members: [...members, newMember],
-        }));
-        // Resetea el id seleccionado
-        setSelectedId(null);
+        setMembers((prev) => [...prev, newMember]);
       }
     }
   };
 
   const handleRemoveStudent = (id) => {
-    setFormData((prev) => ({
-      ...prev,
-      members: (prev.members || []).filter((member) => member.id !== id),
-    }));
-
-    // Si se elimina el encargado, resetea el id seleccionado
-    if (selectedId === id) {
-      setSelectedId(null);
-    }
-  };
-
-  const handleSelectEncargado = (id) => {
-    setSelectedId(id);
-    setFormData((prev) => ({
-      ...prev,
-      members: prev.members.map((member) => ({
-        ...member,
-        permission: member.id === id ? "W" : "R", // Asigna "W" al encargado, "R" a los demás
-      })),
-    }));
+    setMembers((prev) => prev.filter((member) => member.id !== id));
   };
 
   return (
@@ -94,7 +73,7 @@ const StudentSearch = ({ formData, setFormData, errors, setErrors }) => {
 
       {isError && (
         <Typography variant="body1" color="error" sx={{ marginTop: 2 }}>
-          Estudiante no encontrado en grupo TIS.
+          {error?.data?.message}
         </Typography>
       )}
 
@@ -118,8 +97,8 @@ const StudentSearch = ({ formData, setFormData, errors, setErrors }) => {
                   marginLeft: 2,
                 }}
                 disabled={
-                  (formData.members || []).length >= MAX_STUDENTS ||
-                  (formData.members || []).some((m) => m.id === data.student.id)
+                  members.length >= MAX_STUDENTS ||
+                  members.some((m) => m.id === data.student.id)
                 }
               >
                 <AddIcon fontSize="large" />
@@ -133,21 +112,29 @@ const StudentSearch = ({ formData, setFormData, errors, setErrors }) => {
         </Box>
       )}
 
-      {(formData.members || []).length >= MAX_STUDENTS && (
+      {members.length >= MAX_STUDENTS && (
         <Typography variant="body1" color="warning" sx={{ marginTop: 2 }}>
           Has alcanzado el límite de {MAX_STUDENTS} integrantes.
         </Typography>
       )}
 
       <Box sx={{ marginTop: 4 }}>
-        <Typography variant="h6">Integrantes Agregados</Typography>
-        {(formData.members || []).map((member) => (
+        <Typography variant="h6">Encargado</Typography>
+        <Typography variant="body1">
+          <StudentCard
+            key={user.id}
+            student={user}
+          />
+        </Typography>
+      </Box>
+
+      <Box sx={{ marginTop: 4 }}>
+        <Typography variant="h6">Integrantes</Typography>
+        {members.map((member) => (
           <StudentCard
             key={member.id}
             student={member}
             onRemove={handleRemoveStudent}
-            isEncargado={selectedId === member.id}
-            onSelectEncargado={() => handleSelectEncargado(member.id)}
           />
         ))}
       </Box>

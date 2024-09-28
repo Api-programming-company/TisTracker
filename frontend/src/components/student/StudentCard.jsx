@@ -1,60 +1,66 @@
-import React from 'react';
+import React from "react";
 import {
   Card,
   CardContent,
   Typography,
   IconButton,
-  CardActions,
   Avatar,
+  Stack,
   Box,
-  Radio,
-  FormControlLabel,
-} from '@mui/material';
-import { Delete as DeleteIcon } from '@mui/icons-material';
+} from "@mui/material";
+import { Delete as DeleteIcon } from "@mui/icons-material";
 
-const StudentCard = ({ student, onRemove, isEncargado, onSelectEncargado }) => {
+const StudentCard = ({ student, onRemove }) => {
   return (
     <Card
       sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: 1,
-        border: '1px solid #e0e0e0',
-        borderRadius: 1,
-        boxShadow: 1,
-        padding: 1,
-        height: '60px',
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        mb: 2,
+        p: 2,
+        borderRadius: 2,
+        boxShadow: 3,
+        transition: "box-shadow 0.3s",
+        "&:hover": {
+          boxShadow: 6,
+        },
       }}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <Avatar sx={{ marginRight: 1, fontSize: '0.8rem' }}>
-          {student.first_name[0]}{student.last_name[0]}
+      <Stack
+        direction="row"
+        alignItems="center"
+        spacing={2}
+        sx={{ width: "100%", flexGrow: 1 }}
+      >
+        <Avatar sx={{ bgcolor: "primary.main", width: 56, height: 56 }}>
+          {student.first_name[0]}
+          {student.last_name[0]}
         </Avatar>
-        <CardContent sx={{ flexGrow: 1, padding: 0 }}>
-          <Typography variant="subtitle2" sx={{ fontWeight: 'bold', fontSize: '0.9rem' }}>
+        <CardContent sx={{ p: 0 }}>
+          <Typography variant="h6" sx={{ fontWeight: "bold" }}>
             {student.first_name} {student.last_name}
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8rem' }}>
+          <Typography variant="body2" color="text.secondary">
             {student.email}
           </Typography>
         </CardContent>
-      </Box>
-      <CardActions sx={{ padding: 0 }}>
-        <FormControlLabel
-          control={
-            <Radio
-              checked={isEncargado}
-              onChange={onSelectEncargado} // Usa el manejador pasado como prop
-              color="primary"
-            />
-          }
-          label="Encargado"
-        />
-        <IconButton onClick={() => onRemove(student.id)} color="error" size="small">
-          <DeleteIcon fontSize="small" />
+      </Stack>
+      {onRemove && (
+        <IconButton
+          onClick={() => onRemove(student.id)}
+          color="error"
+          size="large"
+          sx={{
+            transition: "transform 0.2s",
+            "&:hover": {
+              transform: "scale(1.1)",
+            },
+          }}
+        >
+          <DeleteIcon />
         </IconButton>
-      </CardActions>
+      )}
     </Card>
   );
 };

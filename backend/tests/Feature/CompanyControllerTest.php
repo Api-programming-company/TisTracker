@@ -41,6 +41,152 @@ class CompanyControllerTest extends TestCase
     }
 
     /** @test */
+    public function it_fails_if_phone_number_is_less_than_8_digits()
+    {
+        // Crear un usuario autenticado
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        // Crear un periodo académico
+        $academicPeriod = AcademicPeriod::factory()->create();
+
+        // Definir los datos de la compañía con un número de teléfono demasiado corto
+        $data = [
+            'long_name' => 'Test Company',
+            'short_name' => 'TC',
+            'email' => 'testcompany@example.com',
+            'address' => '123 Test St',
+            'phone' => '12345', // Menos de 8 dígitos
+            'academic_period_id' => $academicPeriod->id,
+        ];
+
+        // Realizar la solicitud POST y esperar un error de validación
+        $response = $this->post('api/company', $data);
+
+        // Afirmar que la respuesta tiene un error 422 de validación
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('phone');
+    }
+
+    /** @test */
+    public function it_returns_validation_error_if_long_name_already_exists()
+    {
+        // Crear un usuario autenticado
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        // Crear un periodo académico
+        $academicPeriod = AcademicPeriod::factory()->create();
+
+        // Crear una compañía existente
+        Company::factory()->create(['long_name' => 'Existing Long Name']);
+
+        // Definir los datos de la nueva compañía con un long_name ya existente
+        $data = [
+            'long_name' => 'Existing Long Name',
+            'short_name' => 'TC',
+            'email' => 'testcompany@example.com',
+            'address' => '123 Test St',
+            'phone' => '12345678',
+            'academic_period_id' => $academicPeriod->id,
+        ];
+
+        // Realizar una solicitud POST para crear la compañía
+        $response = $this->post('api/company', $data);
+
+        // Afirmar que se recibe un error de validación
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['long_name']);
+    }
+
+    /** @test */
+    public function it_returns_validation_error_if_short_name_already_exists()
+    {
+        // Crear un usuario autenticado
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        // Crear un periodo académico
+        $academicPeriod = AcademicPeriod::factory()->create();
+
+        // Crear una compañía existente
+        Company::factory()->create(['short_name' => 'Existing Short Name']);
+
+        // Definir los datos de la nueva compañía con un short_name ya existente
+        $data = [
+            'long_name' => 'Test Company',
+            'short_name' => 'Existing Short Name',
+            'email' => 'testcompany@example.com',
+            'address' => '123 Test St',
+            'phone' => '12345678',
+            'academic_period_id' => $academicPeriod->id,
+        ];
+
+        // Realizar una solicitud POST para crear la compañía
+        $response = $this->post('api/company', $data);
+
+        // Afirmar que se recibe un error de validación
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['short_name']);
+    }
+
+    /** @test */
+    public function it_fails_if_phone_is_not_an_integer()
+    {
+        // Crear un usuario autenticado
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        // Crear un periodo académico
+        $academicPeriod = AcademicPeriod::factory()->create();
+
+        // Definir los datos de la compañía con un valor de teléfono inválido
+        $data = [
+            'long_name' => 'Test Company',
+            'short_name' => 'TC',
+            'email' => 'testcompany@example.com',
+            'address' => '123 Test St',
+            'phone' => 'notanumber', // Aquí está el error
+            'academic_period_id' => $academicPeriod->id,
+        ];
+
+        // Realizar la solicitud POST y esperar un error de validación
+        $response = $this->post('api/company', $data);
+
+        // Afirmar que la respuesta tiene un error 422 de validación
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('phone');
+    }
+
+    /** @test */
+    public function it_fails_if_short_name_exceeds_max_length()
+    {
+        // Crear un usuario autenticado
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        // Crear un periodo académico
+        $academicPeriod = AcademicPeriod::factory()->create();
+
+        // Definir los datos de la compañía con un short_name demasiado largo
+        $data = [
+            'long_name' => 'Test Company',
+            'short_name' => 'ThisNameIsTooLong',
+            'email' => 'testcompany@example.com',
+            'address' => '123 Test St',
+            'phone' => '12345678',
+            'academic_period_id' => $academicPeriod->id,
+        ];
+
+        // Realizar la solicitud POST y esperar un error de validación
+        $response = $this->post('api/company', $data);
+
+        // Afirmar que la respuesta tiene un error 422 de validación
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('short_name');
+    }
+
+    /** @test */
     public function it_saves_company_in_database()
     {
         // Crear un usuario autenticado
