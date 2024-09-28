@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Models\CompanyUser;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Validator;
+
 use Exception;
 
 class CompanyUserController extends Controller
@@ -96,6 +98,19 @@ class CompanyUserController extends Controller
             // Obtener la compañía (grupo)
             $company = Company::find($request->company_id);
 
+            // Verificar el número de miembros con estado 'A' o 'P' ya existentes
+            $activeOrPendingCount = $company->members()
+                ->whereIn('status', ['A', 'P']) // Filtrar los miembros activos o pendientes
+                ->count();
+
+            // Verificar si al agregar los nuevos miembros se excede el límite de 7
+            $newMembersCount = count($request->user_ids);
+            if (($activeOrPendingCount + $newMembersCount) > 7) {
+                return response()->json([
+                    'message' => 'No se pueden enviar más de 7 invitaciones. Las invitaciones rechazadas no cuentan.'
+                ], 400);  // 400 Bad Request
+            }
+
             // Asignar los usuarios a la compañía
             foreach ($request->user_ids as $userId) {
                 $company->members()->attach($userId, [
@@ -124,6 +139,7 @@ class CompanyUserController extends Controller
     }
 
 
+
     /**
      * Display the specified resource.
      *
@@ -133,25 +149,58 @@ class CompanyUserController extends Controller
     public function show($id)
     {
         try {
-            $company = Company::with('members')->find($id);
+            $validator = Validator::make(['id' => $id], [
+                'id' => 'required|integer|exists:companies,id',
+            ]);
 
-            if (!$company) {
+            // Si la validación falla, retornar un error 400 con los mensajes de validación
+            if ($validator->fails()) {
                 return response()->json([
-                    'message' => 'Compañía no encontrada.'
-                ], 404);
+                    'message' => 'Error de validación.',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+            
+            // Obtener el usuario autenticado
+            $user = Auth::user();
+
+            // Buscar la compañía por ID, incluyendo relaciones necesarias
+            $company = Company::with([
+                'members' => function ($query) use ($user) {
+                    // Obtener sólo el miembro que coincide con el usuario autenticado
+                    $query->where('user_id', $user->id)
+                        ->select('users.id', 'email') // Incluir el email o cualquier otro campo que necesites
+                        ->withPivot('permission'); // Obtener el permiso desde la tabla pivote
+                },
+                'planning.milestones.deliverables',
+                'academicPeriod.creator'
+            ])->find($id);
+
+            // Verificar si la compañía existe
+            if (!$company) {
+                return response()->json(['message' => 'No se encontró la compañía especificada.'], 404);
             }
 
+            // Verificar si el usuario es miembro de la compañía
+            $member = $company->members->first();
+            if (!$member) {
+                return response()->json(['message' => 'No tienes permisos para acceder a esta compañía.'], 403);
+            }
+
+            // Devolver la respuesta con la compañía y el permiso del usuario autenticado
             return response()->json([
-                'message' => 'Miembros de la compañía obtenidos correctamente.',
-                'data' => $company->members
+                'message' => 'Compañía obtenida correctamente.',
+                'company' => $company,
+                'user_permission' => $member->pivot->permission, // Agregar el permiso del usuario
             ], 200);
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Se ha producido un error inesperado al obtener los miembros de la compañía.',
+                'message' => 'Ocurrió un error al obtener la información de la compañía.',
                 'error' => $e->getMessage()
             ], 500);
         }
     }
+
 
     /**
      * Show the form for editing the specified resource.
