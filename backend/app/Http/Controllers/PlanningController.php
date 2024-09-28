@@ -27,56 +27,45 @@ class PlanningController extends Controller
     public function store(Request $request)
     {
         try {
-            // Validar los datos de la planificación
-            $validatedData = $request->validate([
+            // Validar si ya existe una planificación para la empresa dada
+            $exists = Planning::where('company_id', $request->company_id)->exists();
+
+            if ($exists) {
+                return response()->json([
+                    'message' => 'La empresa ya tiene una planificación',
+                    'errors' => ['company_id' => 'Ya existe una planificación para esta empresa.']
+                ], 422);
+            }
+
+            // Validar los datos
+            $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'company_id' => 'required|exists:companies,id',
-                'milestones' => 'sometimes|array', // Validación para hitos
-                'milestones.*.name' => 'required_with:milestones|string|max:255',
-                'milestones.*.start_date' => 'required_with:milestones|date',
-                'milestones.*.end_date' => 'required_with:milestones|date',
-                'milestones.*.billing_percentage' => 'required_with:milestones|numeric',
-                'milestones.*.deliverables' => 'sometimes|array', // Validación para entregables
-                'milestones.*.deliverables.*.name' => 'required_with:milestones.deliverables|string|max:255',
-                'milestones.*.deliverables.*.responsible' => 'required_with:milestones.deliverables|string|max:255',
-                'milestones.*.deliverables.*.objective' => 'required_with:milestones.deliverables|string',
+                'milestones' => 'required|array',
+                'milestones.*.name' => 'required|string',
+                'milestones.*.start_date' => 'required|date',
+                'milestones.*.end_date' => 'required|date|after:milestones.*.start_date',
+                'milestones.*.billing_percentage' => 'required|integer|min:0',
+                'milestones.*.deliverables' => 'required|array|min:1',
             ]);
 
-            // Crear la planificación
+            // Crear planificación
             $planning = Planning::create([
-                'name' => $validatedData['name'],
-                'company_id' => $validatedData['company_id']
+                'name' => $validated['name'],
+                'company_id' => $validated['company_id'],
             ]);
 
-            // Crear los hitos (si existen)
-            if (isset($validatedData['milestones'])) {
-                foreach ($validatedData['milestones'] as $milestoneData) {
-                    $milestone = new Milestone($milestoneData);
-                    $planning->milestones()->save($milestone);
-
-                    // Crear los entregables (si existen)
-                    if (isset($milestoneData['deliverables'])) {
-                        foreach ($milestoneData['deliverables'] as $deliverableData) {
-                            $deliverable = new Deliverable($deliverableData);
-                            $milestone->deliverables()->save($deliverable);
-                        }
-                    }
-                }
+            // Crear hitos y entregables
+            foreach ($validated['milestones'] as $milestoneData) {
+                $milestone = $planning->milestones()->create($milestoneData);
+                $milestone->deliverables()->createMany($milestoneData['deliverables']);
             }
 
             return response()->json($planning->load('milestones.deliverables'), 201);
         } catch (ValidationException $e) {
-            // Manejar errores de validación
-            return response()->json([
-                'message' => 'Error de validación',
-                'errors' => $e->errors(),
-            ], 422);
+            return response()->json(['message' => 'Error de validación', 'errors' => $e->errors()], 422);
         } catch (Exception $e) {
-            // Manejar otros errores generales
-            return response()->json([
-                'message' => 'Ocurrió un error al crear la planificación',
-                'error' => $e->getMessage(),
-            ], 500);
+            return response()->json(['message' => 'Error al crear la planificación', 'error' => $e->getMessage()], 500);
         }
     }
 
@@ -102,14 +91,13 @@ class PlanningController extends Controller
                 'milestones' => 'sometimes|array',
                 'milestones.*.id' => 'nullable|exists:milestones,id',
                 'milestones.*.name' => 'required_with:milestones|string|max:255',
-                'milestones.*.start_date' => 'required_with:milestones|date',
-                'milestones.*.end_date' => 'required_with:milestones|date',
-                'milestones.*.billing_percentage' => 'required_with:milestones|numeric',
-                'milestones.*.deliverables' => 'nullable|array',
-                'milestones.*.deliverables.*.id' => 'sometimes|exists:deliverables,id',
-                'milestones.*.deliverables.*.name' => 'required_with:milestones.deliverables|string|max:255',
-                'milestones.*.deliverables.*.responsible' => 'required_with:milestones.deliverables|string|max:255',
-                'milestones.*.deliverables.*.objective' => 'required_with:milestones.deliverables|string',
+                'milestones.*.start_date' => 'required_with:milestones|date|before:milestones.*.end_date',
+                'milestones.*.end_date' => 'required_with:milestones|date|after:milestones.*.start_date',
+                'milestones.*.billing_percentage' => 'required_with:milestones|integer|min:0',
+                'milestones.*.deliverables' => 'required_with:milestones|array|min:1',
+                'milestones.*.deliverables.*.name' => 'required|string|max:255',
+                'milestones.*.deliverables.*.responsible' => 'required|string|max:255',
+                'milestones.*.deliverables.*.objective' => 'required|string',
             ]);
 
             // Buscar la planificación
@@ -140,7 +128,7 @@ class PlanningController extends Controller
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Error de validación', 'errors' => $e->errors()], 422);
         } catch (Exception $e) {
-            return response()->json(['message' => 'Ocurrió un error al actualizar la planificación', 'error' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Error al actualizar la planificación', 'error' => $e->getMessage()], 500);
         }
     }
 
@@ -149,15 +137,17 @@ class PlanningController extends Controller
     {
         try {
             $planning = Planning::findOrFail($id);
-            $planning->milestones()->each(function ($milestone) {
+            // Eliminar hitos y entregables relacionados
+            foreach ($planning->milestones as $milestone) {
                 $milestone->deliverables()->delete();
                 $milestone->delete();
-            });
+            }
+            // Eliminar la planificación
             $planning->delete();
 
             return response()->json(['message' => 'Planning, Milestones y Deliverables eliminados correctamente'], 200);
         } catch (Exception $e) {
-            return response()->json(['message' => 'Ocurrió un error al eliminar la planificación', 'error' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Error al eliminar la planificación', 'error' => $e->getMessage()], 500);
         }
     }
 }
