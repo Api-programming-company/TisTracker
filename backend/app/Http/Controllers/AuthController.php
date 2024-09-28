@@ -196,6 +196,16 @@ class AuthController extends Controller
                 ], 422); // 422 Unprocessable Entity
             }
 
+            // Obtener el usuario autenticado
+            $currentUser = auth()->user();
+
+            // Verificar si el usuario está intentando buscarse a sí mismo
+            if ($currentUser->email === $email) {
+                return response()->json([
+                    'message' => 'No puedes buscarte a ti mismo.'
+                ], 403); // 403 Forbidden
+            }
+
             // Buscar si el correo electrónico existe y pertenece a un estudiante
             $student = User::where('email', $email)
                 ->where('user_type', 'E') // 'E' para estudiantes
@@ -222,4 +232,5 @@ class AuthController extends Controller
             ], 500); // Error general
         }
     }
+
 }
