@@ -48,7 +48,7 @@ const AcceptDeclineInvitation = () => {
         message: invitationData?.message,
         severity: "sucess",
       });
-    }
+    } 
     if (isInvitationError) {
       console.log(invitationError);
       setSnackbar({
