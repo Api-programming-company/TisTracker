@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Exception;
 
-
 class CompanyUserController extends Controller
 {
     /**
@@ -21,19 +20,29 @@ class CompanyUserController extends Controller
     public function index()
     {
         try {
-            // Obtener todos los miembros de una compañía específica
-            $companyUsers = Company::with('members')->get();
+            $user = Auth::user();
+
+            // Obtener las compañías asociadas al usuario con status 'P'
+            $companies = $user->companies()
+                ->where('company_user.status', 'P') // Filtra por status 'P' en la tabla pivote
+                ->withPivot('status', 'permission') // Incluye los campos adicionales del pivote
+                ->withCount(['members as members_count' => function ($query) {
+                    $query->where('status', 'A'); // Filtra solo los miembros activos
+                }])
+                ->get();
+
             return response()->json([
-                'message' => 'Lista de miembros de las compañías obtenida correctamente.',
-                'data' => $companyUsers
+                'message' => 'Invitaciones obtenidas correctamente.',
+                'companies' => $companies,
             ], 200);
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Se ha producido un error inesperado al obtener los miembros.',
-                'error' => $e->getMessage()
-            ], 500); 
+                'message' => 'Se ha producido un error inesperado al obtener las compañías.',
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -75,7 +84,7 @@ class CompanyUserController extends Controller
 
             // Verificar que todos los miembros del grupo pertenezcan al mismo periodo académico que el usuario que envía la solicitud
             $members = User::whereIn('id', $request->user_ids)->get();
-            
+
             foreach ($members as $member) {
                 if ($member->academic_period_id !== $user->academic_period_id) {
                     return response()->json([
@@ -110,7 +119,7 @@ class CompanyUserController extends Controller
             return response()->json([
                 'message' => 'Se ha producido un error inesperado',
                 'error' => $e->getMessage()
-            ], 500); 
+            ], 500);
         }
     }
 
@@ -140,7 +149,7 @@ class CompanyUserController extends Controller
             return response()->json([
                 'message' => 'Se ha producido un error inesperado al obtener los miembros de la compañía.',
                 'error' => $e->getMessage()
-            ], 500); 
+            ], 500);
         }
     }
 
@@ -217,7 +226,7 @@ class CompanyUserController extends Controller
         }
     }
 
-    
+
 
     /**
      * Remove the specified resource from storage.
@@ -276,22 +285,20 @@ class CompanyUserController extends Controller
             if (!$company) {
                 return response()->json([
                     'message' => 'No se encontró un grupo para el estudiante en este periodo académico.'
-                ], 404);  
+                ], 404);
             }
 
             // Retornar la compañía del estudiante
             return response()->json([
                 'message' => 'Grupo encontrado correctamente.',
                 'data' => $company
-            ], 200);  
-
+            ], 200);
         } catch (Exception $e) {
-            
+
             return response()->json([
                 'message' => 'Se ha producido un error inesperado.',
                 'error' => $e->getMessage()
-            ], 500);  
+            ], 500);
         }
     }
-
 }

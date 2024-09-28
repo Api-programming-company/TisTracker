@@ -52,7 +52,7 @@ const InvitacionesGE = () => {
 
         {data?.companies.map((invitation) => (
           <PendingInvitationCard
-            key={invitation.company.id}
+            key={invitation.id}
             request={invitation}
           />
         ))}

@@ -33,30 +33,30 @@ const PendingInvitationCard = ({ request }) => {
             align="center"
             sx={{ color: "black", fontSize: "40px", lineHeight: "1" }}
           >
-            {request.company.long_name}
+            {request.long_name}
           </Typography>
           <Typography
             component="h2"
             align="center"
             sx={{ color: "black", fontSize: "26px" }}
           >
-            {request.company.short_name}
+            {request.short_name}
           </Typography>
 
           <Typography component="p" sx={{ color: "#8E9090", fontSize: "14px" }}>
             <PersonIcon />
-            Cuenta con {request.company.members_count} integrantes.
+            Cuenta con {request.members_count} integrantes.
           </Typography>
 
           <Typography component="p" sx={{ color: "#8E9090", fontSize: "14px" }}>
             <CalendarMonthIcon />
-            La solicitud se realizó el {formatDate(request.invitation_date)}.
+            La solicitud se realizó el {formatDate(request.pivot?.created_at)}.
           </Typography>
         </Box>
 
         <Button
           onClick={() =>
-            navigate(`/invitation/${request.company.id}/pending`, { state: { request } })
+            navigate(`/invitation/${request.id}/pending`, { state: { request } })
           }
           variant="contained"
           color="primary"
