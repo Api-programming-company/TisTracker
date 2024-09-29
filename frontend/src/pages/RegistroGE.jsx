@@ -140,7 +140,7 @@ const RegistroGE = () => {
   };
 
   return (
-    <Box sx={{ mt: 5, mb: 10, maxWidth: 600, mx: "auto" }}>
+    <Box sx={{ mt: 12, mb: 10, maxWidth: 600, mx: "auto" }}>
       <Typography
         variant="h4"
         component="h1"
