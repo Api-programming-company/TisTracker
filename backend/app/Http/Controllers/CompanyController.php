@@ -138,11 +138,9 @@ class CompanyController extends Controller
 
             // Buscar la compañía por ID, incluyendo relaciones necesarias
             $company = Company::with([
-                'members' => function ($query) use ($user) {
-                    $query->where('user_id', $user->id);
-                },
                 'planning.milestones.deliverables',
-                'academicPeriod.creator'
+                'academicPeriod.creator',
+                'members'
             ])->find($id);
 
             // Verificar si la compañía existe
