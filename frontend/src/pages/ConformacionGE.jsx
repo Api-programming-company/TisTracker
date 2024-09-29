@@ -20,6 +20,12 @@ import {
   useUpdateCompanyByIdMutation,
 } from "../api/companyApi";
 
+const statusMap = {
+  A: "Aceptado",
+  P: "Pendiente",
+  R: "Rechazado",
+};
+
 const ConformacionGE = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -160,7 +166,7 @@ const ConformacionGE = () => {
                     key={member.id}
                     secondaryAction={
                       <Typography variant="body2" sx={{ ml: 2 }}>
-                        {member.estado}
+                        {statusMap[member.pivot.status]}
                       </Typography>
                     }
                     button
