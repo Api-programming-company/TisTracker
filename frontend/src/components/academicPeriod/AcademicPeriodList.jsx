@@ -62,7 +62,7 @@ const AcademicPeriodList = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 5, mb: 10 }}>
+    <Container maxWidth="lg" sx={{ mt: 12, mb: 10 }}>
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Typography variant="h4" gutterBottom>
           Lista de Períodos Académicos
