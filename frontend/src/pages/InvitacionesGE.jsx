@@ -34,12 +34,12 @@ const InvitacionesGE = () => {
 
   return (
     <Container maxWidth="md">
-      <Box sx={{ mt: 5, mb: 10 }}>
+      <Box sx={{ mt: 12, mb: 10 }}>
         <Typography
           variant="h4"
           component="h1"
           gutterBottom
-          sx={{ textAlign: "center", mb: 3 }}
+          sx={{ textAlign: "center", mb: 1 }}
         >
           Invitaciones de Grupo Empresas
         </Typography>
@@ -51,10 +51,7 @@ const InvitacionesGE = () => {
         )}
 
         {data?.companies.map((invitation) => (
-          <PendingInvitationCard
-            key={invitation.id}
-            request={invitation}
-          />
+          <PendingInvitationCard key={invitation.id} request={invitation} />
         ))}
       </Box>
     </Container>
