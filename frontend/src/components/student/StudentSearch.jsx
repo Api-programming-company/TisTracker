@@ -1,11 +1,19 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useLazySearchStudentQuery } from "../../api/studentApi";
+import { useUpdateCompanyByIdMutation } from "../../api/companyApi";
 import {
   TextField,
   IconButton,
   Box,
   Typography,
   CircularProgress,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Container,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
@@ -18,25 +26,59 @@ const StudentSearch = () => {
   const { user } = useContext(AppContext);
   const [members, setMembers] = useState([]);
   const [email, setEmail] = useState("");
-  const [searchStudent, { data, isFetching, isLoading, isError, isSuccess , error}] =
-    useLazySearchStudentQuery();
+
+  const [
+    updateCompany,
+    {
+      data: updateCompanyData,
+      isSuccess: isUpdateCompanySuccess,
+      isLoading: isUpdateCompanyLoading,
+      isError: isUpdateCompanyError,
+      error: updateCompanyError,
+    },
+  ] = useUpdateCompanyByIdMutation();
+
+  useEffect(() => {
+    if (isUpdateCompanySuccess) {
+      console.log("Actualización exitosa:", updateCompanyData);
+    }
+
+    if (isUpdateCompanyError) {
+      console.error("Error al actualizar la compañía:", updateCompanyError);
+    }
+  }, [
+    isUpdateCompanySuccess,
+    isUpdateCompanyError,
+    updateCompanyData,
+    updateCompanyError,
+  ]);
+
+  const [
+    searchStudent,
+    { data, isFetching, isLoading, isError, isSuccess, error },
+  ] = useLazySearchStudentQuery();
+  const [openModal, setOpenModal] = useState(false); // Estado para controlar el modal
   const MAX_STUDENTS = 7;
 
   const handleSearch = () => {
     searchStudent(email);
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleSearch(); // Llama a la búsqueda al presionar Enter
+    }
+  };
+
   const handleAddStudent = () => {
-    if (data && data.student) {
+    if (isSuccess) {
       if (
         members.length < MAX_STUDENTS &&
         !members.some((m) => m.id === data.student.id)
       ) {
         const newMember = {
           ...data.student,
-          permission: members.length === 0 ? "W" : "R", // Asigna "W" si es el primer miembro, "R" en otros casos
         };
-
         setMembers((prev) => [...prev, newMember]);
       }
     }
@@ -46,6 +88,41 @@ const StudentSearch = () => {
     setMembers((prev) => prev.filter((member) => member.id !== id));
   };
 
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  const handleConfirmSend = () => {
+    // Filtrar solo los IDs de los miembros
+    const memberIds = members.map((member) => member.id);
+    console.log(members);
+
+    // Imprimir la lista de IDs
+    console.log("Lista de IDs de miembros:", memberIds);
+    updateCompany({id:id, data:memberIds})
+    setOpenModal(false);
+  };
+
+  if (isUpdateCompanyLoading) {
+    return (
+      <Container
+        maxWidth="sm"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        <CircularProgress />
+      </Container>
+    );
+  }
+
   return (
     <Box sx={{ padding: 2 }}>
       <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -53,6 +130,7 @@ const StudentSearch = () => {
           label="Buscar estudiante por correo"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          onKeyDown={handleKeyDown}
           variant="outlined"
           sx={{ flexGrow: 1 }}
           disabled={isFetching || isLoading}
@@ -121,10 +199,7 @@ const StudentSearch = () => {
       <Box sx={{ marginTop: 4 }}>
         <Typography variant="h6">Encargado</Typography>
         <Typography variant="body1">
-          <StudentCard
-            key={user.id}
-            student={user}
-          />
+          <StudentCard key={user.id} student={user} />
         </Typography>
       </Box>
 
@@ -138,6 +213,44 @@ const StudentSearch = () => {
           />
         ))}
       </Box>
+
+      {/* Botón para enviar invitaciones */}
+      <Button
+        variant="contained"
+        color="primary"
+        sx={{ marginTop: 4 }}
+        onClick={handleOpenModal}
+        disabled={members.length === 0}
+      >
+        Enviar Invitaciones
+      </Button>
+
+      {/* Modal de confirmación */}
+      <Dialog
+        open={openModal}
+        onClose={handleCloseModal}
+        aria-labelledby="confirm-dialog-title"
+        aria-describedby="confirm-dialog-description"
+      >
+        <DialogTitle id="confirm-dialog-title">Confirmar Envío</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="confirm-dialog-description">
+            ¿Estás seguro de que deseas enviar invitaciones a los siguientes
+            miembros?
+          </DialogContentText>
+          {members.map((member) => (
+            <Typography key={member.id}>{member.email}</Typography>
+          ))}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal} color="secondary">
+            Cancelar
+          </Button>
+          <Button onClick={handleConfirmSend} color="primary">
+            Confirmar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
