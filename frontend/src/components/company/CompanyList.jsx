@@ -71,7 +71,7 @@ const CompanyList = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 5 }}>
+    <Container maxWidth="lg" sx={{ mt: 12 }}>
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Typography variant="h4" gutterBottom>
           Lista de Grupo Empresas
