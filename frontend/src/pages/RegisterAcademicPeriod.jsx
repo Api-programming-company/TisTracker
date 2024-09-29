@@ -31,7 +31,7 @@ const RegisterAcademicPeriod = () => {
   useEffect(() => {
     if (isSuccess) {
       console.log(data);
-      navigate("/academic-periods")
+      navigate("/academic-periods");
     }
     if (isError) {
       if (error.data?.errors?.name) {
@@ -118,7 +118,7 @@ const RegisterAcademicPeriod = () => {
 
   return (
     <Container maxWidth="sm">
-      <Box sx={{ mt: 5 }}>
+      <Box sx={{ mt: 12 }}>
         <Typography
           variant="h4"
           component="h1"
