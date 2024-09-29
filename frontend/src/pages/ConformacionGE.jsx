@@ -14,92 +14,82 @@ import {
   Avatar,
 } from "@mui/material";
 import { Person } from "@mui/icons-material";
-import { useCreateCompanyMutation } from "../api/companyApi";
 import { useNavigate } from "react-router-dom";
+import { useGetCompanyByIdQuery } from "../api/companyApi";
+import { useParams } from "react-router-dom";
+import { useUpdateCompanyByIdMutation } from "../api/companyApi";
 
 const ConformacionGE = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [{ isSuccess, isError, isLoading }] = useCreateCompanyMutation();
 
-  //Lista de invitados de la grupo empresa
-  const [allItems] = useState([
+  const [
+    updateCompany,
     {
-      id: 1,
-      name: "Juan Alberto Peredo Pozo",
-      codsis: "202000571",
-      correo: "juan@example.com",
-      estado: "Aceptado",
+      data: updateCompanyData,
+      isSuccess: isUpdateCompanySuccess,
+      isLoading: isUpdateCompanyLoading,
+      isError: isUpdateCompanyError,
+      error: updateCompanyError,
     },
-    {
-      id: 2,
-      name: "Carlos José Padilla Poma",
-      codsis: "202000572",
-      correo: "juan@example.com",
-      estado: "Aceptado",
-    },
-    {
-      id: 3,
-      name: "Daniela Torrico Torreón",
-      codsis: "202000570",
-      correo: "juan@example.com",
-      estado: "Aceptado",
-    },
-    {
-      id: 4,
-      name: "Andres Castillo Lozada",
-      codsis: "202100580",
-      correo: "juan@example.com",
-      estado: "Aceptado",
-    },
-    {
-      id: 5,
-      name: "Antonio Gomez Amaranto",
-      codsis: "202200740",
-      correo: "juan@example.com",
-      estado: "Aceptado",
-    },
-    {
-      id: 6,
-      name: "Camila Torrez Gutierrez",
-      codsis: "202100712",
-      correo: "juan@example.com",
-      estado: "Aceptado",
-    },
+  ] = useUpdateCompanyByIdMutation();
+
+  useEffect(() => {
+    if (isUpdateCompanySuccess) {
+      console.log("Actualización exitosa:", updateCompanyData);
+    }
+
+    if (isUpdateCompanyError) {
+      console.error("Error al actualizar la compañía:", updateCompanyError);
+    }
+  }, [
+    isUpdateCompanySuccess,
+    isUpdateCompanyError,
+    updateCompanyData,
+    updateCompanyError,
   ]);
 
-  const allAcceptedItems = allItems.filter(
-    (item) => item.estado === "Aceptado"
-  );
-
-  const hasPendingItems = allItems.some((item) => item.estado === "Pendiente");
-
+  const { data, error, isSuccess, isError, isLoading, isFetching } =
+    useGetCompanyByIdQuery(id);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isUpdateCompanySuccess) {
       setSnackbarMessage("Formulario enviado con éxito");
       setSnackbarOpen(true);
-      navigate("/");
+      console.log(updateCompanyData);
     }
 
-    if (isError) {
+    if (isUpdateCompanyError) {
       setSnackbarMessage("Error al enviar el formulario");
       setSnackbarOpen(true);
+      console.log(updateCompanyError);
     }
-  }, [isSuccess, isError, navigate]);
+  }, [
+    isUpdateCompanyError,
+    updateCompanyError,
+    updateCompanyData,
+    isUpdateCompanySuccess,
+  ]);
 
   //Modificar aqui
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (allAcceptedItems.length < 3) {
+    if (
+      data.company.members.filter((member) => member.pivot.status === "A")
+        .length < 3
+    ) {
       setSnackbarMessage(
         "Deben aceptar la invitación como mínimo 3 estudiantes"
       );
       setSnackbarOpen(true);
       return;
     }
-    if (hasPendingItems) {
+    if (
+      data.company.members.filter((member) => member.pivot.status === "P")
+        .length
+    ) {
       setSnackbarMessage(
         "Tienes compañeros que faltan responder a la invitación"
       );
@@ -108,12 +98,29 @@ const ConformacionGE = () => {
     } else {
       alert("La lista se ha enviado a tu docente TIS");
       console.log("La lista se ha enviado a tu docente TIS");
+      updateCompany({ id: id, data: { status: "P" } });
     }
   };
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
+
+  if (isFetching || isUpdateCompanyLoading) {
+    return (
+      <Container
+        maxWidth="sm"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        <CircularProgress />
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="sm">
@@ -144,22 +151,29 @@ const ConformacionGE = () => {
                 <Typography
                   sx={{
                     color:
-                      allAcceptedItems.length === allItems.length
+                      data.company.members.filter(
+                        (member) => member.pivot.status === "A"
+                      ).length === data.company.members.length
                         ? "green"
                         : "red",
                   }}
                 >
-                  {allAcceptedItems.length}/{allItems.length}
+                  {
+                    data.company.members.filter(
+                      (member) => member.pivot.status === "A"
+                    ).length
+                  }
+                  /{data.company.members.length}
                 </Typography>
               </Box>
 
               <List>
-                {allItems.map((item) => (
+                {data.company.members.map((member) => (
                   <ListItem
-                    key={item.id}
+                    key={member.id}
                     secondaryAction={
                       <Typography variant="body2" sx={{ ml: 2 }}>
-                        {item.estado}
+                        {member.estado}
                       </Typography>
                     }
                     button
@@ -171,11 +185,11 @@ const ConformacionGE = () => {
                       </Avatar>
                     </ListItemIcon>
                     <ListItemText
-                      primary={item.name}
+                      primary={`${member.first_name} ${member.last_name}`}
                       secondary={
                         <Box>
                           <Typography variant="body2">
-                            Correo: {item.correo}
+                            Correo: {member.email}
                           </Typography>
                         </Box>
                       }
@@ -185,7 +199,9 @@ const ConformacionGE = () => {
               </List>
             </Box>
             <Typography component="p">
-              {allAcceptedItems.length === allItems.length
+              {data.company.members.filter(
+                (member) => member.pivot.status === "A"
+              ).length === data.company.members.length
                 ? "Todos los estudiantes que aceptaron formarán parte en tu grupo empresa. ¿Deseas enviar la lista oficial a tu docente de TIS?"
                 : `Todos los estudiantes deben aceptar o rechazar la invitación para conformar la lista oficial de la grupo empresa, antes de eso no podrás enviarle la solicitud de conformación a tu docente TIS.`}
             </Typography>
@@ -205,7 +221,7 @@ const ConformacionGE = () => {
             type="submit"
             variant="contained"
             color="primary"
-            disabled={isLoading}
+            disabled={isLoading || isUpdateCompanyLoading}
             sx={{
               display: "block",
               mx: "auto",
@@ -213,7 +229,7 @@ const ConformacionGE = () => {
               py: 1,
             }}
           >
-            {isLoading ? (
+            {isLoading || isUpdateCompanyLoading ? (
               <CircularProgress size={24} color="inherit" />
             ) : (
               "CONFIRMAR INTEGRANTES"

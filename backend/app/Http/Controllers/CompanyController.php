@@ -285,7 +285,7 @@ class CompanyController extends Controller
             ]);
 
             // Si el estado de la compañía va a cambiar a "A", verificar las condiciones
-            if ($request->status === 'A') {
+            if ($request->status === 'P' || $request->status === 'A') {
                 // Contar los miembros de la compañía con estado 'A' en la tabla pivote CompanyUser
                 $acceptedMembersCount = $company->members()->wherePivot('status', 'A')->count();
 

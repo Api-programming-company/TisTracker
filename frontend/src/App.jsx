@@ -62,7 +62,7 @@ function App({ toggleTheme, isDarkMode }) {
 
           <Route path="/company/:id/invite" element={<StudentSearch />} />
           <Route path="/company-requests" element={<InvitacionesGE />} />
-          <Route path="/conformacionge:id" element={<ConformacionGE />} />
+          <Route path="/conformacionge/:id" element={<ConformacionGE />} />
           <Route path="/editarlistage:id" element={<EditarListaGE />} />
           <Route path="/academic-periods" element={<AcademicPeriodList />} />
           <Route path="/register-ap" element={<RegisterAcademicPeriod />} />
