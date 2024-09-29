@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {
-  Container,
-  Typography,
-  Box,
-  CircularProgress,
-} from "@mui/material";
+import { Container, Typography, Box, CircularProgress } from "@mui/material";
 import { useParams } from "react-router-dom";
-import {
-  useGetPedingCompaniesQuery,
-} from "../api/companyApi";
+import { useGetPedingCompaniesQuery } from "../api/companyApi";
 import PendingCompanyCard from "../components/company/PendingCompanyCard";
 
 const SolicitudesGE = () => {
@@ -46,7 +39,7 @@ const SolicitudesGE = () => {
 
   return (
     <Container maxWidth="md">
-      <Box sx={{ mt: 5, mb: 10 }}>
+      <Box sx={{ mt: 12, mb: 10 }}>
         <Typography
           variant="h4"
           component="h1"
