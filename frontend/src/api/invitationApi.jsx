@@ -2,7 +2,7 @@ import { apiSlice } from "./apiSlice";
 
 const invitationApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    updateInvitationByCompanyId: builder.mutation({
+    updateInvitationById: builder.mutation({
       query: ({ id, data }) => ({
         url: `invitations/${id}`,
         method: "PUT",
@@ -19,6 +19,6 @@ const invitationApi = apiSlice.injectEndpoints({
 });
 
 export const {
-  useUpdateInvitationByCompanyIdMutation,
+  useUpdateInvitationByIdMutation,
   useInvitationDetailsByIdQuery
 } = invitationApi;

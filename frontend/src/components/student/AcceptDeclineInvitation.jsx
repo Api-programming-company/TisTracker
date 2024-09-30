@@ -10,7 +10,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import DialogMod from "../DialogMod";
-import { useUpdateInvitationByCompanyIdMutation } from "../../api/invitationApi";
+import { useUpdateInvitationByIdMutation } from "../../api/invitationApi";
 import { formatDate } from "../../utils/validaciones";
 import { useget } from "../../api/companyApi";
 import { useInvitationDetailsByIdQuery } from "../../api/invitationApi";
@@ -39,7 +39,7 @@ const AcceptDeclineInvitation = () => {
       isLoading: isInvitationLoading,
       isError: isInvitationError,
     },
-  ] = useUpdateInvitationByCompanyIdMutation();
+  ] = useUpdateInvitationByIdMutation();
 
   useEffect(() => {
     if (isInvitationSuccess) {

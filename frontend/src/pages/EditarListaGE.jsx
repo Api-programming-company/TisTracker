@@ -22,6 +22,7 @@ import DialogMod from "../components/DialogMod";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useGetCompanyByIdQuery } from "../api/companyApi";
+import { useUpdateInvitationByIdMutation } from "../api/invitationApi";
 
 const EditarListaGE = () => {
   const { id } = useParams();
