@@ -17,7 +17,8 @@ const lightTheme = createTheme({
     },
     info: {
       main: "#81d4fa", // Azul pastel
-      gray: "#f6f6f6", //Gris claro
+      details: "#8e9090", //Gris para textos de descripción
+      gray: "#f6f6f6", //Gris claro para cajas grises
     },
     success: {
       main: "#c5e1a5", // Verde claro pastel
