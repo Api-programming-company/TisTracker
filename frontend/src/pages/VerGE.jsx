@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Box, CircularProgress, Container, Divider } from "@mui/material";
+import { Box, CircularProgress, Container, Divider,Button, Stack } from "@mui/material";
 import { useGetCompanyByIdQuery } from "../api/companyApi";
 import { useParams } from "react-router-dom";
 import CompanyDetails from "../components/company/CompanyDetails";
 import CompanyPlanning from "../components/company/CompanyPlanning";
 import { useUpdateCompanyPlanningByIdMutation } from "../api/companyApi";
+import { useNavigate } from "react-router-dom";
 
 const VerGE = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { data, error, isSuccess, isLoading, isError, isFetching } =
     useGetCompanyByIdQuery(id);
   const [
@@ -93,7 +95,39 @@ const VerGE = () => {
         setFormData={setFormData}
         setSendData={setSendData}
       />
+       {/* Botones de navegación */}
+       <Stack direction="row" spacing={2} mt={4}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => navigate(`/company/${id}/invite`)}
+        >
+          Invitar
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => navigate(`/company/${id}/confirm`)}
+        >
+          Confirmar Conformación
+        </Button>
+        <Button
+          variant="contained"
+          color="warning"
+          onClick={() => navigate(`/company/${id}/uninvite`)}
+        >
+          Retirar Invitaciones
+        </Button>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() => navigate(`/company/${id}/plannification`)}
+        >
+          Agregar Planificación
+        </Button>
+      </Stack>
     </Box>
+
   );
 };
 

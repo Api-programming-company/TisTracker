@@ -16,6 +16,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import AppContext from "../context/AppContext";
 import logo from "../assets/logo.png";
+import { Box } from "@mui/material";
 
 function AppBarWithMenu({ isDarkMode, toggleDarkMode, userType }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -72,25 +73,33 @@ function AppBarWithMenu({ isDarkMode, toggleDarkMode, userType }) {
     <>
       <AppBar position="fixed">
         <Toolbar>
-          <img
-            src={logo}
-            alt="Logo"
-            style={{ height: "40px", marginRight: "8px" }}
-          />
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            TisTracker
-          </Typography>
-          <IconButton color="inherit" onClick={toggleDarkMode}>
-            {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
-          </IconButton>
-          <IconButton
-            edge="end"
-            color="inherit"
-            aria-label="menu"
-            onClick={handleMenuOpen}
+          <Box
+            onClick={() => navigate("/")}
+            sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}
           >
-            <MenuIcon />
-          </IconButton>
+            <img
+              src={logo}
+              alt="Logo"
+              style={{ height: "40px", marginRight: "8px" }}
+            />
+            <Typography variant="h6" sx={{ flexGrow: 1 }}>
+              TisTracker
+            </Typography>
+          </Box>
+
+          <Box sx={{ display: "flex", alignItems: "center", ml: "auto" }}>
+            <IconButton color="inherit" onClick={toggleDarkMode}>
+              {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+            </IconButton>
+            <IconButton
+              edge="end"
+              color="inherit"
+              aria-label="menu"
+              onClick={handleMenuOpen}
+            >
+              <MenuIcon />
+            </IconButton>
+          </Box>
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}

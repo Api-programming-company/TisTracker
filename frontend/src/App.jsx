@@ -28,7 +28,6 @@ import {
 import { Box } from "@mui/material";
 
 import VerGE from "./pages/VerGE";
-import PlannificationRegister from "./pages/PlannificationRegister";
 import AcceptDeclineCompany from "./components/company/AcceptDeclineCompany";
 import AcceptDeclineInvitation from "./components/student/AcceptDeclineInvitation";
 import CompanyPlanning from "./components/company/CompanyPlanning";
@@ -55,16 +54,15 @@ function App({ toggleTheme, isDarkMode }) {
           <Route path="/enroll-to-ap" element={<EnrollToAcademicPeriod />} />
           <Route path="/vergrupoe/:id" element={<VerGE />} />
           <Route path="/registroge" element={<RegistroGE />} />
+          <Route path="/company-requests" element={<InvitacionesGE />} />
 
           <Route
-            path="/plannification-register/:id"
+            path="/company/:id/plannification"
             element={<CompanyPlanning />}
           />
-
           <Route path="/company/:id/invite" element={<StudentSearch />} />
-          <Route path="/company-requests" element={<InvitacionesGE />} />
-          <Route path="/conformacionge/:id" element={<ConformacionGE />} />
-          <Route path="/editarlistage/:id" element={<EditarListaGE />} />
+          <Route path="/company/:id/confirm" element={<ConformacionGE />} />
+          <Route path="/company/:id/uninvite" element={<EditarListaGE />} />
           <Route path="/academic-periods" element={<AcademicPeriodList />} />
           <Route path="/register-ap" element={<RegisterAcademicPeriod />} />
 
