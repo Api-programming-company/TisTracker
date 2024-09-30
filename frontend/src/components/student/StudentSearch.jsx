@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useLazySearchStudentQuery } from "../../api/studentApi";
 import { useUpdateCompanyByIdMutation } from "../../api/companyApi";
+import { useGetCompanyByIdQuery } from "../../api/companyApi";
 import {
   TextField,
   IconButton,
@@ -37,6 +38,23 @@ const StudentSearch = () => {
       error: updateCompanyError,
     },
   ] = useUpdateCompanyByIdMutation();
+  const {
+    data: companyData,
+    isSuccess: isCompanySuccess,
+    isLoading: isCompanyLoading,
+    isError: isCompanyError,
+    error: companyError,
+  } = useGetCompanyByIdQuery(id);
+
+  useEffect(() => {
+    if (isCompanySuccess) {
+      console.log("company obtenida:", companyData);
+    }
+
+    if (isCompanyError) {
+      console.error("company error:", companyError);
+    }
+  }, [isCompanySuccess, isCompanyError, companyData, companyError]);
 
   useEffect(() => {
     if (isUpdateCompanySuccess) {
@@ -103,11 +121,11 @@ const StudentSearch = () => {
 
     // Imprimir la lista de IDs
     console.log("Lista de IDs de miembros:", memberIds);
-    updateCompany({id:id, data:{members:memberIds}})
+    updateCompany({ id: id, data: { members: memberIds } });
     setOpenModal(false);
   };
 
-  if (isUpdateCompanyLoading) {
+  if (isUpdateCompanyLoading || isCompanyLoading) {
     return (
       <Container
         maxWidth="sm"
@@ -199,7 +217,12 @@ const StudentSearch = () => {
       <Box sx={{ marginTop: 4 }}>
         <Typography variant="h6">Encargado</Typography>
         <Typography variant="body1">
-          <StudentCard key={user.id} student={user} />
+          <StudentCard
+            key={user.id}
+            student={companyData.company.members.find(
+              (member) => member.pivot.permission === "W"
+            )}
+          />
         </Typography>
       </Box>
 
