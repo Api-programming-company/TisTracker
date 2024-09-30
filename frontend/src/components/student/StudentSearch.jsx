@@ -103,7 +103,7 @@ const StudentSearch = () => {
 
     // Imprimir la lista de IDs
     console.log("Lista de IDs de miembros:", memberIds);
-    updateCompany({id:id, data:memberIds})
+    updateCompany({id:id, data:{members:memberIds}})
     setOpenModal(false);
   };
 

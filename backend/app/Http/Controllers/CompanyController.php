@@ -337,9 +337,6 @@ class CompanyController extends Controller
             ], 500);
         }
     }
-
-
-
     public function destroy($id)
     {
         try {
