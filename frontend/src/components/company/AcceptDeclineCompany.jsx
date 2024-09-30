@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import MemberAccordion from "./MemberAccordion";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import DialogMod from "../DialogMod";
 import {
   useUpdateCompanyByIdMutation,
@@ -112,6 +112,7 @@ const AcceptDeclineCompany = () => {
   });
   const [openA, setOpenA] = useState(false);
   const [openR, setOpenR] = useState(false);
+  const navigate = useNavigate()
 
   const handleAccept = async () => {
     setOpenA(false);
@@ -125,6 +126,7 @@ const AcceptDeclineCompany = () => {
         message: "Solicitud aceptada",
         severity: "success",
       });
+      navigate(`/academic-period/${companyData.company.academic_period_id}/pending`)
     } catch (error) {
       console.error("Error al aceptar la solicitud:", error);
       setSnackbar({
@@ -146,6 +148,7 @@ const AcceptDeclineCompany = () => {
         message: "Solicitud rechazada",
         severity: "success",
       });
+      navigate(`/academic-period/${companyData.company.academic_period_id}/pending`)
     } catch (error) {
       console.error("Error al rechazar la solicitud:", error);
       setSnackbar({
