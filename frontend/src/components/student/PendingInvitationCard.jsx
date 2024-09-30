@@ -56,7 +56,7 @@ const PendingInvitationCard = ({ request }) => {
 
         <Button
           onClick={() =>
-            navigate(`/invitation/${request.id}/pending`, { state: { request } })
+            navigate(`/invitation/${request.pivot?.id}/pending`, { state: { request } })
           }
           variant="contained"
           color="primary"

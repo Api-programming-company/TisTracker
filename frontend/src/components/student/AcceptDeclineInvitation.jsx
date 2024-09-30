@@ -10,15 +10,16 @@ import {
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import DialogMod from "../DialogMod";
-import { useUpdateInvitationByCompanyIdMutation } from "../../api/invitationApi";
+import { useUpdateInvitationByIdMutation } from "../../api/invitationApi";
 import { formatDate } from "../../utils/validaciones";
-import { useGetCompanyByIdQuery } from "../../api/companyApi";
+import { useget } from "../../api/companyApi";
+import { useInvitationDetailsByIdQuery } from "../../api/invitationApi";
 
 const AcceptDeclineInvitation = () => {
   const { id } = useParams();
 
   const { data, error, isError, isSuccess, isLoading, isFetching } =
-    useGetCompanyByIdQuery(id);
+    useInvitationDetailsByIdQuery(id);
 
   useEffect(() => {
     if (isSuccess) {
@@ -38,7 +39,7 @@ const AcceptDeclineInvitation = () => {
       isLoading: isInvitationLoading,
       isError: isInvitationError,
     },
-  ] = useUpdateInvitationByCompanyIdMutation();
+  ] = useUpdateInvitationByIdMutation();
 
   useEffect(() => {
     if (isInvitationSuccess) {
@@ -48,7 +49,7 @@ const AcceptDeclineInvitation = () => {
         message: invitationData?.message,
         severity: "sucess",
       });
-    } 
+    }
     if (isInvitationError) {
       console.log(invitationError);
       setSnackbar({
@@ -72,7 +73,7 @@ const AcceptDeclineInvitation = () => {
     setOpenA(false);
 
     await updateInvitation({
-      id: data.company.id,
+      id: id,
       data: { status: "A" },
     });
   };
@@ -80,7 +81,7 @@ const AcceptDeclineInvitation = () => {
   const handleDecline = async () => {
     setOpenR(false);
     updateInvitation({
-      id: data.company.id,
+      id: id,
       data: { status: "R" },
     });
   };
@@ -174,7 +175,7 @@ const AcceptDeclineInvitation = () => {
           </Grid2>
           <Grid2 size={{ xs: 12, md: 8 }}>
             <Typography variant="body1">
-              {formatDate(data.company.updated_at)}
+              {formatDate(data.request_date)}
             </Typography>
           </Grid2>
         </Grid2>

@@ -27,7 +27,7 @@ class CompanyUserController extends Controller
             // Obtener las compañías asociadas al usuario con status 'P'
             $companies = $user->companies()
                 ->where('company_user.status', 'P') // Filtra por status 'P' en la tabla pivote
-                ->withPivot('status', 'permission') // Incluye los campos adicionales del pivote
+                ->withPivot(['id', '*']) // Incluye los campos adicionales del pivote
                 ->withCount(['members as members_count' => function ($query) {
                     $query->where('status', 'A'); // Filtra solo los miembros activos
                 }])
@@ -149,8 +149,9 @@ class CompanyUserController extends Controller
     public function show($id)
     {
         try {
+            // Validar que el ID exista en la tabla company_user
             $validator = Validator::make(['id' => $id], [
-                'id' => 'required|integer|exists:companies,id',
+                'id' => 'required|integer|exists:company_user,id',
             ]);
 
             // Si la validación falla, retornar un error 400 con los mensajes de validación
@@ -160,42 +161,29 @@ class CompanyUserController extends Controller
                     'errors' => $validator->errors(),
                 ], 422);
             }
-            
+
             // Obtener el usuario autenticado
             $user = Auth::user();
 
-            // Buscar la compañía por ID, incluyendo relaciones necesarias
-            $company = Company::with([
-                'members' => function ($query) use ($user) {
-                    // Obtener sólo el miembro que coincide con el usuario autenticado
-                    $query->where('user_id', $user->id)
-                        ->select('users.id', 'email') // Incluir el email o cualquier otro campo que necesites
-                        ->withPivot('permission'); // Obtener el permiso desde la tabla pivote
-                },
-                'planning.milestones.deliverables',
-                'academicPeriod.creator'
-            ])->find($id);
+            // Buscar el registro en la tabla pivote por su ID
+            $companyUser = CompanyUser::with('company')
+                ->where('id', $id)
+                ->first();
 
-            // Verificar si la compañía existe
-            if (!$company) {
-                return response()->json(['message' => 'No se encontró la compañía especificada.'], 404);
+            // Verificar si el registro en la tabla pivote existe
+            if (!$companyUser) {
+                return response()->json(['message' => 'No se encontró el registro especificado en company_user.'], 404);
             }
 
-            // Verificar si el usuario es miembro de la compañía
-            $member = $company->members->first();
-            if (!$member) {
-                return response()->json(['message' => 'No tienes permisos para acceder a esta compañía.'], 403);
-            }
-
-            // Devolver la respuesta con la compañía y el permiso del usuario autenticado
+            // Devolver la respuesta con la información de la compañía y el permiso del usuario autenticado
             return response()->json([
                 'message' => 'Compañía obtenida correctamente.',
-                'company' => $company,
-                'user_permission' => $member->pivot->permission, // Agregar el permiso del usuario
+                'company' => $companyUser->company,
+                'request_date' => $companyUser->updated_at
             ], 200);
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Ocurrió un error al obtener la información de la compañía.',
+                'message' => 'Ocurrió un error al obtener la información.',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -228,8 +216,9 @@ class CompanyUserController extends Controller
                 'status' => 'required|in:A,R', // Aceptado, Rechazado
             ]);
 
+            $companyUser = CompanyUser::find($id);
             // Obtener el usuario autenticado
-            $user = Auth::user();
+            $user = $companyUser->user;
             $userId = $user->id;
 
             // Verificar si el usuario ya pertenece a una compañía en estado "A"
@@ -244,7 +233,7 @@ class CompanyUserController extends Controller
             }
 
             // Buscar la compañía y el usuario en esa compañía
-            $companyUser = CompanyUser::where('company_id', $id)->where('user_id', $userId)->first();
+            
 
             // Verificar si la compañía está en estado "P"
             if (!$companyUser || $companyUser->status !== 'P') {
