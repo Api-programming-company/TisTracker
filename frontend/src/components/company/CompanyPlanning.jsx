@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography, List, Button } from "@mui/material";
+import { Box, Typography, List, Button, Snackbar, Alert } from "@mui/material";
 import Milestone from "./Milestone";
 import { useUpdateCompanyPlanningByIdMutation } from "../../api/companyApi";
 import DialogMod from "../DialogMod";
@@ -11,16 +11,23 @@ const CompanyPlanning = () => {
   const { id } = useParams();
   const [open, setOpen] = useState(false);
   const [milestones, setMilestones] = useState([]);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
   const [registerPlanning, { data, isSuccess, error, isError, isLoading }] =
     useRegisterPlanningMutation();
 
   useEffect(() => {
     if (isSuccess) {
-      console.log(data);
+      setSnackbarMessage("Planificación registrada con éxito");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
     }
     if (isError) {
-      console.log(error);
+      setSnackbarMessage(error.data?.message);
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
     }
   }, [data, isSuccess, error, isError]);
 
@@ -54,6 +61,10 @@ const CompanyPlanning = () => {
   const handleDeleteMilestone = (id) => {
     const updatedMilestones = milestones.filter((e) => e.id !== id);
     setMilestones(updatedMilestones);
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -123,6 +134,18 @@ const CompanyPlanning = () => {
         onAccept={handleConfirm}
         onCancel={() => setOpen(false)}
       />
+
+      {/* Snackbar para mostrar mensajes */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
