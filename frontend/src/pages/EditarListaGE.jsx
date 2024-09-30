@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import { Person } from "@mui/icons-material";
-import { format, parseISO } from 'date-fns';
+import { format, parseISO } from "date-fns";
 
 import DialogMod from "../components/DialogMod";
 import { useNavigate } from "react-router-dom";
@@ -26,7 +26,33 @@ import { useUpdateInvitationByIdMutation } from "../api/invitationApi";
 
 const EditarListaGE = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
+  const [itemIdToRemove, setItemIdToRemove] = useState(null);
+  const [openA, setOpenA] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const [updateInvitation, { data, error, isSuccess, isError, isLoading }] =
+    useUpdateInvitationByIdMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log(data);
+      console.log(itemIdToRemove);
+      
+      setSelectedItems((prevItems) =>
+        prevItems.filter((member) => member.pivot.id !== itemIdToRemove)
+      );
+      setSnackbarMessage("Invitación retirada correctamente");
+      setSnackbarOpen(true);
+      setItemIdToRemove(null)
+    }
+    if (isError) {
+      console.log(error);
+      setSnackbarMessage(error.data?.message);
+      setSnackbarOpen(true);
+      setItemIdToRemove(null)
+    }
+  }, [isSuccess, isError, data, error]);
 
   const {
     data: companyData,
@@ -49,25 +75,16 @@ const EditarListaGE = () => {
     if (isCompanyError) console.log(companyError);
   }, [companyData, companyError, isCompanySuccess, isCompanyError]);
 
-  const [openA, setOpenA] = useState(false);
-  const [itemIdToRemove, setItemIdToRemove] = useState(null);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-
-  const handleRemoveItem = (itemId) => {
-    setSelectedItems((prevItems) =>
-      prevItems.filter((item) => item.id !== itemId)
-    );
-    setSnackbarMessage("Invitación retirada correctamente");
-    setSnackbarOpen(true);
-    setOpenA(false)
+  const handleRemoveItem = () => {
+    updateInvitation({ id: itemIdToRemove, data: { status: "R" } });
+    setOpenA(false);
   };
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
 
-  if (isCompanyFetching) {
+  if (isCompanyFetching || isLoading) {
     return (
       <Container
         maxWidth="sm"
@@ -108,15 +125,15 @@ const EditarListaGE = () => {
                 Lista de Invitaciones a Retirar:
               </Typography>
               <List>
-                {selectedItems.map((item) => (
+                {selectedItems.map((member) => (
                   <ListItem
-                    key={item.id}
+                    key={member.pivot.id}
                     secondaryAction={
                       <IconButton
                         edge="end"
                         aria-label="delete"
                         onClick={() => {
-                          setItemIdToRemove(item.id);
+                          setItemIdToRemove(member.pivot.id);
                           setOpenA(true);
                         }}
                       >
@@ -134,14 +151,18 @@ const EditarListaGE = () => {
                       </Avatar>
                     </ListItemIcon>
                     <ListItemText
-                      primary={`${item.first_name} ${item.last_name}`}
+                      primary={`${member.first_name} ${member.last_name}`}
                       secondary={
                         <Box>
                           <Typography variant="body2">
-                            Correo: {item.email}
+                            Correo: {member.email}
                           </Typography>
                           <Typography variant="body2">
-                            Invitación realizada en: {format(parseISO(item.created_at), 'dd/MM/yyyy HH:mm:ss')}
+                            Invitación realizada en:{" "}
+                            {format(
+                              parseISO(member.created_at),
+                              "dd/MM/yyyy HH:mm:ss"
+                            )}
                           </Typography>
                         </Box>
                       }
@@ -155,10 +176,7 @@ const EditarListaGE = () => {
                 title={"Confirmar retiro de invitación"}
                 content={"¿Estas seguro que deseas retirar esta invitación?"}
                 onAccept={() => {
-                  if (itemIdToRemove !== null) {
-                    handleRemoveItem(itemIdToRemove);
-                    setItemIdToRemove(null);
-                  }
+                  handleRemoveItem();
                 }}
               />
             </FormControl>

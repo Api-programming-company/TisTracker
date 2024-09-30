@@ -216,8 +216,9 @@ class CompanyUserController extends Controller
                 'status' => 'required|in:A,R', // Aceptado, Rechazado
             ]);
 
+            $companyUser = CompanyUser::find($id);
             // Obtener el usuario autenticado
-            $user = Auth::user();
+            $user = $companyUser->user;
             $userId = $user->id;
 
             // Verificar si el usuario ya pertenece a una compañía en estado "A"
@@ -232,7 +233,7 @@ class CompanyUserController extends Controller
             }
 
             // Buscar la compañía y el usuario en esa compañía
-            $companyUser = CompanyUser::find($id);
+            
 
             // Verificar si la compañía está en estado "P"
             if (!$companyUser || $companyUser->status !== 'P') {
