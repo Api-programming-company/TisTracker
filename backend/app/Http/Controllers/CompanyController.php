@@ -272,18 +272,18 @@ class CompanyController extends Controller
 
             // Validar los datos entrantes
             $request->validate([
-                'long_name' => 'sometimes|required|string|max:32',  // Ajustado a 32 caracteres como en store
-                'short_name' => 'sometimes|required|string|max:8',  // Ajustado a 8 caracteres como en store
+                'long_name' => 'sometimes|required|string|max:32',
+                'short_name' => 'sometimes|required|string|max:8',
                 'email' => "sometimes|required|email|unique:companies,email,{$id}",
                 'address' => 'sometimes|required|string|max:255',
-                'phone' => 'sometimes|required|int|max:99999999|min:10000000|unique:companies,phone',  // Consistente con store
+                'phone' => 'sometimes|required|int|max:99999999|min:10000000|unique:companies,phone',
                 'status' => 'sometimes|required|in:A,R,P',
                 'members' => 'sometimes|required|array',
                 'members.*' => 'exists:users,id'
             ]);
 
             // Si el estado de la compañía va a cambiar a "A", verificar las condiciones
-            if ($request->status === 'P' || $request->status === 'A') {
+            if ($request->status === 'A') {
                 // Contar los miembros de la compañía con estado 'A'
                 $acceptedMembersCount = $company->members()->wherePivot('status', 'A')->count();
 
@@ -300,29 +300,30 @@ class CompanyController extends Controller
 
             // Si el request tiene miembros
             if ($request->has('members')) {
-                // Recorrer los miembros enviados en el request
+                // Registrar los nuevos miembros con permiso 'R'
                 foreach ($request->members as $memberId) {
-                    // Verificar si el miembro actual tiene permiso 'W'
+                    // Asignar permiso 'R' a los nuevos miembros o mantener permiso 'W' si ya lo tienen
                     $existingMember = $company->members()->where('user_id', $memberId)->first();
-                    
-                    if ($existingMember && $existingMember->pivot->permission === 'W') {
-                        // Si ya tiene permiso 'W', no hacer nada
-                        continue;
+                    if (!$existingMember) {
+                        // Si el miembro no existe, añadirlo con permiso 'R' y estado 'P' (pendiente)
+                        $company->members()->attach($memberId, [
+                            'permission' => 'R',
+                            'status' => 'P' // Estado 'P' para pendiente
+                        ]);
                     }
-
-                    // Asignar permiso 'R' al resto de los miembros
-                    $company->members()->syncWithoutDetaching([
-                        $memberId => ['permission' => 'R']
-                    ]);
                 }
             }
 
             // Actualizar la compañía con los datos validados
             $company->update($request->except('members'));
 
+            // Obtener la lista actualizada de miembros con sus permisos y estado
+            $updatedMembers = $company->members()->get(['user_id','company_user.permission', 'company_user.status']);
+
             return response()->json([
                 'message' => 'Compañía actualizada correctamente.',
-                'company' => $company
+                'company' => $company,
+                'members' => $updatedMembers // Incluir los miembros en la respuesta
             ], 200);
         } catch (ValidationException $e) {
             return response()->json([
@@ -336,6 +337,8 @@ class CompanyController extends Controller
             ], 500);
         }
     }
+
+
 
     public function destroy($id)
     {
