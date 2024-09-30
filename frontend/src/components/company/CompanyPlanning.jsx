@@ -1,21 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Typography, List, Button } from "@mui/material";
 import Milestone from "./Milestone";
 import { useUpdateCompanyPlanningByIdMutation } from "../../api/companyApi";
 import DialogMod from "../DialogMod";
 import { CiCirclePlus } from "react-icons/ci";
+import { useParams } from "react-router-dom";
+import { useRegisterPlanningMutation } from "../../api/planningApi";
 
-const CompanyPlanning = ({ setFormData, setSendData }) => {
-  //const [milestones, setMilestones] = useState([...milestones]); // Estado para los hitos en edición
+const CompanyPlanning = () => {
+  const { id } = useParams();
   const [open, setOpen] = useState(false);
   const [milestones, setMilestones] = useState([]);
 
+  const [registerPlanning, { data, isSuccess, error, isError, isLoading }] =
+    useRegisterPlanningMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log(data);
+    }
+    if (isError) {
+      console.log(error);
+    }
+  }, [data, isSuccess, error, isError]);
+
   const handleConfirm = () => {
-    setFormData((prev) => ({
-      ...prev,
-      milestones: milestones, // Confirma los hitos temporales al formData
-    }));
-    setSendData(true);
+    const form = { name: "planning", company_id: id, milestones: milestones };
+    console.log(form);
+    registerPlanning(form);
+    setOpen(false);
   };
 
   const handleMilestoneChange = (updatedMilestone, milestone_id) => {
@@ -24,7 +37,7 @@ const CompanyPlanning = ({ setFormData, setSendData }) => {
       return milestone_id === index ? updatedMilestone : milestone;
     });
 
-    setMilestones(updatedMilestones); // Actualiza la lista temporal
+    setMilestones(updatedMilestones);
   };
 
   const handleAddMilestone = () => {
