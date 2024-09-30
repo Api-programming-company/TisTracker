@@ -278,12 +278,13 @@ class CompanyController extends Controller
                 'address' => 'sometimes|required|string|max:255',
                 'phone' => 'sometimes|required|int|max:99999999|min:10000000|unique:companies,phone',  // Consistente con store
                 'status' => 'sometimes|required|in:A,R,P',
-                'member_id' => 'sometimes|required|exists:users,id'  // Solo un ID de usuario
+                'members' => 'sometimes|required|array',
+                'members.*' => 'exists:users,id'
             ]);
 
             // Si el estado de la compañía va a cambiar a "A", verificar las condiciones
             if ($request->status === 'P' || $request->status === 'A') {
-                // Contar los miembros de la compañía con estado 'A' en la tabla pivote CompanyUser
+                // Contar los miembros de la compañía con estado 'A'
                 $acceptedMembersCount = $company->members()->wherePivot('status', 'A')->count();
 
                 // Verificar que al menos 3 miembros tienen estado 'A'
@@ -293,24 +294,35 @@ class CompanyController extends Controller
                     ], 400); // Bad Request
                 }
 
-                // Eliminar miembros que no tienen estado 'A' en la tabla pivote CompanyUser
+                // Eliminar miembros que no tienen estado 'A'
                 $company->members()->wherePivot('status', '!=', 'A')->detach();
             }
 
-            // Si se envía un ID de miembro
-            if ($request->has('member_id')) {
-                $memberId = $request->member_id;
+            // Si el request tiene miembros
+            if ($request->has('members')) {
+                // Recorrer los miembros enviados en el request
+                foreach ($request->members as $memberId) {
+                    // Verificar si el miembro actual tiene permiso 'W'
+                    $existingMember = $company->members()->where('user_id', $memberId)->first();
+                    
+                    if ($existingMember && $existingMember->pivot->permission === 'W') {
+                        // Si ya tiene permiso 'W', no hacer nada
+                        continue;
+                    }
 
-                // Agregar el miembro con permiso 'R'
-                $company->members()->syncWithoutDetaching([$memberId => ['permission' => 'R']]);
+                    // Asignar permiso 'R' al resto de los miembros
+                    $company->members()->syncWithoutDetaching([
+                        $memberId => ['permission' => 'R']
+                    ]);
+                }
             }
 
             // Actualizar la compañía con los datos validados
-            $company->update($request->except('member_id'));
+            $company->update($request->except('members'));
 
             return response()->json([
                 'message' => 'Compañía actualizada correctamente.',
-                'company' => $company->load('members')
+                'company' => $company
             ], 200);
         } catch (ValidationException $e) {
             return response()->json([
