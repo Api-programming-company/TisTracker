@@ -51,7 +51,7 @@ const InvitacionesGE = () => {
         )}
 
         {data?.companies.map((invitation) => (
-          <PendingInvitationCard key={invitation.id} request={invitation} />
+          <PendingInvitationCard key={invitation.pivot.id} request={invitation} />
         ))}
       </Box>
     </Container>
