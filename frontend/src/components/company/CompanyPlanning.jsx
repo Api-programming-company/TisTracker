@@ -1,21 +1,41 @@
-import React, { useState } from "react";
-import { Box, Typography, List, Button } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Typography, List, Button, Snackbar, Alert } from "@mui/material";
 import Milestone from "./Milestone";
 import { useUpdateCompanyPlanningByIdMutation } from "../../api/companyApi";
 import DialogMod from "../DialogMod";
 import { CiCirclePlus } from "react-icons/ci";
+import { useParams } from "react-router-dom";
+import { useRegisterPlanningMutation } from "../../api/planningApi";
 
-const CompanyPlanning = ({ setFormData, setSendData }) => {
-  //const [milestones, setMilestones] = useState([...milestones]); // Estado para los hitos en edición
+const CompanyPlanning = () => {
+  const { id } = useParams();
   const [open, setOpen] = useState(false);
   const [milestones, setMilestones] = useState([]);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
+  const [registerPlanning, { data, isSuccess, error, isError, isLoading }] =
+    useRegisterPlanningMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      setSnackbarMessage("Planificación registrada con éxito");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+    }
+    if (isError) {
+      setSnackbarMessage(error.data?.message);
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+  }, [data, isSuccess, error, isError]);
 
   const handleConfirm = () => {
-    setFormData((prev) => ({
-      ...prev,
-      milestones: milestones, // Confirma los hitos temporales al formData
-    }));
-    setSendData(true);
+    const form = { name: "planning", company_id: id, milestones: milestones };
+    console.log(form);
+    registerPlanning(form);
+    setOpen(false);
   };
 
   const handleMilestoneChange = (updatedMilestone, milestone_id) => {
@@ -24,7 +44,7 @@ const CompanyPlanning = ({ setFormData, setSendData }) => {
       return milestone_id === index ? updatedMilestone : milestone;
     });
 
-    setMilestones(updatedMilestones); // Actualiza la lista temporal
+    setMilestones(updatedMilestones);
   };
 
   const handleAddMilestone = () => {
@@ -41,6 +61,10 @@ const CompanyPlanning = ({ setFormData, setSendData }) => {
   const handleDeleteMilestone = (id) => {
     const updatedMilestones = milestones.filter((e) => e.id !== id);
     setMilestones(updatedMilestones);
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -110,6 +134,18 @@ const CompanyPlanning = ({ setFormData, setSendData }) => {
         onAccept={handleConfirm}
         onCancel={() => setOpen(false)}
       />
+
+      {/* Snackbar para mostrar mensajes */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
