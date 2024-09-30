@@ -278,8 +278,7 @@ class CompanyController extends Controller
                 'address' => 'sometimes|required|string|max:255',
                 'phone' => 'sometimes|required|int|max:99999999|min:10000000|unique:companies,phone',  // Consistente con store
                 'status' => 'sometimes|required|in:A,R,P',
-                'members' => 'sometimes|required|array',
-                'members.*' => 'exists:users,id'
+                'member_id' => 'sometimes|required|exists:users,id'  // Solo un ID de usuario
             ]);
 
             // Si el estado de la compañía va a cambiar a "A", verificar las condiciones
@@ -298,24 +297,20 @@ class CompanyController extends Controller
                 $company->members()->wherePivot('status', '!=', 'A')->detach();
             }
 
-            // Si el request tiene miembros
-            if ($request->has('members')) {
-                // Crear un array donde cada miembro tenga el permiso 'R' por defecto
-                $membersWithPermissions = [];
-                foreach ($request->members as $memberId) {
-                    $membersWithPermissions[$memberId] = ['permission' => 'R'];
-                }
+            // Si se envía un ID de miembro
+            if ($request->has('member_id')) {
+                $memberId = $request->member_id;
 
-                $company->members()->syncWithoutDetaching($membersWithPermissions);
+                // Agregar el miembro con permiso 'R'
+                $company->members()->syncWithoutDetaching([$memberId => ['permission' => 'R']]);
             }
 
-
             // Actualizar la compañía con los datos validados
-            $company->update($request->except('members'));
+            $company->update($request->except('member_id'));
 
             return response()->json([
                 'message' => 'Compañía actualizada correctamente.',
-                'company' => $company
+                'company' => $company->load('members')
             ], 200);
         } catch (ValidationException $e) {
             return response()->json([
