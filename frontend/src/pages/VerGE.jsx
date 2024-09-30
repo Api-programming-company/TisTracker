@@ -90,11 +90,6 @@ const VerGE = () => {
     <Box sx={{ maxWidth: 900, margin: "auto", padding: 2, mb: 15 }}>
       <CompanyDetails company={formData.company} />
       <Divider sx={{ my: 4 }} />
-      <CompanyPlanning
-        milestones={formData.milestones}
-        setFormData={setFormData}
-        setSendData={setSendData}
-      />
        {/* Botones de navegación */}
        <Stack direction="row" spacing={2} mt={4}>
         <Button
