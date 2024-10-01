@@ -120,21 +120,21 @@ const AcceptDeclineInvitation = () => {
 
   return (
     <Container maxWidth="md">
-      <Box sx={{ mt: 5, mb: 10 }}>
+      <Box sx={{ mt: 12 }}>
         <Typography
           variant="h4"
           component="h1"
           gutterBottom
-          sx={{ textAlign: "center", mb: 3 }}
+          sx={{ textAlign: "center" }}
         >
           Detalles de la solicitud
         </Typography>
       </Box>
       <Box
         sx={{
-          backgroundColor: "whitesmoke",
+          backgroundColor: "info.gray",
           borderRadius: "15px",
-          padding: 2,
+          padding: 5,
           mb: 5,
         }}
       >
