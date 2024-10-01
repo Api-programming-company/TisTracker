@@ -264,10 +264,16 @@ class CompanyController extends Controller
             // Obtener el usuario autenticado
             $user = Auth::user();
 
+            // Verificar si el usuario es el creador del período académico
+            $isAcademicPeriodCreator = $company->academicPeriod->creator->id === $user->id;
+
             // Verificar si el usuario tiene permiso de escritura ('W') en la compañía
             $member = $company->members()->where('user_id', $user->id)->first();
-            if (!$member || $member->pivot->permission !== 'W') {
-                return response()->json(['message' => 'No tienes permisos de escritura para actualizar esta compañía.'], 403);
+
+            if (!$isAcademicPeriodCreator && (!$member || $member->pivot->permission !== 'W')) {
+                return response()->json([
+                    'message' => 'No tienes permisos para actualizar esta compañía.'
+                ], 403);
             }
 
             // Validar los datos entrantes
@@ -318,7 +324,7 @@ class CompanyController extends Controller
             $company->update($request->except('members'));
 
             // Obtener la lista actualizada de miembros con sus permisos y estado
-            $updatedMembers = $company->members()->get(['user_id','company_user.permission', 'company_user.status']);
+            $updatedMembers = $company->members()->get(['user_id', 'company_user.permission', 'company_user.status']);
 
             return response()->json([
                 'message' => 'Compañía actualizada correctamente.',
@@ -379,12 +385,14 @@ class CompanyController extends Controller
                 $query->where('user_id', $user->id)
                     ->where('status', 'P'); // Estado pendiente
             })
-                ->with(['members' => function ($query) use ($user) {
-                    // Incluir solo la información del usuario autenticado
-                    $query->where('user_id', $user->id)
-                        ->withPivot('created_at') // Obtener la fecha de la invitación (asumiendo 'created_at')
-                        ->select('users.id as user_id', 'email');  // Renombrar 'id' para evitar ambigüedad
-                }])
+                ->with([
+                    'members' => function ($query) use ($user) {
+                        // Incluir solo la información del usuario autenticado
+                        $query->where('user_id', $user->id)
+                            ->withPivot('created_at') // Obtener la fecha de la invitación (asumiendo 'created_at')
+                            ->select('users.id as user_id', 'email');  // Renombrar 'id' para evitar ambigüedad
+                    }
+                ])
                 ->withCount('members')
                 ->get();
             $data = $companies->map(function ($company) use ($user) {
