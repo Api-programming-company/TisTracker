@@ -7,6 +7,7 @@
   --neutral-800:#363939;
   --neutral-900:#1F2223;
   --neutral-600:#797A7B;
+  --neutral-500:#9B9B9B;
   --neutral-300: #D2D3D3;
   --neutral-200: #EAEAEA;
   --neutral-100: #F8F8F8;
@@ -61,6 +62,10 @@ p,a,li,button,input,textarea{
   color: var(--neutral-600);
 }
 
+.text-neutral-500 {
+  color: var(--neutral-500);
+}
+
 .text-neutral-300 {
   color: var(--neutral-300);
 }
@@ -84,3 +89,5 @@ p,a,li,button,input,textarea{
   padding : 3rem 5rem;
   min-height: 100vh;
 }
+
+
