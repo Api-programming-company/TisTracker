@@ -169,7 +169,7 @@ const Milestone = ({ milestone, onChange, onDelete,milestone_id}) => {
                     />
                   ))
                 ) : (
-                  <ListItemText primary="No hay entregables asignados." />
+                  <p className="text-neutral-500">No hay entregables asignados.</p>
                 )}
               </List>
             </ListItem>

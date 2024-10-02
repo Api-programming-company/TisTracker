@@ -87,7 +87,7 @@ const CompanyPlanning = () => {
             />
           ))
         ) : (
-          <p>No hay hitos asignados</p>
+          <p className="text-neutral-500">No hay hitos asignados</p>
         )}
       </List>
 
