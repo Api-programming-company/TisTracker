@@ -18,8 +18,9 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DialogMod from "../DialogMod";
 import { id } from "date-fns/locale";
+import { usePlanningContext } from "../../context/PlanningContext";
 
-const Milestone = ({ milestone, onChange, onDelete, milestone_id }) => {
+const Milestone = ({ milestone, onDelete, milestone_id }) => {
   const [openDeliverables, setOpenDeliverables] = useState(false);
   const [startDate, setStartDate] = useState(new Date(milestone.start_date));
   const [endDate, setEndDate] = useState(new Date(milestone.end_date));
@@ -29,48 +30,29 @@ const Milestone = ({ milestone, onChange, onDelete, milestone_id }) => {
     milestone.billing_percentage
   );
 
+  const {handleChangeMilestone} = usePlanningContext();
+
   const handleAction = (action, payload) => {
-    console.log("working");
     switch (action) {
       case "handleToggle":
         setOpenDeliverables((prev) => !prev);
         break;
-      // case "handleDeliverableChange":
-      //   const updatedDeliverables = milestone.deliverables.map((deliverable) =>
-      //     deliverable.id === payload.id ? payload : deliverable
-      //   );
-      //   onChange({ ...milestone, deliverables: updatedDeliverables },milestone_id);
-      //   break;
       case "handleNameChange":
         setName(payload);
-        onChange({ ...milestone, name: payload },milestone_id);
+        handleChangeMilestone(milestone.id,{name:payload});
         break;
       case "handleStartDateChange":
         setStartDate(payload);
-        onChange({ ...milestone, start_date: payload },milestone_id);
+        handleChangeMilestone(milestone.id,{start_date:payload});
         break;
       case "handleEndDateChange":
         setEndDate(payload);
-        onChange({ ...milestone, end_date: payload },milestone_id);
+        handleChangeMilestone(milestone.id,{end_date:payload});
         break;
       case "handleBillingPercentageChange":
         setBillingPercentage(payload);
-        onChange({ ...milestone, billing_percentage: payload },milestone_id);
+        handleChangeMilestone(milestone.id,{billing_percentage:payload});
         break;
-      // case "handleAddDeliverable":
-      //   const newDeliverable = {
-      //     name: "Nuevo Entregable",
-      //     responsible: "",
-      //     objective: "",
-      //   };
-
-      //   const updatedDeliverables = [...milestone.deliverables, newDeliverable];
-      //   onChange({ ...milestone, deliverables: updatedDeliverables },milestone_id);
-      //   break;
-      // case "handleDeleteDeliverable":
-      //   const updatedDeliverables = milestone.deliverables.filter((e)=> e.id !== payload)
-      //   onChange({...milestone, deliverables: updatedDeliverables},milestone_id)
-      //   break;
       default:
         break;
     }
@@ -161,8 +143,6 @@ const Milestone = ({ milestone, onChange, onDelete, milestone_id }) => {
                       milestone_id={milestone_id}
                       deliverable_id={index}
                       deliverable={deliverable}
-                      onChange={(payload) => handleAction("handleDeliverableChange", payload)}
-                      onDelete={(payload) => handleAction("handleDeleteDeliverable", payload)}
                     />
                   ))
                 ) : (
@@ -191,8 +171,7 @@ const Milestone = ({ milestone, onChange, onDelete, milestone_id }) => {
           </LocalizationProvider>
         </List>
       </Collapse>
-    </div>
+      </div>
   );
 };
-
 export default Milestone;
