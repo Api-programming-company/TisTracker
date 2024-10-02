@@ -1,0 +1,141 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API de Empresas",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/companies": {
+            "post": {
+                "tags": [
+                    "Companies"
+                ],
+                "summary": "Crear una nueva compañía",
+                "operationId": "00e2db7b0f71c32b377f4dfc4dd685a8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "long_name",
+                                    "short_name",
+                                    "email",
+                                    "address",
+                                    "phone",
+                                    "academic_period_id"
+                                ],
+                                "properties": {
+                                    "long_name": {
+                                        "type": "string",
+                                        "example": "Nombre Largo de la Compañía"
+                                    },
+                                    "short_name": {
+                                        "type": "string",
+                                        "example": "Cia"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "empresa@ejemplo.com"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "Dirección de la Compañía"
+                                    },
+                                    "phone": {
+                                        "type": "integer",
+                                        "example": "12345678"
+                                    },
+                                    "academic_period_id": {
+                                        "type": "integer",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Compañía creada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Compañía creada y usuario registrado como miembro con permisos de escritura."
+                                        },
+                                        "company": {
+                                            "$ref": "#/components/schemas/Company"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Prohibido"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    },
+                    "500": {
+                        "description": "Error interno del servidor"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Company": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "long_name": {
+                        "type": "string",
+                        "example": "Nombre Largo de la Compañía"
+                    },
+                    "short_name": {
+                        "type": "string",
+                        "example": "Cia"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "empresa@ejemplo.com"
+                    },
+                    "address": {
+                        "type": "string",
+                        "example": "Dirección de la Compañía"
+                    },
+                    "phone": {
+                        "type": "integer",
+                        "example": "12345678"
+                    },
+                    "academic_period_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "C"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Companies",
+            "description": "Companies"
+        }
+    ]
+}
