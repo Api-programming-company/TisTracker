@@ -15,10 +15,11 @@ const CompanyPlanning = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
-  const {milestones,setMilestones} = usePlanningContext();
+  const {milestones,setMilestones,addMilestone} = usePlanningContext();
 
   const [registerPlanning, { data, isSuccess, error, isError, isLoading }] =
     useRegisterPlanningMutation();
+
 
   useEffect(() => {
     if (isSuccess) {
@@ -94,7 +95,7 @@ const CompanyPlanning = () => {
 
       <Button
         color="primary"
-        onClick={() => console.log("add milestone")}
+        onClick={addMilestone}
         sx={{
           backgroundColor: "transparent",
           "&:hover": {
