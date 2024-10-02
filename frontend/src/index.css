@@ -45,6 +45,39 @@ p,a,li,button,input,textarea{
   padding: 0;
   box-sizing: border-box;
 }
+.text-primary-500 {
+  color: var(--primary-500);
+}
+
+.text-primary-300 {
+  color: var(--primary-300);
+}
+
+.text-primary-100 {
+  color: var(--primary-100);
+}
+
+.text-neutral-600 {
+  color: var(--neutral-600);
+}
+
+.text-neutral-300 {
+  color: var(--neutral-300);
+}
+
+.text-neutral-200 {
+  color: var(--neutral-200);
+}
+
+.text-neutral-100 {
+  color: var(--neutral-100);
+}
+
+/* Custom Styles */
+
+.text-neutral-900 {
+  color: var(--neutral-900);
+}
 
 .container {
   width: 100%;
