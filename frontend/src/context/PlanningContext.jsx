@@ -10,6 +10,16 @@ const PlanningProvider = ({ children }) => {
     setMilestones([...milestones, milestone]);
   };
 
+  const handleChangeMilestone = (milestoneId, updatedMilestone) => {
+    const updatedMilestones = milestones.map((milestone) => {
+      if (milestone.id === milestoneId) {
+        return { ...milestone, ...updatedMilestone };
+      }
+      return milestone;
+    });
+    setMilestones(updatedMilestones);
+  };
+
   const addDelivery = (milestoneId, delivery) => {
     const updatedMilestones = milestones.map((milestone) => {
       if (milestone.id === milestoneId) {
