@@ -155,65 +155,47 @@ const AcceptDeclineCompany = () => {
           Detalles de la solicitud
         </Typography>
       </Box>
+  
       <Box
         sx={{
           backgroundColor: "whitesmoke",
           borderRadius: "15px",
-          padding: 2,
+          padding: 3,
           mb: 5,
         }}
       >
-        <Grid2 container spacing={2}>
-          {}
-          <Grid2 size={{ xs: 12, md: 4 }}>
-            <Typography variant="h6">Nombre largo</Typography>
-          </Grid2>
-          <Grid2 size={{ xs: 12, md: 8 }}>
-            <Typography variant="body1">
-              {companyData.company.long_name}
+        {[
+          { label: "Nombre largo", value: companyData.company.long_name },
+          { label: "Nombre corto", value: companyData.company.short_name },
+          { label: "Correo electrónico", value: companyData.company.email },
+          { label: "Dirección", value: companyData.company.address },
+          { label: "Teléfono", value: companyData.company.phone },
+          { label: "Fecha de solicitud", value: formatDate(companyData.company.updated_at) },
+        ].map((item, index) => (
+          <Box
+            key={index}
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              mb: 2,
+              flexDirection: { xs: "column", md: "row" },
+            }}
+          >
+            <Typography variant="h6" sx={{ flex: 1 }}>
+              {item.label}
             </Typography>
-          </Grid2>
-          <Grid2 size={{ xs: 12, md: 4 }}>
-            <Typography variant="h6">Nombre corto</Typography>
-          </Grid2>
-          <Grid2 size={{ xs: 12, md: 8 }}>
-            <Typography variant="body1">
-              {companyData.company.short_name}
+            <Typography variant="body1" sx={{ flex: 2 }}>
+              {item.value}
             </Typography>
-          </Grid2>
-          <Grid2 size={{ xs: 12, md: 4 }}>
-            <Typography variant="h6">Correo electrónico</Typography>
-          </Grid2>
-          <Grid2 size={{ xs: 12, md: 8 }}>
-            <Typography variant="body1">{companyData.company.email}</Typography>
-          </Grid2>
-          <Grid2 size={{ xs: 12, md: 4 }}>
-            <Typography variant="h6">Dirección</Typography>
-          </Grid2>
-          <Grid2 size={{ xs: 12, md: 8 }}>
-            <Typography variant="body1">
-              {companyData.company.address}
-            </Typography>
-          </Grid2>
-          <Grid2 size={{ xs: 12, md: 4 }}>
-            <Typography variant="h6">Teléfono</Typography>
-          </Grid2>
-          <Grid2 size={{ xs: 12, md: 8 }}>
-            <Typography variant="body1">{companyData.company.phone}</Typography>
-          </Grid2>
-          <Grid2 size={{ xs: 12, md: 4 }}>
-            <Typography variant="h6">Fecha de solicitud</Typography>
-          </Grid2>
-          <Grid2 size={{ xs: 12, md: 8 }}>
-            <Typography variant="body1">
-              {formatDate(companyData.company.updated_at)}
-            </Typography>
-          </Grid2>
-          <Grid2 size={12}>
-            <MemberAccordion members={companyData.company.members} />
-          </Grid2>
-        </Grid2>
+          </Box>
+        ))}
+  
+        {/* Miembros */}
+        <Box sx={{ mt: 2 }}>
+          <MemberAccordion members={companyData.company.members} />
+        </Box>
       </Box>
+  
       <Box
         sx={{
           display: "flex",
@@ -221,7 +203,7 @@ const AcceptDeclineCompany = () => {
           flexWrap: "wrap",
         }}
       >
-        {/* Aceptar solicitud */}
+        {/* Botón Aceptar */}
         <Button
           onClick={() => setOpenA(true)}
           variant="contained"
@@ -235,15 +217,16 @@ const AcceptDeclineCompany = () => {
           open={openA}
           setOpen={setOpenA}
           title={"Aceptar"}
-          content={"¿Estas seguro que deseas aceptar esta invitación?"}
+          content={"¿Estás seguro que deseas aceptar esta invitación?"}
           onAccept={handleAccept}
         />
-        {/* Rechazar solicitud */}
+  
+        {/* Botón Rechazar */}
         <Button
           onClick={() => setOpenR(true)}
           variant="outlined"
           disabled={isUpdateLoading}
-          color="transparent"
+          color="secondary"
           sx={{ mb: 2, px: 11, py: 1 }}
         >
           Rechazar
@@ -252,9 +235,10 @@ const AcceptDeclineCompany = () => {
           open={openR}
           setOpen={setOpenR}
           title={"Rechazar"}
-          content={"¿Estas seguro que deseas rechazar esta invitación?"}
+          content={"¿Estás seguro que deseas rechazar esta invitación?"}
           onAccept={handleDecline}
         />
+  
         {/* Modal de confirmación */}
         <Dialog open={openConfirm} onClose={() => setOpenConfirm(false)}>
           <DialogTitle>{"Actualización exitosa"}</DialogTitle>
@@ -269,6 +253,7 @@ const AcceptDeclineCompany = () => {
             </Button>
           </DialogActions>
         </Dialog>
+  
         {/* Snackbar */}
         <Snackbar
           open={snackbar.open}
@@ -280,6 +265,7 @@ const AcceptDeclineCompany = () => {
       </Box>
     </Container>
   );
+  
 };
 
 export default AcceptDeclineCompany;
