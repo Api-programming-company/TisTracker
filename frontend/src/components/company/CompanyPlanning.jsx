@@ -11,12 +11,11 @@ import { usePlanningContext } from "../../context/PlanningContext";
 const CompanyPlanning = () => {
   const { id } = useParams();
   const [open, setOpen] = useState(false);
-  const [milestones, setMilestones] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
-  const context = usePlanningContext();
+  const {milestones,setMilestones} = usePlanningContext();
 
   const [registerPlanning, { data, isSuccess, error, isError, isLoading }] =
     useRegisterPlanningMutation();
@@ -41,39 +40,36 @@ const CompanyPlanning = () => {
     setOpen(false);
   };
 
-  const handleMilestoneChange = (updatedMilestone, milestone_id) => {
-    const updatedMilestones = milestones.map((milestone, index) => {
-      console.log(milestone_id, index);
-      return milestone_id === index ? updatedMilestone : milestone;
-    });
+  // const handleMilestoneChange = (updatedMilestone, milestone_id) => {
+  //   const updatedMilestones = milestones.map((milestone, index) => {
+  //     console.log(milestone_id, index);
+  //     return milestone_id === index ? updatedMilestone : milestone;
+  //   });
 
-    setMilestones(updatedMilestones);
-  };
+  //   setMilestones(updatedMilestones);
+  // };
 
-  const handleAddMilestone = () => {
-    const newMilestone = {
-      name: "Nuevo Hito",
-      start_date: new Date(),
-      end_date: new Date(),
-      deliverables: [],
-    };
+  // const handleAddMilestone = () => {
+  //   const newMilestone = {
+  //     name: "Nuevo Hito",
+  //     start_date: new Date(),
+  //     end_date: new Date(),
+  //     deliverables: [],
+  //   };
 
-    setMilestones((prev) => [...prev, newMilestone]); // Agrega el nuevo hito a la lista temporal
-  };
+  //   setMilestones((prev) => [...prev, newMilestone]); // Agrega el nuevo hito a la lista temporal
+  // };
 
-  const handleDeleteMilestone = (id) => {
-    const updatedMilestones = milestones.filter((e) => e.id !== id);
-    setMilestones(updatedMilestones);
-  };
+  // const handleDeleteMilestone = (id) => {
+  //   const updatedMilestones = milestones.filter((e) => e.id !== id);
+  //   setMilestones(updatedMilestones);
+  // };
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
 
 
-  useEffect(() => {
-    console.log(context);
-  },[context])
 
   return (
     <div className="container">
@@ -88,10 +84,7 @@ const CompanyPlanning = () => {
           milestones.map((milestone, index) => (
             <Milestone
               key={index}
-              milestone_id={index}
               milestone={milestone}
-              onChange={handleMilestoneChange}
-              onDelete={handleDeleteMilestone}
             />
           ))
         ) : (
@@ -101,7 +94,7 @@ const CompanyPlanning = () => {
 
       <Button
         color="primary"
-        onClick={handleAddMilestone}
+        onClick={() => console.log("add milestone")}
         sx={{
           backgroundColor: "transparent",
           "&:hover": {
