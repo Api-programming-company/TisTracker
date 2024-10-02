@@ -6,6 +6,7 @@ import DialogMod from "../DialogMod";
 import { CiCirclePlus } from "react-icons/ci";
 import { useParams } from "react-router-dom";
 import { useRegisterPlanningMutation } from "../../api/planningApi";
+import { usePlanningContext } from "../../context/PlanningContext";
 
 const CompanyPlanning = () => {
   const { id } = useParams();
@@ -14,6 +15,8 @@ const CompanyPlanning = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
+  const context = usePlanningContext();
 
   const [registerPlanning, { data, isSuccess, error, isError, isLoading }] =
     useRegisterPlanningMutation();
@@ -66,6 +69,11 @@ const CompanyPlanning = () => {
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
+
+
+  useEffect(() => {
+    console.log(context);
+  },[context])
 
   return (
     <div className="container">

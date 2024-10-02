@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 import { useParams } from "react-router-dom";
 import CompanyPlanning from "../components/company/CompanyPlanning";
 import { useState } from "react";
+import { PlanningContext, PlanningProvider } from "../context/PlanningContext";
 
 const PlannificationRegister = () => {
   const jsonData = {
@@ -98,10 +99,11 @@ const PlannificationRegister = () => {
     milestones: [],
   });
   return (
-    <CompanyPlanning
+      <CompanyPlanning
       setFormData={setFormData}
       setSendData={setSendData}
     />
+
   );
 };
 

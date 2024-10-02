@@ -1,9 +1,9 @@
 // MilestonesContext.js
 import { createContext, useState,useContext } from 'react';
 
-const MilestonesContext = createContext();
+const PlanningContext = createContext();
 
-const MilestonesProvider = ({ children }) => {
+const PlanningProvider = ({ children }) => {
   const [milestones, setMilestones] = useState([]);
 
   const addMilestone = (milestone) => {
@@ -21,14 +21,15 @@ const MilestonesProvider = ({ children }) => {
   };
 
   return (
-    <MilestonesContext.Provider value={{ milestones, addMilestone, addDelivery }}>
+    <PlanningContext.Provider value={{ milestones, addMilestone, addDelivery,test : "test" }}>
       {children}
-    </MilestonesContext.Provider>
+    </PlanningContext.Provider>
   );
 };
 
 
 const usePlanningContext = () => {
-    return useContext(MilestonesContext);
+    return useContext(PlanningContext);
 }
-export { MilestonesProvider, MilestonesContext, usePlanningContext };
+
+export { PlanningContext, usePlanningContext, PlanningProvider };
