@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import CompanyPlanning from "../components/company/CompanyPlanning";
 import { useState } from "react";
 
+/*************  ✨ Codeium Command 🌟  *************/
 const PlannificationRegister = () => {
   const jsonData = {
     message: "Compañía obtenida correctamente.",
@@ -105,5 +106,6 @@ const PlannificationRegister = () => {
 
   );
 };
+/******  ebf5f106-f119-412d-b0af-5ef643f16dd0  *******/
 
 export default PlannificationRegister;

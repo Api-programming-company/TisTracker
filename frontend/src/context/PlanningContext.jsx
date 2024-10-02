@@ -6,8 +6,8 @@ const PlanningContext = createContext();
 const PlanningProvider = ({ children }) => {
   const [milestones, setMilestones] = useState([]);
 
-  const addMilestone = (milestone) => {
-    setMilestones([...milestones, milestone]);
+  const addMilestone = () => {
+    setMilestones([...milestones, { id: Date.now(), name: '', start_date: '', end_date: '', billing_percentage: 0, deliverables: [] }]);
   };
 
   const handleChangeMilestone = (milestoneId, updatedMilestone) => {
@@ -20,10 +20,10 @@ const PlanningProvider = ({ children }) => {
     setMilestones(updatedMilestones);
   };
 
-  const addDelivery = (milestoneId, delivery) => {
+  const addDeliverable = (milestoneId, deliverable) => {
     const updatedMilestones = milestones.map((milestone) => {
       if (milestone.id === milestoneId) {
-        return { ...milestone, deliveries: [...milestone.deliveries, delivery] };
+        return { ...milestone, deliverables: [...milestone.deliverables, deliverable] };
       }
       return milestone;
     });
@@ -31,7 +31,7 @@ const PlanningProvider = ({ children }) => {
   };
 
   return (
-    <PlanningContext.Provider value={{ milestones, addMilestone, addDelivery,test : "test" }}>
+    <PlanningContext.Provider value={{ milestones, addMilestone, addDeliverable,handleChangeMilestone}}>
       {children}
     </PlanningContext.Provider>
   );

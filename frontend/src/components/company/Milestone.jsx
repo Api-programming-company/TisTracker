@@ -154,7 +154,7 @@ const Milestone = ({ milestone, onChange, onDelete, milestone_id }) => {
             </ListItem>
             <ListItem>
               <List>
-                {milestone.deliverables.length > 0 ? (
+                {milestone.deliverables?.length > 0 ? (
                   milestone.deliverables.map((deliverable,index) => (
                     <Deliverable
                       key={index}
