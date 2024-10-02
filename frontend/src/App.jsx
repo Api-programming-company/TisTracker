@@ -32,6 +32,8 @@ import AcceptDeclineCompany from "./components/company/AcceptDeclineCompany";
 import AcceptDeclineInvitation from "./components/student/AcceptDeclineInvitation";
 import CompanyPlanning from "./components/company/CompanyPlanning";
 
+import "./index.css";
+
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
   const userType = user ? user.user_type : "guest";

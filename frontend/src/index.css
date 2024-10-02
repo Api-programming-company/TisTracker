@@ -1,8 +1,22 @@
+:root{
+  --title-font-family: 'Poppins', sans-serif;
+  --body-font-family: 'Poppins', sans-serif;
+  --green-100: #5CDC79;
+  --neutral-black: #1F2223;
+  --neutral-white: #FFFFFF;
+  --neutral-800:#363939;
+  --neutral-900:#1F2223;
+  --neutral-600:#797A7B;
+  --neutral-300: #D2D3D3;
+  --neutral-200: #EAEAEA;
+  --neutral-100: #F8F8F8;
+  --primary-500: #0B3F69;
+  --primary-300: #2A628F;
+  --primary-100: #6A98BC;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -10,4 +24,63 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+
+
+h1,h2,h3,h4,h5{
+  font-family: var(--title-font-family);
+}
+
+p,a,li,button,input,textarea{
+  font-family: var(--body-font-family);
+}
+
+
+
+/* Standard CSS */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.text-primary-500 {
+  color: var(--primary-500);
+}
+
+.text-primary-300 {
+  color: var(--primary-300);
+}
+
+.text-primary-100 {
+  color: var(--primary-100);
+}
+
+.text-neutral-600 {
+  color: var(--neutral-600);
+}
+
+.text-neutral-300 {
+  color: var(--neutral-300);
+}
+
+.text-neutral-200 {
+  color: var(--neutral-200);
+}
+
+.text-neutral-100 {
+  color: var(--neutral-100);
+}
+
+/* Custom Styles */
+
+.text-neutral-900 {
+  color: var(--neutral-900);
+}
+
+.container {
+  width: 100%;
+  padding : 3rem 5rem;
+  min-height: 100vh;
 }
