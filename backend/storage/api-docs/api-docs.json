@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "API de Empresas",
+        "title": "API de TisTracker",
         "version": "1.0.0"
     },
     "paths": {

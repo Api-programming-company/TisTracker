@@ -10,10 +10,20 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\AcademicPeriod;
 use App\Models\Planning;
 use Illuminate\Support\Facades\Validator;
-
 /**
- * @OA\Info(title="API de Empresas", version="1.0.0")
+ * @OA\Schema(
+ *     schema="Company",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="long_name", type="string", example="Nombre Largo de la Compañía"),
+ *     @OA\Property(property="short_name", type="string", example="Cia"),
+ *     @OA\Property(property="email", type="string", format="email", example="empresa@ejemplo.com"),
+ *     @OA\Property(property="address", type="string", example="Dirección de la Compañía"),
+ *     @OA\Property(property="phone", type="integer", example="12345678"),
+ *     @OA\Property(property="academic_period_id", type="integer", example=1),
+ *     @OA\Property(property="status", type="string", example="C"),
+ * )
  */
+
 class CompanyController extends Controller
 {
     /**
@@ -109,19 +119,6 @@ class CompanyController extends Controller
             ], 500);
         }
     }
-    /**
-     * @OA\Schema(
-     *     schema="Company",
-     *     @OA\Property(property="id", type="integer", example=1),
-     *     @OA\Property(property="long_name", type="string", example="Nombre Largo de la Compañía"),
-     *     @OA\Property(property="short_name", type="string", example="Cia"),
-     *     @OA\Property(property="email", type="string", format="email", example="empresa@ejemplo.com"),
-     *     @OA\Property(property="address", type="string", example="Dirección de la Compañía"),
-     *     @OA\Property(property="phone", type="integer", example="12345678"),
-     *     @OA\Property(property="academic_period_id", type="integer", example=1),
-     *     @OA\Property(property="status", type="string", example="C"),
-     * )
-     */
 
     public function getCompaniesByAcademicPeriod(Request $request)
     {

@@ -85,6 +85,15 @@
    ```sh
    php artisan make:controller NombreDelControlador
    ```
+7. **Crear un API Resource**
+   Usa el siguiente comando para crear un nuevo recurso de API:
+   ```sh
+   php artisan make:resource NombreDelRecurso
+   ```
+8. **Regenerar la Documentación de Swagger**
+   ```sh
+   php artisan l5-swagger:generate
+   ```
 
 # Guía de Instalación para el Frontend
 
