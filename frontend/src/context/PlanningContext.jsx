@@ -11,8 +11,6 @@ const PlanningProvider = ({ children }) => {
   };
 
   const handleChangeMilestone = (milestoneId, updatedMilestone) => {
-    console.log(updatedMilestone,milestoneId);
-    console.log(milestones);
     const updatedMilestones = milestones.map((milestone) => {
       if (milestone.id === milestoneId) {
         return { ...milestone, ...updatedMilestone };
@@ -23,7 +21,6 @@ const PlanningProvider = ({ children }) => {
   };
 
   const deleteMilestone = (milestoneId) => {
-    console.log(milestoneId);
     const updatedMilestones = milestones.filter((milestone) => milestone.id !== milestoneId);
     setMilestones(updatedMilestones);
   };
