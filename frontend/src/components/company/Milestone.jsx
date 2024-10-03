@@ -132,7 +132,7 @@ const Milestone = ({ milestone }) => {
                   milestone.deliverables.map((deliverable,index) => (
                     <Deliverable
                       key={index}
-                      deliverable_id={index}
+                      milestone_id={milestone.id}
                       deliverable={deliverable}
                     />
                   ))

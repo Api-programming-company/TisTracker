@@ -3,35 +3,22 @@ import { Button, ListItem, ListItemText, TextField } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DialogMod from "../DialogMod";
 
-const Deliverable = ({ deliverable, onChange, onDelete ,milestone_id}) => {
+const Deliverable = ({ deliverable,milestone_id}) => {
   const [name, setName] = useState(deliverable.name);
   const [responsible, setResponsible] = useState(deliverable.responsible);
   const [objective, setObjective] = useState(deliverable.objective);
   const [open, setOpen] = useState(false);
 
 
-
-
-  const updateDeliverable = useCallback(() => {
-    onChange({ ...deliverable, name, responsible, objective },milestone_id);
-
-  },[ name, objective, responsible]);
-
-  const handleNameChange = (e) => {
-    setName(e.target.value);
+  const handleChange = (action, payload)  =>{
+    switch (action) {
+      case "handleNameChange":
+        setName(payload);
+        break;
+      default:
+        break;
+    }
   }
-
-  const handleResponsibleChange = (e) => {
-    setResponsible(e.target.value);
-  }
-
-  const handleObjectiveChange = (e) => {
-    setObjective(e.target.value);
-  }
-
-  useEffect(() => {
-    updateDeliverable();
-  }, [updateDeliverable]);
 
   return (
     <ListItem
@@ -44,24 +31,8 @@ const Deliverable = ({ deliverable, onChange, onDelete ,milestone_id}) => {
         <>
           <TextField
             value={name}
-            onChange={handleNameChange}
+            onChange={(e) => handleChange("handleNameChange", e.target.value)}
             label="Nombre"
-            fullWidth
-            multiline
-            sx={{ mr: 2, mb: 2 }}
-          />
-          <TextField
-            value={responsible}
-            onChange={handleResponsibleChange}
-            label="Responsable"
-            fullWidth
-            multiline
-            sx={{ mr: 2, mb: 2 }}
-          />
-          <TextField
-            value={objective}
-            onChange={handleObjectiveChange}
-            label="Objetivo"
             fullWidth
             multiline
             sx={{ mr: 2, mb: 2 }}
@@ -88,7 +59,7 @@ const Deliverable = ({ deliverable, onChange, onDelete ,milestone_id}) => {
             setOpen={setOpen}
             title={"Eliminar hito"}
             content={"¿Está seguro de realizar esta acción?"}
-            onAccept={onDelete}
+            onAccept={() => console.log("Delete")}
             paramsAccept={deliverable.id}
             onCancel={() => setOpen(false)}
           />
