@@ -28,9 +28,9 @@ const PlanningProvider = ({ children }) => {
   const handleChangeMilestone = (milestoneId, updatedMilestone) => {
     const updatedMilestones = milestones.map((milestone) => {
       if (milestone.id === milestoneId) {
-        return { ...milestone, ...updatedMilestone };
+        return { ...milestone, ...updatedMilestone, errors: [] };
       }
-      return milestone;
+      return { ...milestone, errors: [] };
     });
     setMilestones(updatedMilestones);
   };
@@ -97,14 +97,14 @@ const PlanningProvider = ({ children }) => {
   const changeDeliverable = (milestoneId, deliverableId, updatedDeliverable) => {
     const updatedMilestones = milestones.map((milestone) => {
       if (milestone.id === milestoneId) {
-        return { ...milestone, deliverables: milestone.deliverables.map((deliverable) => {
+        return { ...milestone, errors: [],deliverables: milestone.deliverables.map((deliverable) => {
           if (deliverable.id === deliverableId) {
             return { ...deliverable, ...updatedDeliverable };
           }
           return deliverable;
         }) };
       }
-      return milestone;
+      return {...milestone,errors:[]};
     });
     setMilestones(updatedMilestones);
   };
