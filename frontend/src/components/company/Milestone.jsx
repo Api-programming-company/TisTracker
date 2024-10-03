@@ -22,14 +22,7 @@ import { usePlanningContext } from "../../context/PlanningContext";
 
 const Milestone = ({ milestone }) => {
   const [openDeliverables, setOpenDeliverables] = useState(false);
-  const [startDate, setStartDate] = useState(new Date(milestone.start_date));
-  const [endDate, setEndDate] = useState(new Date(milestone.end_date));
-  const [name, setName] = useState(milestone.name);
   const [open, setOpen] = useState(false)
-  const [billingPercentage, setBillingPercentage] = useState(
-    milestone.billing_percentage
-  );
-
   const {handleChangeMilestone,deleteMilestone} = usePlanningContext();
 
   const handleAction = (action, payload) => {
@@ -38,19 +31,15 @@ const Milestone = ({ milestone }) => {
         setOpenDeliverables((prev) => !prev);
         break;
       case "handleNameChange":
-        setName(payload);
         handleChangeMilestone(milestone.id,{name:payload});
         break;
       case "handleStartDateChange":
-        setStartDate(payload);
         handleChangeMilestone(milestone.id,{start_date:payload});
         break;
       case "handleEndDateChange":
-        setEndDate(payload);
         handleChangeMilestone(milestone.id,{end_date:payload});
         break;
       case "handleBillingPercentageChange":
-        setBillingPercentage(payload);
         handleChangeMilestone(milestone.id,{billing_percentage:payload});
         break;
       default:
@@ -66,7 +55,7 @@ const Milestone = ({ milestone }) => {
             
               <Box sx={{ display: "flex", gap: 2 }}>
                 <TextField
-                  value={name}
+                  value={milestone.name}
                   onChange={(e) => handleAction("handleNameChange", e.target.value)}
                   fullWidth
                 />
@@ -109,14 +98,14 @@ const Milestone = ({ milestone }) => {
             <ListItem>
               <DatePicker
                 label="Fecha de inicio"
-                value={startDate}
+                value={milestone.startDate}
                 onChange={(e) => handleAction("handleStartDateChange", e)}
                 renderInput={(params) => <TextField {...params} />}
                 sx={{ mr: 2 }}
               />
               <DatePicker
                 label="Fecha de fin"
-                value={endDate}
+                value={milestone.endDate}
                 onChange={(e) => handleAction("handleEndDateChange", e)}
                 renderInput={(params) => <TextField {...params} />}
               />
@@ -125,7 +114,7 @@ const Milestone = ({ milestone }) => {
               
                 <TextField
                   label="Porcentaje de facturación"
-                  value={billingPercentage}
+                  value={milestone.billingPercentage}
                   onChange={(e) =>
                     handleAction("handleBillingPercentageChange", e.target.value)
                   }
