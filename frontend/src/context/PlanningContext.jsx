@@ -62,11 +62,24 @@ const PlanningProvider = ({ children }) => {
         if (milestone.end_date <= milestone.start_date) errors.push({ errorArea: "end_date", message: "La fecha de fin debe ser mayor que la fecha de inicio" });
       }
       if (!milestone.billing_percentage) errors.push({ errorArea: "billing_percentage", message: "El porcentaje de facturacion es requerido" });
-      if(milestone.deliverables.length < 1) errors.push({ errorArea: "deliverables", message: "Se requiere al menos un entregable" });
+      if(milestone.deliverables.length < 1) {
+        errors.push({ errorArea: "deliverables", message: "Se requiere al menos un entregable" });
+      }else{
+        const deliverableNames = milestone.deliverables.map((deliverable) => deliverable.name);
+        if (deliverableNames.length !== new Set(deliverableNames).size) {
+          errors.push({ errorArea: "deliverables", message: "Los nombres de los entregables deben ser únicos" });
+        }
+        milestone.deliverables.forEach((deliverable) => {
+          if (!deliverable.name) errors.push({ errorArea: "deliverables", message: "El nombre de cada entregable es requerido" });
+          else if (deliverable.name.length < 4 || deliverable.name.length > 32) {
+            errors.push({ errorArea: "deliverables", message: "El nombre de cada entregable debe tener entre 4 y 32 caracteres" });
+          }
+        });
+      }
+      
       if (errors.length > 0) {
         isError = true;
         return { ...milestone, errors: errors };
-        
       }
       return milestone;
 
