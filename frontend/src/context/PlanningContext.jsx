@@ -35,6 +35,21 @@ const PlanningProvider = ({ children }) => {
     setMilestones(updatedMilestones);
   };
 
+  const changeDeliverable = (milestoneId, deliverableId, updatedDeliverable) => {
+    const updatedMilestones = milestones.map((milestone) => {
+      if (milestone.id === milestoneId) {
+        return { ...milestone, deliverables: milestone.deliverables.map((deliverable) => {
+          if (deliverable.id === deliverableId) {
+            return { ...deliverable, ...updatedDeliverable };
+          }
+          return deliverable;
+        }) };
+      }
+      return milestone;
+    });
+    setMilestones(updatedMilestones);
+  };
+
   return (
     <PlanningContext.Provider value={{ milestones, addMilestone, addDeliverable,handleChangeMilestone,deleteMilestone}}>
       {children}

@@ -5,10 +5,9 @@ import DialogMod from "../DialogMod";
 
 const Deliverable = ({ deliverable,milestone_id}) => {
   const [name, setName] = useState(deliverable.name);
-  const [responsible, setResponsible] = useState(deliverable.responsible);
-  const [objective, setObjective] = useState(deliverable.objective);
   const [open, setOpen] = useState(false);
 
+  
 
   const handleChange = (action, payload)  =>{
     switch (action) {
