@@ -41,30 +41,7 @@ const CompanyPlanning = () => {
     setOpen(false);
   };
 
-  // const handleMilestoneChange = (updatedMilestone, milestone_id) => {
-  //   const updatedMilestones = milestones.map((milestone, index) => {
-  //     console.log(milestone_id, index);
-  //     return milestone_id === index ? updatedMilestone : milestone;
-  //   });
 
-  //   setMilestones(updatedMilestones);
-  // };
-
-  // const handleAddMilestone = () => {
-  //   const newMilestone = {
-  //     name: "Nuevo Hito",
-  //     start_date: new Date(),
-  //     end_date: new Date(),
-  //     deliverables: [],
-  //   };
-
-  //   setMilestones((prev) => [...prev, newMilestone]); // Agrega el nuevo hito a la lista temporal
-  // };
-
-  // const handleDeleteMilestone = (id) => {
-  //   const updatedMilestones = milestones.filter((e) => e.id !== id);
-  //   setMilestones(updatedMilestones);
-  // };
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
