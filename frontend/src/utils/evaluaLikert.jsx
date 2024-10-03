@@ -13,7 +13,6 @@ export const evalua = (lista) => {
         }
         finalGrade += temp
     }
-    console.log(finalGrade)
     return finalGrade
 };
 
