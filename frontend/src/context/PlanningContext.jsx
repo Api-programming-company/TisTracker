@@ -7,10 +7,25 @@ const PlanningProvider = ({ children }) => {
   const [milestones, setMilestones] = useState([]);
 
   const addMilestone = () => {
-    setMilestones([...milestones, { id: Date.now(), name: '', start_date: '', end_date: '', billing_percentage: 0, deliverables: [] }]);
+    setMilestones([...milestones, { id: Date.now(), 
+      name: '', 
+      start_date: '', 
+      end_date: '', 
+      billing_percentage: 0, 
+      deliverables: [], 
+      errors: [] }]);
+  };
+
+  //errors Format : {milestoneId: [{errorArea: 'error message'}]}, Ojala usaramos typescript
+
+  const changeMilestones = (updatedMilestones) => {
+    updatedMilestones.map((milestone) => {
+      return handleChangeMilestone(milestone.id, milestone);
+    })
   };
 
   const handleChangeMilestone = (milestoneId, updatedMilestone) => {
+    console.log(milestones);
     const updatedMilestones = milestones.map((milestone) => {
       if (milestone.id === milestoneId) {
         return { ...milestone, ...updatedMilestone };
@@ -67,7 +82,8 @@ const PlanningProvider = ({ children }) => {
                                       handleChangeMilestone,
                                       deleteMilestone,
                                       changeDeliverable,
-                                      deleteDeliverable
+                                      deleteDeliverable,
+                                      changeMilestones
                                       }}>
       {children}
     </PlanningContext.Provider>
