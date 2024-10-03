@@ -5,6 +5,10 @@ const autoevaluacion = () => {
   // seguramente lo que viene del back tiene mas cosas pero tendrá una lista con las preguntas
   // a medida de que responda se añade el answer a cada objeto
   // al finalizar la evaluacion ejecutar la funcion evaluate pasandole la lista
+  // para answer en likert: 2 --> Si = 1, No = 0
+  // para answer en likert: 3 --> Bajo = 1, Medio = 2, Alto = 3
+  // para answer en likert: 5 --> Muy malo = 1, Malo = 2, Regular = 3, Bueno = 4, Muy bueno = 5
+  // al final queda [{question:'', likert: 2||3||5, answer: 0||1||2||3||4||5}, {...}, {...}]
   const ejemplo = [
     {
       question:
