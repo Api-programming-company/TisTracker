@@ -43,8 +43,9 @@ const Login = () => {
       console.log("logeado supuestamente", data);
       if (data.user) {
         setUser(data.user);
+        navigate("/");
       }
-      navigate("/");
+      
     }
 
     if (isError) {
