@@ -80,7 +80,10 @@ const Milestone = ({ milestone }) => {
                   setOpen={setOpen}
                   title={"Eliminar hito"}
                   content={"¿Está seguro de realizar esta acción?"}
-                  onAccept={() => deleteMilestone(milestone.id)}
+                  onAccept={() => {
+                    setOpen(false)
+                    deleteMilestone(milestone.id)
+                  }}
                   
                   onCancel={() => setOpen(false)}
                 />
