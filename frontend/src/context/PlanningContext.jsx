@@ -25,10 +25,10 @@ const PlanningProvider = ({ children }) => {
     setMilestones(updatedMilestones);
   };
 
-  const addDeliverable = (milestoneId, deliverable) => {
+  const addDeliverable = (milestoneId) => {
     const updatedMilestones = milestones.map((milestone) => {
       if (milestone.id === milestoneId) {
-        return { ...milestone, deliverables: [...milestone.deliverables, deliverable] };
+        return { ...milestone, deliverables: [...milestone.deliverables,{ id: Date.now(), name: ''}] };
       }
       return milestone;
     });

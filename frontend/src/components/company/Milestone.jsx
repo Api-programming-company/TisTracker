@@ -23,7 +23,7 @@ import { usePlanningContext } from "../../context/PlanningContext";
 const Milestone = ({ milestone }) => {
   const [openDeliverables, setOpenDeliverables] = useState(false);
   const [open, setOpen] = useState(false)
-  const {handleChangeMilestone,deleteMilestone} = usePlanningContext();
+  const {handleChangeMilestone,deleteMilestone,addDeliverable} = usePlanningContext();
 
   const handleAction = (action, payload) => {
     switch (action) {
@@ -146,7 +146,7 @@ const Milestone = ({ milestone }) => {
             >
               
                 <Button
-                  onClick={() => handleAction("handleAddDeliverable")}
+                  onClick={() => addDeliverable(milestone.id)}
                   sx={{
                     backgroundColor: "primary.main",
                     color: "white",
