@@ -2,36 +2,21 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Button, ListItem, ListItemText, TextField } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DialogMod from "../DialogMod";
+import { usePlanningContext } from "../../context/PlanningContext";
 
-const Deliverable = ({ deliverable, onChange, onDelete ,milestone_id}) => {
-  const [name, setName] = useState(deliverable.name);
-  const [responsible, setResponsible] = useState(deliverable.responsible);
-  const [objective, setObjective] = useState(deliverable.objective);
+const Deliverable = ({ deliverable,milestone_id}) => {
   const [open, setOpen] = useState(false);
+  const {changeDeliverable,deleteDeliverable} = usePlanningContext();
 
-
-
-
-  const updateDeliverable = useCallback(() => {
-    onChange({ ...deliverable, name, responsible, objective },milestone_id);
-
-  },[ name, objective, responsible]);
-
-  const handleNameChange = (e) => {
-    setName(e.target.value);
+  const handleChange = (action, payload)  =>{
+    switch (action) {
+      case "handleNameChange":
+        changeDeliverable(milestone_id, deliverable.id, { name: payload });
+        break;
+      default:
+        break;
+    }
   }
-
-  const handleResponsibleChange = (e) => {
-    setResponsible(e.target.value);
-  }
-
-  const handleObjectiveChange = (e) => {
-    setObjective(e.target.value);
-  }
-
-  useEffect(() => {
-    updateDeliverable();
-  }, [updateDeliverable]);
 
   return (
     <ListItem
@@ -43,25 +28,9 @@ const Deliverable = ({ deliverable, onChange, onDelete ,milestone_id}) => {
       
         <>
           <TextField
-            value={name}
-            onChange={handleNameChange}
+            value={deliverable.name}
+            onChange={(e) => handleChange("handleNameChange", e.target.value)}
             label="Nombre"
-            fullWidth
-            multiline
-            sx={{ mr: 2, mb: 2 }}
-          />
-          <TextField
-            value={responsible}
-            onChange={handleResponsibleChange}
-            label="Responsable"
-            fullWidth
-            multiline
-            sx={{ mr: 2, mb: 2 }}
-          />
-          <TextField
-            value={objective}
-            onChange={handleObjectiveChange}
-            label="Objetivo"
             fullWidth
             multiline
             sx={{ mr: 2, mb: 2 }}
@@ -86,9 +55,12 @@ const Deliverable = ({ deliverable, onChange, onDelete ,milestone_id}) => {
           <DialogMod
             open={open}
             setOpen={setOpen}
-            title={"Eliminar hito"}
+            title={"Eliminar entregable \"" + deliverable.name + "\""}
             content={"¿Está seguro de realizar esta acción?"}
-            onAccept={onDelete}
+            onAccept={() => {
+              setOpen(false);
+              deleteDeliverable(milestone_id, deliverable.id)
+            }}
             paramsAccept={deliverable.id}
             onCancel={() => setOpen(false)}
           />

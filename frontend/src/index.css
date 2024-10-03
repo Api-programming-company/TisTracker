@@ -14,6 +14,8 @@
   --primary-500: #0B3F69;
   --primary-300: #2A628F;
   --primary-100: #6A98BC;
+  --red-300: #f48fb1;
+  --red-500: #D32F2F;
 }
 
 body {
@@ -82,6 +84,20 @@ p,a,li,button,input,textarea{
 
 .text-neutral-900 {
   color: var(--neutral-900);
+}
+
+.text-red-500 {
+  color: var(--red-500);
+}
+.text-red-300 {
+  color: var(--red-300);
+}
+
+
+/* Font Sizes */
+
+.text-sm{ 
+  font-size: 11.5px;
 }
 
 .container {

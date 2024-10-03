@@ -20,37 +20,32 @@ import DialogMod from "../DialogMod";
 import { id } from "date-fns/locale";
 import { usePlanningContext } from "../../context/PlanningContext";
 
-const Milestone = ({ milestone, onDelete, milestone_id }) => {
+const Milestone = ({ milestone }) => {
   const [openDeliverables, setOpenDeliverables] = useState(false);
-  const [startDate, setStartDate] = useState(new Date(milestone.start_date));
-  const [endDate, setEndDate] = useState(new Date(milestone.end_date));
-  const [name, setName] = useState(milestone.name);
   const [open, setOpen] = useState(false)
-  const [billingPercentage, setBillingPercentage] = useState(
-    milestone.billing_percentage
-  );
+  const {handleChangeMilestone,deleteMilestone,addDeliverable} = usePlanningContext();
 
-  const {handleChangeMilestone} = usePlanningContext();
-
+  const findError = (name) => {
+    console.log(milestone.errors);
+    console.log(name);
+    const error = milestone.errors.find((error) => error.errorArea === name);
+    return error?.message;
+  };
   const handleAction = (action, payload) => {
     switch (action) {
       case "handleToggle":
         setOpenDeliverables((prev) => !prev);
         break;
       case "handleNameChange":
-        setName(payload);
         handleChangeMilestone(milestone.id,{name:payload});
         break;
       case "handleStartDateChange":
-        setStartDate(payload);
         handleChangeMilestone(milestone.id,{start_date:payload});
         break;
       case "handleEndDateChange":
-        setEndDate(payload);
         handleChangeMilestone(milestone.id,{end_date:payload});
         break;
       case "handleBillingPercentageChange":
-        setBillingPercentage(payload);
         handleChangeMilestone(milestone.id,{billing_percentage:payload});
         break;
       default:
@@ -66,9 +61,11 @@ const Milestone = ({ milestone, onDelete, milestone_id }) => {
             
               <Box sx={{ display: "flex", gap: 2 }}>
                 <TextField
-                  value={name}
+                  value={milestone.name}
                   onChange={(e) => handleAction("handleNameChange", e.target.value)}
                   fullWidth
+                  error={Boolean(findError("name"))}
+                  helperText={findError("name")}
                 />
                 <Button
                   variant="outlined"
@@ -83,7 +80,7 @@ const Milestone = ({ milestone, onDelete, milestone_id }) => {
                     mb: 2,
                   }}
                   startIcon={<DeleteIcon />}
-                  onClick={()=>handleAction("handleDeleteDeliverable",milestone.id)}
+                  onClick={()=> setOpen(true)}
                 >
                 </Button>
                 <DialogMod
@@ -91,8 +88,11 @@ const Milestone = ({ milestone, onDelete, milestone_id }) => {
                   setOpen={setOpen}
                   title={"Eliminar hito"}
                   content={"¿Está seguro de realizar esta acción?"}
-                  onAccept={onDelete}
-                  paramsAccept={milestone.id}
+                  onAccept={() => {
+                    setOpen(false)
+                    deleteMilestone(milestone.id)
+                  }}
+                  
                   onCancel={() => setOpen(false)}
                 />
               </Box>
@@ -107,30 +107,42 @@ const Milestone = ({ milestone, onDelete, milestone_id }) => {
         <List component="div" disablePadding>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <ListItem>
+              <div className="date-item">
               <DatePicker
                 label="Fecha de inicio"
-                value={startDate}
+                value={milestone.start_date}
                 onChange={(e) => handleAction("handleStartDateChange", e)}
-                renderInput={(params) => <TextField {...params} />}
+                renderInput={(params) => <TextField {...params} error={Boolean(findError("start_date"))} helperText={findError("start_date")} />}
                 sx={{ mr: 2 }}
               />
+              {findError("start_date") && <p className="text-red-300 text-sm">{findError("start_date")}</p>}
+              </div>
+             
+              <div className="date-item">
               <DatePicker
                 label="Fecha de fin"
-                value={endDate}
+                value={milestone.end_date}
                 onChange={(e) => handleAction("handleEndDateChange", e)}
-                renderInput={(params) => <TextField {...params} />}
+                renderInput={(params) => <TextField {...params}  error={Boolean(findError("end_date"))} helperText={findError("end_date")}/>}
+                
               />
+               {findError("end_date") && <p className="text-red-300 text-sm">{findError("end_date")}</p>}
+
+              </div>
+              
             </ListItem>
             <ListItem>
               
                 <TextField
                   label="Porcentaje de facturación"
-                  value={billingPercentage}
+                  value={milestone.billingPercentage}
                   onChange={(e) =>
                     handleAction("handleBillingPercentageChange", e.target.value)
                   }
                   type="number"
                   fullWidth
+                  error={Boolean(findError("billing_percentage"))}
+                  helperText={findError("billing_percentage")}
                 />
             
             </ListItem>
@@ -140,14 +152,18 @@ const Milestone = ({ milestone, onDelete, milestone_id }) => {
                   milestone.deliverables.map((deliverable,index) => (
                     <Deliverable
                       key={index}
-                      milestone_id={milestone_id}
-                      deliverable_id={index}
+                      milestone_id={milestone.id}
                       deliverable={deliverable}
                     />
                   ))
                 ) : (
-                  <p className="text-neutral-500">No hay entregables asignados.</p>
+                  <p className="text-neutral-500">
+                    No hay entregables asignados</p>
                 )}
+                {Boolean(findError("deliverables")) &&
+                <p className="text-red-300 text-sm">{findError("deliverables")}</p>
+                    
+                    }
               </List>
             </ListItem>
             <ListItem
@@ -155,7 +171,7 @@ const Milestone = ({ milestone, onDelete, milestone_id }) => {
             >
               
                 <Button
-                  onClick={() => handleAction("handleAddDeliverable")}
+                  onClick={() => addDeliverable(milestone.id)}
                   sx={{
                     backgroundColor: "primary.main",
                     color: "white",
