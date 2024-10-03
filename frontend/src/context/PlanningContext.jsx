@@ -61,7 +61,12 @@ const PlanningProvider = ({ children }) => {
       }else{
         if (milestone.end_date <= milestone.start_date) errors.push({ errorArea: "end_date", message: "La fecha de fin debe ser mayor que la fecha de inicio" });
       }
-      if (!milestone.billing_percentage) errors.push({ errorArea: "billing_percentage", message: "El porcentaje de facturacion es requerido" });
+      if (!milestone.billing_percentage){
+        errors.push({ errorArea: "billing_percentage", message: "El porcentaje de facturacion es requerido" });
+      } else{
+        if (milestone.billing_percentage < 0 || milestone.billing_percentage > 100) errors.push({ errorArea: "billing_percentage", message: "El porcentaje de facturacion debe estar entre 0 y 100" });
+      }
+      
       if(milestone.deliverables.length < 1) {
         errors.push({ errorArea: "deliverables", message: "Se requiere al menos un entregable" });
       }else{
