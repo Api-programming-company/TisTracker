@@ -2,17 +2,16 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Button, ListItem, ListItemText, TextField } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DialogMod from "../DialogMod";
+import { usePlanningContext } from "../../context/PlanningContext";
 
 const Deliverable = ({ deliverable,milestone_id}) => {
-  const [name, setName] = useState(deliverable.name);
   const [open, setOpen] = useState(false);
-
-  
+  const {changeDeliverable} = usePlanningContext();
 
   const handleChange = (action, payload)  =>{
     switch (action) {
       case "handleNameChange":
-        setName(payload);
+        changeDeliverable(milestone_id, deliverable.id, { name: payload });
         break;
       default:
         break;
@@ -29,7 +28,7 @@ const Deliverable = ({ deliverable,milestone_id}) => {
       
         <>
           <TextField
-            value={name}
+            value={deliverable.name}
             onChange={(e) => handleChange("handleNameChange", e.target.value)}
             label="Nombre"
             fullWidth
@@ -56,7 +55,7 @@ const Deliverable = ({ deliverable,milestone_id}) => {
           <DialogMod
             open={open}
             setOpen={setOpen}
-            title={"Eliminar hito"}
+            title={"Eliminar entregable \"" + deliverable.name + "\""}
             content={"¿Está seguro de realizar esta acción?"}
             onAccept={() => console.log("Delete")}
             paramsAccept={deliverable.id}

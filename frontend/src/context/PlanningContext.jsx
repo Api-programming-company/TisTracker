@@ -51,7 +51,7 @@ const PlanningProvider = ({ children }) => {
   };
 
   return (
-    <PlanningContext.Provider value={{ milestones, addMilestone, addDeliverable,handleChangeMilestone,deleteMilestone}}>
+    <PlanningContext.Provider value={{ milestones, addMilestone, addDeliverable,handleChangeMilestone,deleteMilestone,changeDeliverable}}>
       {children}
     </PlanningContext.Provider>
   );
