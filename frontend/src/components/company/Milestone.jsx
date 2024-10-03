@@ -123,8 +123,8 @@ const Milestone = ({ milestone }) => {
                 label="Fecha de fin"
                 value={milestone.end_date}
                 onChange={(e) => handleAction("handleEndDateChange", e)}
-                renderInput={(params) => <TextField {...params}  />}
-                error={Boolean(findError("end_date"))} helperText={findError("end_date")}
+                renderInput={(params) => <TextField {...params}  error={Boolean(findError("end_date"))} helperText={findError("end_date")}/>}
+                
               />
                {findError("end_date") && <p className="text-red-300 text-sm">{findError("end_date")}</p>}
 
@@ -157,8 +157,13 @@ const Milestone = ({ milestone }) => {
                     />
                   ))
                 ) : (
-                  <p className="text-neutral-500">No hay entregables asignados.</p>
+                  <p className="text-neutral-500">
+                    No hay entregables asignados</p>
                 )}
+                {Boolean(findError("deliverables")) &&
+                <p className="text-red-300 text-sm">{findError("deliverables")}</p>
+                    
+                    }
               </List>
             </ListItem>
             <ListItem

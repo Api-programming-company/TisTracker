@@ -62,9 +62,9 @@ const PlanningProvider = ({ children }) => {
         if (milestone.end_date <= milestone.start_date) errors.push({ errorArea: "end_date", message: "La fecha de fin debe ser mayor que la fecha de inicio" });
       }
       if (!milestone.billing_percentage) errors.push({ errorArea: "billing_percentage", message: "El porcentaje de facturacion es requerido" });
+      if(milestone.deliverables.length < 1) errors.push({ errorArea: "deliverables", message: "Se requiere al menos un entregable" });
       if (errors.length > 0) {
         isError = true;
-        console.log(errors);
         return { ...milestone, errors: errors };
         
       }
