@@ -1,4 +1,5 @@
 // MilestonesContext.js
+import { is } from 'date-fns/locale';
 import { createContext, useState,useContext } from 'react';
 
 const PlanningContext = createContext();
@@ -25,7 +26,6 @@ const PlanningProvider = ({ children }) => {
   };
 
   const handleChangeMilestone = (milestoneId, updatedMilestone) => {
-    console.log(milestones);
     const updatedMilestones = milestones.map((milestone) => {
       if (milestone.id === milestoneId) {
         return { ...milestone, ...updatedMilestone };
@@ -49,6 +49,28 @@ const PlanningProvider = ({ children }) => {
     });
     setMilestones(updatedMilestones);
   };
+
+  const checkErrors = () => {
+    let isError = false;
+    const updatedMilestones = milestones.map((milestone) => {
+      const errors = [];
+      if (!milestone.name) errors.push({ errorArea: "name", message: "El nombre del milestone es requerido" });
+      if (!milestone.start_date) errors.push({ errorArea: "start_date", message: "La fecha de inicio es requerida" });
+      if (!milestone.end_date) errors.push({ errorArea: "end_date", message: "La fecha de fin es requerida" });
+      if (!milestone.billing_percentage) errors.push({ errorArea: "billing_percentage", message: "El porcentaje de facturacion es requerido" });
+      if (errors.length > 0) {
+        isError = true;
+        console.log(errors);
+        return { ...milestone, errors: errors };
+        
+      }
+      return milestone;
+
+    });
+    setMilestones(updatedMilestones);
+    return isError;
+  };
+
 
   const changeDeliverable = (milestoneId, deliverableId, updatedDeliverable) => {
     const updatedMilestones = milestones.map((milestone) => {
@@ -83,7 +105,8 @@ const PlanningProvider = ({ children }) => {
                                       deleteMilestone,
                                       changeDeliverable,
                                       deleteDeliverable,
-                                      changeMilestones
+                                      changeMilestones,
+                                      checkErrors
                                       }}>
       {children}
     </PlanningContext.Provider>

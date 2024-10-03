@@ -25,6 +25,12 @@ const Milestone = ({ milestone }) => {
   const [open, setOpen] = useState(false)
   const {handleChangeMilestone,deleteMilestone,addDeliverable} = usePlanningContext();
 
+  const findError = (name) => {
+    console.log(milestone.errors);
+    console.log(name);
+    const error = milestone.errors.find((error) => error.errorArea === name);
+    return error?.message;
+  };
   const handleAction = (action, payload) => {
     switch (action) {
       case "handleToggle":
@@ -58,6 +64,8 @@ const Milestone = ({ milestone }) => {
                   value={milestone.name}
                   onChange={(e) => handleAction("handleNameChange", e.target.value)}
                   fullWidth
+                  error={Boolean(findError("name"))}
+                  helperText={findError("name")}
                 />
                 <Button
                   variant="outlined"
@@ -99,19 +107,29 @@ const Milestone = ({ milestone }) => {
         <List component="div" disablePadding>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <ListItem>
+              <div className="date-item">
               <DatePicker
                 label="Fecha de inicio"
-                value={milestone.startDate}
+                value={milestone.start_date}
                 onChange={(e) => handleAction("handleStartDateChange", e)}
-                renderInput={(params) => <TextField {...params} />}
+                renderInput={(params) => <TextField {...params} error={Boolean(findError("start_date"))} helperText={findError("start_date")} />}
                 sx={{ mr: 2 }}
               />
+              {findError("start_date") && <p className="text-red-500 text-sm">{findError("start_date")}</p>}
+              </div>
+             
+              <div className="date-item">
               <DatePicker
                 label="Fecha de fin"
-                value={milestone.endDate}
+                value={milestone.end_date}
                 onChange={(e) => handleAction("handleEndDateChange", e)}
-                renderInput={(params) => <TextField {...params} />}
+                renderInput={(params) => <TextField {...params}  />}
+                error={Boolean(findError("end_date"))} helperText={findError("end_date")}
               />
+               {findError("end_date") && <p className="text-red-500 text-sm">{findError("end_date")}</p>}
+
+              </div>
+              
             </ListItem>
             <ListItem>
               
@@ -123,6 +141,8 @@ const Milestone = ({ milestone }) => {
                   }
                   type="number"
                   fullWidth
+                  error={Boolean(findError("billing_percentage"))}
+                  helperText={findError("billing_percentage")}
                 />
             
             </ListItem>

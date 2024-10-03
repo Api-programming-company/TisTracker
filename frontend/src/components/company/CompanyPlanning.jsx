@@ -15,7 +15,7 @@ const CompanyPlanning = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
-  const {milestones,setMilestones,addMilestone,changeMilestones} = usePlanningContext();
+  const {milestones,setMilestones,addMilestone,changeMilestones,checkErrors} = usePlanningContext();
 
   const [registerPlanning, { data, isSuccess, error, isError, isLoading }] =
     useRegisterPlanningMutation();
@@ -36,20 +36,7 @@ const CompanyPlanning = () => {
 
   const handleConfirm = () => {
     const form = { name: "planning", company_id: id, milestones: milestones };
-    const milestonesWithErrors = milestones.map((milestone) => {
-      const errors = [];
-      if (!milestone.name) errors.push({ errorArea: "name", message: "El nombre del milestone es requerido" });
-      if (!milestone.start_date) errors.push({ errorArea: "start_date", message: "La fecha de inicio es requerida" });
-      if (!milestone.end_date) errors.push({ errorArea: "end_date", message: "La fecha de fin es requerida" });
-      if (!milestone.billing_percentage) errors.push({ errorArea: "billing_percentage", message: "El porcentaje de facturacion es requerido" });
-      return {id : milestone.id, errors: errors };
-    });
-
-    const milestonesWithErrors2 = milestonesWithErrors.filter((milestone) => milestone.errors.length > 0);
-
-    if (milestonesWithErrors2.length > 0) {
-      changeMilestones(milestonesWithErrors2);
-    } else {
+    if (!checkErrors()) {
       registerPlanning(form);
       setOpen(false);
     }
