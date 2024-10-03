@@ -54,9 +54,13 @@ const PlanningProvider = ({ children }) => {
     let isError = false;
     const updatedMilestones = milestones.map((milestone) => {
       const errors = [];
-      if (!milestone.name) errors.push({ errorArea: "name", message: "El nombre del milestone es requerido" });
+      if (!milestone.name) errors.push({ errorArea: "name", message: "El nombre del hito es requerido" });
       if (!milestone.start_date) errors.push({ errorArea: "start_date", message: "La fecha de inicio es requerida" });
-      if (!milestone.end_date) errors.push({ errorArea: "end_date", message: "La fecha de fin es requerida" });
+      if (!milestone.end_date) {
+        errors.push({ errorArea: "end_date", message: "La fecha de fin es requerida" });
+      }else{
+        if (milestone.end_date <= milestone.start_date) errors.push({ errorArea: "end_date", message: "La fecha de fin debe ser mayor que la fecha de inicio" });
+      }
       if (!milestone.billing_percentage) errors.push({ errorArea: "billing_percentage", message: "El porcentaje de facturacion es requerido" });
       if (errors.length > 0) {
         isError = true;

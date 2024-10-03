@@ -115,7 +115,7 @@ const Milestone = ({ milestone }) => {
                 renderInput={(params) => <TextField {...params} error={Boolean(findError("start_date"))} helperText={findError("start_date")} />}
                 sx={{ mr: 2 }}
               />
-              {findError("start_date") && <p className="text-red-500 text-sm">{findError("start_date")}</p>}
+              {findError("start_date") && <p className="text-red-300 text-sm">{findError("start_date")}</p>}
               </div>
              
               <div className="date-item">
@@ -126,7 +126,7 @@ const Milestone = ({ milestone }) => {
                 renderInput={(params) => <TextField {...params}  />}
                 error={Boolean(findError("end_date"))} helperText={findError("end_date")}
               />
-               {findError("end_date") && <p className="text-red-500 text-sm">{findError("end_date")}</p>}
+               {findError("end_date") && <p className="text-red-300 text-sm">{findError("end_date")}</p>}
 
               </div>
               
