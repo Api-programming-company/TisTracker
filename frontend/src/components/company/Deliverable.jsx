@@ -6,7 +6,7 @@ import { usePlanningContext } from "../../context/PlanningContext";
 
 const Deliverable = ({ deliverable,milestone_id}) => {
   const [open, setOpen] = useState(false);
-  const {changeDeliverable} = usePlanningContext();
+  const {changeDeliverable,deleteDeliverable} = usePlanningContext();
 
   const handleChange = (action, payload)  =>{
     switch (action) {
@@ -57,7 +57,10 @@ const Deliverable = ({ deliverable,milestone_id}) => {
             setOpen={setOpen}
             title={"Eliminar entregable \"" + deliverable.name + "\""}
             content={"¿Está seguro de realizar esta acción?"}
-            onAccept={() => console.log("Delete")}
+            onAccept={() => {
+              setOpen(false);
+              deleteDeliverable(milestone_id, deliverable.id)
+            }}
             paramsAccept={deliverable.id}
             onCancel={() => setOpen(false)}
           />
