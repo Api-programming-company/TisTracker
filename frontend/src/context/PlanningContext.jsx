@@ -21,6 +21,11 @@ const PlanningProvider = ({ children }) => {
     setMilestones(updatedMilestones);
   };
 
+  const deleteMilestone = (milestoneId) => {
+    const updatedMilestones = milestones.filter((milestone) => milestone.id !== milestoneId);
+    setMilestones(updatedMilestones);
+  };
+
   const addDeliverable = (milestoneId, deliverable) => {
     const updatedMilestones = milestones.map((milestone) => {
       if (milestone.id === milestoneId) {
@@ -32,7 +37,7 @@ const PlanningProvider = ({ children }) => {
   };
 
   return (
-    <PlanningContext.Provider value={{ milestones, addMilestone, addDeliverable,handleChangeMilestone}}>
+    <PlanningContext.Provider value={{ milestones, addMilestone, addDeliverable,handleChangeMilestone,deleteMilestone}}>
       {children}
     </PlanningContext.Provider>
   );

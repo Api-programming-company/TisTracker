@@ -20,7 +20,7 @@ import DialogMod from "../DialogMod";
 import { id } from "date-fns/locale";
 import { usePlanningContext } from "../../context/PlanningContext";
 
-const Milestone = ({ milestone, onDelete, milestone_id }) => {
+const Milestone = ({ milestone }) => {
   const [openDeliverables, setOpenDeliverables] = useState(false);
   const [startDate, setStartDate] = useState(new Date(milestone.start_date));
   const [endDate, setEndDate] = useState(new Date(milestone.end_date));
@@ -30,7 +30,7 @@ const Milestone = ({ milestone, onDelete, milestone_id }) => {
     milestone.billing_percentage
   );
 
-  const {handleChangeMilestone} = usePlanningContext();
+  const {handleChangeMilestone,deleteMilestone} = usePlanningContext();
 
   const handleAction = (action, payload) => {
     switch (action) {
@@ -83,7 +83,7 @@ const Milestone = ({ milestone, onDelete, milestone_id }) => {
                     mb: 2,
                   }}
                   startIcon={<DeleteIcon />}
-                  onClick={()=>handleAction("handleDeleteDeliverable",milestone.id)}
+                  onClick={()=> setOpen(true)}
                 >
                 </Button>
                 <DialogMod
@@ -91,8 +91,8 @@ const Milestone = ({ milestone, onDelete, milestone_id }) => {
                   setOpen={setOpen}
                   title={"Eliminar hito"}
                   content={"¿Está seguro de realizar esta acción?"}
-                  onAccept={onDelete}
-                  paramsAccept={milestone.id}
+                  onAccept={() => deleteMilestone(milestone.id)}
+                  
                   onCancel={() => setOpen(false)}
                 />
               </Box>
@@ -140,7 +140,6 @@ const Milestone = ({ milestone, onDelete, milestone_id }) => {
                   milestone.deliverables.map((deliverable,index) => (
                     <Deliverable
                       key={index}
-                      milestone_id={milestone_id}
                       deliverable_id={index}
                       deliverable={deliverable}
                     />
