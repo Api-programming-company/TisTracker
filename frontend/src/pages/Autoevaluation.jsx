@@ -1,6 +1,14 @@
 import React from "react";
 import { evaluate } from "../utils/evaluaLikert";
-import { Box, Container, Divider, Grid, Grid2, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Divider,
+  Grid,
+  Grid2,
+  Typography,
+} from "@mui/material";
 import Question from "../components/evaluation/Question";
 import Likert2 from "../components/evaluation/Likert2";
 import Likert3 from "../components/evaluation/Likert3";
@@ -67,10 +75,10 @@ const Autoevaluation = () => {
     },
   ];
   return (
-    <Container sx={{paddingY:1}}>
+    <Container sx={{ paddingY: 1 }}>
       <Typography
         component="h1"
-        sx={{ color: "black", fontSize: "40px", lineHeight: "1", marginY:3 }}
+        sx={{ color: "black", fontSize: "40px", lineHeight: "1", marginY: 3 }}
       >
         Autoevaluación
       </Typography>
@@ -95,6 +103,9 @@ const Autoevaluation = () => {
           );
         })}
       </Grid2>
+      <Box sx={{display:'flex', justifyContent:'center', margin:5}}>
+        <Button variant="contained" sx={{paddingX:8, paddingY:1}}>Enviar</Button>
+      </Box>
     </Container>
   );
 };
