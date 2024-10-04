@@ -21,4 +21,9 @@ class Question extends Model
     {
         return $this->belongsTo(Evaluation::class);
     }
+
+    public function answerOptions()
+    {
+        return $this->hasMany(AnswerOption::class);
+    }
 }
