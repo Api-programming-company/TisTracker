@@ -31,7 +31,7 @@ import VerGE from "./pages/VerGE";
 import AcceptDeclineCompany from "./components/company/AcceptDeclineCompany";
 import AcceptDeclineInvitation from "./components/student/AcceptDeclineInvitation";
 import CompanyPlanning from "./components/company/CompanyPlanning";
-
+import ProtectedRoutes from "./utils/ProtectedRoutes";
 import "./index.css";
 
 function App({ toggleTheme, isDarkMode }) {
@@ -47,44 +47,46 @@ function App({ toggleTheme, isDarkMode }) {
       />
       <Box sx={{ marginTop: "64px" }}>
         <Routes>
+          <Route element={<ProtectedRoutes user={user}/>}>
+            <Route path="/enroll-to-ap" element={<EnrollToAcademicPeriod />} />
+            <Route path="/vergrupoe/:id" element={<VerGE />} />
+            <Route path="/registroge" element={<RegistroGE />} />
+            <Route path="/company-requests" element={<InvitacionesGE />} />
+
+            <Route
+              path="/company/:id/plannification"
+              element={<CompanyPlanning />}
+            />
+            <Route path="/company/:id/invite" element={<StudentSearch />} />
+            <Route path="/company/:id/confirm" element={<ConformacionGE />} />
+            <Route path="/company/:id/uninvite" element={<EditarListaGE />} />
+            <Route path="/academic-periods" element={<AcademicPeriodList />} />
+            <Route path="/register-ap" element={<RegisterAcademicPeriod />} />
+
+            <Route
+              path="/academic-period/:id/companies"
+              element={<CompanyList />}
+            />
+            <Route
+              path="/academic-period/:id/pending"
+              element={<SolicitudesGE />}
+            />
+            <Route
+              path="/request/:id/pending"
+              element={<AcceptDeclineCompany />}
+            />
+            <Route
+              path="/invitation/:id/pending"
+              element={<AcceptDeclineInvitation />}
+            />
+          </Route>
+
           <Route path="/registro-estudiante" element={<UserRegister />} />
           <Route path="/registro-docente" element={<RegistroDocente />} />
           <Route path="/login" element={<Login />} />
           <Route path="/verify-email/:token" element={<VerifyEmail />} />
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/enroll-to-ap" element={<EnrollToAcademicPeriod />} />
-          <Route path="/vergrupoe/:id" element={<VerGE />} />
-          <Route path="/registroge" element={<RegistroGE />} />
-          <Route path="/company-requests" element={<InvitacionesGE />} />
-
-          <Route
-            path="/company/:id/plannification"
-            element={<CompanyPlanning />}
-          />
-          <Route path="/company/:id/invite" element={<StudentSearch />} />
-          <Route path="/company/:id/confirm" element={<ConformacionGE />} />
-          <Route path="/company/:id/uninvite" element={<EditarListaGE />} />
-          <Route path="/academic-periods" element={<AcademicPeriodList />} />
-          <Route path="/register-ap" element={<RegisterAcademicPeriod />} />
-
-          <Route
-            path="/academic-period/:id/companies"
-            element={<CompanyList />}
-          />
-          <Route
-            path="/academic-period/:id/pending"
-            element={<SolicitudesGE />}
-          />
-          <Route
-            path="/request/:id/pending"
-            element={<AcceptDeclineCompany />}
-          />
-          <Route
-            path="/invitation/:id/pending"
-            element={<AcceptDeclineInvitation />}
-          />
-
           <Route path="/upload" element={<ImageUpload />} />
           <Route path="/example" element={<Example />} />
           <Route path="/*" element={<NotFound />} />
