@@ -1,12 +1,8 @@
-import { Box, Radio, Typography } from "@mui/material";
+import { Grid2, Radio, Typography } from "@mui/material";
 import React, { useState } from "react";
 
 const Likert3 = () => {
-  const styling = {
-    display: "flex",
-    justifyContent: "center",
-    flexDirection: "column",
-  };
+  const size = {xs: 4 ,sm: 4, md: 2}
 
   const [selectedValue, setSelectedValue] = useState();
 
@@ -14,14 +10,8 @@ const Likert3 = () => {
     setSelectedValue(event.target.value);
   };
   return (
-    <Box
-      sx={{
-        display: "flex",
-        gap: 3,
-        paddingX: 1,
-      }}
-    >
-      <Box sx={styling}>
+    <Grid2 container spacing={2}>
+      <Grid2 size={size}>
         <Typography>Bajo</Typography>
         <Radio
           checked={selectedValue === "1"}
@@ -29,8 +19,8 @@ const Likert3 = () => {
           name="bajo"
           onChange={handleChange}
         />
-      </Box>
-      <Box sx={styling}>
+      </Grid2>
+      <Grid2 size={size}>
         <Typography>Medio</Typography>
         <Radio
           checked={selectedValue === "2"}
@@ -38,8 +28,8 @@ const Likert3 = () => {
           name="medio"
           onChange={handleChange}
         />
-      </Box>
-      <Box sx={styling}>
+      </Grid2>
+      <Grid2 size={size}>
         <Typography>Alto</Typography>
         <Radio
           checked={selectedValue === "3"}
@@ -47,8 +37,8 @@ const Likert3 = () => {
           name="alto"
           onChange={handleChange}
         />
-      </Box>
-    </Box>
+      </Grid2>
+    </Grid2>
   );
 };
 

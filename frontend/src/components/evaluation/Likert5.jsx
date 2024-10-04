@@ -1,12 +1,8 @@
-import { Box, Radio, Typography } from "@mui/material";
+import { Grid2, Radio, Typography } from "@mui/material";
 import React, { useState } from "react";
 
 const Likert5 = () => {
-  const styling = {
-    display: "flex",
-    justifyContent: "center",
-    flexDirection: "column",
-  };
+  const size = {sm: 2, md: 2}
 
   const [selectedValue, setSelectedValue] = useState();
 
@@ -14,14 +10,8 @@ const Likert5 = () => {
     setSelectedValue(event.target.value);
   };
   return (
-    <Box
-      sx={{
-        display: "flex",
-        gap: 3,
-        paddingX: 1,
-      }}
-    >
-      <Box sx={styling}>
+    <Grid2 container spacing={2} >
+      <Grid2 size={size}>
         <Typography>Muy malo</Typography>
         <Radio
           checked={selectedValue === "1"}
@@ -29,8 +19,8 @@ const Likert5 = () => {
           name="muy_malo"
           onChange={handleChange}
         />
-      </Box>
-      <Box sx={styling}>
+      </Grid2>
+      <Grid2 size={size}>
         <Typography>Malo</Typography>
         <Radio
           checked={selectedValue === "2"}
@@ -38,8 +28,8 @@ const Likert5 = () => {
           name="malo"
           onChange={handleChange}
         />
-      </Box>
-      <Box sx={styling}>
+      </Grid2>
+      <Grid2 size={size}>
         <Typography>Regular</Typography>
         <Radio
           checked={selectedValue === "3"}
@@ -47,8 +37,8 @@ const Likert5 = () => {
           name="regular"
           onChange={handleChange}
         />
-      </Box>
-      <Box sx={styling}>
+      </Grid2>
+      <Grid2 size={size}>
         <Typography>Bueno</Typography>
         <Radio
           checked={selectedValue === "4"}
@@ -56,8 +46,8 @@ const Likert5 = () => {
           name="bueno"
           onChange={handleChange}
         />
-      </Box>
-      <Box sx={styling}>
+      </Grid2>
+      <Grid2 size={size}>
         <Typography>Muy bueno</Typography>
         <Radio
           checked={selectedValue === "5"}
@@ -65,8 +55,8 @@ const Likert5 = () => {
           name="muy bueno"
           onChange={handleChange}
         />
-      </Box>
-    </Box>
+      </Grid2>
+    </Grid2>
   );
 };
 
