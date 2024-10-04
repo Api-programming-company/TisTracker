@@ -34,6 +34,8 @@ import CompanyPlanning from "./components/company/CompanyPlanning";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
 import "./index.css";
 import Autoevaluation from "./pages/Autoevaluation";
+import EvaluationMemberGE from "./pages/EvaluationMemberGE";
+import EvaluationGE from "./pages/EvaluationGE";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -83,6 +85,8 @@ function App({ toggleTheme, isDarkMode }) {
 
             {/* evaluacion */}
             <Route path="/autoevaluation" element={<Autoevaluation />} />
+            <Route path="/evaluationmember" element={<EvaluationMemberGE />} />
+            <Route path="/evaluationge" element={<EvaluationGE />} />
           </Route>
 
           <Route path="/registro-estudiante" element={<UserRegister />} />
