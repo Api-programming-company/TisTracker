@@ -1,7 +1,7 @@
 const data = [
     {
         id : 1,
-        name: 'Planificación 1',
+        name: 'Hito 1',
         start_date: '2022-01-01',
         end_date: '2022-01-31',
         billing_percentage: 20,
@@ -18,7 +18,7 @@ const data = [
     },
     {
         id : 2,
-        name: 'Planificación 2',
+        name: 'Hito 2',
         start_date: '2022-02-01',
         end_date: '2022-02-28',
         billing_percentage: 30,
@@ -35,7 +35,7 @@ const data = [
     },
     {
         id : 3,
-        name: 'Planificación 3',
+        name: 'Hito 3',
         start_date: '2022-03-01',
         end_date: '2022-03-31',
         billing_percentage: 40,
@@ -52,7 +52,7 @@ const data = [
     },
     {
         id : 4,
-        name: 'Planificación 4',
+        name: 'Hito 4',
         start_date: '2022-04-01',
         end_date: '2022-04-30',
         billing_percentage: 50,
@@ -69,7 +69,7 @@ const data = [
     },
     {
         id : 5,
-        name: 'Planificación 5',
+        name: 'Hito 5',
         start_date: '2022-05-01',
         end_date: '2022-05-31',
         billing_percentage: 60,

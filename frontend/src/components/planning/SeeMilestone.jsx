@@ -27,7 +27,7 @@ const SeeMilestone = ({milestone}) => {
 
   return (
     <div className="milestone-item" key={milestone.id}>
-      <div className='list-item'button onClick={() => setOpenDeliverables(!openDeliverables)}>
+      <div className='list-header'button onClick={() => setOpenDeliverables(!openDeliverables)}>
         <ListItemText
           primary={
                 <h2>{milestone.name}</h2>
@@ -59,12 +59,13 @@ const SeeMilestone = ({milestone}) => {
               </div>
             </div>
               
-            <ListItem>
-              <List>
+              <div className="deliverables-list">
+                <h4 className='text-neutral-700'>Entregables:</h4>
                 {milestone.deliverables?.length > 0 ? (
                   milestone.deliverables.map((deliverable,index) => (
                     <SeeDeliverable
                       key={index}
+                      index={index + 1 }
                       deliverable={deliverable}
                     />
                   ))
@@ -72,8 +73,7 @@ const SeeMilestone = ({milestone}) => {
                   <p className="text-neutral-500">
                     No hay entregables asignados</p>
                 )}
-              </List>
-            </ListItem>
+              </div>
             
           </LocalizationProvider>
         </div>
