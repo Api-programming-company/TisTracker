@@ -34,6 +34,7 @@ import CompanyPlanning from "./components/company/CompanyPlanning";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
 import "./index.css";
 import Autoevaluation from "./pages/Autoevaluation";
+import SeeCompanyPlanning from "./pages/SeeCompanyPlanning";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -93,6 +94,7 @@ function App({ toggleTheme, isDarkMode }) {
           <Route path="/home" element={<Home />} />
           <Route path="/upload" element={<ImageUpload />} />
           <Route path="/example" element={<Example />} />
+          <Route path="/ver-planificacion" element={<SeeCompanyPlanning />} />
           <Route path="/*" element={<NotFound />} />
         </Routes>
       </Box>
