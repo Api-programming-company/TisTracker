@@ -1,6 +1,7 @@
 import React from 'react'
 import {data} from "../mock_objects/planificacion";	
 import SeeMilestone from "../components/planning/SeeMilestone";
+import "../styles/planning.css";
 
 const SeeCompanyPlanning = () => {
   return (

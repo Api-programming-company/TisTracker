@@ -6,6 +6,7 @@
   --neutral-white: #FFFFFF;
   --neutral-800:#363939;
   --neutral-900:#1F2223;
+  --neutral-700:#484B4C;
   --neutral-600:#797A7B;
   --neutral-500:#9B9B9B;
   --neutral-300: #D2D3D3;
@@ -59,6 +60,9 @@ p,a,li,button,input,textarea{
 .text-primary-100 {
   color: var(--primary-100);
 }
+.text-neutral-700{
+  color: var(--neutral-700);
+}
 
 .text-neutral-600 {
   color: var(--neutral-600);
@@ -104,6 +108,17 @@ p,a,li,button,input,textarea{
   width: 100%;
   padding : 3rem 5rem;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.section-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--neutral-200);
 }
 
 

@@ -1,0 +1,53 @@
+.planning-body{
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.milestones{
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.milestone-item{
+    position: relative;
+    width: 100%;
+}
+
+.list{
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.list-item{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.list-item2{
+    width: 100%;
+    display: flex;
+    gap: 2rem;
+}
+
+.date-item-card{
+    display: flex;
+    gap: 0.4rem;
+}
+
+
+@media screen and (max-width: 500px) {
+    .list-item2{
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+}
