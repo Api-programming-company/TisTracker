@@ -33,6 +33,7 @@ import AcceptDeclineInvitation from "./components/student/AcceptDeclineInvitatio
 import CompanyPlanning from "./components/company/CompanyPlanning";
 
 import "./index.css";
+import Autoevaluation from "./pages/Autoevaluation";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -84,6 +85,9 @@ function App({ toggleTheme, isDarkMode }) {
             path="/invitation/:id/pending"
             element={<AcceptDeclineInvitation />}
           />
+
+          {/* evaluacion */}
+          <Route path="/autoevaluation" element={<Autoevaluation />} />
 
           <Route path="/upload" element={<ImageUpload />} />
           <Route path="/example" element={<Example />} />

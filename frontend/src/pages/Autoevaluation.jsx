@@ -1,7 +1,12 @@
 import React from "react";
-import { evaluate } from "../utils/evaluaLikert"; 
+import { evaluate } from "../utils/evaluaLikert";
+import { Box, Container, Divider, Grid, Grid2, Typography } from "@mui/material";
+import Question from "../components/evaluation/Question";
+import Likert2 from "../components/evaluation/Likert2";
+import Likert3 from "../components/evaluation/Likert3";
+import Likert5 from "../components/evaluation/Likert5";
 
-const autoevaluacion = () => {
+const Autoevaluation = () => {
   // seguramente lo que viene del back tiene mas cosas pero tendrá una lista con las preguntas
   // a medida de que responda se añade el answer a cada objeto
   // al finalizar la evaluacion ejecutar la funcion evaluate pasandole la lista
@@ -61,7 +66,37 @@ const autoevaluacion = () => {
       likert: 2,
     },
   ];
-  return <div>autoevaluacion</div>;
+  return (
+    <Container sx={{paddingY:1}}>
+      <Typography
+        component="h1"
+        sx={{ color: "black", fontSize: "40px", lineHeight: "1", marginY:3 }}
+      >
+        Autoevaluación
+      </Typography>
+
+      <Grid2 container spacing={2}>
+        {ejemplo.map((e) => {
+          return (
+            <>
+              <Grid2 size={{ sm: 12, md: 6 }}>
+                <Question question={e.question} />
+              </Grid2>
+              <Grid2 size={{ sm: 12, md: 6 }}>
+                {e.likert === 2 ? (
+                  <Likert2 />
+                ) : e.likert === 3 ? (
+                  <Likert3 />
+                ) : (
+                  <Likert5 />
+                )}
+              </Grid2>
+            </>
+          );
+        })}
+      </Grid2>
+    </Container>
+  );
 };
 
-export default autoevaluacion;
+export default Autoevaluation;
