@@ -20,20 +20,6 @@ const CompanyPlanning = () => {
   const [registerPlanning, { data, isSuccess, error, isError, isLoading }] =
     useRegisterPlanningMutation();
 
-
-  useEffect(() => {
-    if (isSuccess) {
-      setSnackbarMessage("Planificación registrada con éxito");
-      setSnackbarSeverity("success");
-      setSnackbarOpen(true);
-    }
-    if (isError) {
-      setSnackbarMessage(error.data?.message);
-      setSnackbarSeverity("error");
-      setSnackbarOpen(true);
-    }
-  }, [data, isSuccess, error, isError]);
-
   const handleConfirm = () => {
     const form = { name: "planning", company_id: id, milestones: milestones };
     if (!checkErrors()) {
@@ -57,6 +43,18 @@ const CompanyPlanning = () => {
   };
 
 
+  useEffect(() => {
+    if (isSuccess) {
+      setSnackbarMessage("Planificación registrada con éxito");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+    }
+    if (isError) {
+      setSnackbarMessage(error.data?.message);
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+  }, [data, isSuccess, error, isError]);
 
   return (
     <div className="container">

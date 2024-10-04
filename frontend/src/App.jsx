@@ -36,6 +36,7 @@ import "./index.css";
 import Autoevaluation from "./pages/Autoevaluation";
 import EvaluationMemberGE from "./pages/EvaluationMemberGE";
 import EvaluationGE from "./pages/EvaluationGE";
+import SeeCompanyPlanning from "./pages/SeeCompanyPlanning";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -97,6 +98,7 @@ function App({ toggleTheme, isDarkMode }) {
           <Route path="/home" element={<Home />} />
           <Route path="/upload" element={<ImageUpload />} />
           <Route path="/example" element={<Example />} />
+          <Route path="/ver-planificacion" element={<SeeCompanyPlanning />} />
           <Route path="/*" element={<NotFound />} />
         </Routes>
       </Box>
