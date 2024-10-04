@@ -76,4 +76,12 @@ class User extends Authenticatable implements MustVerifyEmail
             ->withPivot('status', 'permission') // Incluye los campos adicionales
             ->withTimestamps();
     }
+
+    public function scoredCompanies()
+    {
+        return $this->belongsToMany(Company::class, 'company_user_score')
+            ->using(CompanyUserScore::class)
+            ->withPivot('score')
+            ->withTimestamps();
+    }
 }
