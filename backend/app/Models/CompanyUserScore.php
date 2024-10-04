@@ -7,13 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class CompanyUserScore extends Model
 {
-    protected $table = 'company_user_score';
-    
     use HasFactory;
 
-    protected $fillable = ['user_id', 'company_id', 'score'];
+    protected $fillable = ['company_user_id', 'company_id', 'score'];
 
-    protected $casts = [
-        'score' => 'integer',
-    ];
+    public function companyUser()
+    {
+        return $this->belongsTo(CompanyUser::class, 'company_user_id');
+    }
+
+    public function user()
+    {
+        return $this->hasOneThrough(User::class, CompanyUser::class, 'id', 'id', 'company_user_id', 'user_id');
+    }
 }

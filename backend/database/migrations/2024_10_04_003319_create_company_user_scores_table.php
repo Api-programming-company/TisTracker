@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCompanyUserScoreTable extends Migration
+class CreateCompanyUserScoresTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateCompanyUserScoreTable extends Migration
      */
     public function up()
     {
-        Schema::create('company_user_score', function (Blueprint $table) {
+        Schema::create('company_user_scores', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('company_user_id')->constrained('company_user')->onDelete('cascade');
             $table->foreignId('company_id')->constrained()->onDelete('cascade');
             $table->integer('score');
             $table->timestamps();

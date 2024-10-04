@@ -15,8 +15,8 @@ class CreateUserEvaluationsTable extends Migration
     {
         Schema::create('user_evaluations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('evaluator_id')->constrained('users')->onDelete('cascade');  // Usuario que evalúa
-            $table->foreignId('evaluatee_id')->constrained('users')->onDelete('cascade');  // Usuario evaluado
+            $table->foreignId('evaluator_company_user_id')->constrained('company_user')->onDelete('cascade');  // Miembro de empresa que evalúa
+            $table->foreignId('evaluatee_company_user_id')->constrained('company_user')->onDelete('cascade');  // Miembro de empresa evaluado
             $table->integer('score');
             $table->timestamps();
         });
