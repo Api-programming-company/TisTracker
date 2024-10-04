@@ -84,4 +84,14 @@ class User extends Authenticatable implements MustVerifyEmail
             ->withPivot('score')
             ->withTimestamps();
     }
+
+    public function evaluationsGiven()
+    {
+        return $this->hasMany(UserEvaluation::class, 'evaluator_id');
+    }
+
+    public function evaluationsReceived()
+    {
+        return $this->hasMany(UserEvaluation::class, 'evaluatee_id');
+    }
 }
