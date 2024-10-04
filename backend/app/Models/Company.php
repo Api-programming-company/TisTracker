@@ -35,4 +35,12 @@ class Company extends Model
     {
         return $this->hasOne(Planning::class);
     }
+
+    public function userScores()
+    {
+        return $this->belongsToMany(User::class, 'company_user_score')
+            ->using(CompanyUserScore::class)
+            ->withPivot('score')
+            ->withTimestamps();
+    }
 }
