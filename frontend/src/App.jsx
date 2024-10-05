@@ -37,6 +37,7 @@ import Autoevaluation from "./pages/Autoevaluation";
 import EvaluationMemberGE from "./pages/EvaluationMemberGE";
 import EvaluationGE from "./pages/EvaluationGE";
 import SeeCompanyPlanning from "./pages/SeeCompanyPlanning";
+import SetFinalDeliverablePeriod from "./pages/SetFinalDeliverablePeriod";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -99,6 +100,9 @@ function App({ toggleTheme, isDarkMode }) {
           <Route path="/upload" element={<ImageUpload />} />
           <Route path="/example" element={<Example />} />
           <Route path="/ver-planificacion" element={<SeeCompanyPlanning />} />
+          
+          <Route path="/set-final-period" element={<SetFinalDeliverablePeriod/>}></Route>
+          
           <Route path="/*" element={<NotFound />} />
         </Routes>
       </Box>
