@@ -26,8 +26,6 @@ const Milestone = ({ milestone }) => {
   const {handleChangeMilestone,deleteMilestone,addDeliverable} = usePlanningContext();
 
   const findError = (name) => {
-    console.log(milestone.errors);
-    console.log(name);
     const error = milestone.errors.find((error) => error.errorArea === name);
     return error?.message;
   };
@@ -55,7 +53,7 @@ const Milestone = ({ milestone }) => {
 
   return (
     <div className="milestone-item" key={milestone.id}>
-      <ListItem button onClick={() => handleAction("handleToggle")}>
+      <ListItem >
         <ListItemText
           primary={
             
@@ -99,7 +97,7 @@ const Milestone = ({ milestone }) => {
             
           }
         />
-        <IconButton>
+        <IconButton button onClick={() => handleAction("handleToggle")}>
           {openDeliverables ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </IconButton>
       </ListItem>
