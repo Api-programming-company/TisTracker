@@ -143,6 +143,18 @@ class EvaluationController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = Auth::user();
+
+        // Buscar la evaluación
+        $evaluation = $user->evaluations()->find($id);
+
+        if (!$evaluation) {
+            return response()->json(['message' => 'Evaluación no encontrada.'], 404);
+        }
+
+        // Eliminar la evaluación
+        $evaluation->delete();
+
+        return response()->json(['message' => 'Evaluación eliminada correctamente.']);
     }
 }
