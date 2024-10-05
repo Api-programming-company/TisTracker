@@ -34,6 +34,7 @@ const CompanyPlanning = () => {
         setSnackbarOpen(true);
         return;
       }
+      console.log(form);
       
       registerPlanning(form);
     }
@@ -54,6 +55,8 @@ const CompanyPlanning = () => {
       setSnackbarOpen(true);
     }
     if (isError) {
+      console.log(error);
+
       setSnackbarMessage(error.data?.message);
       setSnackbarSeverity("error");
       setSnackbarOpen(false);
