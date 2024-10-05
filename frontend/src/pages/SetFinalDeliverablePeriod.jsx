@@ -4,12 +4,14 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Button, TextField } from '@mui/material';
 import "../styles/set_final_period.css";
+import DialogMod from '../components/DialogMod';
 
 
 const SetFinalDeliverablePeriod = () => {
   const [startDate, setStartDate] = React.useState(null);
   const [endDate, setEndDate] = React.useState(null);
   const [errors, setErrors] = React.useState({});
+  const [open, setOpen] = React.useState(false);
 
   const handleStartDateChange = (newValue) => {
     setStartDate(newValue);
@@ -27,8 +29,7 @@ const SetFinalDeliverablePeriod = () => {
     }));
   };
 
-  const onSubmit = (event) => {
-    event.preventDefault();
+  const onSubmit = () => {
     if (!startDate || !endDate) {
       setErrors({
         start_date: startDate ? undefined : "La fecha de inicio es requerida",
@@ -41,6 +42,7 @@ const SetFinalDeliverablePeriod = () => {
     } else {
       console.log(startDate, endDate);
     }
+    setOpen(false)
   };
 
   const findError = (name) => {
@@ -53,7 +55,6 @@ const SetFinalDeliverablePeriod = () => {
       <div className="section-header">
         <h1>Ajustar periodo de entrega final</h1>
       </div>
-      <form onSubmit={onSubmit}>
         <div className="container-body"> 
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <div className="dates-input-container">
@@ -103,15 +104,29 @@ const SetFinalDeliverablePeriod = () => {
                     },
                 }}
                 type="submit"
+                onClick={() => setOpen(true)}
             >Guardar
             </Button>
+            <DialogMod
+                  open={open}
+                  setOpen={setOpen}
+                  title={"Ajustar Periodo de Entrega Final"}
+                  content={"¿Está seguro de realizar esta acción?"}
+                  onAccept={() => {
+                    onSubmit();
+                    // deleteMilestone(milestone.id)
+                  }}
+                  
+                  onCancel={() => setOpen(false)}
+                />
             </div>
         
-        </div>     
-      </form>
+        </div>   
+         
     </div>
   )
 }
+
 
 
 
