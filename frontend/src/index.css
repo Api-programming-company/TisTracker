@@ -138,4 +138,10 @@ p,a,li,button,input,textarea{
   align-items: center;
 }
 
+@media screen and (max-width: 600px) {
+  .container {
+    padding : 3rem 1rem;
+  }
+}
+
 
