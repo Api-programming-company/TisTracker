@@ -15,6 +15,7 @@ import { validarContraseña, validateEmail } from "../utils/validaciones";
 import { useRegisterUserMutation } from "../api/userApi";
 import AppContext from "../context/AppContext";
 import { useContext } from "react";
+import { isNumeric } from "../utils/validaciones";
 
 const UserRegister = () => {
   const { user } = useContext(AppContext);
@@ -84,6 +85,12 @@ const UserRegister = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    if (
+      (name === "first_name" && isNumeric(value.slice(-1))) ||
+      (name === "last_name" && isNumeric(value.slice(-1)))
+    ) {
+      return;
+    }
     setFormData({ ...formData, [name]: value });
     setErrors({ ...errors, [name]: "" });
   };
