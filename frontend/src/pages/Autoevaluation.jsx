@@ -297,9 +297,11 @@ const Autoevaluation = () => {
     },
   };
 
-  const { state, setInitialState, verifyFields } = useContext(EvaluateContext);
+  const { state, setInitialState, verifyFields, clearState } =
+    useContext(EvaluateContext);
   const [loading, setLoading] = useState(true); // para simular el isloading borrar luego
   useEffect(() => {
+    clearState();
     setInitialState(ejemploEvaluacion.evaluation);
     console.log(state);
     setLoading(!loading);

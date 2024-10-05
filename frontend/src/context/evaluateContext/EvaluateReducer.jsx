@@ -1,6 +1,8 @@
 export default (state, action) => {
   const { payload, type } = action;
   switch (type) {
+    case "clearState":
+      return {};
     case "setInitialState":
       return {
         ...state,
