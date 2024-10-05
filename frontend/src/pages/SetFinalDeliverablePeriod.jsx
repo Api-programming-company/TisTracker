@@ -1,17 +1,21 @@
-import React from 'react'
+import React,{useState} from 'react'
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { Button, TextField } from '@mui/material';
+import { Button, TextField,Snackbar, Alert} from '@mui/material';
 import "../styles/set_final_period.css";
 import DialogMod from '../components/DialogMod';
 
 
 const SetFinalDeliverablePeriod = () => {
-  const [startDate, setStartDate] = React.useState(null);
-  const [endDate, setEndDate] = React.useState(null);
-  const [errors, setErrors] = React.useState({});
-  const [open, setOpen] = React.useState(false);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [errors, setErrors] = useState({});
+  const [open, setOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
 
   const handleStartDateChange = (newValue) => {
     setStartDate(newValue);
@@ -29,6 +33,10 @@ const SetFinalDeliverablePeriod = () => {
     }));
   };
 
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
+
   const onSubmit = () => {
     if (!startDate || !endDate) {
       setErrors({
@@ -40,7 +48,11 @@ const SetFinalDeliverablePeriod = () => {
         end_date: "La fecha de fin debe ser mayor o igual que la fecha de inicio",
       });
     } else {
+        //sucess
       console.log(startDate, endDate);
+      setSnackbarMessage("Periodo de entrega final ajustado con exito");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
     }
     setOpen(false)
   };
@@ -122,7 +134,16 @@ const SetFinalDeliverablePeriod = () => {
             </div>
         
         </div>   
-         
+        <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar> 
     </div>
   )
 }

@@ -51,7 +51,7 @@ const CompanyPlanning = () => {
     if (isSuccess) {
       setSnackbarMessage("Planificación registrada con éxito");
       setSnackbarSeverity("success");
-      setSnackbarOpen(false);
+      setSnackbarOpen(true);
     }
     if (isError) {
       setSnackbarMessage(error.data?.message);
