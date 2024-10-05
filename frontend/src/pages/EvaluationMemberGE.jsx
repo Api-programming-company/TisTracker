@@ -28,13 +28,13 @@ const EvaluationGE = () => {
           answer_options: [
             {
               id: 1,
-              text: "Totalmente de acuerdo",
-              score: "5",
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
               id: 2,
-              text: "De acuerdo",
-              score: "4",
+              text: "En desacuerdo",
+              score: "2",
             },
             {
               id: 3,
@@ -43,13 +43,13 @@ const EvaluationGE = () => {
             },
             {
               id: 4,
-              text: "En desacuerdo",
-              score: "2",
+              text: "De acuerdo",
+              score: "4",
             },
             {
               id: 5,
-              text: "Totalmente en desacuerdo",
-              score: "1",
+              text: "Totalmente de acuerdo",
+              score: "5",
             },
           ],
         },
@@ -59,13 +59,13 @@ const EvaluationGE = () => {
           answer_options: [
             {
               id: 6,
-              text: "Totalmente de acuerdo",
-              score: "5",
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
               id: 7,
-              text: "De acuerdo",
-              score: "4",
+              text: "En desacuerdo",
+              score: "2",
             },
             {
               id: 8,
@@ -74,13 +74,13 @@ const EvaluationGE = () => {
             },
             {
               id: 9,
-              text: "En desacuerdo",
-              score: "2",
+              text: "De acuerdo",
+              score: "4",
             },
             {
               id: 10,
-              text: "Totalmente en desacuerdo",
-              score: "1",
+              text: "Totalmente de acuerdo",
+              score: "5",
             },
           ],
         },
@@ -90,23 +90,23 @@ const EvaluationGE = () => {
           answer_options: [
             {
               id: 11,
-              text: "Totalmente de acuerdo",
-              score: "4",
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
               id: 12,
-              text: "De acuerdo",
-              score: "3",
-            },
-            {
-              id: 13,
               text: "En desacuerdo",
               score: "2",
             },
             {
+              id: 13,
+              text: "De acuerdo",
+              score: "3",
+            },
+            {
               id: 14,
-              text: "Totalmente en desacuerdo",
-              score: "1",
+              text: "Totalmente de acuerdo",
+              score: "4",
             },
           ],
         },
@@ -116,8 +116,8 @@ const EvaluationGE = () => {
           answer_options: [
             {
               id: 15,
-              text: "De acuerdo",
-              score: "3",
+              text: "En desacuerdo",
+              score: "1",
             },
             {
               id: 16,
@@ -126,8 +126,8 @@ const EvaluationGE = () => {
             },
             {
               id: 17,
-              text: "En desacuerdo",
-              score: "1",
+              text: "De acuerdo",
+              score: "3",
             },
           ],
         },
@@ -137,13 +137,13 @@ const EvaluationGE = () => {
           answer_options: [
             {
               id: 18,
-              text: "Totalmente de acuerdo",
-              score: "5",
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
               id: 19,
-              text: "De acuerdo",
-              score: "4",
+              text: "En desacuerdo",
+              score: "2",
             },
             {
               id: 20,
@@ -152,13 +152,13 @@ const EvaluationGE = () => {
             },
             {
               id: 21,
-              text: "En desacuerdo",
-              score: "2",
+              text: "De acuerdo",
+              score: "4",
             },
             {
               id: 22,
-              text: "Totalmente en desacuerdo",
-              score: "1",
+              text: "Totalmente de acuerdo",
+              score: "5",
             },
           ],
         },
@@ -168,13 +168,13 @@ const EvaluationGE = () => {
           answer_options: [
             {
               id: 23,
-              text: "Totalmente de acuerdo",
-              score: "5",
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
               id: 24,
-              text: "De acuerdo",
-              score: "4",
+              text: "En desacuerdo",
+              score: "2",
             },
             {
               id: 25,
@@ -183,13 +183,13 @@ const EvaluationGE = () => {
             },
             {
               id: 26,
-              text: "En desacuerdo",
-              score: "2",
+              text: "De acuerdo",
+              score: "4",
             },
             {
               id: 27,
-              text: "Totalmente en desacuerdo",
-              score: "1",
+              text: "Totalmente de acuerdo",
+              score: "5",
             },
           ],
         },
@@ -199,23 +199,23 @@ const EvaluationGE = () => {
           answer_options: [
             {
               id: 28,
-              text: "Totalmente de acuerdo",
-              score: "5",
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
               id: 29,
-              text: "De acuerdo",
-              score: "4",
+              text: "En desacuerdo",
+              score: "2",
             },
             {
               id: 30,
-              text: "En desacuerdo",
+              text: "De acuerdo",
               score: "3",
             },
             {
               id: 31,
-              text: "Totalmente en desacuerdo",
-              score: "1",
+              text: "Totalmente de acuerdo",
+              score: "4",
             },
           ],
         },
@@ -225,23 +225,23 @@ const EvaluationGE = () => {
           answer_options: [
             {
               id: 32,
-              text: "Totalmente de acuerdo",
-              score: "4",
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
               id: 33,
-              text: "De acuerdo",
-              score: "3",
-            },
-            {
-              id: 34,
               text: "En desacuerdo",
               score: "2",
             },
             {
+              id: 34,
+              text: "De acuerdo",
+              score: "3",
+            },
+            {
               id: 35,
-              text: "Totalmente en desacuerdo",
-              score: "1",
+              text: "Totalmente de acuerdo",
+              score: "4",
             },
           ],
         },
@@ -251,23 +251,23 @@ const EvaluationGE = () => {
           answer_options: [
             {
               id: 36,
-              text: "Totalmente de acuerdo",
-              score: "4",
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
               id: 37,
-              text: "De acuerdo",
-              score: "3",
-            },
-            {
-              id: 38,
               text: "En desacuerdo",
               score: "2",
             },
             {
+              id: 38,
+              text: "De acuerdo",
+              score: "3",
+            },
+            {
               id: 39,
-              text: "Totalmente en desacuerdo",
-              score: "1",
+              text: "Totalmente de acuerdo",
+              score: "4",
             },
           ],
         },
