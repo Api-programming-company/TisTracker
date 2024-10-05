@@ -47,12 +47,12 @@ const CompanyPlanning = () => {
     if (isSuccess) {
       setSnackbarMessage("Planificación registrada con éxito");
       setSnackbarSeverity("success");
-      setSnackbarOpen(true);
+      setSnackbarOpen(false);
     }
     if (isError) {
       setSnackbarMessage(error.data?.message);
       setSnackbarSeverity("error");
-      setSnackbarOpen(true);
+      setSnackbarOpen(false);
     }
   }, [data, isSuccess, error, isError]);
 
