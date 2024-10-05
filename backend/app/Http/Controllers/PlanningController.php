@@ -24,6 +24,7 @@ class PlanningController extends Controller
     }
 
     // Guardar una nueva planificación
+    // Guardar una nueva planificación
     public function store(Request $request)
     {
         try {
@@ -48,6 +49,16 @@ class PlanningController extends Controller
                 'milestones.*.billing_percentage' => 'required|integer|min:0',
                 'milestones.*.deliverables' => 'required|array|min:1',
             ]);
+
+            // Verificar que la suma de billing_percentage no exceda 100
+            $totalBilling = array_sum(array_column($validated['milestones'], 'billing_percentage'));
+
+            if ($totalBilling > 100) {
+                return response()->json([
+                    'message' => 'La suma de los billing_percentage no puede ser mayor a 100%.',
+                    'errors' => ['billing_percentage' => 'El total es ' . $totalBilling . '%.']
+                ], 422);
+            }
 
             // Crear planificación
             $planning = Planning::create([
