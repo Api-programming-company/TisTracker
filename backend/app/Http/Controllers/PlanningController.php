@@ -151,6 +151,15 @@ class PlanningController extends Controller
 
             // Actualizar hitos y entregables
             if (isset($validatedData['milestones'])) {
+                $totalBilling = array_sum(array_column($validatedData['milestones'], 'billing_percentage'));
+
+                if ($totalBilling > 100) {
+                    return response()->json([
+                        'message' => 'La suma de los billing_percentage no puede ser mayor a 100%.',
+                        'errors' => ['billing_percentage' => 'El total es ' . $totalBilling . '%.']
+                    ], 422);
+                }
+
                 foreach ($validatedData['milestones'] as $milestoneData) {
                     $milestone = Milestone::updateOrCreate(
                         ['id' => $milestoneData['id'] ?? null],
