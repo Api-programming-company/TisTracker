@@ -100,6 +100,16 @@ class PlanningController extends Controller
                 ], 403);
             }
 
+            // Verificar que la suma de billing_percentage no exceda 100
+            $totalBilling = $planning->milestones->sum('billing_percentage');
+
+            if ($totalBilling > 100) {
+                return response()->json([
+                    'message' => 'La suma de los billing_percentage es mayor a 100%.',
+                    'errors' => ['billing_percentage' => 'El total es ' . $totalBilling . '%.']
+                ], 422);
+            }
+
             // Obtener el permiso del usuario autenticado desde la tabla pivote
             $userPermission = $member->pivot->permission;
 
@@ -108,6 +118,7 @@ class PlanningController extends Controller
                 'message' => 'Planificación obtenida correctamente.',
                 'planning' => $planning->load('milestones.deliverables'),
                 'user_permission' => $userPermission,
+                'total_billing_percentage' => $totalBilling,
             ], 200);
         } catch (Exception $e) {
             return response()->json(['message' => 'Error al obtener la planificación', 'error' => $e->getMessage()], 500);
