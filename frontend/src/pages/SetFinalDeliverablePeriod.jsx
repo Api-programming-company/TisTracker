@@ -7,6 +7,17 @@ import "../styles/set_final_period.css";
 
 
 const SetFinalDeliverablePeriod = () => {
+  const [startDate, setStartDate] = React.useState(null);
+  const [endDate, setEndDate] = React.useState(null);
+
+  const handleStartDateChange = (newValue) => {
+    setStartDate(newValue);
+  };
+
+  const handleEndDateChange = (newValue) => {
+    setEndDate(newValue);
+  };
+
   return (
     <div className='container'>
       <div className="section-header">
@@ -14,13 +25,12 @@ const SetFinalDeliverablePeriod = () => {
       </div>
       <div className="container-body"> 
             <LocalizationProvider dateAdapter={AdapterDateFns}>
-
                 <div className="dates-input-container">
                     <div className="date-item">
                         <DatePicker
                             label="Fecha de inicio"
-                            // value={""}
-                            // onChange={(e) => handleAction("handleStartDateChange", e)}
+                            value={startDate}
+                            onChange={handleStartDateChange}
                             renderInput={(params) => <TextField {...params} />}
                         
                         />
@@ -30,8 +40,8 @@ const SetFinalDeliverablePeriod = () => {
                     <div className="date-item">
                             <DatePicker
                             label="Fecha de fin"
-                            // value={milestone.end_date}
-                            // onChange={(e) => handleAction("handleEndDateChange", e)}
+                            value={endDate}
+                            onChange={handleEndDateChange}
                             renderInput={(params) => <TextField {...params}  />}
                             
                         />
@@ -61,6 +71,7 @@ const SetFinalDeliverablePeriod = () => {
     </div>
   )
 }
+
 
 
 export default SetFinalDeliverablePeriod
