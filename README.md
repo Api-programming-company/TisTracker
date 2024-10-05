@@ -133,6 +133,14 @@ Para facilitar la instalación y el inicio de los servicios:
 
 Ejecutar estos archivos .bat desde el explorador de archivos de Windows o la línea de comandos.
 
+# docker-compose
+   ```sh
+   sudo docker-compose build
+   sudo docker-compose up -d
+   sudo docker-compose run backend composer install
+   sudo docker-compose down
+   ```
+
 # Licencia
 ![cat](https://media1.tenor.com/m/DM7SdBiQKhEAAAAd/cat-underwater.gif)
 

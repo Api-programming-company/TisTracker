@@ -19,16 +19,13 @@ RUN a2enmod rewrite
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Copia el archivo composer.json y composer.lock
-COPY ./composer.json ./composer.lock /var/www/html/
+COPY ./composer.json ./composer.lock /var/www/html/ 
 
 # Copia todos los archivos de la aplicación
 COPY . /var/www/html/
 
 # Cambia al directorio de trabajo
 WORKDIR /var/www/html
-
-# Ejecuta composer install para instalar las dependencias
-RUN composer install --no-dev --optimize-autoloader
 
 # Configura Apache
 COPY ./apache.conf /etc/apache2/sites-available/000-default.conf
