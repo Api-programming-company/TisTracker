@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Evaluation;
 use Illuminate\Support\Facades\Auth;
+use Exception;
+use Illuminate\Validation\ValidationException;
 class EvaluationController extends Controller
 {
     /**
@@ -14,12 +16,16 @@ class EvaluationController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        // Obtener todas las evaluaciones del usuario autenticado
-        $evaluations = $user->evaluations()->with('questions.answerOptions')->get();
+            // Obtener todas las evaluaciones del usuario autenticado
+            $evaluations = $user->evaluations()->with('questions.answerOptions')->get();
 
-        return response()->json($evaluations);
+            return response()->json($evaluations);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Ocurrió un error al obtener las evaluaciones.', 'error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -30,37 +36,46 @@ class EvaluationController extends Controller
      */
     public function store(Request $request)
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        // Validación de los datos
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'questions' => 'required|array',
-            'questions.*.question_text' => 'required|string|max:255',
-            'questions.*.answer_options' => 'required|array',
-            'questions.*.answer_options.*.option_text' => 'required|string|max:255',
-            'questions.*.answer_options.*.score' => 'required|integer|min:0|max:10',
-        ]);
-
-        // Crear la evaluación
-        $evaluation = $user->evaluations()->create([
-            'title' => $request->title,
-            'description' => $request->description,
-        ]);
-
-        // Crear las preguntas y sus opciones de respuesta
-        foreach ($request->questions as $questionData) {
-            $question = $evaluation->questions()->create([
-                'question_text' => $questionData['question_text'],
+            // Validación de los datos
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'questions' => 'required|array',
+                'questions.*.question_text' => 'required|string|max:255',
+                'questions.*.answer_options' => 'required|array',
+                'questions.*.answer_options.*.option_text' => 'required|string|max:255',
+                'questions.*.answer_options.*.score' => 'required|integer|min:0|max:10',
             ]);
 
-            foreach ($questionData['answer_options'] as $optionData) {
-                $question->answerOptions()->create($optionData);
-            }
-        }
+            // Crear la evaluación
+            $evaluation = $user->evaluations()->create([
+                'title' => $request->title,
+                'description' => $request->description,
+            ]);
 
-        return response()->json($evaluation->load('questions.answerOptions'), 201);
+            // Crear las preguntas y sus opciones de respuesta
+            foreach ($request->questions as $questionData) {
+                $question = $evaluation->questions()->create([
+                    'question_text' => $questionData['question_text'],
+                ]);
+
+                foreach ($questionData['answer_options'] as $optionData) {
+                    $question->answerOptions()->create($optionData);
+                }
+            }
+
+            return response()->json($evaluation->load('questions.answerOptions'), 201);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Error de validación.',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Ocurrió un error al crear la evaluación.', 'error' => $e->getMessage()], 500);
+        }
     }
 
     /**
