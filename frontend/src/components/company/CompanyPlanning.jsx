@@ -7,6 +7,7 @@ import { CiCirclePlus } from "react-icons/ci";
 import { useParams } from "react-router-dom";
 import { useRegisterPlanningMutation } from "../../api/planningApi";
 import { usePlanningContext } from "../../context/PlanningContext";
+import "../../styles/planning_record.css"
 
 const CompanyPlanning = () => {
   const { id } = useParams();
@@ -67,47 +68,50 @@ const CompanyPlanning = () => {
       >
         Planificación de equipo
       </Typography>
-      <List>
-        {milestones.length > 0 ? (
-          milestones.map((milestone, index) => (
-            <Milestone
-              key={index}
-              milestone={milestone}
-            />
-          ))
-        ) : (
-          <p className="text-neutral-500">No hay hitos asignados</p>
-        )}
-      </List>
-
-        {/* <div className="planning-btns-container"> */}
-        <Button
+      <div className="milestones-list">
+          {milestones.length > 0 ? (
+            milestones.map((milestone, index) => (
+              <Milestone
+                key={index}
+                milestone={milestone}
+              />
+            ))
+          ) : (
+            <p className="text-neutral-500">No hay hitos asignados</p>
+          )}
+           <Button
+           variant="outlined"
         color="primary"
         onClick={addMilestone}
         sx={{
           backgroundColor: "transparent",
           "&:hover": {
             color: "white",
-            backgroundColor: "primary.dark",
+            backgroundColor: "primary.main",
           },
           mr: 2,
           mb: 2,
         }}
       >
-        <i>
-          <CiCirclePlus />
-        </i>{" "}
         Agregar Hito
       </Button>
+      </div>
+        
+          
+        <div className="planning-btns-container">
+
+       
 
       <Button
+        variant="outlined"
         onClick={() => setOpen(true)}
         sx={{
-          backgroundColor: "transparent",
+          backgroundColor: "primary.dark",
           border: "1px solid black",
+          color: "white",
           "&:hover": {
-            color: "white",
-            backgroundColor: "primary.dark",
+            
+            transform: "scale(1.02)",
           },
           mb: 2,
           mr: 2,
@@ -124,7 +128,7 @@ const CompanyPlanning = () => {
         onAccept={handleConfirm}
         onCancel={() => setOpen(false)}
       />
-        {/* </div> */}
+        </div>
       
 
       {/* Snackbar para mostrar mensajes */}

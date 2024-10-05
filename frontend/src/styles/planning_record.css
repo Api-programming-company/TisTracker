@@ -1,0 +1,15 @@
+.milestones-list{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: start;
+    border-bottom: 2px solid var(--neutral-300);
+    margin-bottom: 2rem;
+}
+
+.planning-btns-container{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: start;
+}

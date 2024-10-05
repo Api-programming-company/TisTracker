@@ -167,12 +167,14 @@ const Milestone = ({ milestone }) => {
             >
               
                 <Button
+                  variant="outlined"
                   onClick={() => addDeliverable(milestone.id)}
                   sx={{
-                    backgroundColor: "primary.main",
-                    color: "white",
+                    backgroundColor: "transparent",
+                    color: "primary.main",
                     "&:hover": {
-                      backgroundColor: "primary.dark",
+                      backgroundColor: "primary.main",
+                      color: "white",
                     },
                     mb: 1,
                     ml: 2,
