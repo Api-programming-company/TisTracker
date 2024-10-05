@@ -23,7 +23,11 @@ const CompanyPlanning = () => {
   const handleConfirm = () => {
     const form = { name: "planning", company_id: id, milestones: milestones };
     if (!checkErrors()) {
-      const sumBillingPercentage = milestones.reduce((acc, curr) => acc + curr.billing_percentage, 0);
+      const sumBillingPercentage = milestones.reduce(
+        (acc, curr) => acc + parseFloat(curr.billing_percentage),
+        0
+      );
+      console.log(sumBillingPercentage);
       if (sumBillingPercentage > 100) {
         setSnackbarMessage("La suma del porcentaje de facturación debe ser menor a 100");
         setSnackbarSeverity("error");

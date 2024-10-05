@@ -135,7 +135,7 @@ const Milestone = ({ milestone }) => {
                   label="Porcentaje de facturación"
                   value={milestone.billingPercentage}
                   onChange={(e) =>
-                    handleAction("handleBillingPercentageChange", e.target.value)
+                    handleAction("handleBillingPercentageChange", Number(e.target.value))
                   }
                   type="number"
                   fullWidth
