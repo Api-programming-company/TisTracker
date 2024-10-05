@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\PlanningController;
 use App\Http\Controllers\CompanyUserController;
 use App\Http\Controllers\WebhookController;
+use App\Http\Controllers\EvaluationController;
 
 Route::post('/webhook', [WebhookController::class, 'handle']);
 
@@ -70,4 +71,9 @@ Route::middleware('auth')->group(function () {
     Route::get('student/search/{email}', [AuthController::class, 'searchStudentByEmail']);
     Route::get('/student/company/{academicPeriodId}', [CompanyUserController::class, 'getStudentCompanyByAcademicPeriod']);
 
+});
+
+//ruta de evaluacion 
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('evaluations', EvaluationController::class);
 });
