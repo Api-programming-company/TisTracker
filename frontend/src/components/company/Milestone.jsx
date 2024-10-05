@@ -59,6 +59,7 @@ const Milestone = ({ milestone }) => {
             
               <Box sx={{ display: "flex", gap: 2 }}>
                 <TextField
+                  label="Nombre de Hito"
                   value={milestone.name}
                   onChange={(e) => handleAction("handleNameChange", e.target.value)}
                   fullWidth
@@ -66,16 +67,12 @@ const Milestone = ({ milestone }) => {
                   helperText={findError("name")}
                 />
                 <Button
-                  variant="outlined"
                   sx={{
                     backgroundColor: "transparent",
-                    border: "1px solid black",
                     "&:hover": {
-                      color: "white",
-                      backgroundColor: "primary.dark",
+                      color: "primary.light",
                     },
-                    mr: 2,
-                    mb: 2,
+
                   }}
                   startIcon={<DeleteIcon />}
                   onClick={()=> setOpen(true)}
@@ -145,8 +142,8 @@ const Milestone = ({ milestone }) => {
             
             </ListItem>
             <ListItem>
-              <List>
-                {milestone.deliverables?.length > 0 ? (
+              <div className="deliverables-list">
+              {milestone.deliverables?.length > 0 ? (
                   milestone.deliverables.map((deliverable,index) => (
                     <Deliverable
                       key={index}
@@ -158,14 +155,15 @@ const Milestone = ({ milestone }) => {
                   <p className="text-neutral-500">
                     No hay entregables asignados</p>
                 )}
+              </div>
+                
                 {Boolean(findError("deliverables")) &&
                 <p className="text-red-300 text-sm">{findError("deliverables")}</p>
                     
                     }
-              </List>
             </ListItem>
             <ListItem
-              sx={{ display: "flex", justifyContent: "center", width: "100%" }}
+              sx={{ display: "flex", justifyContent: "start", width: "100%" }}
             >
               
                 <Button
@@ -177,6 +175,7 @@ const Milestone = ({ milestone }) => {
                       backgroundColor: "primary.dark",
                     },
                     mb: 1,
+                    ml: 2,
                   }}
                 >
                   Agregar Entregable

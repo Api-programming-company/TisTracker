@@ -27,7 +27,6 @@ const CompanyPlanning = () => {
         (acc, curr) => acc + parseFloat(curr.billing_percentage),
         0
       );
-      console.log(sumBillingPercentage);
       if (sumBillingPercentage > 100) {
         setSnackbarMessage("La suma del porcentaje de facturación debe ser menor a 100");
         setSnackbarSeverity("error");
@@ -81,7 +80,8 @@ const CompanyPlanning = () => {
         )}
       </List>
 
-      <Button
+        {/* <div className="planning-btns-container"> */}
+        <Button
         color="primary"
         onClick={addMilestone}
         sx={{
@@ -124,6 +124,8 @@ const CompanyPlanning = () => {
         onAccept={handleConfirm}
         onCancel={() => setOpen(false)}
       />
+        {/* </div> */}
+      
 
       {/* Snackbar para mostrar mensajes */}
       <Snackbar

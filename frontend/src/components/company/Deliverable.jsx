@@ -22,31 +22,28 @@ const Deliverable = ({ deliverable,milestone_id}) => {
     <ListItem
       sx={{
         display: { xs: "block", sm: "flex" },
+        width: "100%",
         justifyContent: "space-between",
+        alignItems: "center",
       }}
     >
       
-        <>
+        
           <TextField
             value={deliverable.name}
             onChange={(e) => handleChange("handleNameChange", e.target.value)}
-            label="Nombre"
+            label="Nombre de Entregable"
             fullWidth
             multiline
             sx={{ mr: 2, mb: 2 }}
           />
 
           <Button
-            variant="outlined"
             sx={{
               backgroundColor: "transparent",
-              border: "1px solid black",
               "&:hover": {
-                color: "white",
-                backgroundColor: "primary.dark",
+                color: "primary.light",
               },
-              mr: 2,
-              mb: 2,
             }}
             startIcon={<DeleteIcon />}
             onClick={() => setOpen(true)}
@@ -64,7 +61,7 @@ const Deliverable = ({ deliverable,milestone_id}) => {
             paramsAccept={deliverable.id}
             onCancel={() => setOpen(false)}
           />
-        </>
+        
     </ListItem>
   );
 };
