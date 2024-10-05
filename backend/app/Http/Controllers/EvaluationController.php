@@ -71,7 +71,16 @@ class EvaluationController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = Auth::user();
+
+        // Buscar la evaluación del usuario
+        $evaluation = $user->evaluations()->with('questions.answerOptions')->find($id);
+
+        if (!$evaluation) {
+            return response()->json(['message' => 'Evaluación no encontrada.'], 404);
+        }
+
+        return response()->json($evaluation);
     }
 
     /**
