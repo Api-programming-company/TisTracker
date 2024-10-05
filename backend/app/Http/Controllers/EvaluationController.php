@@ -92,7 +92,47 @@ class EvaluationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = Auth::user();
+
+        // Validar la entrada
+        $request->validate([
+            'title' => 'sometimes|required|string|max:255',
+            'description' => 'nullable|string',
+            'questions' => 'sometimes|required|array',
+            'questions.*.question_text' => 'sometimes|required|string|max:255',
+            'questions.*.answer_options' => 'sometimes|required|array',
+            'questions.*.answer_options.*.option_text' => 'sometimes|required|string|max:255',
+            'questions.*.answer_options.*.score' => 'sometimes|required|integer|min:0|max:10',
+        ]);
+
+        // Buscar la evaluación
+        $evaluation = $user->evaluations()->find($id);
+
+        if (!$evaluation) {
+            return response()->json(['message' => 'Evaluación no encontrada.'], 404);
+        }
+
+        // Actualizar la evaluación
+        $evaluation->update($request->only('title', 'description'));
+
+        // Actualizar preguntas y opciones de respuesta (si se proporcionaron)
+        if ($request->has('questions')) {
+            foreach ($request->questions as $questionData) {
+                $question = $evaluation->questions()->updateOrCreate(
+                    ['id' => $questionData['id']],
+                    ['question_text' => $questionData['question_text']]
+                );
+
+                foreach ($questionData['answer_options'] as $optionData) {
+                    $question->answerOptions()->updateOrCreate(
+                        ['id' => $optionData['id']],
+                        $optionData
+                    );
+                }
+            }
+        }
+
+        return response()->json($evaluation->load('questions.answerOptions'));
     }
 
     /**
