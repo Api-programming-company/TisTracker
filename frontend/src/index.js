@@ -9,8 +9,8 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import store from "./app/store";
 import { AppProvider } from "./context/AppContext";
-import ValidStateProvider from "./context/validDataPlanification/ValidState";
 import { PlanningProvider } from "./context/PlanningContext";
+import EvaluateProvider from "./context/evaluateContext/EvaluateProvider";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -33,9 +33,9 @@ function Main() {
       <CssBaseline />
       <PlanningProvider>
         <AppProvider>
-          <ValidStateProvider>
+          <EvaluateProvider>
             <App toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
-          </ValidStateProvider>
+          </EvaluateProvider>
         </AppProvider>
       </PlanningProvider>
     </ThemeProvider>

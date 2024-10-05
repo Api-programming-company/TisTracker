@@ -1,75 +1,11 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { evaluate } from "../utils/evaluaLikert";
-import {
-  Box,
-  Button,
-  Container,
-  Grid2,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Container, Grid2, Typography } from "@mui/material";
 import Question from "../components/evaluation/Question";
 import RadioOption from "../components/evaluation/RadioOption";
+import EvaluateContext from "../context/evaluateContext/EvaluateContext";
 
 const Autoevaluation = () => {
-  // seguramente lo que viene del back tiene mas cosas pero tendrá una lista con las preguntas
-  // a medida de que responda se añade el answer a cada objeto
-  // al finalizar la evaluacion ejecutar la funcion evaluate pasandole la lista
-  // para answer en likert: 2 --> Si = 1, No = 0
-  // para answer en likert: 3 --> Bajo = 1, Medio = 2, Alto = 3
-  // para answer en likert: 5 --> Muy malo = 1, Malo = 2, Regular = 3, Bueno = 4, Muy bueno = 5
-  // al final queda [{question:'', likert: 2||3||5, answer: 0||1||2||3||4||5}, {...}, {...}]
-  const ejemplo = [
-    {
-      question:
-        "Me comuniqué de manera clara y efectiva con los miembros de mi equipo.",
-      likert: 5,
-    },
-    {
-      question:
-        "Contribuí activamente a la identificación y resolución de problemas técnicos.",
-      likert: 5,
-    },
-    {
-      question:
-        "He cumplido con mis tareas y entregas en los plazos establecidos.",
-      likert: 3,
-    },
-    {
-      question:
-        "Estuve abierto(a) a recibir y dar retroalimentación constructiva.",
-      likert: 2,
-    },
-    {
-      question:
-        "Participé activamente en las reuniones del equipo y en las discusiones sobre el proyecto.",
-      likert: 2,
-    },
-    {
-      question:
-        "He tomado la iniciativa en tareas o decisiones importantes cuando ha sido necesario.",
-      likert: 3,
-    },
-    {
-      question:
-        "Manejé de manera constructiva los desacuerdos o conflictos que surgen en el equipo.",
-      likert: 5,
-    },
-    {
-      question:
-        "Busqué constantemente aprender y mejorar mis habilidades técnicas relacionadas con el proyecto.",
-      likert: 2,
-    },
-    {
-      question:
-        "Me aseguré de que el código que desarrollo cumpla con los estándares de calidad establecidos por el equipo.",
-      likert: 2,
-    },
-    {
-      question:
-        "Utilicé herramientas de control de versiones de manera efectiva para gestionar y colaborar en el código fuente.",
-      likert: 2,
-    },
-  ];
   const ejemploEvaluacion = {
     evaluation: {
       id: 1,
@@ -361,41 +297,59 @@ const Autoevaluation = () => {
     },
   };
 
+  const { state, setInitialState, verifyFields } = useContext(EvaluateContext);
+  const [loading, setLoading] = useState(true); // para simular el isloading borrar luego
+  useEffect(() => {
+    setInitialState(ejemploEvaluacion.evaluation);
+    console.log(state);
+    setLoading(!loading);
+  }, []);
+
   return (
-    <Container sx={{ paddingY: 1 }} maxWidth="xl">
-      <Typography
-        component="h1"
-        sx={{ color: "black", fontSize: "40px", lineHeight: "1", marginY: 3 }}
-      >
-        {ejemploEvaluacion.evaluation.title}
-      </Typography>
+    !loading && (
+      <Container sx={{ paddingY: 1 }} maxWidth="xl">
+        <Typography
+          component="h1"
+          sx={{ color: "black", fontSize: "40px", lineHeight: "1", marginY: 3 }}
+        >
+          {state.title}
+        </Typography>
 
-      <Typography
-        component="h3"
-        sx={{ color: "black", fontSize: "20px", lineHeight: "1", marginY: 3 }}
-      >
-        {ejemploEvaluacion.evaluation.description}
-      </Typography>
+        <Typography
+          component="h3"
+          sx={{ color: "black", fontSize: "20px", lineHeight: "1", marginY: 3 }}
+        >
+          {state.description}
+        </Typography>
 
-      <Grid2 container spacing={2}>
-        {ejemploEvaluacion.evaluation.questions.map((e) => {
-          return (
-            <>
-              <Grid2 size={{ sm: 12, md: 6 }}>
-                <Question key={e.id} question={e.text} />
-              </Grid2>
+        <Grid2 container spacing={2}>
+          {state.questions.map((e) => {
+            return (
+              <>
+                <Grid2 size={{ sm: 12, md: 6 }}>
+                  <Question key={e.id} question={e.text} />
+                </Grid2>
 
-              <RadioOption key={e.id} answer_options={e.answer_options} />
-            </>
-          );
-        })}
-      </Grid2>
-      <Box sx={{ display: "flex", justifyContent: "center", margin: 5 }}>
-        <Button variant="contained" sx={{ paddingX: 8, paddingY: 1 }}>
-          Enviar
-        </Button>
-      </Box>
-    </Container>
+                <RadioOption
+                  key={e.id}
+                  answer_options={e.answer_options}
+                  question_id={e.id}
+                />
+              </>
+            );
+          })}
+        </Grid2>
+        <Box sx={{ display: "flex", justifyContent: "center", margin: 5 }}>
+          <Button
+            variant="contained"
+            sx={{ paddingX: 8, paddingY: 1 }}
+            onClick={verifyFields}
+          >
+            Enviar
+          </Button>
+        </Box>
+      </Container>
+    )
   );
 };
 
