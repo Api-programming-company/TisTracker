@@ -127,7 +127,7 @@ const AcceptDeclineInvitation = () => {
           gutterBottom
           sx={{ textAlign: "center" }}
         >
-          Detalles de la solicitud
+          Detalles de la invitación
         </Typography>
       </Box>
       <Box
