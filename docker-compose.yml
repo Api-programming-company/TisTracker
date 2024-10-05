@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - ./backend/:/var/www/html
+    networks:
+      - tis-network
+
+networks:
+  tis-network:
+    driver: bridge
