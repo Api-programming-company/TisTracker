@@ -18,12 +18,18 @@ const SetFinalDeliverablePeriod = () => {
     setEndDate(newValue);
   };
 
+  const onSubmit = (event) => {
+    event.preventDefault();
+    console.log(startDate, endDate);
+  };
+
   return (
     <div className='container'>
       <div className="section-header">
         <h1>Ajustar periodo de entrega final</h1>
       </div>
-      <div className="container-body"> 
+      <form onSubmit={onSubmit}>
+        <div className="container-body"> 
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <div className="dates-input-container">
                     <div className="date-item">
@@ -63,14 +69,17 @@ const SetFinalDeliverablePeriod = () => {
                         color: "primary.contrastText",
                     },
                 }}
+                type="submit"
             >Guardar
             </Button>
             </div>
         
         </div>     
+      </form>
     </div>
   )
 }
+
 
 
 
