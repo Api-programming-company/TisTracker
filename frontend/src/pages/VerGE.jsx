@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Box, CircularProgress, Container, Divider,Button, Stack } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Container,
+  Divider,
+  Button,
+  Stack,
+} from "@mui/material";
 import { useGetCompanyByIdQuery } from "../api/companyApi";
 import { useParams } from "react-router-dom";
 import CompanyDetails from "../components/company/CompanyDetails";
@@ -90,39 +97,53 @@ const VerGE = () => {
     <Box sx={{ maxWidth: 900, margin: "auto", padding: 2, mb: 15 }}>
       <CompanyDetails company={formData.company} />
       <Divider sx={{ my: 4 }} />
-       {/* Botones de navegación */}
-       <Stack direction="row" spacing={2} mt={4}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => navigate(`/company/${id}/invite`)}
-        >
-          Invitar
-        </Button>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => navigate(`/company/${id}/confirm`)}
-        >
-          Confirmar Conformación
-        </Button>
-        <Button
-          variant="contained"
-          color="warning"
-          onClick={() => navigate(`/company/${id}/uninvite`)}
-        >
-          Retirar Invitaciones
-        </Button>
-        <Button
-          variant="contained"
-          color="success"
-          onClick={() => navigate(`/company/${id}/plannification`)}
-        >
-          Agregar Planificación
-        </Button>
+      {/* Botones de navegación */}
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        spacing={2}
+        mt={4}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        {[
+          { text: "Invitar", color: "primary", path: `/company/${id}/invite` },
+          {
+            text: "Confirmar Conformación",
+            color: "secondary",
+            path: `/company/${id}/confirm`,
+          },
+          {
+            text: "Retirar Invitaciones",
+            color: "warning",
+            path: `/company/${id}/uninvite`,
+          },
+          {
+            text: "Agregar Planificación",
+            color: "success",
+            path: `/company/${id}/plannification`,
+          },
+          {
+            text: "Ver Planificación",
+            color: "info",
+            path: `/planning/${data?.company?.planning?.id}`,
+          },
+        ].map((button, index) => (
+          <Button
+            key={index}
+            variant="contained"
+            color={button.color}
+            fullWidth={true} // Asegura que ocupe todo el ancho disponible en pantallas pequeñas
+            onClick={() => navigate(button.path)}
+          >
+            {button.text}
+          </Button>
+        ))}
       </Stack>
     </Box>
-
   );
 };
 
