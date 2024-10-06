@@ -144,8 +144,42 @@ class UserEvaluationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            // Validar la entrada de datos
+            $validatedData = $request->validate([
+                'score' => 'required|integer|min:0|max:100',
+            ]);
+
+            // Buscar la evaluación por ID
+            $evaluation = UserEvaluation::findOrFail($id);
+
+            // Verificar que el usuario autenticado es quien realizó la evaluación
+            $user = Auth::user();
+            if ($evaluation->evaluator_company_user_id !== $user->companyUser->id) {
+                return response()->json(['message' => 'No estás autorizado para actualizar esta evaluación.'], 403);
+            }
+
+            // Actualizar la evaluación
+            $evaluation->score = $validatedData['score'];
+            $evaluation->save();
+
+            return response()->json([
+                'message' => 'Evaluación actualizada correctamente.',
+                'evaluation' => $evaluation
+            ], 200);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Error de validación',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Ocurrió un error inesperado.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
+
 
     /**
      * Remove the specified resource from storage.
