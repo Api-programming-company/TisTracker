@@ -152,7 +152,8 @@ class CompanyController extends Controller
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Error de validación.',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
+                "request" => $request
             ], 422);
         } catch (Exception $e) {
             return response()->json([

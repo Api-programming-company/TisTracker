@@ -3,11 +3,11 @@ import { apiSlice } from "./apiSlice";
 const academicPeriodApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAcademicPeriods: builder.query({
-      query: () => "docente/academic-periods",
+      query: () => "academic-periods",
     }),
     createAcademicPeriod: builder.mutation({
       query: (data) => ({
-        url: "docente/academic-periods",
+        url: "academic-periods",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
