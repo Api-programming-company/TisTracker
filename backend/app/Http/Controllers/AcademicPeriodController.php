@@ -181,5 +181,34 @@ class AcademicPeriodController extends Controller
         }
     }
 
+    public function show($id)
+    {
+        try {
+            // Obtener el usuario autenticado
+            $user = Auth::user();
+
+            // Verificar si el usuario es un docente
+            if ($user->user_type !== 'D') {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
+
+            // Buscar el periodo académico por su ID
+            $academicPeriod = AcademicPeriod::findOrFail($id);
+
+            // Verificar si el periodo académico pertenece al docente autenticado
+            if ($academicPeriod->user_id !== $user->id) {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
+
+            // Retornar el periodo académico encontrado
+            return response()->json($academicPeriod, 200);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Ocurrió un error',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 
 }
