@@ -23,12 +23,20 @@ const EvaluationGE = () => {
   const { id } = useParams();
   const [createUserEvaluation, { data, error, isError, isLoading, isSuccess }] =
     useCreateUserEvaluationMutation();
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [openSnack, setOpenSnack] = useState(false);
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (isSuccess) {
-      console.log(data);
+      setSnackbarMessage("Evaluación enviada correctamente.");
+      setOpenSnack(true);
+      setOpenConfirmModal(true);
     }
     if (isError) {
-      console.log(error);
+      setSnackbarMessage(`Error al enviar la evaluación: ${error.message}`);
+      setOpenSnack(true);
     }
   }, [data, error, isError, isLoading, isSuccess]);
 
@@ -311,8 +319,6 @@ const EvaluationGE = () => {
   const { state, setInitialState, verifyFields, clearState } =
     useContext(EvaluateContext);
   const [open, setOpen] = useState(false);
-  const [openSnack, setOpenSnack] = useState(false);
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -323,16 +329,28 @@ const EvaluationGE = () => {
 
   const handleAccept = () => {
     if (!state.isValid) {
-      setOpenSnack(!openSnack);
-      setOpen(!setOpen);
+      setSnackbarMessage("Debe responder a todas las preguntas");
+      setOpenSnack(true);
+      setOpen(false);
       return;
     }
 
     const finalGrade = evaluate(state.questions);
     // enviar finalGrade al back
-    console.log({ score: parseInt(finalGrade, 10), evaluatee_company_user_id: id });
-    createUserEvaluation({ score: parseInt(finalGrade, 10), evaluatee_company_user_id: id });
+    console.log({
+      score: parseInt(finalGrade, 10),
+      evaluatee_company_user_id: id,
+    });
+    createUserEvaluation({
+      score: parseInt(finalGrade, 10),
+      evaluatee_company_user_id: id,
+    });
     //navigate("/");
+  };
+
+  const handleConfirmAccept = () => {
+    setOpenConfirmModal(false);
+    navigate("/");
   };
 
   if (isLoading || isInvitationFetching || loading) {
@@ -416,11 +434,18 @@ const EvaluationGE = () => {
           content={"¿Estás seguro de realizar esta acción?"}
           onAccept={handleAccept}
         />
+        <DialogMod
+          open={openConfirmModal}
+          setOpen={setOpenConfirmModal}
+          title={"Confirmación"}
+          content={"Evaluación enviada correctamente. ¿Desea continuar?"}
+          onAccept={handleConfirmAccept}
+        />
         <Snackbar
           open={openSnack}
           autoHideDuration={10000}
-          onClose={() => setOpenSnack(!openSnack)}
-          message="Debe responder a todas las preguntas"
+          onClose={() => setOpenSnack(false)}
+          message={snackbarMessage}
         />
       </Box>
     </Container>
