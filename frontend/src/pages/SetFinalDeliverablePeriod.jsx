@@ -20,7 +20,7 @@ const SetFinalDeliverablePeriod = () => {
     isError: isPeriodError,
     isFetching: isPeriodFetching,
     error: periodError,
-  } = useGetAcademicPeriodByIdQuery(id);
+  } = useGetAcademicPeriodByIdQuery(id, { refetchOnMountOrArgChange: true });
 
   useEffect(() => {
     if (isPeriodSuccess) {
@@ -93,8 +93,8 @@ const SetFinalDeliverablePeriod = () => {
       });
     } else {
       //sucess
-      console.log({id, data: { start_date: startDate, end_date: endDate }});
-      updateAcademicPeriodById({id, data: { start_date: startDate, end_date: endDate }});
+      console.log(id,{ start_date: startDate, end_date: endDate });
+      updateAcademicPeriodById({id,start_date: startDate, end_date: endDate });
       setSnackbarMessage("Periodo de entrega final ajustado con exito");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);

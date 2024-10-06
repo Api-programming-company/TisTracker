@@ -150,7 +150,6 @@ class AcademicPeriodController extends Controller
             if ($user->user_type !== 'D') {
                 return response()->json(['message' => 'Unauthorized'], 403);
             }
-
             // Validar los datos
             $request->validate([
                 'start_date' => 'required|date',
@@ -171,7 +170,8 @@ class AcademicPeriodController extends Controller
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Error de validación',
-                'errors' => $e->validator->errors()
+                'errors' => $e->validator->errors(),
+                'request' => $request
             ], 422);
         } catch (Exception $e) {
             return response()->json([
