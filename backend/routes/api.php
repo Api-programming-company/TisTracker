@@ -54,9 +54,9 @@ Route::middleware('auth')->group(function () {
     Route::get('pending-companies', [CompanyController::class, 'getCompaniesByAcademicPeriod']);
 
 
-    Route::apiResource('academic-periods', AcademicPeriodController::class);
-    Route::get('academic-periods/grouped-by-teacher', [AcademicPeriodController::class, 'getAllGroupedByTeacher']);
-    Route::post('academic-periods/enroll', [AcademicPeriodController::class, 'enroll']);
+    
+    Route::get('grouped-by-teacher', [AcademicPeriodController::class, 'getAllGroupedByTeacher']);
+    Route::post('enroll', [AcademicPeriodController::class, 'enroll']);
 
     Route::apiResource('company', CompanyController::class);
     Route::get('student/pending-companies', [CompanyController::class, "getPendingCompaniesForUser"]);
@@ -72,6 +72,7 @@ Route::middleware('auth')->group(function () {
     //buscador por correo solo estudiante
     Route::get('student/search/{email}', [AuthController::class, 'searchStudentByEmail']);
     Route::get('/student/company/{academicPeriodId}', [CompanyUserController::class, 'getStudentCompanyByAcademicPeriod']);
+    Route::apiResource('academic-periods', AcademicPeriodController::class);
 
 });
 
