@@ -189,6 +189,28 @@ class UserEvaluationController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            // Buscar la evaluación por ID
+            $evaluation = UserEvaluation::findOrFail($id);
+
+            // Verificar que el usuario autenticado es quien realizó la evaluación
+            $user = Auth::user();
+            if ($evaluation->evaluator_company_user_id !== $user->companyUser->id) {
+                return response()->json(['message' => 'No estás autorizado para eliminar esta evaluación.'], 403);
+            }
+
+            // Eliminar la evaluación
+            $evaluation->delete();
+
+            return response()->json([
+                'message' => 'Evaluación eliminada correctamente.'
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Ocurrió un error al intentar eliminar la evaluación.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
+
 }
