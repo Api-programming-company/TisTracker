@@ -11,6 +11,7 @@ use App\Http\Controllers\PlanningController;
 use App\Http\Controllers\CompanyUserController;
 use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\EvaluationController;
+use App\Http\Controllers\UserEvaluationController;
 
 Route::post('/webhook', [WebhookController::class, 'handle']);
 
@@ -73,10 +74,16 @@ Route::middleware('auth')->group(function () {
     Route::get('student/search/{email}', [AuthController::class, 'searchStudentByEmail']);
     Route::get('/student/company/{academicPeriodId}', [CompanyUserController::class, 'getStudentCompanyByAcademicPeriod']);
     Route::apiResource('academic-periods', AcademicPeriodController::class);
+    
+
 
 });
 
 //ruta de evaluacion 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('evaluations', EvaluationController::class);
+});
+//evaluar a mi grupo empresa
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('Userevaluations', UserEvaluationController::class);
 });
