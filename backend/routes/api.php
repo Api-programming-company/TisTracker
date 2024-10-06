@@ -51,9 +51,9 @@ Route::post('/email/verification-notification', function (Request $request) {
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 // docente
 Route::middleware('auth')->group(function () {
-    Route::get('academic-periods/companies', [CompanyController::class, 'getCompaniesByAcademicPeriod']);
+    Route::get('pending-companies', [CompanyController::class, 'getCompaniesByAcademicPeriod']);
 
-    
+
     Route::apiResource('academic-periods', AcademicPeriodController::class);
     Route::get('academic-periods/grouped-by-teacher', [AcademicPeriodController::class, 'getAllGroupedByTeacher']);
     Route::post('academic-periods/enroll', [AcademicPeriodController::class, 'enroll']);
