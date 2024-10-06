@@ -99,7 +99,7 @@ function App({ toggleTheme, isDarkMode }) {
           <Route path="/home" element={<Home />} />
           <Route path="/upload" element={<ImageUpload />} />
           <Route path="/example" element={<Example />} />
-          <Route path="/ver-planificacion" element={<SeeCompanyPlanning />} />
+          <Route path="/planning/:id" element={<SeeCompanyPlanning />} />
           
           <Route path="/set-final-period" element={<SetFinalDeliverablePeriod/>}></Route>
           
