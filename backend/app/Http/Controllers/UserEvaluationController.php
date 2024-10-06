@@ -19,7 +19,20 @@ class UserEvaluationController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            // Obtener el usuario autenticado
+            $user = Auth::user();
+
+            // Obtener las evaluaciones realizadas por el usuario autenticado
+            $evaluations = UserEvaluation::where('evaluator_company_user_id', $user->companyUser->id)->get();
+
+            return response()->json($evaluations, 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Ocurrió un error inesperado.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -107,8 +120,20 @@ class UserEvaluationController extends Controller
      */
     public function show($id)
     {
-        //
+        try {
+            // Buscar la evaluación por ID
+            $evaluation = UserEvaluation::findOrFail($id);
+
+            // Retornar la evaluación encontrada
+            return response()->json($evaluation, 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Ocurrió un error al buscar la evaluación.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
+
 
     /**
      * Update the specified resource in storage.
