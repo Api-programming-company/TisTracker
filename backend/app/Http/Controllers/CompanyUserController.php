@@ -9,7 +9,6 @@ use App\Models\CompanyUser;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Validator;
-
 use Exception;
 
 class CompanyUserController extends Controller
@@ -179,7 +178,8 @@ class CompanyUserController extends Controller
             return response()->json([
                 'message' => 'Compañía obtenida correctamente.',
                 'company' => $companyUser->company,
-                'request_date' => $companyUser->updated_at
+                'request_date' => $companyUser->updated_at,
+                'user' => $companyUser->user,
             ], 200);
         } catch (Exception $e) {
             return response()->json([
