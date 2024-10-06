@@ -10,7 +10,6 @@ import {
 import { useGetCompanyByIdQuery } from "../api/companyApi";
 import { useParams } from "react-router-dom";
 import CompanyDetails from "../components/company/CompanyDetails";
-import CompanyPlanning from "../components/company/CompanyPlanning";
 import { useUpdateCompanyPlanningByIdMutation } from "../api/companyApi";
 import { useNavigate } from "react-router-dom";
 

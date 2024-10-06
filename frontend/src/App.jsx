@@ -101,7 +101,7 @@ function App({ toggleTheme, isDarkMode }) {
           <Route path="/example" element={<Example />} />
           <Route path="/planning/:id" element={<SeeCompanyPlanning />} />
           
-          <Route path="/set-final-period" element={<SetFinalDeliverablePeriod/>}></Route>
+          <Route path="/update-academic-period/:id" element={<SetFinalDeliverablePeriod/>}></Route>
           
           <Route path="/*" element={<NotFound />} />
         </Routes>
