@@ -140,4 +140,45 @@ class AcademicPeriodController extends Controller
             ], 500);
         }
     }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $user = Auth::user();
+
+            // Verificar si el usuario tiene permiso para actualizar el periodo académico
+            if ($user->user_type !== 'D') {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
+
+            // Validar los datos
+            $request->validate([
+                'start_date' => 'required|date',
+                'end_date' => 'required|date|after_or_equal:start_date',
+            ]);
+
+            // Buscar el periodo académico
+            $academicPeriod = AcademicPeriod::findOrFail($id);
+
+            // Actualizar fechas de inicio y fin
+            $academicPeriod->start_date = $request->start_date;
+            $academicPeriod->end_date = $request->end_date;
+            $academicPeriod->save();
+
+            // Mensaje de retroalimentación
+            return response()->json(['message' => 'La fecha ha sido ajustada con éxito', 'academic_period' => $academicPeriod], 200);
+
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Error de validación',
+                'errors' => $e->validator->errors()
+            ], 422);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Ocurrió un error',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
 }
