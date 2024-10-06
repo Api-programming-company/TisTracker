@@ -200,8 +200,11 @@ class AcademicPeriodController extends Controller
                 return response()->json(['message' => 'Unauthorized'], 403);
             }
 
-            // Retornar el periodo académico encontrado
-            return response()->json($academicPeriod, 200);
+            // Retornar el periodo académico encontrado con un mensaje de éxito
+            return response()->json([
+                'message' => 'Periodo académico obtenido con éxito',
+                'academic_period' => $academicPeriod
+            ], 200);
 
         } catch (Exception $e) {
             return response()->json([
@@ -210,5 +213,6 @@ class AcademicPeriodController extends Controller
             ], 500);
         }
     }
+
 
 }
