@@ -4,6 +4,7 @@ import {
   AccordionSummary,
   List,
   ListItem,
+  Avatar,
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
@@ -17,7 +18,7 @@ const MemberAccordion = ({ members }) => {
       <Accordion>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1-content"
+          aria-controls="panel1-content"
           id="panel1-header"
         >
           Integrantes
@@ -27,10 +28,22 @@ const MemberAccordion = ({ members }) => {
             {members.map((e) => {
               return (
                 <ListItem key={e.user_id}>
-                  <ListItemIcon>
-                    <PersonIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={e.email}/>
+                  <Avatar
+                    sx={{
+                      bgcolor: "primary.main",
+                      color: "white",
+                      width: 56,
+                      height: 56,
+                      mr: 2,
+                    }}
+                  >
+                    {e.first_name[0]}
+                    {e.last_name[0]}
+                  </Avatar>
+                  <ListItemText
+                    primary={e.first_name + " " + e.last_name}
+                    secondary={e.email}
+                  />
                 </ListItem>
               );
             })}
