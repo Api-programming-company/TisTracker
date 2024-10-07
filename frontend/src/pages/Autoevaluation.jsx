@@ -19,9 +19,8 @@ const Autoevaluation = () => {
   const ejemploEvaluacion = {
     evaluation: {
       id: 1,
-      title: "Final Project Evaluation",
-      description:
-        "Evaluation for the final project submission. Please answer the following questions based on your experience.",
+      title: "Autoevaluación de Grupo Empresa",
+      description: " ",
       questions: [
         {
           id: 1,
@@ -64,7 +63,7 @@ const Autoevaluation = () => {
               score: "1",
             },
             {
-              id:7,
+              id: 7,
               text: "En desacuerdo",
               score: "2",
             },
@@ -343,10 +342,10 @@ const Autoevaluation = () => {
         </Typography>
 
         <Typography
-          component="h3"
-          sx={{ color: "black", fontSize: "20px", lineHeight: "1", marginY: 3 }}
+          component="h2"
+          sx={{ fontSize: "30px", lineHeight: "1", marginY: 3 }}
         >
-          {state.description}
+          Criterios de Evaluación
         </Typography>
 
         <Grid2 container spacing={2}>
