@@ -12,6 +12,7 @@ use App\Http\Controllers\CompanyUserController;
 use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\UserEvaluationController;
+use App\Http\Controllers\CompanyUserEvaluationControllers;
 
 Route::post('/webhook', [WebhookController::class, 'handle']);
 
@@ -85,5 +86,9 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 //evaluar a mi grupo empresa
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('Userevaluations', UserEvaluationController::class);
+    Route::apiResource('user-evaluations', UserEvaluationController::class);
+});
+//evaluar a mi grupo empresa y otras
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('company-user-evaluation', CompanyUserEvaluationControllers::class);
 });
