@@ -13,8 +13,18 @@ const RadioOption = ({ answer_options, question_id }) => {
     <>
       {answer_options.map((option) => {
         return (
-          <Grid2 size={{ xs: 4, md: 1 }}>
-            <Typography sx={{ height: 40 }}>{option.text}</Typography>
+          <Grid2
+            size={{ xs: 4, md: 1 }}
+            sx={{
+              display: "flex",
+              justifyContent: "end",
+              alignItems: "start",
+              flexDirection: "column",
+            }}
+          >
+            <Typography sx={{ height: 40, display: "contents" }}>
+              {option.text}
+            </Typography>
             <Radio
               checked={selectedValue === option.score}
               value={option.score}
