@@ -7,9 +7,11 @@ import {
   ListItemText,
   Collapse,
   IconButton,
+  Button,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import { useNavigate } from "react-router-dom";
 
 const CompanyDetails = ({ company }) => {
   const [openMembers, setOpenMembers] = useState(false);
@@ -18,6 +20,21 @@ const CompanyDetails = ({ company }) => {
     setOpenMembers((prev) => !prev);
   };
 
+  const navigate = useNavigate();
+  const getStatusLabel = (status) => {
+    switch (status) {
+      case "R":
+        return "Rechazado";
+      case "P":
+        return "Pendiente";
+      case "A":
+        return "Aceptado";
+      case "C":
+        return "Conformación";
+      default:
+        return "Desconocido";
+    }
+  };
   return (
     <Box sx={{ padding: 2, border: "1px solid #ccc", borderRadius: 2 }}>
       <Typography variant="h4" gutterBottom>
@@ -49,6 +66,12 @@ const CompanyDetails = ({ company }) => {
               <ListItemText
                 primary="Correo Electrónico"
                 secondary={company.email}
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemText
+                primary="Estado"
+                secondary={getStatusLabel(company.status)}
               />
             </ListItem>
           </List>
@@ -84,11 +107,27 @@ const CompanyDetails = ({ company }) => {
             <List component="div" disablePadding>
               {company.members.length > 0 ? (
                 company.members.map((member) => (
-                  <ListItem key={member.id}>
+                  <ListItem
+                    key={member.id}
+                    sx={{ display: "flex", justifyContent: "space-between" }}
+                  >
                     <ListItemText
                       primary={`${member.first_name} ${member.last_name}`}
-                      secondary={member.email}
+                      secondary={
+                        member.pivot.permission === "W"
+                          ? `${member.email} (Encargado)`
+                          : member.email
+                      }
                     />
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => {
+                        navigate(`/user-evaluation/${member?.pivot?.id}`);
+                      }}
+                    >
+                      Evaluar
+                    </Button>
                   </ListItem>
                 ))
               ) : (
