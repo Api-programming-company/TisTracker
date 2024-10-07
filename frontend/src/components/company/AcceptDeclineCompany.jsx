@@ -226,7 +226,7 @@ const AcceptDeclineCompany = () => {
           onClick={() => setOpenR(true)}
           variant="outlined"
           disabled={isUpdateLoading}
-          color="secondary"
+          // color="secondary"
           sx={{ mb: 2, px: 11, py: 1 }}
         >
           Rechazar
@@ -244,7 +244,7 @@ const AcceptDeclineCompany = () => {
           <DialogTitle>{"Actualización exitosa"}</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              La solicitud fue aceptada exitosamente.
+              Su acción fue registrada exitosamente.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
