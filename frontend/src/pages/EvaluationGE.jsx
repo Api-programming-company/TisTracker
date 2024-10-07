@@ -364,11 +364,11 @@ const EvaluationGE = () => {
     const finalGrade = evaluate(state.questions);
     console.log({
       company_id: company_id,
-      finalGrade: parseInt(finalGrade, 10),
+      score: parseInt(finalGrade, 10),
     });
     createCompanyEvaluation({
       company_id: company_id,
-      finalGrade: parseInt(finalGrade, 10),
+      score: parseInt(finalGrade, 10),
     });
     //navigate("/");
   };
