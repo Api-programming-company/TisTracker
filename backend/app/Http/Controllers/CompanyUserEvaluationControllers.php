@@ -63,21 +63,42 @@ class CompanyUserEvaluationControllers extends Controller
                 return response()->json(['message' => 'No perteneces a ninguna compañía o tu estado no es activo.'], 403);
             }
 
-            // Verificar que el usuario tiene permisos 'W' (Representante)
-            if ($companyUser->permission !== 'W') {
-                return response()->json(['message' => 'Solo el representante puede realizar evaluaciones.'], 403);
+            // Si la evaluación es a la propia compañía (autoevaluación)
+            if ($request->company_id == $companyUser->company_id) {
+                // Verificar si el usuario ya realizó la autoevaluación
+                $existingEvaluation = CompanyUserEvaluation::where('company_user_id', $companyUser->id)
+                    ->where('company_id', $companyUser->company_id)
+                    ->first();
+
+                if ($existingEvaluation) {
+                    return response()->json(['message' => 'Ya realizaste la autoevaluación.'], 403);
+                }
+
+                // Guardar la autoevaluación
+                CompanyUserEvaluation::create([
+                    'company_user_id' => $companyUser->id,
+                    'company_id' => $companyUser->company_id,
+                    'score' => $request->score,
+                ]);
+
+                return response()->json(['message' => 'Autoevaluación registrada correctamente.'], 201);
             }
 
-            // Verificar si ya realizó la evaluación
+            // Si es una evaluación a otra empresa, solo el líder puede hacerlo
+            if ($companyUser->permission !== 'W') {
+                return response()->json(['message' => 'Solo el representante puede evaluar a otras empresas.'], 403);
+            }
+
+            // Verificar si ya realizó la evaluación a la otra empresa
             $existingEvaluation = CompanyUserEvaluation::where('company_user_id', $companyUser->id)
                 ->where('company_id', $request->company_id)
                 ->first();
 
             if ($existingEvaluation) {
-                return response()->json(['message' => 'Ya realizaste la evaluación para este grupo empresa.'], 403);
+                return response()->json(['message' => 'Ya realizaste la evaluación para esta grupo empresa.'], 403);
             }
 
-            // Guardar la evaluación
+            // Guardar la evaluación a la otra empresa
             CompanyUserEvaluation::create([
                 'company_user_id' => $companyUser->id,
                 'company_id' => $request->company_id,
@@ -120,17 +141,6 @@ class CompanyUserEvaluationControllers extends Controller
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
 
     /**
      * Remove the specified resource from storage.
