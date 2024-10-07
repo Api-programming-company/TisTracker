@@ -12,9 +12,20 @@ const evaluationApi = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    createCompanyEvaluation: builder.mutation({
+      query: (data) => ({
+        url: "company-user-evaluation",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: data,
+      }),
+    }),
   }),
 });
 
 export const {
-    useCreateUserEvaluationMutation,
+  useCreateUserEvaluationMutation,
+  useCreateCompanyEvaluationMutation,
 } = evaluationApi;

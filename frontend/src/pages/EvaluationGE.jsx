@@ -1,21 +1,56 @@
-import React, { useContext, useEffect, useState } from "react";
-import { evaluate } from "../utils/evaluaLikert";
 import {
   Box,
   Button,
+  CircularProgress,
   Container,
   Divider,
   Grid2,
   Snackbar,
   Typography,
 } from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useGetCompanyByIdQuery } from "../api/companyApi";
+import { useCreateCompanyEvaluationMutation } from "../api/evaluationApi";
+import DialogMod from "../components/DialogMod";
 import Question from "../components/evaluation/Question";
 import RadioOption from "../components/evaluation/RadioOption";
 import EvaluateContext from "../context/evaluateContext/EvaluateContext";
-import DialogMod from "../components/DialogMod";
-import { useNavigate } from "react-router-dom";
+import { evaluate } from "../utils/evaluaLikert";
 
 const EvaluationGE = () => {
+  const { company_id } = useParams();
+  const {
+    data: company,
+    isSuccess: companySuccess,
+    isFetching: companyFetching,
+    isError: isCompanyError,
+    error: companyError,
+  } = useGetCompanyByIdQuery(company_id);
+
+  useEffect(() => {
+    if (companySuccess) {
+      console.log(company);
+    }
+    if (isCompanyError) {
+      console.log(companyError);
+    }
+  }, [company, companyFetching, isCompanyError, companyError, companySuccess]);
+
+  const [
+    createCompanyEvaluation,
+    { data, isSuccess, isError, error, isLoading },
+  ] = useCreateCompanyEvaluationMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log(data);
+    }
+    if (isError) {
+      console.log(error);
+    }
+  }, [data, isSuccess, isError, error, isLoading]);
+
   const ejemploEvaluacion = {
     evaluation: {
       id: 1,
@@ -306,28 +341,17 @@ const EvaluationGE = () => {
     },
   };
 
-  const datagrupo = {
-    grupoEmpresa: "API",
-    integrantes: [
-      "Carlos Martinez Avocado",
-      "Juan Felipe Montecinos Ruma",
-      "Ana Garnica Peredo",
-      "Maria Gonzalez Macias",
-      "Luciana Paredes Torrico",
-    ],
-  };
-
   const { state, setInitialState, verifyFields, clearState } =
     useContext(EvaluateContext);
   const [open, setOpen] = useState(false);
   const [openSnack, setOpenSnack] = useState(false);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true); // para simular el isloading borrar luego
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     clearState();
     setInitialState(ejemploEvaluacion.evaluation);
-    setLoading(!loading);
+    setLoading(false);
   }, []);
 
   const handleAccept = () => {
@@ -338,10 +362,32 @@ const EvaluationGE = () => {
     }
 
     const finalGrade = evaluate(state.questions);
-    // enviar finalGrade al back
-    console.log(finalGrade);
-    navigate("/");
+    console.log({
+      company_id: company_id,
+      finalGrade: parseInt(finalGrade, 10),
+    });
+    createCompanyEvaluation({
+      company_id: company_id,
+      finalGrade: parseInt(finalGrade, 10),
+    });
+    //navigate("/");
   };
+
+  if (companyFetching || loading) {
+    return (
+      <Container
+        maxWidth="sm"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        <CircularProgress />
+      </Container>
+    );
+  }
 
   return (
     !loading && (
@@ -364,7 +410,8 @@ const EvaluationGE = () => {
           component="h3"
           sx={{ fontSize: "20px", lineHeight: "1", marginY: 3 }}
         >
-          <strong>Grupo Empresa a evaluar: </strong> {datagrupo.grupoEmpresa}
+          <strong>Grupo Empresa a evaluar: </strong>{" "}
+          {company?.company?.short_name}
         </Typography>
 
         <Typography
