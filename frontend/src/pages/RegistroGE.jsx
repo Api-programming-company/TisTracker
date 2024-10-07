@@ -36,7 +36,8 @@ const RegistroGE = () => {
     }
 
     if (isError) {
-      setSnackbarMessage("Error al enviar el formulario");
+      // setSnackbarMessage("Error al enviar el formulario");
+      setSnackbarMessage(error.data.message);
       setSnackbarOpen(true);
       console.log(error);
 
