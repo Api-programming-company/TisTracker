@@ -18,7 +18,22 @@ class CompanyUserEvaluationControllers extends Controller
      */
     public function index()
     {
-        //
+        try {
+            $user = Auth::user();
+            $evaluations = CompanyUserEvaluation::whereHas('companyUser', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })->get();
+
+            return response()->json([
+                'message' => 'Evaluaciones obtenidas correctamente.',
+                'data' => $evaluations
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al obtener las evaluaciones.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -90,7 +105,18 @@ class CompanyUserEvaluationControllers extends Controller
      */
     public function show($id)
     {
-        //
+        try {
+            $evaluation = CompanyUserEvaluation::findOrFail($id);
+            return response()->json([
+                'message' => 'Evaluación obtenida correctamente.',
+                'data' => $evaluation,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al obtener la evaluación.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
