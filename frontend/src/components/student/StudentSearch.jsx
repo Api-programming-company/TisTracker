@@ -76,7 +76,7 @@ const StudentSearch = () => {
     { data, isFetching, isLoading, isError, isSuccess, error },
   ] = useLazySearchStudentQuery();
   const [openModal, setOpenModal] = useState(false); // Estado para controlar el modal
-  const MAX_STUDENTS = 7;
+  const MAX_STUDENTS = 5;
 
   const handleSearch = () => {
     searchStudent(email);
@@ -210,7 +210,7 @@ const StudentSearch = () => {
 
       {members.length >= MAX_STUDENTS && (
         <Typography variant="body1" color="warning" sx={{ marginTop: 2 }}>
-          Has alcanzado el límite de {MAX_STUDENTS} integrantes.
+          Has alcanzado el límite de {MAX_STUDENTS + 1} integrantes.
         </Typography>
       )}
 

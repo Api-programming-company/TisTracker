@@ -36,7 +36,8 @@ const RegistroGE = () => {
     }
 
     if (isError) {
-      setSnackbarMessage("Error al enviar el formulario");
+      // setSnackbarMessage("Error al enviar el formulario");
+      setSnackbarMessage(error.data.message);
       setSnackbarOpen(true);
       console.log(error);
 
@@ -99,10 +100,10 @@ const RegistroGE = () => {
         message: "La dirección es obligatoria.",
       },
       phone: {
-        condition: !phone || !/^\d+$/.test(phone) || phone.length !== 8,
+        condition: !phone || !/^\d+$/.test(phone) || phone.length > 8 || phone.length < 7,
         message: !phone
           ? "El teléfono es obligatorio."
-          : "El teléfono debe contener exactamente 8 dígitos.",
+          : "El teléfono debe contener 7 u 8 dígitos.",
       },
     };
 
