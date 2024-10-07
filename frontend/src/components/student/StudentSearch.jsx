@@ -1,32 +1,61 @@
-import React, { useState, useContext, useEffect } from "react";
-import { useLazySearchStudentQuery } from "../../api/studentApi";
-import { useUpdateCompanyByIdMutation } from "../../api/companyApi";
-import { useGetCompanyByIdQuery } from "../../api/companyApi";
+import AddIcon from "@mui/icons-material/Add";
+import SearchIcon from "@mui/icons-material/Search";
 import {
-  TextField,
-  IconButton,
   Box,
-  Typography,
-  CircularProgress,
   Button,
+  CircularProgress,
+  Container,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Container,
+  IconButton,
+  TextField,
+  Typography,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import AddIcon from "@mui/icons-material/Add";
-import StudentCard from "./StudentCard";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import {
+  useGetCompanyByIdQuery,
+  useUpdateCompanyByIdMutation,
+} from "../../api/companyApi";
+import { useLazySearchStudentQuery } from "../../api/studentApi";
 import AppContext from "../../context/AppContext";
+import StudentCard from "./StudentCard";
+import { useCreateInvitationMutation } from "../../api/invitationApi";
 
 const StudentSearch = () => {
   const { id } = useParams();
   const { user } = useContext(AppContext);
   const [members, setMembers] = useState([]);
   const [email, setEmail] = useState("");
+
+  const [
+    createInvitation,
+    {
+      data: createInvitationData,
+      isSuccess: isCreateInvitationSuccess,
+      isLoading: isCreateInvitationLoading,
+      isError: isCreateInvitationError,
+      error: createInvitationError,
+    },
+  ] = useCreateInvitationMutation();
+
+  useEffect(() => {
+    if (isCreateInvitationSuccess) {
+      console.log("Invitación creada exitosamente:", createInvitationData);
+    }
+
+    if (isCreateInvitationError) {
+      console.error("Error al crear la invitación:", createInvitationError);
+    }
+  }, [
+    isCreateInvitationSuccess,
+    isCreateInvitationError,
+    createInvitationData,
+    createInvitationError,
+  ]);
 
   const [
     updateCompany,
@@ -38,16 +67,18 @@ const StudentSearch = () => {
       error: updateCompanyError,
     },
   ] = useUpdateCompanyByIdMutation();
+
   const {
     data: companyData,
     isSuccess: isCompanySuccess,
     isLoading: isCompanyLoading,
     isError: isCompanyError,
     error: companyError,
-  } = useGetCompanyByIdQuery(id);
+  } = useGetCompanyByIdQuery(id, { refetchOnMountOrArgChange: true });
 
   useEffect(() => {
     if (isCompanySuccess) {
+      setMembers(companyData?.company?.members);
       console.log("company obtenida:", companyData);
     }
 
@@ -75,7 +106,7 @@ const StudentSearch = () => {
     searchStudent,
     { data, isFetching, isLoading, isError, isSuccess, error },
   ] = useLazySearchStudentQuery();
-  const [openModal, setOpenModal] = useState(false); // Estado para controlar el modal
+  const [openModal, setOpenModal] = useState(false);
   const MAX_STUDENTS = 5;
 
   const handleSearch = () => {
@@ -84,7 +115,7 @@ const StudentSearch = () => {
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
-      handleSearch(); // Llama a la búsqueda al presionar Enter
+      handleSearch();
     }
   };
 
@@ -125,7 +156,7 @@ const StudentSearch = () => {
     setOpenModal(false);
   };
 
-  if (isUpdateCompanyLoading || isCompanyLoading) {
+  if (isCreateInvitationLoading || isCompanyLoading) {
     return (
       <Container
         maxWidth="sm"
@@ -228,25 +259,15 @@ const StudentSearch = () => {
 
       <Box sx={{ marginTop: 4 }}>
         <Typography variant="h6">Integrantes</Typography>
-        {members.map((member) => (
-          <StudentCard
-            key={member.id}
-            student={member}
-            onRemove={handleRemoveStudent}
-          />
-        ))}
+        {members
+          .filter((member) => member.pivot.permission === "R")
+          .map((member) => (
+            <StudentCard
+              key={member.id}
+              student={member}
+            />
+          ))}
       </Box>
-
-      {/* Botón para enviar invitaciones */}
-      <Button
-        variant="contained"
-        color="primary"
-        sx={{ marginTop: 4 }}
-        onClick={handleOpenModal}
-        disabled={members.length === 0}
-      >
-        Enviar Invitaciones
-      </Button>
 
       {/* Modal de confirmación */}
       <Dialog
