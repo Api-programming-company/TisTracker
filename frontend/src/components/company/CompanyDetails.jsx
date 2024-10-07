@@ -94,7 +94,11 @@ const CompanyDetails = ({ company }) => {
                   >
                     <ListItemText
                       primary={`${member.first_name} ${member.last_name}`}
-                      secondary={member.email}
+                      secondary={
+                        member.pivot.permission === 'W'
+                          ? `${member.email} (Encargado)`
+                          : member.email
+                      }
                     />
                     <Button
                       variant="contained"
