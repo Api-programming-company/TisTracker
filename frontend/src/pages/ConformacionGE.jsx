@@ -94,7 +94,7 @@ const ConformacionGE = () => {
       return;
     }
 
-    alert("La lista se ha enviado a tu docente TIS");
+    // alert("La lista se ha enviado a tu docente TIS");
     console.log("La lista se ha enviado a tu docente TIS");
     updateCompany({ id: id, data: { status: "P" } });
   };
