@@ -21,7 +21,20 @@ const CompanyDetails = ({ company }) => {
   };
 
   const navigate = useNavigate();
-
+  const getStatusLabel = (status) => {
+    switch (status) {
+      case "R":
+        return "Rechazado";
+      case "P":
+        return "Pendiente";
+      case "A":
+        return "Aceptado";
+      case "C":
+        return "Conformación";
+      default:
+        return "Desconocido";
+    }
+  };
   return (
     <Box sx={{ padding: 2, border: "1px solid #ccc", borderRadius: 2 }}>
       <Typography variant="h4" gutterBottom>
@@ -53,6 +66,12 @@ const CompanyDetails = ({ company }) => {
               <ListItemText
                 primary="Correo Electrónico"
                 secondary={company.email}
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemText
+                primary="Estado"
+                secondary={getStatusLabel(company.status)}
               />
             </ListItem>
           </List>
@@ -95,7 +114,7 @@ const CompanyDetails = ({ company }) => {
                     <ListItemText
                       primary={`${member.first_name} ${member.last_name}`}
                       secondary={
-                        member.pivot.permission === 'W'
+                        member.pivot.permission === "W"
                           ? `${member.email} (Encargado)`
                           : member.email
                       }
