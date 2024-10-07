@@ -64,6 +64,13 @@ class UserEvaluationController extends Controller
                 ], 403);
             }
 
+            // Verificar que el usuario no se esté evaluando a sí mismo
+            if ($evaluatorCompanyUser->id === $evaluateeCompanyUser->id) {
+                return response()->json([
+                    'message' => 'No puedes evaluarte a ti mismo.'
+                ], 403);
+            }
+
             // Verificar que no se haya evaluado previamente al mismo integrante
             $existingEvaluation = UserEvaluation::where('evaluator_company_user_id', $evaluatorCompanyUser->id)
                 ->where('evaluatee_company_user_id', $evaluateeCompanyUser->id)
@@ -109,6 +116,7 @@ class UserEvaluationController extends Controller
             ], 500);
         }
     }
+
 
 
 
