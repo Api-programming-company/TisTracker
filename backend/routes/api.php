@@ -56,7 +56,6 @@ Route::middleware('auth')->group(function () {
     Route::get('pending-companies', [CompanyController::class, 'getCompaniesByAcademicPeriod']);
 
 
-    
     Route::get('grouped-by-teacher', [AcademicPeriodController::class, 'getAllGroupedByTeacher']);
     Route::post('enroll', [AcademicPeriodController::class, 'enroll']);
 

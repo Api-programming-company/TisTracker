@@ -47,19 +47,20 @@ class CompanyUserEvaluationControllers extends Controller
         try {
             // Validar la solicitud
             $request->validate([
-                'company_user_id' => 'required|exists:company_user,id',
                 'company_id' => 'required|exists:companies,id',
                 'score' => 'required|integer|min:1|max:100',
             ]);
 
             $user = Auth::user();
 
-            // Obtener el registro del usuario en la compañía
-            $companyUser = CompanyUser::find($request->company_user_id);
+            // Obtener el registro del usuario en la compañía con estado 'A'
+            $companyUser = CompanyUser::where('user_id', $user->id)
+                ->where('status', 'A')
+                ->first();
 
             // Verificar si el usuario pertenece a la compañía
-            if ($companyUser->user_id !== $user->id) {
-                return response()->json(['message' => 'No tienes permisos para evaluar este grupo empresa.'], 403);
+            if (!$companyUser) {
+                return response()->json(['message' => 'No perteneces a ninguna compañía o tu estado no es activo.'], 403);
             }
 
             // Verificar que el usuario tiene permisos 'W' (Representante)
