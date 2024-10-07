@@ -139,6 +139,18 @@ class CompanyUserEvaluationControllers extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $evaluation = CompanyUserEvaluation::findOrFail($id);
+            $evaluation->delete();
+
+            return response()->json([
+                'message' => 'Evaluación eliminada correctamente.',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al eliminar la evaluación.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }
