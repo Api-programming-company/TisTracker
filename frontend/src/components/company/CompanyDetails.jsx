@@ -100,7 +100,7 @@ const CompanyDetails = ({ company }) => {
                       variant="contained"
                       color="primary"
                       onClick={() => {
-                        navigate(`/user-evaluations/${member?.pivot?.id}`);
+                        navigate(`/user-evaluation/${member?.pivot?.id}`);
                       }}
                     >
                       Evaluar
