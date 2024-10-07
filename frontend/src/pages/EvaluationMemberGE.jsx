@@ -35,7 +35,8 @@ const EvaluationGE = () => {
       setOpenConfirmModal(true);
     }
     if (isError) {
-      setSnackbarMessage(`Error al enviar la evaluación: ${error.message}`);
+      console.log(error);
+      setSnackbarMessage("Error al enviar la evaluación " || error?.data?.message);
       setOpenSnack(true);
     }
   }, [data, error, isError, isLoading, isSuccess]);
@@ -44,18 +45,18 @@ const EvaluationGE = () => {
     data: invitation,
     error: invitationError,
     isSuccess: isInvitationSucess,
-    isError: isInvitationError,
+    isError: isInvError,
     isFetching: isInvitationFetching,
   } = useInvitationDetailsByIdQuery(id);
 
   useEffect(() => {
     if (isInvitationSucess) {
-      console.log(invitation);
+      console.log("data", invitation);
     }
-    if (isInvitationError) {
-      console.log(invitationError);
+    if (isInvError) {
+      console.log("error", invitationError);
     }
-  }, [invitation, invitationError, isInvitationError, isInvitationSucess]);
+  }, [invitation, invitationError, isInvError, isInvitationSucess]);
 
   const ejemploEvaluacion = {
     evaluation: {
