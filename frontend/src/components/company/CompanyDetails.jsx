@@ -7,9 +7,11 @@ import {
   ListItemText,
   Collapse,
   IconButton,
+  Button,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import { useNavigate } from "react-router-dom";
 
 const CompanyDetails = ({ company }) => {
   const [openMembers, setOpenMembers] = useState(false);
@@ -17,6 +19,8 @@ const CompanyDetails = ({ company }) => {
   const handleToggle = () => {
     setOpenMembers((prev) => !prev);
   };
+
+  const navigate = useNavigate();
 
   return (
     <Box sx={{ padding: 2, border: "1px solid #ccc", borderRadius: 2 }}>
@@ -84,11 +88,23 @@ const CompanyDetails = ({ company }) => {
             <List component="div" disablePadding>
               {company.members.length > 0 ? (
                 company.members.map((member) => (
-                  <ListItem key={member.id}>
+                  <ListItem
+                    key={member.id}
+                    sx={{ display: "flex", justifyContent: "space-between" }}
+                  >
                     <ListItemText
                       primary={`${member.first_name} ${member.last_name}`}
                       secondary={member.email}
                     />
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => {
+                        navigate(`/user-evaluations/${member?.pivot?.id}`);
+                      }}
+                    >
+                      Evaluar
+                    </Button>
                   </ListItem>
                 ))
               ) : (
