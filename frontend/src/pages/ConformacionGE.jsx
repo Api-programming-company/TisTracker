@@ -246,6 +246,7 @@ const ConformacionGE = () => {
             title={"Confirmación"}
             content={"Formulario enviado correctamente."}
             onAccept={handleConfirmAccept}
+            onCancel={handleConfirmAccept}
             showButtonCancel={false}
           />
         </form>
