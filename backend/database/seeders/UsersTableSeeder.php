@@ -9,21 +9,12 @@ class UsersTableSeeder extends Seeder
 {
     public function run()
     {
-        // Crear un docente
-        /** 
-        *User::create([ ya existe 
-        *    'id' => 5,
-         *   'name' => 'BORIS MARCELO CALANCHA NAVIA',
-          *  'email' => 'boris@fcyt.umss.edu.bo',
-           * 'password' => bcrypt('password123'), 
-        *]);
-        */ 
-
         // Crear algunos usuarios para las pruebas
+
         User::create([
             'id' => 101,
             'first_name' => 'User',
-            'last_name' => 'One',
+            'last_name' => 'One to Nine',
             'email' => '123456789@est.umss.edu',
             'password' => bcrypt('password123'),
             'user_type' => 'E', 
