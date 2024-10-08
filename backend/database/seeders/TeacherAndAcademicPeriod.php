@@ -16,12 +16,24 @@ class TeacherAndAcademicPeriod extends Seeder
      */
     public function run()
     {
+
         User::create([
             'id' => 1,
             'first_name' => 'BORIS MARCELO',
             'last_name' => 'CALANCHA NAVIA',
             'email' => 'boris@fcyt.umss.edu.bo',
             'password' => bcrypt('Boris1234*'),
+            'user_type' => 'D',
+            'email_verified_at' => Carbon::now(), 
+            'created_at' => Carbon::now(), 
+            'updated_at' => Carbon::now(), 
+        ]);
+        User::create([
+            'id' => 2,
+            'first_name' => 'Por',
+            'last_name' => 'Designar',
+            'email' => 'pordesignar@fcyt.umss.edu.bo',
+            'password' => bcrypt('Docente1234*'),
             'user_type' => 'D',
             'email_verified_at' => Carbon::now(), 
             'created_at' => Carbon::now(), 
