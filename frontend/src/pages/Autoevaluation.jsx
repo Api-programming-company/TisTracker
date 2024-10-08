@@ -365,10 +365,12 @@ const Autoevaluation = () => {
     console.log({
       company_id: company_id,
       score: parseInt(finalGrade, 10),
+      type: "autoevaluation",
     });
     createCompanyEvaluation({
       company_id: company_id,
       score: parseInt(finalGrade, 10),
+      type: "autoevaluation",
     });
     //navigate("/");
   };
