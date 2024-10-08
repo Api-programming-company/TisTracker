@@ -46,6 +46,7 @@ const Autoevaluation = () => {
   useEffect(() => {
     if (isSuccess) {
       console.log(data);
+      setOpen(false)
       setSnackbarMessage("Evaluación enviada correctamente.");
       setOpenSnack(true);
       setOpenConfirmModal(true);

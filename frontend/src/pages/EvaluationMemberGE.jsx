@@ -31,6 +31,7 @@ const EvaluationGE = () => {
 
   useEffect(() => {
     if (isSuccess) {
+      setOpen(false)
       setSnackbarMessage("Evaluación enviada correctamente.");
       setOpenSnack(true);
       setOpenConfirmModal(true);
