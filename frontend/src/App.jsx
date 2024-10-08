@@ -86,7 +86,7 @@ function App({ toggleTheme, isDarkMode }) {
             />
 
             {/* evaluacion */}
-            <Route path="/autoevaluation" element={<Autoevaluation />} />
+            <Route path="/autoevaluation/:company_id" element={<Autoevaluation />} />
             <Route path="/user-evaluation/:id" element={<EvaluationMemberGE />} />
             <Route path="/company-evaluation/:company_id" element={<EvaluationGE />} />
           </Route>

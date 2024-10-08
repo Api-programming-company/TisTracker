@@ -140,8 +140,12 @@ class CompanyUserController extends Controller
                 'permission' => $request->permission
             ]);
 
+            // Recargar la compañía con los miembros y sus pivotes
+            $company->load('members');
+
             return response()->json([
-                'message' => 'Miembro agregado correctamente a la compañía.'
+                'message' => 'Miembro agregado correctamente a la compañía.',
+                'company' => $company
             ], 201);  // 201 Created
 
         } catch (ValidationException $e) {
