@@ -33,7 +33,15 @@ const StudentCard = ({ student, onRemove }) => {
         spacing={2}
         sx={{ width: "100%", flexGrow: 1 }}
       >
-        <Avatar sx={{ bgcolor: "primary.main", width: 56, height: 56 }}>
+        <Avatar
+          sx={{
+            bgcolor: "primary.main",
+            color: "white",
+            width: 56,
+            height: 56,
+            mr: 2,
+          }}
+        >
           {student.first_name[0]}
           {student.last_name[0]}
         </Avatar>
