@@ -83,7 +83,11 @@ const StudentSearch = () => {
 
   useEffect(() => {
     if (isCompanySuccess) {
-      setMembers(companyData?.company?.members);
+      console.log("company data:", companyData?.company?.members);
+      const invitations = companyData?.company?.members?.filter(
+        (member) => member.pivot.status === "P"
+      );
+      setMembers(invitations);
       console.log("company obtenida:", companyData);
     }
 
