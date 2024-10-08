@@ -69,7 +69,7 @@ class CompanyController extends Controller
 
             if ($hasWritePermission) {
                 return response()->json([
-                    'message' => 'No puedes crear más empresas, ya eres miembro con permiso de escritura en otra compañía.'
+                    'message' => 'Ya eres el encargado de una empresa, no puedes crear otra'
                 ], 403); // 403 Forbidden
             }
 
@@ -152,7 +152,8 @@ class CompanyController extends Controller
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Error de validación.',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
+                "request" => $request
             ], 422);
         } catch (Exception $e) {
             return response()->json([

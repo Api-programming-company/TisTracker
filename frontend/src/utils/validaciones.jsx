@@ -25,3 +25,7 @@ export const formatDate = (date) => {
   const formatedDate = newDate.toLocaleDateString();
   return formatedDate;
 };
+
+export const isNumeric = (cadena) => {
+  return !isNaN(cadena) && !isNaN(parseFloat(cadena));
+}

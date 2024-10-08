@@ -2,25 +2,38 @@ import { apiSlice } from "./apiSlice";
 
 const academicPeriodApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    getAcademicPeriodById: builder.query({
+      query: (id) => `academic-periods/${id}`,
+    }),
     getAcademicPeriods: builder.query({
-      query: () => "docente/academic-periods",
+      query: () => "academic-periods",
+    }),
+    updateAcademicPeriodById: builder.mutation({
+      query: ({ id, start_date, end_date }) => ({
+        url: `academic-periods/${id}`,
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ start_date, end_date }),
+      }),
     }),
     createAcademicPeriod: builder.mutation({
-      query: (data) => ({
-        url: "docente/academic-periods",
+      query: ({ start_date, end_date }) => ({
+        url: "academic-periods",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: data,
+        body: JSON.stringify({ start_date, end_date }),
       }),
     }),
     getAcademicPeriodsGroupedByTeacher: builder.query({
-      query: () => "academic-periods/grouped-by-teacher",
+      query: () => "grouped-by-teacher",
     }),
     enrollInAcademicPeriod: builder.mutation({
       query: (data) => ({
-        url: "academic-periods/enroll",
+        url: "enroll",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -29,14 +42,15 @@ const academicPeriodApi = apiSlice.injectEndpoints({
       }),
     }),
     getCompaniesByAcademicPeriod: builder.query({
-      query: (academicPeriodId) =>
-        `academic-periods/companies?id=${academicPeriodId}`,
+      query: (academicPeriodId) => `pending-companies?id=${academicPeriodId}`,
     }),
   }),
 });
 
 export const {
+  useGetAcademicPeriodByIdQuery,
   useGetAcademicPeriodsQuery,
+  useUpdateAcademicPeriodByIdMutation,
   useCreateAcademicPeriodMutation,
   useGetAcademicPeriodsGroupedByTeacherQuery,
   useEnrollInAcademicPeriodMutation,

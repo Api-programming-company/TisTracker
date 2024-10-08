@@ -8,7 +8,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import DialogMod from "../DialogMod";
 import { useUpdateInvitationByIdMutation } from "../../api/invitationApi";
 import { formatDate } from "../../utils/validaciones";
@@ -17,6 +17,7 @@ import { useInvitationDetailsByIdQuery } from "../../api/invitationApi";
 
 const AcceptDeclineInvitation = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const { data, error, isError, isSuccess, isLoading, isFetching } =
     useInvitationDetailsByIdQuery(id);
@@ -49,6 +50,7 @@ const AcceptDeclineInvitation = () => {
         message: invitationData?.message,
         severity: "sucess",
       });
+      navigate("/");
     }
     if (isInvitationError) {
       console.log(invitationError);
@@ -127,7 +129,7 @@ const AcceptDeclineInvitation = () => {
           gutterBottom
           sx={{ textAlign: "center" }}
         >
-          Detalles de la solicitud
+          Detalles de la invitación
         </Typography>
       </Box>
       <Box
@@ -201,7 +203,7 @@ const AcceptDeclineInvitation = () => {
           open={openA}
           setOpen={setOpenA}
           title={"Aceptar"}
-          content={"¿Estas seguro que deseas aceptar esta invitación?"}
+          content={"¿Estás seguro que deseas aceptar esta invitación?"}
           onAccept={handleAccept}
         />
         {/* Rechazar solicitud */}
@@ -218,7 +220,7 @@ const AcceptDeclineInvitation = () => {
           open={openR}
           setOpen={setOpenR}
           title={"Rechazar"}
-          content={"¿Estas seguro que deseas rechazar esta invitación?"}
+          content={"¿Estás seguro que deseas rechazar esta invitación?"}
           onAccept={handleDecline}
         />
         {/* Snackbar */}

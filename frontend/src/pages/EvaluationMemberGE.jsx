@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { evaluate } from "../utils/evaluaLikert";
 import {
   Box,
@@ -6,12 +6,61 @@ import {
   Container,
   Divider,
   Grid2,
+  Snackbar,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import Question from "../components/evaluation/Question";
 import RadioOption from "../components/evaluation/RadioOption";
+import EvaluateContext from "../context/evaluateContext/EvaluateContext";
+import { useNavigate } from "react-router-dom";
+import DialogMod from "../components/DialogMod";
+import { useCreateUserEvaluationMutation } from "../api/evaluationApi";
+import { useInvitationDetailsByIdQuery } from "../api/invitationApi";
+import { useParams } from "react-router-dom";
 
 const EvaluationGE = () => {
+  const { id } = useParams();
+  const [createUserEvaluation, { data, error, isError, isLoading, isSuccess }] =
+    useCreateUserEvaluationMutation();
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [openSnack, setOpenSnack] = useState(false);
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
+  const [openAlreadyEvaluated, setAlreadyEvaluated] = useState(false)
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isSuccess) {
+      setSnackbarMessage("Evaluación enviada correctamente.");
+      setOpenSnack(true);
+      setOpenConfirmModal(true);
+    }
+    if (isError) {
+      console.log(error);
+      setOpen(false)
+      setSnackbarMessage("Error al enviar la evaluación " || error?.data?.message);
+      setAlreadyEvaluated(true)
+      setOpenSnack(true);
+    }
+  }, [data, error, isError, isLoading, isSuccess]);
+
+  const {
+    data: invitation,
+    error: invitationError,
+    isSuccess: isInvitationSucess,
+    isError: isInvError,
+    isFetching: isInvitationFetching,
+  } = useInvitationDetailsByIdQuery(id);
+
+  useEffect(() => {
+    if (isInvitationSucess) {
+      console.log("data", invitation);
+    }
+    if (isInvError) {
+      console.log("error", invitationError);
+    }
+  }, [invitation, invitationError, isInvError, isInvitationSucess]);
+
   const ejemploEvaluacion = {
     evaluation: {
       id: 1,
@@ -24,13 +73,13 @@ const EvaluationGE = () => {
           answer_options: [
             {
               id: 1,
-              text: "Totalmente de acuerdo",
-              score: "5",
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
               id: 2,
-              text: "De acuerdo",
-              score: "4",
+              text: "En desacuerdo",
+              score: "2",
             },
             {
               id: 3,
@@ -39,13 +88,13 @@ const EvaluationGE = () => {
             },
             {
               id: 4,
-              text: "En desacuerdo",
-              score: "2",
+              text: "De acuerdo",
+              score: "4",
             },
             {
               id: 5,
-              text: "Totalmente en desacuerdo",
-              score: "1",
+              text: "Totalmente de acuerdo",
+              score: "5",
             },
           ],
         },
@@ -55,13 +104,13 @@ const EvaluationGE = () => {
           answer_options: [
             {
               id: 6,
-              text: "Totalmente de acuerdo",
-              score: "5",
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
               id: 7,
-              text: "De acuerdo",
-              score: "4",
+              text: "En desacuerdo",
+              score: "2",
             },
             {
               id: 8,
@@ -70,13 +119,13 @@ const EvaluationGE = () => {
             },
             {
               id: 9,
-              text: "En desacuerdo",
-              score: "2",
+              text: "De acuerdo",
+              score: "4",
             },
             {
               id: 10,
-              text: "Totalmente en desacuerdo",
-              score: "1",
+              text: "Totalmente de acuerdo",
+              score: "5",
             },
           ],
         },
@@ -86,23 +135,23 @@ const EvaluationGE = () => {
           answer_options: [
             {
               id: 11,
-              text: "Totalmente de acuerdo",
-              score: "4",
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
               id: 12,
-              text: "De acuerdo",
-              score: "3",
-            },
-            {
-              id: 13,
               text: "En desacuerdo",
               score: "2",
             },
             {
+              id: 13,
+              text: "De acuerdo",
+              score: "3",
+            },
+            {
               id: 14,
-              text: "Totalmente en desacuerdo",
-              score: "1",
+              text: "Totalmente de acuerdo",
+              score: "4",
             },
           ],
         },
@@ -112,8 +161,8 @@ const EvaluationGE = () => {
           answer_options: [
             {
               id: 15,
-              text: "De acuerdo",
-              score: "3",
+              text: "En desacuerdo",
+              score: "1",
             },
             {
               id: 16,
@@ -122,8 +171,8 @@ const EvaluationGE = () => {
             },
             {
               id: 17,
-              text: "En desacuerdo",
-              score: "1",
+              text: "De acuerdo",
+              score: "3",
             },
           ],
         },
@@ -133,13 +182,13 @@ const EvaluationGE = () => {
           answer_options: [
             {
               id: 18,
-              text: "Totalmente de acuerdo",
-              score: "5",
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
               id: 19,
-              text: "De acuerdo",
-              score: "4",
+              text: "En desacuerdo",
+              score: "2",
             },
             {
               id: 20,
@@ -148,13 +197,13 @@ const EvaluationGE = () => {
             },
             {
               id: 21,
-              text: "En desacuerdo",
-              score: "2",
+              text: "De acuerdo",
+              score: "4",
             },
             {
               id: 22,
-              text: "Totalmente en desacuerdo",
-              score: "1",
+              text: "Totalmente de acuerdo",
+              score: "5",
             },
           ],
         },
@@ -164,13 +213,13 @@ const EvaluationGE = () => {
           answer_options: [
             {
               id: 23,
-              text: "Totalmente de acuerdo",
-              score: "5",
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
               id: 24,
-              text: "De acuerdo",
-              score: "4",
+              text: "En desacuerdo",
+              score: "2",
             },
             {
               id: 25,
@@ -179,13 +228,13 @@ const EvaluationGE = () => {
             },
             {
               id: 26,
-              text: "En desacuerdo",
-              score: "2",
+              text: "De acuerdo",
+              score: "4",
             },
             {
               id: 27,
-              text: "Totalmente en desacuerdo",
-              score: "1",
+              text: "Totalmente de acuerdo",
+              score: "5",
             },
           ],
         },
@@ -195,23 +244,23 @@ const EvaluationGE = () => {
           answer_options: [
             {
               id: 28,
-              text: "Totalmente de acuerdo",
-              score: "5",
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
               id: 29,
-              text: "De acuerdo",
-              score: "4",
+              text: "En desacuerdo",
+              score: "2",
             },
             {
               id: 30,
-              text: "En desacuerdo",
+              text: "De acuerdo",
               score: "3",
             },
             {
               id: 31,
-              text: "Totalmente en desacuerdo",
-              score: "1",
+              text: "Totalmente de acuerdo",
+              score: "4",
             },
           ],
         },
@@ -221,23 +270,23 @@ const EvaluationGE = () => {
           answer_options: [
             {
               id: 32,
-              text: "Totalmente de acuerdo",
-              score: "4",
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
               id: 33,
-              text: "De acuerdo",
-              score: "3",
-            },
-            {
-              id: 34,
               text: "En desacuerdo",
               score: "2",
             },
             {
+              id: 34,
+              text: "De acuerdo",
+              score: "3",
+            },
+            {
               id: 35,
-              text: "Totalmente en desacuerdo",
-              score: "1",
+              text: "Totalmente de acuerdo",
+              score: "4",
             },
           ],
         },
@@ -247,23 +296,23 @@ const EvaluationGE = () => {
           answer_options: [
             {
               id: 36,
-              text: "Totalmente de acuerdo",
-              score: "4",
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
               id: 37,
-              text: "De acuerdo",
-              score: "3",
-            },
-            {
-              id: 38,
               text: "En desacuerdo",
               score: "2",
             },
             {
+              id: 38,
+              text: "De acuerdo",
+              score: "3",
+            },
+            {
               id: 39,
-              text: "Totalmente en desacuerdo",
-              score: "1",
+              text: "Totalmente de acuerdo",
+              score: "4",
             },
           ],
         },
@@ -271,16 +320,58 @@ const EvaluationGE = () => {
     },
   };
 
-  const datagrupo = {
-    grupoEmpresa: "API",
-    integrantes: [
-      "Carlos Martinez Avocado",
-      "Juan Felipe Montecinos Ruma",
-      "Ana Garnica Peredo",
-      "Maria Gonzalez Macias",
-      "Luciana Paredes Torrico",
-    ],
+  const { state, setInitialState, verifyFields, clearState } =
+    useContext(EvaluateContext);
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    clearState();
+    setInitialState(ejemploEvaluacion.evaluation);
+    setLoading(false);
+  }, []);
+
+  const handleAccept = () => {
+    if (!state.isValid) {
+      setSnackbarMessage("Debe responder a todas las preguntas");
+      setOpenSnack(true);
+      setOpen(false);
+      return;
+    }
+
+    const finalGrade = evaluate(state.questions);
+    // enviar finalGrade al back
+    console.log({
+      score: parseInt(finalGrade, 10),
+      evaluatee_company_user_id: id,
+    });
+    createUserEvaluation({
+      score: parseInt(finalGrade, 10),
+      evaluatee_company_user_id: id,
+    });
+    //navigate("/");
   };
+
+  const handleConfirmAccept = () => {
+    setOpenConfirmModal(false);
+    navigate("/");
+  };
+
+  if (isLoading || isInvitationFetching || loading) {
+    return (
+      <Container
+        maxWidth="sm"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        <CircularProgress />
+      </Container>
+    );
+  }
 
   return (
     <Container sx={{ paddingY: 1 }} maxWidth="xl">
@@ -288,20 +379,21 @@ const EvaluationGE = () => {
         component="h1"
         sx={{ fontSize: "40px", lineHeight: "1", marginY: 3 }}
       >
-        {ejemploEvaluacion.evaluation.title}
+        {state.title}
       </Typography>
 
       <Typography
         component="h3"
         sx={{ fontSize: "20px", lineHeight: "1", marginY: 3 }}
       >
-        {ejemploEvaluacion.evaluation.description}
+        {state.description}
       </Typography>
       <Typography
         component="h3"
         sx={{ fontSize: "20px", lineHeight: "1", marginY: 3 }}
       >
-        <strong>Integrante a evaluar:</strong> {datagrupo.integrantes[0]}
+        <strong>Integrante a evaluar:</strong>{" "}
+        {invitation?.user?.first_name + " " + invitation?.user?.last_name}
       </Typography>
 
       <Typography
@@ -312,22 +404,62 @@ const EvaluationGE = () => {
       </Typography>
 
       <Grid2 container spacing={2}>
-        {ejemploEvaluacion.evaluation.questions.map((e, index = 0) => {
+        {state.questions.map((e, index = 0) => {
           return (
             <>
               <Grid2 size={{ sm: 12, md: 6 }}>
                 <Question key={e.id} question={`${index + 1}. ${e.text}`} />
               </Grid2>
-              <RadioOption key={e.id} answer_options={e.answer_options} />
+              <RadioOption
+                key={e.id}
+                answer_options={e.answer_options}
+                question_id={e.id}
+              />
               <Divider sx={{ width: "100%" }} />{" "}
             </>
           );
         })}
       </Grid2>
       <Box sx={{ display: "flex", justifyContent: "center", margin: 5 }}>
-        <Button variant="contained" sx={{ paddingX: 8, paddingY: 1 }}>
+        <Button
+          variant="contained"
+          sx={{ paddingX: 8, paddingY: 1 }}
+          onClick={() => {
+            verifyFields();
+            setOpen(true);
+          }}
+        >
           Enviar
         </Button>
+        <DialogMod
+          open={open}
+          setOpen={setOpen}
+          title={"Enviar"}
+          content={"¿Estás seguro de realizar esta acción?"}
+          onAccept={handleAccept}
+        />
+        <DialogMod
+          open={openConfirmModal}
+          setOpen={setOpenConfirmModal}
+          title={"Confirmación"}
+          content={"Evaluación enviada correctamente."}
+          onAccept={handleConfirmAccept}
+          showButtonCancel={false}
+        />
+        <DialogMod 
+          open={openAlreadyEvaluated}
+          setOpen={setAlreadyEvaluated}
+          title={"Error"}
+          content={error?.data?.message}
+          onAccept={()=>navigate('/')}
+          showButtonCancel={false}
+        />
+        <Snackbar
+          open={openSnack}
+          autoHideDuration={10000}
+          onClose={() => setOpenSnack(false)}
+          message={snackbarMessage}
+        />
       </Box>
     </Container>
   );

@@ -12,9 +12,16 @@ const planningAPI = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    getPlanningByCompanyId: builder.query({
+      query: (id) => ({
+        url: `plannings/${id}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
 export const {
-  useRegisterPlanningMutation
+  useRegisterPlanningMutation,
+  useGetPlanningByCompanyIdQuery
 } = planningAPI;

@@ -9,7 +9,6 @@ use App\Models\CompanyUser;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Validator;
-
 use Exception;
 
 class CompanyUserController extends Controller
@@ -28,9 +27,11 @@ class CompanyUserController extends Controller
             $companies = $user->companies()
                 ->where('company_user.status', 'P') // Filtra por status 'P' en la tabla pivote
                 ->withPivot(['id', '*']) // Incluye los campos adicionales del pivote
-                ->withCount(['members as members_count' => function ($query) {
-                    $query->where('status', 'A'); // Filtra solo los miembros activos
-                }])
+                ->withCount([
+                    'members as members_count' => function ($query) {
+                        $query->where('status', 'A'); // Filtra solo los miembros activos
+                    }
+                ])
                 ->get();
 
             return response()->json([
@@ -44,7 +45,6 @@ class CompanyUserController extends Controller
             ], 500);
         }
     }
-
 
     /**
      * Show the form for creating a new resource.
@@ -65,11 +65,9 @@ class CompanyUserController extends Controller
     public function store(Request $request)
     {
         try {
-            // Validar los datos de entrada
             $request->validate([
                 'company_id' => 'required|exists:companies,id',
-                'user_ids' => 'required|array',  // Aceptar un array de IDs de usuarios
-                'user_ids.*' => 'exists:users,id',  // Validar que cada ID de usuario existe
+                'user_id' => 'required|exists:users,id',
                 'status' => 'required|in:A,P', // Aceptado o Pendiente
                 'permission' => 'required|in:R,W' // Read o Write
             ]);
@@ -84,43 +82,70 @@ class CompanyUserController extends Controller
                 ], 400);
             }
 
-            // Verificar que todos los miembros del grupo pertenezcan al mismo periodo académico que el usuario que envía la solicitud
-            $members = User::whereIn('id', $request->user_ids)->get();
-
-            foreach ($members as $member) {
-                if ($member->academic_period_id !== $user->academic_period_id) {
-                    return response()->json([
-                        'message' => "El usuario {$member->first_name} {$member->last_name} no pertenece al mismo periodo académico."
-                    ], 400);  // 400 Bad Request
-                }
+            // Verificar que el usuario no está intentando invitarse a sí mismo
+            if ($user->id === $request->user_id) {
+                return response()->json([
+                    'message' => 'No puedes invitarte a ti mismo a la compañía.'
+                ], 400);  // 400 Bad Request
             }
 
-            // Obtener la compañía (grupo)
+            // Obtener el usuario a agregar
+            $member = User::find($request->user_id);
+            
+            // Verificar si el miembro ya está activo en otra grupo empresa
+            $isActiveInAnotherCompany = CompanyUser::where('user_id', $request->user_id)
+                ->where('status', 'A')  // Estado 'A' para activo
+                ->where('company_id', '!=', $request->company_id)  // Verificar si está en otra empresa
+                ->exists();
+
+            if ($isActiveInAnotherCompany) {
+                return response()->json([
+                    'message' => "El usuario {$member->first_name} {$member->last_name} ya está activo en otra grupo empresa."
+                ], 400);  // 400 Bad Request
+            }
+
+            // Verificar que el miembro pertenezca al mismo periodo académico que el usuario que envía la solicitud
+            if ($member->academic_period_id !== $user->academic_period_id) {
+                return response()->json([
+                    'message' => "El usuario {$member->first_name} {$member->last_name} no pertenece al mismo periodo académico."
+                ], 400);  // 400 Bad Request
+            }
+
+            // Obtener la empresa
             $company = Company::find($request->company_id);
+
+            // Verificar si el miembro ya está invitado o activo en la compañía
+            $existingMember = $company->members()->where('user_id', $request->user_id)->first();
+            if ($existingMember) {
+                return response()->json([
+                    'message' => "El usuario {$member->first_name} {$member->last_name} ya ha sido invitado o es miembro activo de la compañía."
+                ], 400);  // 400 Bad Request
+            }
 
             // Verificar el número de miembros con estado 'A' o 'P' ya existentes
             $activeOrPendingCount = $company->members()
                 ->whereIn('status', ['A', 'P']) // Filtrar los miembros activos o pendientes
                 ->count();
 
-            // Verificar si al agregar los nuevos miembros se excede el límite de 7
-            $newMembersCount = count($request->user_ids);
-            if (($activeOrPendingCount + $newMembersCount) > 7) {
+            // Verificar si al agregar el nuevo miembro se excede el límite de 7
+            if (($activeOrPendingCount + 1) > 7) {
                 return response()->json([
                     'message' => 'No se pueden enviar más de 7 invitaciones. Las invitaciones rechazadas no cuentan.'
                 ], 400);  // 400 Bad Request
             }
 
-            // Asignar los usuarios a la compañía
-            foreach ($request->user_ids as $userId) {
-                $company->members()->attach($userId, [
-                    'status' => $request->status,
-                    'permission' => $request->permission
-                ]);
-            }
+            // Asignar el usuario a la compañía
+            $company->members()->attach($request->user_id, [
+                'status' => $request->status,
+                'permission' => $request->permission
+            ]);
+
+            // Recargar la compañía con los miembros y sus pivotes
+            $company->load('members');
 
             return response()->json([
-                'message' => 'Miembros agregados correctamente a la compañía.'
+                'message' => 'Miembro agregado correctamente a la compañía.',
+                'company' => $company
             ], 201);  // 201 Created
 
         } catch (ValidationException $e) {
@@ -137,8 +162,6 @@ class CompanyUserController extends Controller
             ], 500);
         }
     }
-
-
 
     /**
      * Display the specified resource.
@@ -179,7 +202,8 @@ class CompanyUserController extends Controller
             return response()->json([
                 'message' => 'Compañía obtenida correctamente.',
                 'company' => $companyUser->company,
-                'request_date' => $companyUser->updated_at
+                'request_date' => $companyUser->updated_at,
+                'user' => $companyUser->user,
             ], 200);
         } catch (Exception $e) {
             return response()->json([
@@ -188,7 +212,6 @@ class CompanyUserController extends Controller
             ], 500);
         }
     }
-
 
     /**
      * Show the form for editing the specified resource.
@@ -233,7 +256,7 @@ class CompanyUserController extends Controller
             }
 
             // Buscar la compañía y el usuario en esa compañía
-            
+
 
             // Verificar si la compañía está en estado "P"
             if (!$companyUser || $companyUser->status !== 'P') {
@@ -267,8 +290,6 @@ class CompanyUserController extends Controller
             ], 500); // 500 Internal Server Error
         }
     }
-
-
 
     /**
      * Remove the specified resource from storage.

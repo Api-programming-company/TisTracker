@@ -37,6 +37,7 @@ import Autoevaluation from "./pages/Autoevaluation";
 import EvaluationMemberGE from "./pages/EvaluationMemberGE";
 import EvaluationGE from "./pages/EvaluationGE";
 import SeeCompanyPlanning from "./pages/SeeCompanyPlanning";
+import SetFinalDeliverablePeriod from "./pages/SetFinalDeliverablePeriod";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -85,9 +86,9 @@ function App({ toggleTheme, isDarkMode }) {
             />
 
             {/* evaluacion */}
-            <Route path="/autoevaluation" element={<Autoevaluation />} />
-            <Route path="/evaluationmember" element={<EvaluationMemberGE />} />
-            <Route path="/evaluationge" element={<EvaluationGE />} />
+            <Route path="/autoevaluation/:company_id" element={<Autoevaluation />} />
+            <Route path="/user-evaluation/:id" element={<EvaluationMemberGE />} />
+            <Route path="/company-evaluation/:company_id" element={<EvaluationGE />} />
           </Route>
 
           <Route path="/registro-estudiante" element={<UserRegister />} />
@@ -98,7 +99,10 @@ function App({ toggleTheme, isDarkMode }) {
           <Route path="/home" element={<Home />} />
           <Route path="/upload" element={<ImageUpload />} />
           <Route path="/example" element={<Example />} />
-          <Route path="/ver-planificacion" element={<SeeCompanyPlanning />} />
+          <Route path="/planning/:id" element={<SeeCompanyPlanning />} />
+          
+          <Route path="/update-academic-period/:id" element={<SetFinalDeliverablePeriod/>}></Route>
+          
           <Route path="/*" element={<NotFound />} />
         </Routes>
       </Box>

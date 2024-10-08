@@ -1,0 +1,13 @@
+.dates-input-container {
+    display: flex;
+    gap: 5rem;
+    width: 100%;
+    justify-content: flex-start;
+}
+
+@media screen and (max-width: 500px) {
+    .dates-input-container{
+        flex-direction: column;
+        gap: 2rem;
+    }
+}

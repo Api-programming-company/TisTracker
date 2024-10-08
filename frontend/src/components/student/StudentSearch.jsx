@@ -1,112 +1,151 @@
-import React, { useState, useContext, useEffect } from "react";
-import { useLazySearchStudentQuery } from "../../api/studentApi";
-import { useUpdateCompanyByIdMutation } from "../../api/companyApi";
-import { useGetCompanyByIdQuery } from "../../api/companyApi";
+import AddIcon from "@mui/icons-material/Add";
+import SearchIcon from "@mui/icons-material/Search";
 import {
-  TextField,
-  IconButton,
   Box,
-  Typography,
-  CircularProgress,
   Button,
+  CircularProgress,
+  Container,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Container,
+  IconButton,
+  Snackbar,
+  TextField,
+  Typography,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import AddIcon from "@mui/icons-material/Add";
-import StudentCard from "./StudentCard";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import {
+  useGetCompanyByIdQuery,
+  useUpdateCompanyByIdMutation,
+} from "../../api/companyApi";
+import { useLazySearchStudentQuery } from "../../api/studentApi";
 import AppContext from "../../context/AppContext";
+import StudentCard from "./StudentCard";
+import { useCreateInvitationMutation } from "../../api/invitationApi";
 
 const StudentSearch = () => {
   const { id } = useParams();
   const { user } = useContext(AppContext);
   const [members, setMembers] = useState([]);
   const [email, setEmail] = useState("");
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [openNoStudentModal, setOpenNoStudentModal] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const [
-    updateCompany,
+    createInvitation,
     {
-      data: updateCompanyData,
-      isSuccess: isUpdateCompanySuccess,
-      isLoading: isUpdateCompanyLoading,
-      isError: isUpdateCompanyError,
-      error: updateCompanyError,
+      data: createInvitationData,
+      isSuccess: isCreateInvitationSuccess,
+      isLoading: isCreateInvitationLoading,
+      isError: isCreateInvitationError,
+      error: createInvitationError,
     },
-  ] = useUpdateCompanyByIdMutation();
+  ] = useCreateInvitationMutation();
+
+  useEffect(() => {
+    if (isCreateInvitationSuccess) {
+      console.log("Invitación creada exitosamente:", createInvitationData);
+      setMembers(createInvitationData?.company?.members);
+      setSnackbarMessage("Invitación creada exitosamente");
+      setSnackbarOpen(true);
+    }
+
+    if (isCreateInvitationError) {
+      console.error(
+        "Error al crear la invitación:",
+        createInvitationError?.data?.message
+      );
+      setSnackbarMessage(
+        createInvitationError?.data?.message || "Error al crear la invitación"
+      );
+      setSnackbarOpen(true);
+    }
+  }, [
+    isCreateInvitationSuccess,
+    isCreateInvitationError,
+    createInvitationData,
+    createInvitationError,
+  ]);
+
   const {
     data: companyData,
     isSuccess: isCompanySuccess,
     isLoading: isCompanyLoading,
     isError: isCompanyError,
     error: companyError,
-  } = useGetCompanyByIdQuery(id);
+  } = useGetCompanyByIdQuery(id, { refetchOnMountOrArgChange: true });
 
   useEffect(() => {
     if (isCompanySuccess) {
+      setMembers(companyData?.company?.members);
       console.log("company obtenida:", companyData);
     }
 
     if (isCompanyError) {
       console.error("company error:", companyError);
+      setSnackbarMessage("Error al obtener la compañía");
+      setSnackbarOpen(true);
     }
   }, [isCompanySuccess, isCompanyError, companyData, companyError]);
 
-  useEffect(() => {
-    if (isUpdateCompanySuccess) {
-      console.log("Actualización exitosa:", updateCompanyData);
-    }
-
-    if (isUpdateCompanyError) {
-      console.error("Error al actualizar la compañía:", updateCompanyError);
-    }
-  }, [
-    isUpdateCompanySuccess,
-    isUpdateCompanyError,
-    updateCompanyData,
-    updateCompanyError,
-  ]);
-
   const [
     searchStudent,
-    { data, isFetching, isLoading, isError, isSuccess, error },
+    { data, isFetching, isLoading, isError, isSuccess, error, isRefetching },
   ] = useLazySearchStudentQuery();
-  const [openModal, setOpenModal] = useState(false); // Estado para controlar el modal
-  const MAX_STUDENTS = 7;
+
+  useEffect(() => {
+    if (isSuccess) {
+      setOpenModal(true);
+      console.log("Estudiante encontrado:", data);
+    }
+
+    if (isError) {
+      setOpenNoStudentModal(true);
+      console.error("Error al buscar el estudiante:", error);
+      setSnackbarMessage("Error al buscar el estudiante");
+      setSnackbarOpen(true);
+    }
+  }, [isSuccess, isError, data, error, isRefetching]);
+
+  const MAX_STUDENTS = 6;
 
   const handleSearch = () => {
     searchStudent(email);
+    setOpenModal(false);
+    setOpenNoStudentModal(false);
   };
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
-      handleSearch(); // Llama a la búsqueda al presionar Enter
+      handleSearch();
     }
   };
 
   const handleAddStudent = () => {
-    if (isSuccess) {
-      if (
-        members.length < MAX_STUDENTS &&
-        !members.some((m) => m.id === data.student.id)
-      ) {
-        const newMember = {
-          ...data.student,
-        };
-        setMembers((prev) => [...prev, newMember]);
-      }
-    }
-  };
+    console.log("data", {
+      company_id: id,
+      user_id: data.student.id,
+      status: "P",
+      permission: "R",
+    });
+    createInvitation({
+      company_id: id,
+      user_id: data.student.id,
+      status: "P",
+      permission: "R",
+    });
 
-  const handleRemoveStudent = (id) => {
-    setMembers((prev) => prev.filter((member) => member.id !== id));
+    setOpenModal(false);
   };
 
   const handleOpenModal = () => {
+    setSelectedStudent(data.student);
     setOpenModal(true);
   };
 
@@ -114,18 +153,11 @@ const StudentSearch = () => {
     setOpenModal(false);
   };
 
-  const handleConfirmSend = () => {
-    // Filtrar solo los IDs de los miembros
-    const memberIds = members.map((member) => member.id);
-    console.log(members);
-
-    // Imprimir la lista de IDs
-    console.log("Lista de IDs de miembros:", memberIds);
-    updateCompany({ id: id, data: { members: memberIds } });
-    setOpenModal(false);
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
-  if (isUpdateCompanyLoading || isCompanyLoading) {
+  if (isCreateInvitationLoading || isCompanyLoading) {
     return (
       <Container
         maxWidth="sm"
@@ -142,7 +174,7 @@ const StudentSearch = () => {
   }
 
   return (
-    <Box sx={{ padding: 2 }}>
+    <Box sx={{ mt: 12, padding: 2 }}>
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <TextField
           label="Buscar estudiante por correo"
@@ -167,50 +199,9 @@ const StudentSearch = () => {
         </IconButton>
       </Box>
 
-      {isError && (
-        <Typography variant="body1" color="error" sx={{ marginTop: 2 }}>
-          {error?.data?.message}
-        </Typography>
-      )}
-
-      {isSuccess && !isFetching && (
-        <Box sx={{ marginTop: 2, display: "flex", alignItems: "center" }}>
-          {data.student ? (
-            <>
-              <Typography variant="body1" sx={{ marginRight: 2 }}>
-                Estudiante encontrado: {data.student.email}
-              </Typography>
-              <IconButton
-                color="primary"
-                aria-label="Agregar estudiante"
-                onClick={handleAddStudent}
-                sx={{
-                  backgroundColor: "primary.main",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "primary.dark",
-                  },
-                  marginLeft: 2,
-                }}
-                disabled={
-                  members.length >= MAX_STUDENTS ||
-                  members.some((m) => m.id === data.student.id)
-                }
-              >
-                <AddIcon fontSize="large" />
-              </IconButton>
-            </>
-          ) : (
-            <Typography variant="body1" sx={{ marginRight: 2 }}>
-              Sin resultados
-            </Typography>
-          )}
-        </Box>
-      )}
-
       {members.length >= MAX_STUDENTS && (
         <Typography variant="body1" color="warning" sx={{ marginTop: 2 }}>
-          Has alcanzado el límite de {MAX_STUDENTS} integrantes.
+          Has alcanzado el límite de {MAX_STUDENTS + 1} integrantes.
         </Typography>
       )}
 
@@ -227,53 +218,62 @@ const StudentSearch = () => {
       </Box>
 
       <Box sx={{ marginTop: 4 }}>
-        <Typography variant="h6">Integrantes</Typography>
-        {members.map((member) => (
-          <StudentCard
-            key={member.id}
-            student={member}
-            onRemove={handleRemoveStudent}
-          />
-        ))}
+        <Typography variant="h6">Invitaciones</Typography>
+        {members
+          .filter((member) => member.pivot.permission === "R")
+          .map((member) => (
+            <StudentCard key={member.id} student={member} />
+          ))}
       </Box>
 
-      {/* Botón para enviar invitaciones */}
-      <Button
-        variant="contained"
-        color="primary"
-        sx={{ marginTop: 4 }}
-        onClick={handleOpenModal}
-        disabled={members.length === 0}
-      >
-        Enviar Invitaciones
-      </Button>
-
-      {/* Modal de confirmación */}
-      <Dialog
-        open={openModal}
-        onClose={handleCloseModal}
-        aria-labelledby="confirm-dialog-title"
-        aria-describedby="confirm-dialog-description"
-      >
-        <DialogTitle id="confirm-dialog-title">Confirmar Envío</DialogTitle>
+      <Dialog open={openModal} onClose={() => setOpenModal(false)}>
+        <DialogTitle>Estudiante encontrado</DialogTitle>
         <DialogContent>
-          <DialogContentText id="confirm-dialog-description">
-            ¿Estás seguro de que deseas enviar invitaciones a los siguientes
-            miembros?
+          <DialogContentText>
+            ¿Estás seguro de que deseas agregar a {data?.student?.email} a la
+            empresa?
           </DialogContentText>
-          {members.map((member) => (
-            <Typography key={member.id}>{member.email}</Typography>
-          ))}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseModal} color="secondary">
+          <Button onClick={() => setOpenModal(false)} color="primary">
             Cancelar
           </Button>
-          <Button onClick={handleConfirmSend} color="primary">
+          <Button onClick={handleAddStudent} color="primary">
             Confirmar
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Dialog
+        open={openNoStudentModal}
+        onClose={() => setOpenNoStudentModal(false)}
+      >
+        <DialogTitle>Estudiante no encontrado</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {error?.data?.message ||
+              "Ocurrio un error al buscar el estudiante."}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setOpenNoStudentModal(false);
+              setEmail("");
+            }}
+            color="primary"
+          >
+            Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        message={snackbarMessage}
+      />
     </Box>
   );
 };

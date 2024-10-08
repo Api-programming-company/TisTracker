@@ -24,6 +24,7 @@ class PlanningController extends Controller
     }
 
     // Guardar una nueva planificación
+    // Guardar una nueva planificación
     public function store(Request $request)
     {
         try {
@@ -48,6 +49,16 @@ class PlanningController extends Controller
                 'milestones.*.billing_percentage' => 'required|integer|min:0',
                 'milestones.*.deliverables' => 'required|array|min:1',
             ]);
+
+            // Verificar que la suma de billing_percentage no exceda 100
+            $totalBilling = array_sum(array_column($validated['milestones'], 'billing_percentage'));
+
+            if ($totalBilling > 100) {
+                return response()->json([
+                    'message' => 'La suma de los billing_percentage no puede ser mayor a 100%.',
+                    'errors' => ['billing_percentage' => 'El total es ' . $totalBilling . '%.']
+                ], 422);
+            }
 
             // Crear planificación
             $planning = Planning::create([
@@ -89,6 +100,16 @@ class PlanningController extends Controller
                 ], 403);
             }
 
+            // Verificar que la suma de billing_percentage no exceda 100
+            $totalBilling = $planning->milestones->sum('billing_percentage');
+
+            if ($totalBilling > 100) {
+                return response()->json([
+                    'message' => 'La suma de los billing_percentage es mayor a 100%.',
+                    'errors' => ['billing_percentage' => 'El total es ' . $totalBilling . '%.']
+                ], 422);
+            }
+
             // Obtener el permiso del usuario autenticado desde la tabla pivote
             $userPermission = $member->pivot->permission;
 
@@ -97,6 +118,7 @@ class PlanningController extends Controller
                 'message' => 'Planificación obtenida correctamente.',
                 'planning' => $planning->load('milestones.deliverables'),
                 'user_permission' => $userPermission,
+                'total_billing_percentage' => $totalBilling,
             ], 200);
         } catch (Exception $e) {
             return response()->json(['message' => 'Error al obtener la planificación', 'error' => $e->getMessage()], 500);
@@ -129,6 +151,15 @@ class PlanningController extends Controller
 
             // Actualizar hitos y entregables
             if (isset($validatedData['milestones'])) {
+                $totalBilling = array_sum(array_column($validatedData['milestones'], 'billing_percentage'));
+
+                if ($totalBilling > 100) {
+                    return response()->json([
+                        'message' => 'La suma de los billing_percentage no puede ser mayor a 100%.',
+                        'errors' => ['billing_percentage' => 'El total es ' . $totalBilling . '%.']
+                    ], 422);
+                }
+
                 foreach ($validatedData['milestones'] as $milestoneData) {
                     $milestone = Milestone::updateOrCreate(
                         ['id' => $milestoneData['id'] ?? null],

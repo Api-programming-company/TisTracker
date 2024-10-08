@@ -26,8 +26,6 @@ const Milestone = ({ milestone }) => {
   const {handleChangeMilestone,deleteMilestone,addDeliverable} = usePlanningContext();
 
   const findError = (name) => {
-    console.log(milestone.errors);
-    console.log(name);
     const error = milestone.errors.find((error) => error.errorArea === name);
     return error?.message;
   };
@@ -55,12 +53,13 @@ const Milestone = ({ milestone }) => {
 
   return (
     <div className="milestone-item" key={milestone.id}>
-      <ListItem button onClick={() => handleAction("handleToggle")}>
+      <ListItem >
         <ListItemText
           primary={
             
               <Box sx={{ display: "flex", gap: 2 }}>
                 <TextField
+                  label="Nombre de Hito"
                   value={milestone.name}
                   onChange={(e) => handleAction("handleNameChange", e.target.value)}
                   fullWidth
@@ -68,16 +67,12 @@ const Milestone = ({ milestone }) => {
                   helperText={findError("name")}
                 />
                 <Button
-                  variant="outlined"
                   sx={{
                     backgroundColor: "transparent",
-                    border: "1px solid black",
                     "&:hover": {
-                      color: "white",
-                      backgroundColor: "primary.dark",
+                      color: "primary.light",
                     },
-                    mr: 2,
-                    mb: 2,
+
                   }}
                   startIcon={<DeleteIcon />}
                   onClick={()=> setOpen(true)}
@@ -99,7 +94,7 @@ const Milestone = ({ milestone }) => {
             
           }
         />
-        <IconButton>
+        <IconButton button onClick={() => handleAction("handleToggle")}>
           {openDeliverables ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </IconButton>
       </ListItem>
@@ -137,7 +132,7 @@ const Milestone = ({ milestone }) => {
                   label="Porcentaje de facturación"
                   value={milestone.billingPercentage}
                   onChange={(e) =>
-                    handleAction("handleBillingPercentageChange", e.target.value)
+                    handleAction("handleBillingPercentageChange", Number(e.target.value))
                   }
                   type="number"
                   fullWidth
@@ -147,8 +142,8 @@ const Milestone = ({ milestone }) => {
             
             </ListItem>
             <ListItem>
-              <List>
-                {milestone.deliverables?.length > 0 ? (
+              <div className="deliverables-list">
+              {milestone.deliverables?.length > 0 ? (
                   milestone.deliverables.map((deliverable,index) => (
                     <Deliverable
                       key={index}
@@ -160,25 +155,29 @@ const Milestone = ({ milestone }) => {
                   <p className="text-neutral-500">
                     No hay entregables asignados</p>
                 )}
+              </div>
+                
                 {Boolean(findError("deliverables")) &&
                 <p className="text-red-300 text-sm">{findError("deliverables")}</p>
                     
                     }
-              </List>
             </ListItem>
             <ListItem
-              sx={{ display: "flex", justifyContent: "center", width: "100%" }}
+              sx={{ display: "flex", justifyContent: "start", width: "100%" }}
             >
               
                 <Button
+                  variant="outlined"
                   onClick={() => addDeliverable(milestone.id)}
                   sx={{
-                    backgroundColor: "primary.main",
-                    color: "white",
+                    backgroundColor: "transparent",
+                    color: "primary.main",
                     "&:hover": {
-                      backgroundColor: "primary.dark",
+                      backgroundColor: "primary.main",
+                      color: "white",
                     },
                     mb: 1,
+                    ml: 2,
                   }}
                 >
                   Agregar Entregable

@@ -11,6 +11,8 @@ use App\Http\Controllers\PlanningController;
 use App\Http\Controllers\CompanyUserController;
 use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\EvaluationController;
+use App\Http\Controllers\UserEvaluationController;
+use App\Http\Controllers\CompanyUserEvaluationControllers;
 
 Route::post('/webhook', [WebhookController::class, 'handle']);
 
@@ -51,16 +53,17 @@ Route::post('/email/verification-notification', function (Request $request) {
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 // docente
 Route::middleware('auth')->group(function () {
-    Route::get('docente/academic-periods', [AcademicPeriodController::class, 'index']);
-    Route::post('docente/academic-periods', [AcademicPeriodController::class, 'store']);
-    Route::get('academic-periods/grouped-by-teacher', [AcademicPeriodController::class, 'getAllGroupedByTeacher']);
-    Route::post('academic-periods/enroll', [AcademicPeriodController::class, 'enroll']);
+    Route::get('pending-companies', [CompanyController::class, 'getCompaniesByAcademicPeriod']);
+
+
+    Route::get('grouped-by-teacher', [AcademicPeriodController::class, 'getAllGroupedByTeacher']);
+    Route::post('enroll', [AcademicPeriodController::class, 'enroll']);
 
     Route::apiResource('company', CompanyController::class);
     Route::get('student/pending-companies', [CompanyController::class, "getPendingCompaniesForUser"]);
 
 
-    Route::get('academic-periods/companies', [CompanyController::class, 'getCompaniesByAcademicPeriod']);
+   
     Route::get('academic-periods/companies/pending', [CompanyController::class, 'getPendingCompanies']);
     Route::post('companies/accept/{id}', [CompanyController::class, 'acceptCompanyById']);
     Route::apiResource('invitations', CompanyUserController::class);
@@ -70,10 +73,21 @@ Route::middleware('auth')->group(function () {
     //buscador por correo solo estudiante
     Route::get('student/search/{email}', [AuthController::class, 'searchStudentByEmail']);
     Route::get('/student/company/{academicPeriodId}', [CompanyUserController::class, 'getStudentCompanyByAcademicPeriod']);
+    Route::apiResource('academic-periods', AcademicPeriodController::class);
+    
+
 
 });
 
 //ruta de evaluacion 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('evaluations', EvaluationController::class);
+});
+//evaluar a mi grupo empresa
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('user-evaluations', UserEvaluationController::class);
+});
+//evaluar a mi grupo empresa y otras
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('company-user-evaluation', CompanyUserEvaluationControllers::class);
 });

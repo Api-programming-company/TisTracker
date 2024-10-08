@@ -13,7 +13,6 @@ import {
   CircularProgress,
   Avatar,
 } from "@mui/material";
-import { Person } from "@mui/icons-material";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useGetCompanyByIdQuery,
@@ -53,7 +52,7 @@ const ConformacionGE = () => {
 
   useEffect(() => {
     if (isUpdateCompanySuccess) {
-      setSnackbarMessage("Formulario enviado con éxito");
+      setSnackbarMessage("Formulario enviado correctamente");
       setSnackbarOpen(true);
       console.log(updateCompanyData);
     }
@@ -94,7 +93,6 @@ const ConformacionGE = () => {
       return;
     }
 
-    alert("La lista se ha enviado a tu docente TIS");
     console.log("La lista se ha enviado a tu docente TIS");
     updateCompany({ id: id, data: { status: "P" } });
   };
@@ -170,19 +168,29 @@ const ConformacionGE = () => {
                       </Typography>
                     }
                     button
-                    sx={{ backgroundColor: "#F6F6F6", mb: 0.5 }}
+                    sx={{
+                      backgroundColor: "info.gray",
+                      mb: 0.5,
+                    }}
                   >
                     <ListItemIcon>
-                      <Avatar>
-                        <Person />
+                      <Avatar
+                        sx={{
+                          bgcolor: "primary.main",
+                          color: "white",
+                          width: 56,
+                          height: 56,
+                          mr: 2,
+                        }}
+                      >
+                        {member.first_name[0]}
+                        {member.last_name[0]}
                       </Avatar>
                     </ListItemIcon>
                     <ListItemText
                       primary={`${member.first_name} ${member.last_name}`}
                       secondary={
-                        <Typography variant="body2">
-                          Correo: {member.email}
-                        </Typography>
+                        <Typography variant="body2">{member.email}</Typography>
                       }
                     />
                   </ListItem>

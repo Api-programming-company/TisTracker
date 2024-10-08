@@ -1,95 +1,83 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { evaluate } from "../utils/evaluaLikert";
 import {
   Box,
   Button,
+  CircularProgress,
   Container,
+  Divider,
   Grid2,
+  Snackbar,
   Typography,
 } from "@mui/material";
 import Question from "../components/evaluation/Question";
 import RadioOption from "../components/evaluation/RadioOption";
+import EvaluateContext from "../context/evaluateContext/EvaluateContext";
+import { useNavigate } from "react-router-dom";
+import DialogMod from "../components/DialogMod";
+import { useGetCompanyByIdQuery } from "../api/companyApi";
+import { useCreateCompanyEvaluationMutation } from "../api/evaluationApi";
+import { useParams } from "react-router-dom";
 
 const Autoevaluation = () => {
-  // seguramente lo que viene del back tiene mas cosas pero tendrá una lista con las preguntas
-  // a medida de que responda se añade el answer a cada objeto
-  // al finalizar la evaluacion ejecutar la funcion evaluate pasandole la lista
-  // para answer en likert: 2 --> Si = 1, No = 0
-  // para answer en likert: 3 --> Bajo = 1, Medio = 2, Alto = 3
-  // para answer en likert: 5 --> Muy malo = 1, Malo = 2, Regular = 3, Bueno = 4, Muy bueno = 5
-  // al final queda [{question:'', likert: 2||3||5, answer: 0||1||2||3||4||5}, {...}, {...}]
-  const ejemplo = [
-    {
-      question:
-        "Me comuniqué de manera clara y efectiva con los miembros de mi equipo.",
-      likert: 5,
-    },
-    {
-      question:
-        "Contribuí activamente a la identificación y resolución de problemas técnicos.",
-      likert: 5,
-    },
-    {
-      question:
-        "He cumplido con mis tareas y entregas en los plazos establecidos.",
-      likert: 3,
-    },
-    {
-      question:
-        "Estuve abierto(a) a recibir y dar retroalimentación constructiva.",
-      likert: 2,
-    },
-    {
-      question:
-        "Participé activamente en las reuniones del equipo y en las discusiones sobre el proyecto.",
-      likert: 2,
-    },
-    {
-      question:
-        "He tomado la iniciativa en tareas o decisiones importantes cuando ha sido necesario.",
-      likert: 3,
-    },
-    {
-      question:
-        "Manejé de manera constructiva los desacuerdos o conflictos que surgen en el equipo.",
-      likert: 5,
-    },
-    {
-      question:
-        "Busqué constantemente aprender y mejorar mis habilidades técnicas relacionadas con el proyecto.",
-      likert: 2,
-    },
-    {
-      question:
-        "Me aseguré de que el código que desarrollo cumpla con los estándares de calidad establecidos por el equipo.",
-      likert: 2,
-    },
-    {
-      question:
-        "Utilicé herramientas de control de versiones de manera efectiva para gestionar y colaborar en el código fuente.",
-      likert: 2,
-    },
-  ];
+  const { company_id } = useParams();
+  const {
+    data: company,
+    isSuccess: companySuccess,
+    isFetching: companyFetching,
+    isError: isCompanyError,
+    error: companyError,
+  } = useGetCompanyByIdQuery(company_id);
+
+  useEffect(() => {
+    if (companySuccess) {
+      console.log(company);
+    }
+    if (isCompanyError) {
+      console.log(companyError);
+    }
+  }, [company, companyFetching, isCompanyError, companyError, companySuccess]);
+
+  const [
+    createCompanyEvaluation,
+    { data, isSuccess, isError, error, isLoading },
+  ] = useCreateCompanyEvaluationMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log(data);
+      setSnackbarMessage("Evaluación enviada correctamente.");
+      setOpenSnack(true);
+      setOpenConfirmModal(true);
+    }
+    if (isError) {
+      console.log(error);
+      setOpen(false)
+      setSnackbarMessage("Error al enviar la evaluación " || error?.data?.message);
+      setOpenSnack(true);
+      setAlreadyEvaluated(true)
+    }
+  }, [data, isSuccess, isError, error, isLoading]);
+
   const ejemploEvaluacion = {
     evaluation: {
       id: 1,
-      title: "Final Project Evaluation",
-      description:
-        "Evaluation for the final project submission. Please answer the following questions based on your experience.",
+      title: "Autoevaluación de Grupo Empresa",
+      description: " ",
       questions: [
         {
           id: 1,
-          text: "How satisfied are you with the project's overall quality?",
+          text: "Me siento seguro utilizando las tecnologías y herramientas requeridas para mi trabajo.",
           answer_options: [
             {
               id: 1,
-              text: "Very satisfied",
-              score: "5",
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
               id: 2,
-              text: "Satisfied",
-              score: "4",
+              text: "En desacuerdo",
+              score: "2",
             },
             {
               id: 3,
@@ -98,262 +86,262 @@ const Autoevaluation = () => {
             },
             {
               id: 4,
-              text: "Dissatisfied",
-              score: "2",
+              text: "De acuerdo",
+              score: "4",
             },
             {
               id: 5,
-              text: "Very dissatisfied",
-              score: "1",
+              text: "Totalmente de acuerdo",
+              score: "5",
             },
           ],
         },
         {
           id: 2,
-          text: "How well did the team meet deadlines?",
+          text: "Tengo la capacidad de resolver problemas técnicos de manera eficiente.",
           answer_options: [
             {
               id: 6,
-              text: "Always on time",
-              score: "5",
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
               id: 7,
-              text: "Mostly on time",
-              score: "4",
+              text: "En desacuerdo",
+              score: "2",
             },
             {
               id: 8,
-              text: "Sometimes late",
+              text: "Neutral",
               score: "3",
             },
             {
               id: 9,
-              text: "Often late",
-              score: "2",
+              text: "De acuerdo",
+              score: "4",
             },
             {
               id: 10,
-              text: "Always late",
-              score: "1",
+              text: "Totalmente de acuerdo",
+              score: "5",
             },
           ],
         },
         {
           id: 3,
-          text: "How would you rate the team's communication?",
+          text: "Estoy al tanto de las mejores prácticas y patrones de diseño en desarrollo de software.",
           answer_options: [
             {
               id: 11,
-              text: "Excellent",
-              score: "4",
-            },
-            {
-              id: 12,
-              text: "Good",
-              score: "3",
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
               id: 13,
-              text: "Fair",
+              text: "Neutral",
               score: "2",
             },
             {
-              id: 14,
-              text: "Poor",
-              score: "1",
+              id: 15,
+              text: "Totalmente de acuerdo",
+              score: "3",
             },
           ],
         },
         {
           id: 4,
-          text: "Was the project scope clearly defined?",
+          text: "Me comunico de manera clara y efectiva con los miembros de mi equipo.",
           answer_options: [
             {
-              id: 15,
-              text: "Yes, very clear",
-              score: "3",
+              id: 21,
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
-              id: 16,
-              text: "Somewhat clear",
+              id: 22,
+              text: "En desacuerdo",
               score: "2",
             },
             {
-              id: 17,
-              text: "No, not clear",
-              score: "1",
+              id: 24,
+              text: "De acuerdo",
+              score: "3",
+            },
+            {
+              id: 25,
+              text: "Totalmente de acuerdo",
+              score: "4",
             },
           ],
         },
         {
           id: 5,
-          text: "How would you rate the technical quality of the work?",
+          text: "Siento que puedo colaborar fácilmente con otros en tareas y proyectos.",
           answer_options: [
             {
-              id: 18,
-              text: "Excellent",
-              score: "5",
+              id: 31,
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
-              id: 19,
-              text: "Good",
-              score: "4",
-            },
-            {
-              id: 20,
-              text: "Average",
-              score: "3",
-            },
-            {
-              id: 21,
-              text: "Poor",
+              id: 32,
+              text: "En desacuerdo",
               score: "2",
             },
             {
-              id: 22,
-              text: "Very poor",
-              score: "1",
+              id: 33,
+              text: "Neutral",
+              score: "3",
+            },
+            {
+              id: 34,
+              text: "De acuerdo",
+              score: "4",
+            },
+            {
+              id: 35,
+              text: "Totalmente de acuerdo",
+              score: "5",
             },
           ],
         },
         {
           id: 6,
-          text: "How likely are you to recommend this project to others?",
+          text: "Recibo retroalimentación útil de mis compañeros y la utilizo para mejorar mi trabajo.",
           answer_options: [
             {
-              id: 23,
-              text: "Very likely",
-              score: "5",
+              id: 41,
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
-              id: 24,
-              text: "Somewhat likely",
-              score: "4",
+              id: 42,
+              text: "En desacuerdo",
+              score: "2",
             },
             {
-              id: 25,
+              id: 43,
               text: "Neutral",
               score: "3",
             },
             {
-              id: 26,
-              text: "Somewhat unlikely",
-              score: "2",
+              id: 44,
+              text: "De acuerdo",
+              score: "4",
             },
             {
-              id: 27,
-              text: "Very unlikely",
-              score: "1",
+              id: 45,
+              text: "Totalmente de acuerdo",
+              score: "5",
             },
           ],
         },
         {
           id: 7,
-          text: "How well did the project meet the initial objectives?",
+          text: "Soy capaz de gestionar mi tiempo de manera efectiva para cumplir con los plazos.",
           answer_options: [
             {
-              id: 28,
-              text: "Exceeded expectations",
-              score: "5",
-            },
-            {
-              id: 29,
-              text: "Met expectations",
-              score: "4",
-            },
-            {
-              id: 30,
-              text: "Partially met expectations",
-              score: "3",
-            },
-            {
-              id: 31,
-              text: "Did not meet expectations",
+              id: 51,
+              text: "Totalmente en desacuerdo",
               score: "1",
+            },
+            {
+              id: 53,
+              text: "Neutral",
+              score: "2",
+            },
+            {
+              id: 55,
+              text: "Totalmente de acuerdo",
+              score: "3",
             },
           ],
         },
         {
           id: 8,
-          text: "How would you rate the team's problem-solving abilities?",
+          text: "Mi código cumple con los estándares de calidad establecidos por el equipo.",
           answer_options: [
             {
-              id: 32,
-              text: "Excellent",
-              score: "4",
+              id: 1,
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
-              id: 33,
-              text: "Good",
-              score: "3",
-            },
-            {
-              id: 34,
-              text: "Fair",
+              id: 2,
+              text: "En desacuerdo",
               score: "2",
             },
             {
-              id: 35,
-              text: "Poor",
-              score: "1",
+              id: 3,
+              text: "Neutral",
+              score: "3",
+            },
+            {
+              id: 4,
+              text: "De acuerdo",
+              score: "4",
+            },
+            {
+              id: 5,
+              text: "Totalmente de acuerdo",
+              score: "5",
             },
           ],
         },
         {
           id: 9,
-          text: "How would you rate the team's collaboration skills?",
+          text: "Tomo en cuenta las recomendaciones de otros desarrolladores durante las revisiones de código.",
           answer_options: [
             {
-              id: 36,
-              text: "Excellent",
-              score: "4",
+              id: 1,
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
-              id: 37,
-              text: "Good",
-              score: "3",
-            },
-            {
-              id: 38,
-              text: "Fair",
+              id: 2,
+              text: "En desacuerdo",
               score: "2",
             },
             {
-              id: 39,
-              text: "Poor",
-              score: "1",
+              id: 3,
+              text: "Neutral",
+              score: "3",
+            },
+            {
+              id: 4,
+              text: "De acuerdo",
+              score: "4",
+            },
+            {
+              id: 5,
+              text: "Totalmente de acuerdo",
+              score: "5",
             },
           ],
         },
         {
           id: 10,
-          text: "How satisfied are you with the final product?",
+          text: "Estoy satisfecho con las herramientas de desarrollo y colaboración que utilizamos.",
           answer_options: [
             {
-              id: 40,
-              text: "Very satisfied",
-              score: "5",
+              id: 1,
+              text: "Totalmente en desacuerdo",
+              score: "1",
             },
             {
-              id: 41,
-              text: "Satisfied",
-              score: "4",
-            },
-            {
-              id: 42,
-              text: "Neutral",
-              score: "3",
-            },
-            {
-              id: 43,
-              text: "Dissatisfied",
+              id: 2,
+              text: "En desacuerdo",
               score: "2",
             },
             {
-              id: 44,
-              text: "Very dissatisfied",
-              score: "1",
+              id: 4,
+              text: "De acuerdo",
+              score: "3",
+            },
+            {
+              id: 5,
+              text: "Totalmente de acuerdo",
+              score: "4",
             },
           ],
         },
@@ -361,41 +349,141 @@ const Autoevaluation = () => {
     },
   };
 
+  const { state, setInitialState, verifyFields, clearState } =
+    useContext(EvaluateContext);
+  const [open, setOpen] = useState(false);
+  const [openSnack, setOpenSnack] = useState(false);
+  const [openAlreadyEvaluated, setAlreadyEvaluated] = useState(false)
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    clearState();
+    setInitialState(ejemploEvaluacion.evaluation);
+    setLoading(false);
+  }, []);
+
+  const handleAccept = () => {
+    if (!state.isValid) {
+      setOpenSnack(!openSnack);
+      setOpen(!setOpen);
+      return;
+    }
+
+    const finalGrade = evaluate(state.questions);
+    console.log({
+      company_id: company_id,
+      score: parseInt(finalGrade, 10),
+      type: "autoevaluation",
+    });
+    createCompanyEvaluation({
+      company_id: company_id,
+      score: parseInt(finalGrade, 10),
+      type: "autoevaluation",
+    });
+    //navigate("/");
+  };
+
+  const handleConfirmAccept = () => {
+    setOpenConfirmModal(false);
+    navigate("/");
+  };
+
+  if (companyFetching || loading || isLoading ) {
+    return (
+      <Container
+        maxWidth="sm"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        <CircularProgress />
+      </Container>
+    );
+  }
+
   return (
-    <Container sx={{ paddingY: 1 }} maxWidth="xl">
-      <Typography
-        component="h1"
-        sx={{ color: "black", fontSize: "40px", lineHeight: "1", marginY: 3 }}
-      >
-        {ejemploEvaluacion.evaluation.title}
-      </Typography>
+    !loading && (
+      <Container sx={{ paddingY: 1 }} maxWidth="xl">
+        <Typography
+          component="h1"
+          sx={{ color: "black", fontSize: "40px", lineHeight: "1", marginY: 3 }}
+        >
+          {state.title}
+        </Typography>
 
-      <Typography
-        component="h3"
-        sx={{ color: "black", fontSize: "20px", lineHeight: "1", marginY: 3 }}
-      >
-        {ejemploEvaluacion.evaluation.description}
-      </Typography>
+        <Typography
+          component="h2"
+          sx={{ fontSize: "30px", lineHeight: "1", marginY: 3 }}
+        >
+          Criterios de Evaluación
+        </Typography>
 
-      <Grid2 container spacing={2}>
-        {ejemploEvaluacion.evaluation.questions.map((e) => {
-          return (
-            <>
-              <Grid2 size={{ sm: 12, md: 6 }}>
-                <Question key={e.id} question={e.text} />
-              </Grid2>
-
-              <RadioOption key={e.id} answer_options={e.answer_options} />
-            </>
-          );
-        })}
-      </Grid2>
-      <Box sx={{ display: "flex", justifyContent: "center", margin: 5 }}>
-        <Button variant="contained" sx={{ paddingX: 8, paddingY: 1 }}>
-          Enviar
-        </Button>
-      </Box>
-    </Container>
+        <Grid2 container spacing={2}>
+          {state.questions.map((e, index = 0) => {
+            return (
+              <>
+                <Grid2 size={{ sm: 12, md: 6 }}>
+                  <Question key={e.id} question={`${index + 1}. ${e.text}`} />
+                </Grid2>
+                <RadioOption
+                  key={e.id}
+                  answer_options={e.answer_options}
+                  question_id={e.id}
+                />
+                <Divider sx={{ width: "100%" }} />{" "}
+              </>
+            );
+          })}
+        </Grid2>
+        <Box sx={{ display: "flex", justifyContent: "center", margin: 5 }}>
+          <Button
+            variant="contained"
+            sx={{ paddingX: 8, paddingY: 1 }}
+            onClick={() => {
+              verifyFields();
+              setOpen(true);
+            }}
+          >
+            Enviar
+          </Button>
+        </Box>
+        <DialogMod
+          open={open}
+          setOpen={setOpen}
+          title={"Enviar"}
+          content={"¿Estás seguro de realizar esta acción?"}
+          onAccept={handleAccept}
+        />
+        <DialogMod
+          open={openConfirmModal}
+          setOpen={setOpenConfirmModal}
+          title={"Confirmación"}
+          content={"Evaluación enviada correctamente."}
+          onAccept={handleConfirmAccept}
+          showButtonCancel={false}
+        />
+        <DialogMod 
+          open={openAlreadyEvaluated}
+          setOpen={setAlreadyEvaluated}
+          title={"Error"}
+          content={error?.data?.message}
+          onAccept={()=>navigate('/')}
+          showButtonCancel={false}
+        />
+        <Snackbar
+          open={openSnack}
+          autoHideDuration={10000}
+          onClose={() => setOpenSnack(!openSnack)}
+          message={snackbarMessage}
+        />
+      </Container>
+    )
   );
 };
 

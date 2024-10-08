@@ -145,7 +145,7 @@ const AcceptDeclineCompany = () => {
 
   return (
     <Container maxWidth="md">
-      <Box sx={{ mt: 5, mb: 10 }}>
+      <Box sx={{ mt: 12 }}>
         <Typography
           variant="h4"
           component="h1"
@@ -155,10 +155,10 @@ const AcceptDeclineCompany = () => {
           Detalles de la solicitud
         </Typography>
       </Box>
-  
+
       <Box
         sx={{
-          backgroundColor: "whitesmoke",
+          backgroundColor: "info.gray",
           borderRadius: "15px",
           padding: 3,
           mb: 5,
@@ -170,7 +170,10 @@ const AcceptDeclineCompany = () => {
           { label: "Correo electrónico", value: companyData.company.email },
           { label: "Dirección", value: companyData.company.address },
           { label: "Teléfono", value: companyData.company.phone },
-          { label: "Fecha de solicitud", value: formatDate(companyData.company.updated_at) },
+          {
+            label: "Fecha de solicitud",
+            value: formatDate(companyData.company.updated_at),
+          },
         ].map((item, index) => (
           <Box
             key={index}
@@ -189,18 +192,19 @@ const AcceptDeclineCompany = () => {
             </Typography>
           </Box>
         ))}
-  
+
         {/* Miembros */}
         <Box sx={{ mt: 2 }}>
           <MemberAccordion members={companyData.company.members} />
         </Box>
       </Box>
-  
+
       <Box
         sx={{
           display: "flex",
           justifyContent: "space-evenly",
           flexWrap: "wrap",
+          mb: 5,
         }}
       >
         {/* Botón Aceptar */}
@@ -220,13 +224,13 @@ const AcceptDeclineCompany = () => {
           content={"¿Estás seguro que deseas aceptar esta invitación?"}
           onAccept={handleAccept}
         />
-  
+
         {/* Botón Rechazar */}
         <Button
           onClick={() => setOpenR(true)}
           variant="outlined"
           disabled={isUpdateLoading}
-          color="secondary"
+          // color="secondary"
           sx={{ mb: 2, px: 11, py: 1 }}
         >
           Rechazar
@@ -238,13 +242,13 @@ const AcceptDeclineCompany = () => {
           content={"¿Estás seguro que deseas rechazar esta invitación?"}
           onAccept={handleDecline}
         />
-  
+
         {/* Modal de confirmación */}
         <Dialog open={openConfirm} onClose={() => setOpenConfirm(false)}>
           <DialogTitle>{"Actualización exitosa"}</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              La solicitud fue aceptada exitosamente.
+              Su acción fue registrada exitosamente.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -253,7 +257,7 @@ const AcceptDeclineCompany = () => {
             </Button>
           </DialogActions>
         </Dialog>
-  
+
         {/* Snackbar */}
         <Snackbar
           open={snackbar.open}
@@ -265,7 +269,6 @@ const AcceptDeclineCompany = () => {
       </Box>
     </Container>
   );
-  
 };
 
 export default AcceptDeclineCompany;

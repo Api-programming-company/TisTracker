@@ -140,4 +140,79 @@ class AcademicPeriodController extends Controller
             ], 500);
         }
     }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $user = Auth::user();
+
+            // Verificar si el usuario tiene permiso para actualizar el periodo académico
+            if ($user->user_type !== 'D') {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
+            // Validar los datos
+            $request->validate([
+                'start_date' => 'required|date',
+                'end_date' => 'required|date|after:start_date', // La fecha de fin debe ser mayor que la fecha de inicio
+            ]);
+
+            // Buscar el periodo académico
+            $academicPeriod = AcademicPeriod::findOrFail($id);
+
+            // Actualizar fechas de inicio y fin
+            $academicPeriod->start_date = $request->start_date;
+            $academicPeriod->end_date = $request->end_date;
+            $academicPeriod->save();
+
+            // Mensaje de retroalimentación
+            return response()->json(['message' => 'La fecha ha sido ajustada con éxito', 'academic_period' => $academicPeriod], 200);
+
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Error de validación',
+                'errors' => $e->validator->errors(),
+                'request' => $request
+            ], 422);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Ocurrió un error',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function show($id)
+    {
+        try {
+            // Obtener el usuario autenticado
+            $user = Auth::user();
+
+            // Verificar si el usuario es un docente
+            if ($user->user_type !== 'D') {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
+
+            // Buscar el periodo académico por su ID
+            $academicPeriod = AcademicPeriod::findOrFail($id);
+
+            // Verificar si el periodo académico pertenece al docente autenticado
+            if ($academicPeriod->user_id !== $user->id) {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
+
+            // Retornar el periodo académico encontrado con un mensaje de éxito
+            return response()->json([
+                'message' => 'Periodo académico obtenido con éxito',
+                'academic_period' => $academicPeriod
+            ], 200);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Ocurrió un error',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
 }

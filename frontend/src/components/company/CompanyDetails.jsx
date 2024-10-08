@@ -7,9 +7,12 @@ import {
   ListItemText,
   Collapse,
   IconButton,
+  Button,
+  Avatar,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import { useNavigate } from "react-router-dom";
 
 const CompanyDetails = ({ company }) => {
   const [openMembers, setOpenMembers] = useState(false);
@@ -18,6 +21,21 @@ const CompanyDetails = ({ company }) => {
     setOpenMembers((prev) => !prev);
   };
 
+  const navigate = useNavigate();
+  const getStatusLabel = (status) => {
+    switch (status) {
+      case "R":
+        return "Rechazado";
+      case "P":
+        return "Pendiente";
+      case "A":
+        return "Aceptado";
+      case "C":
+        return "Conformación";
+      default:
+        return "Desconocido";
+    }
+  };
   return (
     <Box sx={{ padding: 2, border: "1px solid #ccc", borderRadius: 2 }}>
       <Typography variant="h4" gutterBottom>
@@ -51,6 +69,12 @@ const CompanyDetails = ({ company }) => {
                 secondary={company.email}
               />
             </ListItem>
+            <ListItem>
+              <ListItemText
+                primary="Estado"
+                secondary={getStatusLabel(company.status)}
+              />
+            </ListItem>
           </List>
         </Box>
 
@@ -82,15 +106,45 @@ const CompanyDetails = ({ company }) => {
           </ListItem>
           <Collapse in={openMembers} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              {company.members.length > 0 ? (
-                company.members.map((member) => (
-                  <ListItem key={member.id}>
-                    <ListItemText
-                      primary={`${member.first_name} ${member.last_name}`}
-                      secondary={member.email}
-                    />
-                  </ListItem>
-                ))
+              {company.members.filter(member => member.pivot.status === "A").length > 0 ? (
+                company.members
+                  .filter((member) => member.pivot.status === "A")
+                  .map((member) => (
+                    <ListItem
+                      key={member.id}
+                      sx={{ display: "flex", justifyContent: "space-between" }}
+                    >
+                      <Avatar
+                        sx={{
+                          bgcolor: "primary.main",
+                          color: "white",
+                          width: 56,
+                          height: 56,
+                          mr: 2,
+                        }}
+                      >
+                        {member.first_name[0]}
+                        {member.last_name[0]}
+                      </Avatar>
+                      <ListItemText
+                        primary={`${member.first_name} ${member.last_name}`}
+                        secondary={
+                          member.pivot.permission === "W"
+                            ? `${member.email} (Encargado)`
+                            : member.email
+                        }
+                      />
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                          navigate(`/user-evaluation/${member?.pivot?.id}`);
+                        }}
+                      >
+                        Evaluar
+                      </Button>
+                    </ListItem>
+                  ))
               ) : (
                 <Typography>No hay miembros asignados.</Typography>
               )}
