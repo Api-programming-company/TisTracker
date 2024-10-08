@@ -19,13 +19,13 @@ const academicPeriodApi = apiSlice.injectEndpoints({
       }),
     }),
     createAcademicPeriod: builder.mutation({
-      query: ({ start_date, end_date }) => ({
+      query: (data) => ({
         url: "academic-periods",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ start_date, end_date }),
+        body: data,
       }),
     }),
     getAcademicPeriodsGroupedByTeacher: builder.query({
