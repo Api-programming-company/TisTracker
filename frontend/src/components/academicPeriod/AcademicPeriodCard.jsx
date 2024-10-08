@@ -6,7 +6,9 @@ import {
   Button,
   CircularProgress,
   CardHeader,
+  IconButton,
 } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit"; // Importar el icono de lápiz
 import { format } from "date-fns";
 import { useEnrollInAcademicPeriodMutation } from "../../api/academicPeriodApi";
 import AppContext from "../../context/AppContext";
@@ -16,8 +18,15 @@ const formatDate = (date) => format(new Date(date), "dd MMM yyyy");
 
 const AcademicPeriodCard = ({ period, isEnroll = true }) => {
   const navigate = useNavigate();
+
   const handleClick = () => {
     navigate(`/academic-period/${period.id}/companies`);
+  };
+
+  // Manejar la redirección al editar
+  const handleEdit = (event) => {
+    event.stopPropagation(); // Evitar que el clic en el botón dispare el clic en el Card
+    navigate(`/update-academic-period/${period.id}`);
   };
 
   const [enrollInAcademicPeriod, { isLoading, isSuccess, isError, error }] =
@@ -49,18 +58,15 @@ const AcademicPeriodCard = ({ period, isEnroll = true }) => {
         flexDirection: "column",
         justifyContent: "space-between",
         height: "100%",
-        cursor: "pointer", // Cambia el cursor a puntero
-        transition: "background-color 0.3s, box-shadow 0.3s", // Transición suave para fondo y sombra
+        cursor: "pointer",
+        transition: "background-color 0.3s, box-shadow 0.3s",
         "&:hover": {
-          backgroundColor: "#f0f0f0", // Cambia a un color de fondo activo al hacer hover
-          boxShadow: 4, // Aumenta un poco la sombra
+          backgroundColor: "#f0f0f0",
+          boxShadow: 4,
         },
       }}
     >
-      <CardHeader
-        title={period.name}
-        sx={{ textAlign: "center" }} // Centrar el título
-      />
+      <CardHeader title={period.name} sx={{ textAlign: "center" }} />
       <CardContent>
         <Typography variant="body2" noWrap>
           Fecha de Inicio: {formatDate(period.start_date)}
@@ -74,6 +80,7 @@ const AcademicPeriodCard = ({ period, isEnroll = true }) => {
             Descripción: {period.description}
           </Typography>
         )}
+
         {isEnroll ? (
           isEnrolled ? (
             <Typography color="success.main">
@@ -94,6 +101,19 @@ const AcademicPeriodCard = ({ period, isEnroll = true }) => {
         {isError && (
           <Typography color="error.main">Error: {error.message}</Typography>
         )}
+
+        {/* Icono de editar */}
+        <IconButton
+          onClick={handleEdit}
+          sx={{
+            mt: 2, // Espaciado superior para separar del contenido anterior
+            "&:hover": {
+              backgroundColor: "transparent", // Sin fondo al pasar el mouse
+            },
+          }}
+        >
+          <EditIcon color="secondary" />
+        </IconButton>
       </CardContent>
     </Card>
   );
