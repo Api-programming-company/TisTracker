@@ -151,6 +151,9 @@ const StudentSearch = () => {
     setSnackbarOpen(false);
   };
 
+  useEffect(() => {
+    console.log(invitations,"invitations");	
+  },[invitations]);
 
   useEffect(() => {
     if (isCreateInvitationSuccess) {
@@ -164,6 +167,8 @@ const StudentSearch = () => {
       setSnackbarMessage("Invitación creada exitosamente");
       setSnackbarOpen(true);
     }
+
+    
 
     if (isCreateInvitationError) {
       console.error(
