@@ -199,6 +199,7 @@ const EvaluationGE = () => {
             title={"Confirmación"}
             content={"Evaluación enviada correctamente."}
             onAccept={handleConfirmAccept}
+            onCancel={handleConfirmAccept}
             showButtonCancel={false}
           />
           <DialogMod
@@ -207,6 +208,7 @@ const EvaluationGE = () => {
             title={"Error"}
             content={error?.data?.message}
             onAccept={() => navigate("/")}
+            onCancel={()=>navigate('/')}
             showButtonCancel={false}
           />
           <Snackbar
