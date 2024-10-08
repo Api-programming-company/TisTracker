@@ -90,7 +90,13 @@
    ```sh
    php artisan make:resource NombreDelRecurso
    ```
-8. **Regenerar la Documentación de Swagger**
+
+8. **Crear seeder**
+   ```sh
+    php artisan make:seeder NombreDelSeeder
+   ```
+
+9. **Regenerar la Documentación de Swagger**
    ```sh
    php artisan l5-swagger:generate
    ```
