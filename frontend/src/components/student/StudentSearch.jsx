@@ -78,6 +78,9 @@ const StudentSearch = () => {
       setInvitations(companyData?.company?.members?.filter(
         (member) => member.pivot.status === "P"
       ));
+      setMembers(companyData?.company?.members.filter(
+        (member) => member.pivot.status === "A"
+      ));
       console.log("company obtenida:", companyData);
     }
 
@@ -164,6 +167,9 @@ const StudentSearch = () => {
       
       );
       setInvitations(tempInvitations);
+      setMembers(companyData?.company?.members.filter(
+        (member) => member.pivot.status === "A"
+      ));
       setSnackbarMessage("Invitación creada exitosamente");
       setSnackbarOpen(true);
     }
@@ -225,7 +231,7 @@ const StudentSearch = () => {
         </IconButton>
       </Box>
 
-      {invitations.length >= MAX_STUDENTS && (
+      {invitations.length + members.length >= MAX_STUDENTS && (
         <Typography variant="body1" color="warning" sx={{ marginTop: 2 }}>
           Has alcanzado el límite de {MAX_STUDENTS + 1} integrantes.
         </Typography>
@@ -243,6 +249,14 @@ const StudentSearch = () => {
         </Typography>
       </Box>
 
+      <Box sx={{ marginTop: 4 }}>
+        <Typography variant="h6">Integrantes</Typography>
+        {members
+          .filter((member) => member.pivot.permission === "R")
+          .map((member) => (
+            <StudentCard key={member.id} student={member} />
+          ))}
+      </Box>
       <Box sx={{ marginTop: 4 }}>
         <Typography variant="h6">Invitaciones</Typography>
         {invitations
