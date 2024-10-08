@@ -18,6 +18,7 @@ import {
   useGetCompanyByIdQuery,
   useUpdateCompanyByIdMutation,
 } from "../api/companyApi";
+import DialogMod from "../components/DialogMod";
 
 const statusMap = {
   A: "Aceptado",
@@ -28,6 +29,7 @@ const statusMap = {
 const ConformacionGE = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
@@ -52,6 +54,7 @@ const ConformacionGE = () => {
 
   useEffect(() => {
     if (isUpdateCompanySuccess) {
+      setOpenConfirmModal(true)
       setSnackbarMessage("Formulario enviado correctamente");
       setSnackbarOpen(true);
       console.log(updateCompanyData);
@@ -120,6 +123,11 @@ const ConformacionGE = () => {
   const acceptedMembersCount = data.company.members.filter(
     (member) => member.pivot.status === "A"
   ).length;
+
+  const handleConfirmAccept = () => {
+    setOpenConfirmModal(false);
+    navigate("/");
+  };
 
   return (
     <Container maxWidth="sm">
@@ -232,6 +240,14 @@ const ConformacionGE = () => {
               "CONFIRMAR INTEGRANTES"
             )}
           </Button>
+          <DialogMod
+            open={openConfirmModal}
+            setOpen={setOpenConfirmModal}
+            title={"Confirmación"}
+            content={"Formulario enviado correctamente."}
+            onAccept={handleConfirmAccept}
+            showButtonCancel={false}
+          />
         </form>
 
         <Snackbar
