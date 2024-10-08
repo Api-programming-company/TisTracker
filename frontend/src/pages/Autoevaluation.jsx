@@ -3,6 +3,7 @@ import { evaluate } from "../utils/evaluaLikert";
 import {
   Box,
   Button,
+  CircularProgress,
   Container,
   Divider,
   Grid2,
@@ -45,9 +46,16 @@ const Autoevaluation = () => {
   useEffect(() => {
     if (isSuccess) {
       console.log(data);
+      setSnackbarMessage("Evaluación enviada correctamente.");
+      setOpenSnack(true);
+      setOpenConfirmModal(true);
     }
     if (isError) {
       console.log(error);
+      setOpen(false)
+      setSnackbarMessage("Error al enviar la evaluación " || error?.data?.message);
+      setOpenSnack(true);
+      setAlreadyEvaluated(true)
     }
   }, [data, isSuccess, isError, error, isLoading]);
 
@@ -345,6 +353,9 @@ const Autoevaluation = () => {
     useContext(EvaluateContext);
   const [open, setOpen] = useState(false);
   const [openSnack, setOpenSnack] = useState(false);
+  const [openAlreadyEvaluated, setAlreadyEvaluated] = useState(false)
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
@@ -374,6 +385,27 @@ const Autoevaluation = () => {
     });
     //navigate("/");
   };
+
+  const handleConfirmAccept = () => {
+    setOpenConfirmModal(false);
+    navigate("/");
+  };
+
+  if (companyFetching || loading || isLoading ) {
+    return (
+      <Container
+        maxWidth="sm"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        <CircularProgress />
+      </Container>
+    );
+  }
 
   return (
     !loading && (
@@ -428,11 +460,27 @@ const Autoevaluation = () => {
           content={"¿Estás seguro de realizar esta acción?"}
           onAccept={handleAccept}
         />
+        <DialogMod
+          open={openConfirmModal}
+          setOpen={setOpenConfirmModal}
+          title={"Confirmación"}
+          content={"Evaluación enviada correctamente."}
+          onAccept={handleConfirmAccept}
+          showButtonCancel={false}
+        />
+        <DialogMod 
+          open={openAlreadyEvaluated}
+          setOpen={setAlreadyEvaluated}
+          title={"Error"}
+          content={error?.data?.message}
+          onAccept={()=>navigate('/')}
+          showButtonCancel={false}
+        />
         <Snackbar
           open={openSnack}
           autoHideDuration={10000}
           onClose={() => setOpenSnack(!openSnack)}
-          message="Debe responder a todas las preguntas"
+          message={snackbarMessage}
         />
       </Container>
     )

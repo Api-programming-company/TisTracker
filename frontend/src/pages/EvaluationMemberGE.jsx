@@ -26,6 +26,7 @@ const EvaluationGE = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [openSnack, setOpenSnack] = useState(false);
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
+  const [openAlreadyEvaluated, setAlreadyEvaluated] = useState(false)
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,7 +37,9 @@ const EvaluationGE = () => {
     }
     if (isError) {
       console.log(error);
+      setOpen(false)
       setSnackbarMessage("Error al enviar la evaluación " || error?.data?.message);
+      setAlreadyEvaluated(true)
       setOpenSnack(true);
     }
   }, [data, error, isError, isLoading, isSuccess]);
@@ -439,8 +442,17 @@ const EvaluationGE = () => {
           open={openConfirmModal}
           setOpen={setOpenConfirmModal}
           title={"Confirmación"}
-          content={"Evaluación enviada correctamente. ¿Desea continuar?"}
+          content={"Evaluación enviada correctamente."}
           onAccept={handleConfirmAccept}
+          showButtonCancel={false}
+        />
+        <DialogMod 
+          open={openAlreadyEvaluated}
+          setOpen={setAlreadyEvaluated}
+          title={"Error"}
+          content={error?.data?.message}
+          onAccept={()=>navigate('/')}
+          showButtonCancel={false}
         />
         <Snackbar
           open={openSnack}
