@@ -24,14 +24,12 @@ const SetFinalDeliverablePeriod = () => {
 
   useEffect(() => {
     if (isPeriodSuccess) {
-      console.log(periodData);
       setStartDate(new Date(periodData.academic_period.start_date));
       setEndDate(new Date(periodData.academic_period.end_date));
     }
     if (isPeriodError) {
-      console.log(periodError);
     }
-  }, [isPeriodSuccess, isPeriodError, periodError]);
+  }, [isPeriodSuccess, isPeriodError, periodError, periodData]);
 
   const [
     updateAcademicPeriodById,
@@ -43,14 +41,7 @@ const SetFinalDeliverablePeriod = () => {
     },
   ] = useUpdateAcademicPeriodByIdMutation();
 
-  useEffect(() => {
-    if (isUpdateSuccess) {
-      console.log("Periodo de entrega final ajustado con exito");
-    }
-    if (isUpdateError) {
-      console.log(updateError);
-    }
-  }, [isUpdateSuccess, isUpdateError, updateError]);
+ 
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -107,7 +98,7 @@ const SetFinalDeliverablePeriod = () => {
     return error;
   };
 
-  if (isUpdating || isPeriodFetching) {
+  if ( isPeriodFetching) {
     return (
       <Container
         maxWidth="sm"
@@ -179,6 +170,7 @@ const SetFinalDeliverablePeriod = () => {
         </LocalizationProvider>
         <div className="flex-start">
           <Button
+            disabled={isUpdating}
             variant="contained"
             color="primary"
             sx={{
