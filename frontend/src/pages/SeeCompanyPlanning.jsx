@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { data } from "../mock_objects/planificacion";
 import SeeMilestone from "../components/planning/SeeMilestone";
 import "../styles/planning.css";
 import { useParams } from "react-router-dom";
@@ -18,7 +17,7 @@ const SeeCompanyPlanning = () => {
     if (isError) {
       console.log(error);
     }
-  }, [isSuccess, isError, error]);
+  }, [isSuccess, isError, error, data]);
 
   if (isFetching) {
     return (
