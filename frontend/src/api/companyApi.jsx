@@ -11,24 +11,28 @@ const companyApi = apiSlice.injectEndpoints({
         },
         body: data,
       }),
+      invalidatesTags: ["company", "invitation"],
     }),
     getCompanyById: builder.query({
       query: (id) => ({
         url: `company/${id}`,
         method: "GET",
       }),
+      providesTags: ["company", "invitation"],
     }),
     getPedingCompanies: builder.query({
       query: (id) => ({
         url: `academic-periods/companies/pending?academic_period_id=${id}`,
         method: "GET",
       }),
+      providesTags: ["company", "invitation"],
     }),
     acceptCompanyById: builder.mutation({
       query: (id) => ({
         url: `companies/accept/${id}`,
         method: "POST",
       }),
+      invalidatesTags: ["company", "invitation"],
     }),
     updateCompanyById: builder.mutation({
       query: ({ id, data }) => ({
@@ -39,6 +43,7 @@ const companyApi = apiSlice.injectEndpoints({
         },
         body: data,
       }),
+      invalidatesTags: ["company", "invitation"],
     }),
     updateCompanyPlanningById: builder.mutation({
       query: ({ id, data }) => ({
@@ -49,6 +54,7 @@ const companyApi = apiSlice.injectEndpoints({
         },
         body: data,
       }),
+      invalidatesTags: ["company", "invitation"],
     }),
   }),
 });

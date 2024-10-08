@@ -15,7 +15,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   useGetCompanyByIdQuery,
@@ -30,12 +30,16 @@ const StudentSearch = () => {
   const { id } = useParams();
   const { user } = useContext(AppContext);
   const [members, setMembers] = useState([]);
+  const [invitations,setInvitations] = useState([])
   const [email, setEmail] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [openNoStudentModal, setOpenNoStudentModal] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+
+  
 
   const [
     createInvitation,
@@ -48,30 +52,7 @@ const StudentSearch = () => {
     },
   ] = useCreateInvitationMutation();
 
-  useEffect(() => {
-    if (isCreateInvitationSuccess) {
-      console.log("Invitación creada exitosamente:", createInvitationData);
-      setMembers(createInvitationData?.company?.members);
-      setSnackbarMessage("Invitación creada exitosamente");
-      setSnackbarOpen(true);
-    }
-
-    if (isCreateInvitationError) {
-      console.error(
-        "Error al crear la invitación:",
-        createInvitationError?.data?.message
-      );
-      setSnackbarMessage(
-        createInvitationError?.data?.message || "Error al crear la invitación"
-      );
-      setSnackbarOpen(true);
-    }
-  }, [
-    isCreateInvitationSuccess,
-    isCreateInvitationError,
-    createInvitationData,
-    createInvitationError,
-  ]);
+  
 
   const {
     data: companyData,
@@ -81,9 +62,25 @@ const StudentSearch = () => {
     error: companyError,
   } = useGetCompanyByIdQuery(id, { refetchOnMountOrArgChange: true });
 
+
+
+  const getInvitations =  useCallback(() => {
+    return companyData?.company?.members?.filter(
+      (member) => member.pivot.status === "P"
+    );
+  },[companyData?.company?.members]);
+
+  
+
   useEffect(() => {
     if (isCompanySuccess) {
-      setMembers(companyData?.company?.members);
+      console.log("company data:", companyData?.company?.members);
+      setInvitations(companyData?.company?.members?.filter(
+        (member) => member.pivot.status === "P"
+      ));
+      setMembers(companyData?.company?.members.filter(
+        (member) => member.pivot.status === "A"
+      ));
       console.log("company obtenida:", companyData);
     }
 
@@ -92,7 +89,7 @@ const StudentSearch = () => {
       setSnackbarMessage("Error al obtener la compañía");
       setSnackbarOpen(true);
     }
-  }, [isCompanySuccess, isCompanyError, companyData, companyError]);
+  }, [isCompanySuccess, isCompanyError, companyData, companyError, getInvitations]);
 
   const [
     searchStudent,
@@ -100,6 +97,7 @@ const StudentSearch = () => {
   ] = useLazySearchStudentQuery();
 
   useEffect(() => {
+    console.log(isFetching,"fetching");
     if (isSuccess) {
       setOpenModal(true);
       console.log("Estudiante encontrado:", data);
@@ -111,14 +109,13 @@ const StudentSearch = () => {
       setSnackbarMessage("Error al buscar el estudiante");
       setSnackbarOpen(true);
     }
-  }, [isSuccess, isError, data, error, isRefetching]);
+  }, [isSuccess, isError, data, error, isRefetching,isFetching]);
 
   const MAX_STUDENTS = 6;
 
+
   const handleSearch = () => {
     searchStudent(email);
-    setOpenModal(false);
-    setOpenNoStudentModal(false);
   };
 
   const handleKeyDown = (event) => {
@@ -156,6 +153,41 @@ const StudentSearch = () => {
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
+
+  useEffect(() => {
+    console.log(invitations,"invitations");	
+  },[invitations]);
+
+  useEffect(() => {
+    if (isCreateInvitationSuccess) {
+      console.log("Invitación creada exitosamente:", createInvitationData);
+      
+      const tempInvitations = companyData?.company?.members?.filter(
+        (member) => member.pivot.status === "P"
+      
+      );
+      setInvitations(tempInvitations);
+      setMembers(companyData?.company?.members.filter(
+        (member) => member.pivot.status === "A"
+      ));
+      setSnackbarMessage("Invitación creada exitosamente");
+      setSnackbarOpen(true);
+    }
+
+    
+
+    if (isCreateInvitationError) {
+      console.error(
+        "Error al crear la invitación:",
+        createInvitationError?.data?.message
+      );
+      setSnackbarMessage(
+        createInvitationError?.data?.message || "Error al crear la invitación"
+      );
+      setSnackbarOpen(true);
+    }
+  }, [isCreateInvitationSuccess, isCreateInvitationError, createInvitationData, createInvitationError, companyData?.company?.members]);
+
 
   if (isCreateInvitationLoading || isCompanyLoading) {
     return (
@@ -199,7 +231,7 @@ const StudentSearch = () => {
         </IconButton>
       </Box>
 
-      {members.length >= MAX_STUDENTS && (
+      {invitations.length + members.length >= MAX_STUDENTS && (
         <Typography variant="body1" color="warning" sx={{ marginTop: 2 }}>
           Has alcanzado el límite de {MAX_STUDENTS + 1} integrantes.
         </Typography>
@@ -218,8 +250,16 @@ const StudentSearch = () => {
       </Box>
 
       <Box sx={{ marginTop: 4 }}>
-        <Typography variant="h6">Invitaciones</Typography>
+        <Typography variant="h6">Integrantes</Typography>
         {members
+          .filter((member) => member.pivot.permission === "R")
+          .map((member) => (
+            <StudentCard key={member.id} student={member} />
+          ))}
+      </Box>
+      <Box sx={{ marginTop: 4 }}>
+        <Typography variant="h6">Invitaciones</Typography>
+        {invitations
           .filter((member) => member.pivot.permission === "R")
           .map((member) => (
             <StudentCard key={member.id} student={member} />
@@ -235,7 +275,7 @@ const StudentSearch = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenModal(false)} color="primary">
+          <Button onClick={handleCloseModal} color="primary">
             Cancelar
           </Button>
           <Button onClick={handleAddStudent} color="primary">
