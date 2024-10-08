@@ -15,6 +15,7 @@ import {
   DialogContentText,
   DialogTitle,
   Container,
+  Avatar,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
@@ -142,7 +143,7 @@ const StudentSearch = () => {
   }
 
   return (
-    <Box sx={{ padding: 2 }}>
+    <Box sx={{ mt: 12, padding: 2 }}>
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <TextField
           label="Buscar estudiante por correo"
