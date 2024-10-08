@@ -49,6 +49,7 @@ class CompanyUserEvaluationControllers extends Controller
             $request->validate([
                 'company_id' => 'required|exists:companies,id',
                 'score' => 'required|integer|min:1|max:100',
+                'type' => 'required|in:autoevaluation,evaluation', // Validación para el campo type
             ]);
 
             $user = Auth::user();
@@ -64,7 +65,7 @@ class CompanyUserEvaluationControllers extends Controller
             }
 
             // Si la evaluación es a la propia compañía (autoevaluación)
-            if ($request->company_id == $companyUser->company_id) {
+            if ($request->type === 'autoevaluation' && $request->company_id == $companyUser->company_id) {
                 // Verificar si el usuario ya realizó la autoevaluación
                 $existingEvaluation = CompanyUserEvaluation::where('company_user_id', $companyUser->id)
                     ->where('company_id', $companyUser->company_id)
@@ -85,27 +86,32 @@ class CompanyUserEvaluationControllers extends Controller
             }
 
             // Si es una evaluación a otra empresa, solo el líder puede hacerlo
-            if ($companyUser->permission !== 'W') {
+            if ($request->type === 'evaluation' && $companyUser->permission !== 'W') {
                 return response()->json(['message' => 'Solo el representante puede evaluar a otras empresas.'], 403);
             }
 
             // Verificar si ya realizó la evaluación a la otra empresa
-            $existingEvaluation = CompanyUserEvaluation::where('company_user_id', $companyUser->id)
-                ->where('company_id', $request->company_id)
-                ->first();
+            if ($request->type === 'evaluation') {
+                $existingEvaluation = CompanyUserEvaluation::where('company_user_id', $companyUser->id)
+                    ->where('company_id', $request->company_id)
+                    ->first();
 
-            if ($existingEvaluation) {
-                return response()->json(['message' => 'Ya realizaste la evaluación para esta grupo empresa.'], 403);
+                if ($existingEvaluation) {
+                    return response()->json(['message' => 'Ya realizaste la evaluación para esta grupo empresa.'], 403);
+                }
+
+                // Guardar la evaluación a la otra empresa
+                CompanyUserEvaluation::create([
+                    'company_user_id' => $companyUser->id,
+                    'company_id' => $request->company_id,
+                    'score' => $request->score,
+                ]);
+
+                return response()->json(['message' => 'Evaluación registrada correctamente.'], 201);
             }
 
-            // Guardar la evaluación a la otra empresa
-            CompanyUserEvaluation::create([
-                'company_user_id' => $companyUser->id,
-                'company_id' => $request->company_id,
-                'score' => $request->score,
-            ]);
-
-            return response()->json(['message' => 'Evaluación registrada correctamente.'], 201);
+            // Si no se cumple ninguna de las condiciones anteriores, retornar un error
+            return response()->json(['message' => 'Tipo de evaluación no válida.'], 400);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Error de validación',
