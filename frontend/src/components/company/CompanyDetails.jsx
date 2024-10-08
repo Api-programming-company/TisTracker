@@ -106,43 +106,45 @@ const CompanyDetails = ({ company }) => {
           </ListItem>
           <Collapse in={openMembers} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              {company.members.length > 0 ? (
-                company.members.map((member) => (
-                  <ListItem
-                    key={member.id}
-                    sx={{ display: "flex", justifyContent: "space-between" }}
-                  >
-                    <Avatar
-                      sx={{
-                        bgcolor: "primary.main",
-                        color: "white",
-                        width: 56,
-                        height: 56,
-                        mr: 2,
-                      }}
+              {company.members.filter(member => member.pivot.status === "A").length > 0 ? (
+                company.members
+                  .filter((member) => member.pivot.status === "A")
+                  .map((member) => (
+                    <ListItem
+                      key={member.id}
+                      sx={{ display: "flex", justifyContent: "space-between" }}
                     >
-                      {member.first_name[0]}
-                      {member.last_name[0]}
-                    </Avatar>
-                    <ListItemText
-                      primary={`${member.first_name} ${member.last_name}`}
-                      secondary={
-                        member.pivot.permission === "W"
-                          ? `${member.email} (Encargado)`
-                          : member.email
-                      }
-                    />
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => {
-                        navigate(`/user-evaluation/${member?.pivot?.id}`);
-                      }}
-                    >
-                      Evaluar
-                    </Button>
-                  </ListItem>
-                ))
+                      <Avatar
+                        sx={{
+                          bgcolor: "primary.main",
+                          color: "white",
+                          width: 56,
+                          height: 56,
+                          mr: 2,
+                        }}
+                      >
+                        {member.first_name[0]}
+                        {member.last_name[0]}
+                      </Avatar>
+                      <ListItemText
+                        primary={`${member.first_name} ${member.last_name}`}
+                        secondary={
+                          member.pivot.permission === "W"
+                            ? `${member.email} (Encargado)`
+                            : member.email
+                        }
+                      />
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                          navigate(`/user-evaluation/${member?.pivot?.id}`);
+                        }}
+                      >
+                        Evaluar
+                      </Button>
+                    </ListItem>
+                  ))
               ) : (
                 <Typography>No hay miembros asignados.</Typography>
               )}
