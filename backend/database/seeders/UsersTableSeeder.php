@@ -44,7 +44,6 @@ class UsersTableSeeder extends Seeder
             'email' => '111111111@est.umss.edu',
             'password' => bcrypt('Estudiante1234*'),
             'user_type' => 'E',
-            'academic_period_id' => 1, 
             'email_verified_at' => Carbon::now(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),

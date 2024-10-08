@@ -55,5 +55,13 @@ class TeacherAndAcademicPeriod extends Seeder
             'description' => '1er semestre 2021 de tis docente Boris Calancha',
             'user_id' => 1,
         ]);
+        AcademicPeriod::create([
+            'id' => 3,
+            'name' => '2do semestre 2021',
+            'start_date' => '2021-06-01',
+            'end_date' => '2021-12-15',
+            'description' => '2do semestre 2021 de tis docente Por Designar',
+            'user_id' => 2,
+        ]);
     }
 }
