@@ -17,7 +17,7 @@ import { useInvitationDetailsByIdQuery } from "../../api/invitationApi";
 
 const AcceptDeclineInvitation = () => {
   const { id } = useParams();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const { data, error, isError, isSuccess, isLoading, isFetching } =
     useInvitationDetailsByIdQuery(id);
@@ -50,7 +50,7 @@ const AcceptDeclineInvitation = () => {
         message: invitationData?.message,
         severity: "sucess",
       });
-      navigate('/')
+      navigate("/");
     }
     if (isInvitationError) {
       console.log(invitationError);
@@ -203,7 +203,7 @@ const AcceptDeclineInvitation = () => {
           open={openA}
           setOpen={setOpenA}
           title={"Aceptar"}
-          content={"¿Estas seguro que deseas aceptar esta invitación?"}
+          content={"¿Estás seguro que deseas aceptar esta invitación?"}
           onAccept={handleAccept}
         />
         {/* Rechazar solicitud */}
@@ -220,7 +220,7 @@ const AcceptDeclineInvitation = () => {
           open={openR}
           setOpen={setOpenR}
           title={"Rechazar"}
-          content={"¿Estas seguro que deseas rechazar esta invitación?"}
+          content={"¿Estás seguro que deseas rechazar esta invitación?"}
           onAccept={handleDecline}
         />
         {/* Snackbar */}
