@@ -12,11 +12,11 @@ class UsersTableSeeder extends Seeder
         // Crear algunos usuarios para las pruebas
 
         User::create([
-            'id' => 101,
+            'id' => 3,
             'first_name' => 'User',
             'last_name' => 'One to Nine',
             'email' => '123456789@est.umss.edu',
-            'password' => bcrypt('password123'),
+            'password' => bcrypt('Estudiante1234*'),
             'user_type' => 'E', 
             'academic_period_id' => 1, 
             'email_verified_at' => Carbon::now(), 
@@ -25,11 +25,11 @@ class UsersTableSeeder extends Seeder
         ]);
 
         User::create([
-            'id' => 102,
+            'id' => 4,
             'first_name' => 'User',
-            'last_name' => 'Two',
-            'email' => '113456789@est.umss.edu',
-            'password' => bcrypt('password123'),
+            'last_name' => 'Nine to One',
+            'email' => '987654321@est.umss.edu',
+            'password' => bcrypt('Estudiante1234*'),
             'user_type' => 'E', 
             'academic_period_id' => 1, 
             'email_verified_at' => Carbon::now(),
@@ -38,11 +38,11 @@ class UsersTableSeeder extends Seeder
         ]);
 
         User::create([
-            'id' => 103,
+            'id' => 5,
             'first_name' => 'User',
-            'last_name' => 'Three',
-            'email' => '122456789@est.umss.edu',
-            'password' => bcrypt('password123'),
+            'last_name' => 'Nine Ones',
+            'email' => '111111111@est.umss.edu',
+            'password' => bcrypt('Estudiante1234*'),
             'user_type' => 'E',
             'academic_period_id' => 1, 
             'email_verified_at' => Carbon::now(),
