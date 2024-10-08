@@ -50,7 +50,7 @@ const EditarListaGE = () => {
       setSnackbarOpen(true);
       setItemIdToRemove(null);
     }
-  }, [isSuccess, isError, data, error]);
+  }, [isSuccess, isError, data, error, itemIdToRemove]);
 
   const {
     data: companyData,
