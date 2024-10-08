@@ -181,7 +181,7 @@ const EditarListaGE = () => {
                 open={openA}
                 setOpen={setOpenA}
                 title={"Confirmar retiro de invitación"}
-                content={"¿Estas seguro que deseas retirar esta invitación?"}
+                content={"¿Estás seguro que deseas retirar esta invitación?"}
                 onAccept={() => {
                   handleRemoveItem();
                 }}
