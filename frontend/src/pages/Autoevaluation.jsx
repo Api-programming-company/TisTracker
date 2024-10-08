@@ -46,6 +46,7 @@ const Autoevaluation = () => {
   useEffect(() => {
     if (isSuccess) {
       console.log(data);
+      setOpen(false)
       setSnackbarMessage("Evaluación enviada correctamente.");
       setOpenSnack(true);
       setOpenConfirmModal(true);
@@ -466,6 +467,7 @@ const Autoevaluation = () => {
           title={"Confirmación"}
           content={"Evaluación enviada correctamente."}
           onAccept={handleConfirmAccept}
+          onCancel={handleConfirmAccept}
           showButtonCancel={false}
         />
         <DialogMod 
@@ -474,6 +476,7 @@ const Autoevaluation = () => {
           title={"Error"}
           content={error?.data?.message}
           onAccept={()=>navigate('/')}
+          onCancel={()=>navigate('/')}
           showButtonCancel={false}
         />
         <Snackbar
