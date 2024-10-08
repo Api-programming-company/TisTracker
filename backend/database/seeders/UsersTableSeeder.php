@@ -48,5 +48,29 @@ class UsersTableSeeder extends Seeder
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
+
+        User::create([
+            'id' => 6,
+            'first_name' => 'Marcelo',
+            'last_name' => 'Ultimo',
+            'email' => '111111112@est.umss.edu',
+            'password' => bcrypt('Estudiante1234*'),
+            'user_type' => 'E',
+            'email_verified_at' => Carbon::now(),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        User::create([
+            'id' => 7,
+            'first_name' => 'Lupita',
+            'last_name' => 'Terceros',
+            'email' => '111121111@est.umss.edu',
+            'password' => bcrypt('Estudiante1234*'),
+            'user_type' => 'E',
+            'email_verified_at' => Carbon::now(),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
     }
 }
