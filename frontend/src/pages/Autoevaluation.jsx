@@ -14,8 +14,43 @@ import RadioOption from "../components/evaluation/RadioOption";
 import EvaluateContext from "../context/evaluateContext/EvaluateContext";
 import { useNavigate } from "react-router-dom";
 import DialogMod from "../components/DialogMod";
+import { useGetCompanyByIdQuery } from "../api/companyApi";
+import { useCreateCompanyEvaluationMutation } from "../api/evaluationApi";
+import { useParams } from "react-router-dom";
 
 const Autoevaluation = () => {
+  const { company_id } = useParams();
+  const {
+    data: company,
+    isSuccess: companySuccess,
+    isFetching: companyFetching,
+    isError: isCompanyError,
+    error: companyError,
+  } = useGetCompanyByIdQuery(company_id);
+
+  useEffect(() => {
+    if (companySuccess) {
+      console.log(company);
+    }
+    if (isCompanyError) {
+      console.log(companyError);
+    }
+  }, [company, companyFetching, isCompanyError, companyError, companySuccess]);
+
+  const [
+    createCompanyEvaluation,
+    { data, isSuccess, isError, error, isLoading },
+  ] = useCreateCompanyEvaluationMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log(data);
+    }
+    if (isError) {
+      console.log(error);
+    }
+  }, [data, isSuccess, isError, error, isLoading]);
+
   const ejemploEvaluacion = {
     evaluation: {
       id: 1,
@@ -311,11 +346,12 @@ const Autoevaluation = () => {
   const [open, setOpen] = useState(false);
   const [openSnack, setOpenSnack] = useState(false);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true); // para simular el isloading borrar luego
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     clearState();
     setInitialState(ejemploEvaluacion.evaluation);
-    setLoading(!loading);
+    setLoading(false);
   }, []);
 
   const handleAccept = () => {
@@ -326,9 +362,17 @@ const Autoevaluation = () => {
     }
 
     const finalGrade = evaluate(state.questions);
-    // enviar finalGrade al back
-    console.log(finalGrade);
-    navigate("/");
+    console.log({
+      company_id: company_id,
+      score: parseInt(finalGrade, 10),
+      type: "autoevaluation",
+    });
+    createCompanyEvaluation({
+      company_id: company_id,
+      score: parseInt(finalGrade, 10),
+      type: "autoevaluation",
+    });
+    //navigate("/");
   };
 
   return (

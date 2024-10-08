@@ -92,7 +92,7 @@ class CompanyUserController extends Controller
             // Obtener el usuario a agregar
             $member = User::find($request->user_id);
             
-            // Verificar si el miembro ya está activo en otra compañía
+            // Verificar si el miembro ya está activo en otra grupo empresa
             $isActiveInAnotherCompany = CompanyUser::where('user_id', $request->user_id)
                 ->where('status', 'A')  // Estado 'A' para activo
                 ->where('company_id', '!=', $request->company_id)  // Verificar si está en otra empresa
@@ -100,7 +100,7 @@ class CompanyUserController extends Controller
 
             if ($isActiveInAnotherCompany) {
                 return response()->json([
-                    'message' => "El usuario {$member->first_name} {$member->last_name} ya está activo en otra compañía."
+                    'message' => "El usuario {$member->first_name} {$member->last_name} ya está activo en otra grupo empresa."
                 ], 400);  // 400 Bad Request
             }
 

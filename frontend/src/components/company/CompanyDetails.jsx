@@ -8,6 +8,7 @@ import {
   Collapse,
   IconButton,
   Button,
+  Avatar,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
@@ -111,6 +112,18 @@ const CompanyDetails = ({ company }) => {
                     key={member.id}
                     sx={{ display: "flex", justifyContent: "space-between" }}
                   >
+                    <Avatar
+                      sx={{
+                        bgcolor: "primary.main",
+                        color: "white",
+                        width: 56,
+                        height: 56,
+                        mr: 2,
+                      }}
+                    >
+                      {member.first_name[0]}
+                      {member.last_name[0]}
+                    </Avatar>
                     <ListItemText
                       primary={`${member.first_name} ${member.last_name}`}
                       secondary={
