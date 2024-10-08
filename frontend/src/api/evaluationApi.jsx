@@ -11,6 +11,7 @@ const evaluationApi = apiSlice.injectEndpoints({
         },
         body: data,
       }),
+      invalidatesTags: ["evaluation"],
     }),
     createCompanyEvaluation: builder.mutation({
       query: (data) => ({
@@ -21,6 +22,7 @@ const evaluationApi = apiSlice.injectEndpoints({
         },
         body: data,
       }),
+      invalidatesTags: ["evaluation"],
     }),
   }),
 });
