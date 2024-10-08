@@ -69,7 +69,7 @@ class CompanyController extends Controller
 
             if ($hasWritePermission) {
                 return response()->json([
-                    'message' => 'No puedes crear más grupos, ya eres miembro con permiso de escritura en otra grupo empresa.'
+                    'message' => 'Ya eres el encargado de una empresa, no puedes crear otra'
                 ], 403); // 403 Forbidden
             }
 
