@@ -18,7 +18,7 @@ class EvaluationsTableSeeder extends Seeder
     public function run()
     {
         // Verificar que existan usuarios para asignar evaluaciones
-        $users = User::where('user_type', 'E')->get(); // Asumiendo que 'E' son estudiantes
+        $users = User::where('user_type', 'D')->get(); // Asumiendo que 'E' son estudiantes
         if ($users->isEmpty()) {
             $this->command->info('No hay usuarios de tipo Estudiante para asignar evaluaciones.');
             return;
@@ -27,12 +27,11 @@ class EvaluationsTableSeeder extends Seeder
         // Definir una fecha común para created_at y updated_at
         $now = Carbon::now();
 
-        // Crear Evaluaciones de ejemplo
+        // Crear Evaluaciones para cada docente
         foreach ($users as $user) {
-            // Crear una evaluación para cada usuario
             $evaluation = Evaluation::create([
                 'id' => 1,
-                'user_id' => 6,
+                'user_id' => $user->id,
                 'title' => "Ejemplo de Evaluación",
                 'description' => "Evaluacion para conocimiento.",
                 'created_at' => $now,
@@ -73,6 +72,24 @@ class EvaluationsTableSeeder extends Seeder
                 ],
             ];
 
+            foreach ($questionsData as $questionData) {
+                $question = Question::create([
+                    'evaluation_id' => $evaluation->id,
+                    'question_text' => $questionData['question_text'],
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
+
+                foreach ($questionData['answer_options'] as $optionData) {
+                    AnswerOption::create([
+                        'question_id' => $question->id,
+                        'option_text' => $optionData['option_text'],
+                        'score' => $optionData['score'],
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ]);
+                }
+            }
         }
     }
 }

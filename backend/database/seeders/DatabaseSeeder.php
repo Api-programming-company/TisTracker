@@ -16,5 +16,9 @@ class DatabaseSeeder extends Seeder
         $this->call(TeacherAndAcademicPeriod::class);
         $this->call(UsersTableSeeder::class);
         $this->call(CompaniesTableSeeder::class);
+        $this->call(PlanningsTableSeeder::class);
+        $this->call(MilestonesTableSeeder::class);
+        $this->call(DeliverablesTableSeeder::class);
+        $this->call(CompanyUserTableSeeder::class);
     }
 }

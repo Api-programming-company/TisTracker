@@ -22,7 +22,7 @@ class CompanyUserTableSeeder extends Seeder
             [
                 'id' => 1,
                 'company_id' => 1, // Company A
-                'user_id' => 6,    
+                'user_id' => 6,
                 'status' => 'A',    // Aceptado
                 'permission' => 'W', // Write
                 'created_at' => $now,
@@ -49,7 +49,7 @@ class CompanyUserTableSeeder extends Seeder
             [
                 'id' => 4,
                 'company_id' => 2, // Company B
-                'user_id' => 7,    
+                'user_id' => 7,
                 'status' => 'P',    // Pendiente
                 'permission' => 'W', // Write
                 'created_at' => $now,
@@ -65,6 +65,9 @@ class CompanyUserTableSeeder extends Seeder
                 'updated_at' => $now,
             ],
         ];
-
+        // Insertar las relaciones en la base de datos
+        foreach ($companyUsers as $companyUser) {
+            CompanyUser::create($companyUser);
+        }
     }
 }
