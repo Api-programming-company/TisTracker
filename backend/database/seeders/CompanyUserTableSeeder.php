@@ -50,7 +50,7 @@ class CompanyUserTableSeeder extends Seeder
                 'id' => 4,
                 'company_id' => 2, // Company B
                 'user_id' => 7,
-                'status' => 'P',    // Pendiente
+                'status' => 'A',    // Pendiente
                 'permission' => 'W', // Write
                 'created_at' => $now,
                 'updated_at' => $now,
@@ -59,7 +59,34 @@ class CompanyUserTableSeeder extends Seeder
                 'id' => 5,
                 'company_id' => 2, // Company B
                 'user_id' => 5,    // User Nine Ones (Estudiante)
-                'status' => 'A',    // Aceptado
+                'status' => 'P',    // Aceptado
+                'permission' => 'R', // Read
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            [
+                'id' => 6,
+                'company_id' => 3, // Company B
+                'user_id' => 5,    // User Nine Ones (Estudiante)
+                'status' => 'P',    // Aceptado
+                'permission' => 'R', // Read
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            [
+                'id' => 7,
+                'company_id' => 4, // Company B
+                'user_id' => 5,    // User Nine Ones (Estudiante)
+                'status' => 'P',    // Aceptado
+                'permission' => 'R', // Read
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            [
+                'id' => 8,
+                'company_id' => 5, // Company B
+                'user_id' => 5,    // User Nine Ones (Estudiante)
+                'status' => 'P',    // Aceptado
                 'permission' => 'R', // Read
                 'created_at' => $now,
                 'updated_at' => $now,
