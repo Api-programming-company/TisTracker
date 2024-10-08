@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Button,
   Container,
   Typography,
   Box,
@@ -15,7 +14,6 @@ import {
   Avatar,
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
-import { Person } from "@mui/icons-material";
 import { format, parseISO } from "date-fns";
 
 import DialogMod from "../components/DialogMod";
@@ -38,19 +36,19 @@ const EditarListaGE = () => {
     if (isSuccess) {
       console.log(data);
       console.log(itemIdToRemove);
-      
+
       setSelectedItems((prevItems) =>
         prevItems.filter((member) => member.pivot.id !== itemIdToRemove)
       );
       setSnackbarMessage("Invitación retirada correctamente");
       setSnackbarOpen(true);
-      setItemIdToRemove(null)
+      setItemIdToRemove(null);
     }
     if (isError) {
       console.log(error);
       setSnackbarMessage(error.data?.message);
       setSnackbarOpen(true);
-      setItemIdToRemove(null)
+      setItemIdToRemove(null);
     }
   }, [isSuccess, isError, data, error]);
 
@@ -146,8 +144,17 @@ const EditarListaGE = () => {
                     }}
                   >
                     <ListItemIcon>
-                      <Avatar>
-                        <Person />
+                      <Avatar
+                        sx={{
+                          bgcolor: "primary.main",
+                          color: "white",
+                          width: 56,
+                          height: 56,
+                          mr: 2,
+                        }}
+                      >
+                        {member.first_name[0]}
+                        {member.last_name[0]}
                       </Avatar>
                     </ListItemIcon>
                     <ListItemText
@@ -155,7 +162,7 @@ const EditarListaGE = () => {
                       secondary={
                         <Box>
                           <Typography variant="body2">
-                            Correo: {member.email}
+                            {member.email}
                           </Typography>
                           <Typography variant="body2">
                             Invitación realizada en:{" "}

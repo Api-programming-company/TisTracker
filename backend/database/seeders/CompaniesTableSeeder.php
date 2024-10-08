@@ -10,6 +10,7 @@ class CompaniesTableSeeder extends Seeder
     public function run()
     {
         Company::create([
+            'id' => 1,
             'long_name' => 'Company A',
             'short_name' => 'C.A',
             'email' => '111111111@est.umss.edu',
@@ -22,6 +23,7 @@ class CompaniesTableSeeder extends Seeder
         ]);
 
         Company::create([
+            'id' => 2,
             'long_name' => 'Company B',
             'short_name' => 'C.B',
             'email' => '222222222@est.umss.edu',

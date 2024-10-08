@@ -57,8 +57,13 @@ const StudentSearch = () => {
     }
 
     if (isCreateInvitationError) {
-      console.error("Error al crear la invitación:", createInvitationError?.data?.message);
-      setSnackbarMessage(createInvitationError?.data?.message || "Error al crear la invitación");
+      console.error(
+        "Error al crear la invitación:",
+        createInvitationError?.data?.message
+      );
+      setSnackbarMessage(
+        createInvitationError?.data?.message || "Error al crear la invitación"
+      );
       setSnackbarOpen(true);
     }
   }, [
@@ -169,7 +174,7 @@ const StudentSearch = () => {
   }
 
   return (
-    <Box sx={{ padding: 2 }}>
+    <Box sx={{ mt: 12, padding: 2 }}>
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <TextField
           label="Buscar estudiante por correo"

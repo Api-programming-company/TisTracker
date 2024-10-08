@@ -51,7 +51,7 @@ const RegistroGE = () => {
           const customMessages = {
             long_name: "El nombre largo ya está en uso.",
             short_name: "El nombre corto ya está en uso.",
-            email: "El correo electrónico ya está en uso.",
+            email: "El correo electrónico no es válido o ya está en uso.",
             address: "La dirección ya está en uso.",
             phone: "El teléfono ya está en uso.",
             members: "Los miembros no son válidos.",
@@ -100,7 +100,11 @@ const RegistroGE = () => {
         message: "La dirección es obligatoria.",
       },
       phone: {
-        condition: !phone || !/^\d+$/.test(phone) || phone.length > 8 || phone.length < 7,
+        condition:
+          !phone ||
+          !/^\d+$/.test(phone) ||
+          phone.length > 8 ||
+          phone.length < 7,
         message: !phone
           ? "El teléfono es obligatorio."
           : "El teléfono debe contener 7 u 8 dígitos.",

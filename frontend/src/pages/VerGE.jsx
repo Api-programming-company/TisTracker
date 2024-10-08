@@ -135,6 +135,11 @@ const VerGE = () => {
             color: "error",
             path: `/company-evaluation/${id}`,
           },
+          {
+            text: "Autoevaluar empresa",
+            color: "error",
+            path: `/autoevaluation/${id}`,
+          },
         ].map((button, index) => (
           <Button
             key={index}

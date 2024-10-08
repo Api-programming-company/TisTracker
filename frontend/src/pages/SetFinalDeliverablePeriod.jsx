@@ -86,12 +86,23 @@ const SetFinalDeliverablePeriod = () => {
       //sucess
       console.log(id,{ start_date: startDate, end_date: endDate });
       updateAcademicPeriodById({id,start_date: startDate, end_date: endDate });
-      setSnackbarMessage("Periodo de entrega final ajustado con exito");
-      setSnackbarSeverity("success");
-      setSnackbarOpen(true);
+      
     }
     setOpen(false);
   };
+
+  useEffect(() => {
+    if (isUpdateSuccess) {
+      setSnackbarSeverity("success");
+      setSnackbarMessage("Planificación actualizada correctamente");
+      setSnackbarOpen(true);
+    }
+    if (isUpdateError) {
+      setSnackbarSeverity("error");
+      setSnackbarMessage(updateError?.data?.message || "Error desconocido");
+      setSnackbarOpen(true);
+    }
+  },[isUpdateError, isUpdateSuccess, updateError?.data?.message])
 
   const findError = (name) => {
     const error = errors[name];
