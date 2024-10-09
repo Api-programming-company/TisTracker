@@ -34,9 +34,12 @@ const CompanyPlanning = () => {
         setSnackbarOpen(true);
         return;
       }
-      console.log(form);
       
       registerPlanning(form);
+    }else{
+      setSnackbarMessage("Al parecer tienes errores en los datos");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
     }
     setOpen(false);
   };
@@ -106,6 +109,7 @@ const CompanyPlanning = () => {
        
 
       <Button
+        disabled={isLoading}
         variant="outlined"
         onClick={() => setOpen(true)}
         sx={{
@@ -118,7 +122,6 @@ const CompanyPlanning = () => {
           },
           mb: 2,
           mr: 2,
-          disabled: isLoading,
         }}
       >
         Confirmar

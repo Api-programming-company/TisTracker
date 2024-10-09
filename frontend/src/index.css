@@ -138,6 +138,10 @@ p,a,li,button,input,textarea{
   align-items: center;
 }
 
+.border-red{
+  border-color: var(--red-300) !important;
+}
+
 @media screen and (max-width: 600px) {
   .container {
     padding : 3rem 1rem;
