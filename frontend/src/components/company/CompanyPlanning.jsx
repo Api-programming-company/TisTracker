@@ -55,11 +55,11 @@ const CompanyPlanning = () => {
       setSnackbarOpen(true);
     }
     if (isError) {
-      console.log(error);
+      console.log(error,"Error must open the snackbar");
 
       setSnackbarMessage(error.data?.message);
       setSnackbarSeverity("error");
-      setSnackbarOpen(false);
+      setSnackbarOpen(true);
     }
   }, [data, isSuccess, error, isError]);
 
@@ -118,6 +118,7 @@ const CompanyPlanning = () => {
           },
           mb: 2,
           mr: 2,
+          disabled: isLoading,
         }}
       >
         Confirmar
