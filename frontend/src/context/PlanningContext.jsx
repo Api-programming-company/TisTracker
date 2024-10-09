@@ -55,6 +55,9 @@ const PlanningProvider = ({ children }) => {
     const updatedMilestones = milestones.map((milestone) => {
       const errors = [];
       if (!milestone.name) errors.push({ errorArea: "name", message: "El nombre del hito es requerido" });
+      const milestoneNames = milestones.map((milestone) => milestone.name);
+      if (milestoneNames.length !== new Set(milestoneNames).size) errors.push({ errorArea: "name", message: "Los nombres de los hitos deben ser unicos" });
+      
       if (!milestone.start_date) errors.push({ errorArea: "start_date", message: "La fecha de inicio es requerida" });
       if (!milestone.end_date) {
         errors.push({ errorArea: "end_date", message: "La fecha de fin es requerida" });
