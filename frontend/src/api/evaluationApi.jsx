@@ -24,10 +24,18 @@ const evaluationApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["evaluation"],
     }),
+    getCompanyQuestionsById: builder.query({
+      query: (id) => ({
+        url: `evaluations/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["evaluation"],
+    }),
   }),
 });
 
 export const {
   useCreateUserEvaluationMutation,
   useCreateCompanyEvaluationMutation,
+  useGetCompanyQuestionsByIdQuery,
 } = evaluationApi;

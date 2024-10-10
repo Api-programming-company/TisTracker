@@ -54,6 +54,7 @@ class EvaluationController extends Controller
             $evaluation = $user->evaluations()->create([
                 'title' => $request->title,
                 'description' => $request->description,
+                'user_id' => $user->id,
             ]);
 
             // Crear las preguntas y sus opciones de respuesta

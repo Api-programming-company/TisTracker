@@ -6,8 +6,9 @@ const RadioOption = ({ answer_options, question_id }) => {
   const [selectedValue, setSelectedValue] = useState();
   const { selectAnswer } = useContext(EvaluateContext);
   const handleChange = (event) => {
-    setSelectedValue(event.target.value);
-    selectAnswer({ question_id: question_id, answer: event.target.value });
+    const selectedScore = Number(event.target.value);
+    setSelectedValue(selectedScore);
+    selectAnswer({ question_id: question_id, answer: selectedScore });
   };
   return (
     <>
@@ -23,12 +24,12 @@ const RadioOption = ({ answer_options, question_id }) => {
             }}
           >
             <Typography sx={{ height: 40, display: "contents" }}>
-              {option.text}
+              {option.option_text}
             </Typography>
             <Radio
               checked={selectedValue === option.score}
               value={option.score}
-              name={option.text}
+              name={option.option_text}
               onChange={handleChange}
             />
           </Grid2>
