@@ -80,7 +80,11 @@ class AcademicPeriodController extends Controller
     public function getAllGroupedByTeacher()
     {
         try {
-            $academicPeriods = AcademicPeriod::with('creator')->get();
+            $currentDate = now();
+            $academicPeriods = AcademicPeriod::with('creator')
+                ->where('start_date', '<', $currentDate)
+                ->where('end_date', '>', $currentDate)
+                ->get();
 
             // Agrupar los periodos por docente (user_id)
             $groupedByTeacher = $academicPeriods->groupBy('user_id')->map(function ($periods, $userId) {
