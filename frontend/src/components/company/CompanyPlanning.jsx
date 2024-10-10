@@ -61,13 +61,11 @@ const CompanyPlanning = () => {
       navigate("/");
     }
     if (isError) {
-      console.log(error,"Error must open the snackbar");
-
       setSnackbarMessage(error.data?.message);
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
     }
-  }, [data, isSuccess, error, isError]);
+  }, [data, isSuccess, error, isError, navigate]);
 
   return (
     <div className="container">

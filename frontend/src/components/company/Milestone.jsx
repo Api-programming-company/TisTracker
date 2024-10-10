@@ -22,7 +22,7 @@ import { usePlanningContext } from "../../context/PlanningContext";
 import { set } from "date-fns";
 
 const Milestone = ({ milestone }) => {
-  const [openDeliverables, setOpenDeliverables] = useState(false);
+  const [openDeliverables, setOpenDeliverables] = useState(true);
   const [open, setOpen] = useState(false)
   const {handleChangeMilestone,deleteMilestone,addDeliverable} = usePlanningContext();
   const [isError, setIsError] = useState(false);
