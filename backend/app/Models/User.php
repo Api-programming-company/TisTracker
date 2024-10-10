@@ -12,11 +12,6 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'first_name',
         'last_name',
@@ -26,30 +21,17 @@ class User extends Authenticatable implements MustVerifyEmail
         'academic_period_id', // Añadido para asociar al estudiante con el periodo académico
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
+    protected $appends = ['company'];
+
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
 
-    /**
-     * Get the user's full name.
-     *
-     * @return string
-     */
     public function getFullNameAttribute()
     {
         return "{$this->first_name} {$this->last_name}";
@@ -75,6 +57,21 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(Company::class, 'company_user')
             ->withPivot('status', 'permission') // Incluye los campos adicionales
             ->withTimestamps();
+    }
+
+    public function getCompanyAttribute()
+    {
+        $companyUser = $this->companies()
+            ->wherePivot('permission', 'W')
+            ->orWherePivot('status', 'A')
+            ->first();
+        return $companyUser ? $companyUser : null;
+    }
+
+    public function company()
+    {
+        $companyUser = $this->companies()->wherePivot('permission', 'W')->first();
+        return $companyUser ? $companyUser : null;
     }
 
     public function scoredCompanies()

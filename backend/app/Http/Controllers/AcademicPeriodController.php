@@ -110,7 +110,6 @@ class AcademicPeriodController extends Controller
     public function enroll(Request $request)
     {
         try {
-            /** @var \App\Models\User $user **/
             $user = Auth::user();
 
             // Solo los estudiantes pueden inscribirse

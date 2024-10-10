@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\CompanyUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -23,17 +24,17 @@ Route::post('user/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->post('user/logout', [AuthController::class, 'logout']);
 
 Route::middleware('auth:sanctum')->get('user', function (Request $request) {
-    $user = $request->user();
-
-    return response()->json([
-        'user' => [
-            'first_name' => $user->first_name,
-            'last_name' => $user->last_name,
-            'email' => $user->email,
-            'user_type' => $user->user_type === 'E' ? 'estudiante' : 'docente',
-            'academic_period_id' => $user->academic_period_id,
-        ]
-    ]);
+    try {
+        $user = $request->user();
+        return response()->json([
+            'user' => $user
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => 'An error occurred while fetching the user data.',
+            'message' => $e->getMessage()
+        ], 500);
+    }
 });
 // Ruta para mostrar la notificación de verificación de email
 Route::get('/email/verify', function () {

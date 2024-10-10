@@ -77,7 +77,7 @@ const CompanyList = () => {
           Lista de Grupo Empresas
         </Typography>
         <Box>
-          {user?.user_type === "estudiante" && (
+          {user?.user_type === "E" && (
             <IconButton
               color="primary"
               aria-label="Agregar empresa"
@@ -95,7 +95,7 @@ const CompanyList = () => {
             </IconButton>
           )}
 
-          {user?.user_type === "docente" && (
+          {user?.user_type === "D" && (
             <IconButton
               color="primary"
               aria-label="Solicitudes pendientes"

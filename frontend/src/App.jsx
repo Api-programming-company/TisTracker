@@ -38,10 +38,12 @@ import EvaluationMemberGE from "./pages/EvaluationMemberGE";
 import EvaluationGE from "./pages/EvaluationGE";
 import SeeCompanyPlanning from "./pages/SeeCompanyPlanning";
 import SetFinalDeliverablePeriod from "./pages/SetFinalDeliverablePeriod";
+import StudentHome from "./components/student/StudentHome";
+import TeacherHome from "./components/teacher/TeacherHome";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
-  const userType = user ? user.user_type : "guest";
+  const userType = user ? user.user_type : "G";
 
   return (
     <>
@@ -97,6 +99,9 @@ function App({ toggleTheme, isDarkMode }) {
           <Route path="/verify-email/:token" element={<VerifyEmail />} />
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/student-home" element={<StudentHome />} />
+          <Route path="/teacher-home" element={<TeacherHome />} />
+
           <Route path="/upload" element={<ImageUpload />} />
           <Route path="/example" element={<Example />} />
           <Route path="/planning/:id" element={<SeeCompanyPlanning />} />
