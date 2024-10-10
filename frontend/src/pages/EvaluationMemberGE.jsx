@@ -18,6 +18,7 @@ import DialogMod from "../components/DialogMod";
 import { useCreateUserEvaluationMutation } from "../api/evaluationApi";
 import { useInvitationDetailsByIdQuery } from "../api/invitationApi";
 import { useParams } from "react-router-dom";
+import { useGetCompanyQuestionsByIdQuery } from "../api/evaluationApi";
 
 const EvaluationGE = () => {
   const { id } = useParams();
@@ -26,21 +27,47 @@ const EvaluationGE = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [openSnack, setOpenSnack] = useState(false);
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
-  const [openAlreadyEvaluated, setAlreadyEvaluated] = useState(false)
+  const [openAlreadyEvaluated, setAlreadyEvaluated] = useState(false);
   const navigate = useNavigate();
+
+  const {
+    data: companyQuestions,
+    isSuccess: companyQuestionsSuccess,
+    isFetching: companyQuestionsFetching,
+    isError: isCompanyQuestionsError,
+    error: companyQuestionsError,
+  } = useGetCompanyQuestionsByIdQuery(7);
+
+  useEffect(() => {
+    if (companyQuestionsSuccess) {
+      console.log(companyQuestions);
+      setInitialState(companyQuestions);
+    }
+    if (isCompanyQuestionsError) {
+      console.log(companyQuestionsError);
+    }
+  }, [
+    companyQuestions,
+    companyQuestionsFetching,
+    isCompanyQuestionsError,
+    companyQuestionsError,
+    companyQuestionsSuccess,
+  ]);
 
   useEffect(() => {
     if (isSuccess) {
-      setOpen(false)
+      setOpen(false);
       setSnackbarMessage("Evaluación enviada correctamente.");
       setOpenSnack(true);
       setOpenConfirmModal(true);
     }
     if (isError) {
       console.log(error);
-      setOpen(false)
-      setSnackbarMessage("Error al enviar la evaluación " || error?.data?.message);
-      setAlreadyEvaluated(true)
+      setOpen(false);
+      setSnackbarMessage(
+        "Error al enviar la evaluación " || error?.data?.message
+      );
+      setAlreadyEvaluated(true);
       setOpenSnack(true);
     }
   }, [data, error, isError, isLoading, isSuccess]);
@@ -326,12 +353,6 @@ const EvaluationGE = () => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    clearState();
-    setInitialState(ejemploEvaluacion.evaluation);
-    setLoading(false);
-  }, []);
-
   const handleAccept = () => {
     if (!state.isValid) {
       setSnackbarMessage("Debe responder a todas las preguntas");
@@ -358,7 +379,7 @@ const EvaluationGE = () => {
     navigate("/");
   };
 
-  if (isLoading || isInvitationFetching || loading) {
+  if (isLoading || isInvitationFetching || companyQuestionsFetching) {
     return (
       <Container
         maxWidth="sm"
@@ -409,7 +430,10 @@ const EvaluationGE = () => {
           return (
             <>
               <Grid2 size={{ sm: 12, md: 6 }}>
-                <Question key={e.id} question={`${index + 1}. ${e.text}`} />
+                <Question
+                  key={e.id}
+                  question={`${index + 1}. ${e.question_text}`}
+                />
               </Grid2>
               <RadioOption
                 key={e.id}
@@ -448,13 +472,13 @@ const EvaluationGE = () => {
           onCancel={handleConfirmAccept}
           showButtonCancel={false}
         />
-        <DialogMod 
+        <DialogMod
           open={openAlreadyEvaluated}
           setOpen={setAlreadyEvaluated}
           title={"Error"}
           content={error?.data?.message}
-          onAccept={()=>navigate('/')}
-          onCancel={()=>navigate('/')}
+          onAccept={() => navigate("/")}
+          onCancel={() => navigate("/")}
           showButtonCancel={false}
         />
         <Snackbar

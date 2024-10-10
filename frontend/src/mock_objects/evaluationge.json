@@ -1,0 +1,232 @@
+{
+  "title": "Evaluación a una Grupo Empresa",
+  "description": "Evaluación para empresas",
+  "questions": [
+    {
+      "question_text": "El código está bien estructurado y es fácil de entender.",
+      "answer_options": [
+        {
+          "option_text": "Totalmente en desacuerdo",
+          "score": "1"
+        },
+        {
+          "option_text": "En desacuerdo",
+          "score": "2"
+        },
+        {
+          "option_text": "Neutral",
+          "score": "3"
+        },
+        {
+          "option_text": "De acuerdo",
+          "score": "4"
+        },
+        {
+          "option_text": "Totalmente de acuerdo",
+          "score": "5"
+        }
+      ]
+    },
+    {
+      "question_text": "El producto final cumple con todos los requisitos especificados en la documentación del proyecto.",
+      "answer_options": [
+        {
+          "option_text": "Totalmente en desacuerdo",
+          "score": "1"
+        },
+        {
+          "option_text": "En desacuerdo",
+          "score": "2"
+        },
+        {
+          "option_text": "Neutral",
+          "score": "3"
+        },
+        {
+          "option_text": "De acuerdo",
+          "score": "4"
+        },
+        {
+          "option_text": "Totalmente de acuerdo",
+          "score": "5"
+        }
+      ]
+    },
+    {
+      "question_text": "La documentación técnica es clara y completa, facilitando la comprensión del sistema.",
+      "answer_options": [
+        {
+          "option_text": "Totalmente en desacuerdo",
+          "score": "1"
+        },
+        {
+          "option_text": "En desacuerdo",
+          "score": "2"
+        },
+        {
+          "option_text": "De acuerdo",
+          "score": "3"
+        },
+        {
+          "option_text": "Totalmente de acuerdo",
+          "score": "4"
+        }
+      ]
+    },
+    {
+      "question_text": "El código es fácil de mantener y actualizar en el futuro.",
+      "answer_options": [
+        {
+          "option_text": "En desacuerdo",
+          "score": "1"
+        },
+        {
+          "option_text": "Neutral",
+          "score": "2"
+        },
+        {
+          "option_text": "De acuerdo",
+          "score": "3"
+        }
+      ]
+    },
+    {
+      "question_text": "La interfaz de usuario es intuitiva y fácil de navegar.",
+      "answer_options": [
+        {
+          "option_text": "Totalmente en desacuerdo",
+          "score": "1"
+        },
+        {
+          "option_text": "En desacuerdo",
+          "score": "2"
+        },
+        {
+          "option_text": "Neutral",
+          "score": "3"
+        },
+        {
+          "option_text": "De acuerdo",
+          "score": "4"
+        },
+        {
+          "option_text": "Totalmente de acuerdo",
+          "score": "5"
+        }
+      ]
+    },
+    {
+      "question_text": "El estilo de codificación es consistente a lo largo de todo el proyecto.",
+      "answer_options": [
+        {
+          "option_text": "Totalmente en desacuerdo",
+          "score": "1"
+        },
+        {
+          "option_text": "En desacuerdo",
+          "score": "2"
+        },
+        {
+          "option_text": "Neutral",
+          "score": "3"
+        },
+        {
+          "option_text": "De acuerdo",
+          "score": "4"
+        },
+        {
+          "option_text": "Totalmente de acuerdo",
+          "score": "5"
+        }
+      ]
+    },
+    {
+      "question_text": "El producto final tiene un número mínimo de errores y bugs.",
+      "answer_options": [
+        {
+          "option_text": "Totalmente en desacuerdo",
+          "score": "1"
+        },
+        {
+          "option_text": "En desacuerdo",
+          "score": "2"
+        },
+        {
+          "option_text": "De acuerdo",
+          "score": "3"
+        },
+        {
+          "option_text": "Totalmente de acuerdo",
+          "score": "4"
+        }
+      ]
+    },
+    {
+      "question_text": "El software es compatible con las plataformas y sistemas operativos especificados.",
+      "answer_options": [
+        {
+          "option_text": "Totalmente en desacuerdo",
+          "score": "1"
+        },
+        {
+          "option_text": "En desacuerdo",
+          "score": "2"
+        },
+        {
+          "option_text": "De acuerdo",
+          "score": "3"
+        },
+        {
+          "option_text": "Totalmente de acuerdo",
+          "score": "4"
+        }
+      ]
+    },
+    {
+      "question_text": "El código cuenta con comentarios que facilitan su comprensión.",
+      "answer_options": [
+        {
+          "option_text": "Totalmente en desacuerdo",
+          "score": "1"
+        },
+        {
+          "option_text": "En desacuerdo",
+          "score": "2"
+        },
+        {
+          "option_text": "De acuerdo",
+          "score": "3"
+        },
+        {
+          "option_text": "Totalmente de acuerdo",
+          "score": "4"
+        }
+      ]
+    },
+    {
+      "question_text": "El tiempo de carga del producto es aceptable y eficiente.",
+      "answer_options": [
+        {
+          "option_text": "Totalmente en desacuerdo",
+          "score": "1"
+        },
+        {
+          "option_text": "En desacuerdo",
+          "score": "2"
+        },
+        {
+          "option_text": "Neutral",
+          "score": "3"
+        },
+        {
+          "option_text": "De acuerdo",
+          "score": "4"
+        },
+        {
+          "option_text": "Totalmente de acuerdo",
+          "score": "5"
+        }
+      ]
+    }
+  ]
+}
