@@ -94,4 +94,15 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(UserEvaluation::class, 'evaluatee_id');
     }
+    public static function getFieldLabels()
+    {
+        return [
+            'first_name' => 'nombre',
+            'last_name' => 'apellido',
+            'password' => 'contraseña',
+            'email' => 'correo electrónico',
+            'user_type' => 'tipo de usuario',
+            'academic_period_id' => 'periodo académico',
+        ];
+    }
 }

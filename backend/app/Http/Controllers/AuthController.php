@@ -33,8 +33,8 @@ class AuthController extends Controller
                 'last_name' => 'required|string|max:255',
                 'email' => ['required', 'email', 'unique:users,email',  $this->getEmailValidationRule($request->user_type)],
                 'password' => ['required', 'string', 'min:8', 'confirmed', new ValidarPassword],
-                'user_type' => 'required|in:E,D', // Validar que sea 'E' o 'D'
-            ]);
+                'user_type' => 'required|in:E,D',
+            ], [], User::getFieldLabels());
 
             // Crear nuevo usuario
             $user = User::create([
