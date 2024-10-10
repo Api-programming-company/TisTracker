@@ -27,17 +27,17 @@ const companyApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["company", "invitation"],
     }),
-    acceptCompanyById: builder.mutation({
-      query: (id) => ({
-        url: `companies/accept/${id}`,
-        method: "POST",
+    getCompanies: builder.query({
+      query: () => ({
+        url: "company",
+        method: "GET",
       }),
-      invalidatesTags: ["company", "invitation"],
+      providesTags: ["company", "invitation"],
     }),
     updateCompanyById: builder.mutation({
       query: ({ id, data }) => ({
         url: `company/${id}`,
-        method: "PUT", // O `PATCH` según lo necesites
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -63,7 +63,7 @@ export const {
   useCreateCompanyMutation,
   useGetCompanyByIdQuery,
   useGetPedingCompaniesQuery,
-  useAcceptCompanyByIdMutation,
+  useGetCompaniesQuery,
   useUpdateCompanyByIdMutation,
   useUpdateCompanyPlanningByIdMutation,
 } = companyApi;

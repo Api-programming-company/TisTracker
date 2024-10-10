@@ -40,6 +40,7 @@ import SeeCompanyPlanning from "./pages/SeeCompanyPlanning";
 import SetFinalDeliverablePeriod from "./pages/SetFinalDeliverablePeriod";
 import StudentHome from "./components/student/StudentHome";
 import TeacherHome from "./components/teacher/TeacherHome";
+import Test from "./components/Test";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -88,9 +89,21 @@ function App({ toggleTheme, isDarkMode }) {
             />
 
             {/* evaluacion */}
-            <Route path="/autoevaluation/:company_id" element={<Autoevaluation />} />
-            <Route path="/user-evaluation/:id" element={<EvaluationMemberGE />} />
-            <Route path="/company-evaluation/:company_id" element={<EvaluationGE />} />
+            <Route
+              path="/autoevaluation/:company_id"
+              element={<Autoevaluation />}
+            />
+            <Route
+              path="/user-evaluation/:id"
+              element={<EvaluationMemberGE />}
+            />
+            <Route
+              path="/company-evaluation/:company_id"
+              element={<EvaluationGE />}
+            />
+
+            {/* pruebas */}
+            <Route path="/test" element={<Test />} />
           </Route>
 
           <Route path="/registro-estudiante" element={<UserRegister />} />
@@ -105,9 +118,12 @@ function App({ toggleTheme, isDarkMode }) {
           <Route path="/upload" element={<ImageUpload />} />
           <Route path="/example" element={<Example />} />
           <Route path="/planning/:id" element={<SeeCompanyPlanning />} />
-          
-          <Route path="/update-academic-period/:id" element={<SetFinalDeliverablePeriod/>}></Route>
-          
+
+          <Route
+            path="/update-academic-period/:id"
+            element={<SetFinalDeliverablePeriod />}
+          ></Route>
+
           <Route path="/*" element={<NotFound />} />
         </Routes>
       </Box>
