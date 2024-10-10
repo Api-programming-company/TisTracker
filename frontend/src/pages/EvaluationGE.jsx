@@ -17,7 +17,6 @@ import Question from "../components/evaluation/Question";
 import RadioOption from "../components/evaluation/RadioOption";
 import EvaluateContext from "../context/evaluateContext/EvaluateContext";
 import { evaluate } from "../utils/evaluaLikert";
-import { ejemploEvaluacion } from "../mock_objects/evaluation";
 import { useGetCompanyQuestionsByIdQuery } from "../api/evaluationApi";
 
 const EvaluationGE = () => {
