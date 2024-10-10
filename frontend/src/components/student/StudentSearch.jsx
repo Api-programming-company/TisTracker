@@ -141,11 +141,6 @@ const StudentSearch = () => {
     setOpenModal(false);
   };
 
-  const handleOpenModal = () => {
-    setSelectedStudent(data.student);
-    setOpenModal(true);
-  };
-
   const handleCloseModal = () => {
     setOpenModal(false);
   };
@@ -232,7 +227,7 @@ const StudentSearch = () => {
       </Box>
 
       {invitations.length + members.length >= MAX_STUDENTS && (
-        <Typography variant="body1" color="warning" sx={{ marginTop: 2 }}>
+        <Typography variant="body1" color="red" sx={{ marginTop: 2 }}>
           Has alcanzado el límite de {MAX_STUDENTS + 1} integrantes.
         </Typography>
       )}

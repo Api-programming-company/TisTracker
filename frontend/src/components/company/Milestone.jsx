@@ -19,17 +19,24 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import DialogMod from "../DialogMod";
 import { id } from "date-fns/locale";
 import { usePlanningContext } from "../../context/PlanningContext";
+import { set } from "date-fns";
 
 const Milestone = ({ milestone }) => {
-  const [openDeliverables, setOpenDeliverables] = useState(false);
+  const [openDeliverables, setOpenDeliverables] = useState(true);
   const [open, setOpen] = useState(false)
   const {handleChangeMilestone,deleteMilestone,addDeliverable} = usePlanningContext();
+  const [isError, setIsError] = useState(false);
 
   const findError = (name) => {
     const error = milestone.errors.find((error) => error.errorArea === name);
+    if(error && !isError){
+      setIsError(true);
+      setOpenDeliverables(true);
+    } 
     return error?.message;
   };
   const handleAction = (action, payload) => {
+    setIsError(false);
     switch (action) {
       case "handleToggle":
         setOpenDeliverables((prev) => !prev);
@@ -52,7 +59,7 @@ const Milestone = ({ milestone }) => {
   };
 
   return (
-    <div className="milestone-item" key={milestone.id}>
+    <div className={`milestone-item ${isError && "border-red"}`} key={milestone.id}>
       <ListItem >
         <ListItemText
           primary={

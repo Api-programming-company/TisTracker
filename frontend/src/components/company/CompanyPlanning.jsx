@@ -4,7 +4,7 @@ import Milestone from "./Milestone";
 import { useUpdateCompanyPlanningByIdMutation } from "../../api/companyApi";
 import DialogMod from "../DialogMod";
 import { CiCirclePlus } from "react-icons/ci";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useRegisterPlanningMutation } from "../../api/planningApi";
 import { usePlanningContext } from "../../context/PlanningContext";
 import "../../styles/planning_record.css"
@@ -17,6 +17,7 @@ const CompanyPlanning = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
   const {milestones,setMilestones,addMilestone,changeMilestones,checkErrors} = usePlanningContext();
+  const navigate = useNavigate();
 
   const [registerPlanning, { data, isSuccess, error, isError, isLoading }] =
     useRegisterPlanningMutation();
@@ -34,9 +35,12 @@ const CompanyPlanning = () => {
         setSnackbarOpen(true);
         return;
       }
-      console.log(form);
       
       registerPlanning(form);
+    }else{
+      setSnackbarMessage("Al parecer tienes errores en los datos");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
     }
     setOpen(false);
   };
@@ -53,15 +57,15 @@ const CompanyPlanning = () => {
       setSnackbarMessage("Planificación registrada con éxito");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
+
+      navigate("/");
     }
     if (isError) {
-      console.log(error);
-
       setSnackbarMessage(error.data?.message);
       setSnackbarSeverity("error");
-      setSnackbarOpen(false);
+      setSnackbarOpen(true);
     }
-  }, [data, isSuccess, error, isError]);
+  }, [data, isSuccess, error, isError, navigate]);
 
   return (
     <div className="container">
@@ -106,6 +110,7 @@ const CompanyPlanning = () => {
        
 
       <Button
+        disabled={isLoading}
         variant="outlined"
         onClick={() => setOpen(true)}
         sx={{
