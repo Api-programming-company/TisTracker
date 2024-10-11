@@ -26,7 +26,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
     ];
 
-    protected $appends = ['company'];
+    protected $appends = ['company', 'academic_period'];
 
     protected $casts = [
         'email_verified_at' => 'datetime',
@@ -45,6 +45,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function academicPeriod()
     {
         return $this->belongsTo(AcademicPeriod::class, 'academic_period_id');
+    }
+
+    public function getAcademicPeriodAttribute()
+    {
+        return $this->academicPeriod()->first();
     }
 
     public function evaluations()
