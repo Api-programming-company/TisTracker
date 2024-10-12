@@ -66,7 +66,7 @@ class RegistrarGrupoEmpresaTest extends TestCase
 
         // Verificar que los miembros fueron asociados a la compañía
         $company = Company::where('email', 'empresa@prueba.com')->first();
-        $this->assertDatabaseHas('company_user', [
+        $this->assertDatabaseHas('company_users', [
             'company_id' => $company->id,
             'user_id' => $user->id,
             'status' => 'P',

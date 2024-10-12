@@ -20,6 +20,7 @@ class CreateCompaniesTable extends Migration
             $table->string('email')->unique();
             $table->string('address');
             $table->string('phone');
+            $table->char('status', 1)->default('P');
             $table->foreignId('academic_period_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });

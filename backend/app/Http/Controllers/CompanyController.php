@@ -368,7 +368,7 @@ class CompanyController extends Controller
             $company->update($request->except('members'));
 
             // Obtener la lista actualizada de miembros con sus permisos y estado
-            $updatedMembers = $company->members()->get(['user_id', 'company_user.permission', 'company_user.status']);
+            $updatedMembers = $company->members()->get(['user_id', 'company_users.permission', 'company_users.status']);
 
             return response()->json([
                 'message' => 'Compañía actualizada correctamente.',

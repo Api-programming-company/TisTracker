@@ -59,7 +59,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function companies()
     {
-        return $this->belongsToMany(Company::class, 'company_user')
+        return $this->belongsToMany(Company::class, 'company_users')
             ->withPivot('status', 'permission') // Incluye los campos adicionales
             ->withTimestamps();
     }
