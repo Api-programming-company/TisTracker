@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Log;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,6 +17,5 @@ class DatabaseSeeder extends Seeder
 
         $usersTableSeeder = new UsersTableSeeder();
         $usersTableSeeder->run($academicPeriodId);
-
     }
 }
