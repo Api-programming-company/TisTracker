@@ -15,13 +15,11 @@ class CreateDeliverablesTable extends Migration
     {
         Schema::create('deliverables', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); // Nombre del deliverable
-            $table->string('responsible'); // Responsable del deliverable
-            $table->text('objective'); // Objetivo del deliverable
-            $table->unsignedBigInteger('milestone_id'); // Relación con Milestone
+            $table->string('name');
+            $table->string('responsible')->nullable();
+            $table->text('objective')->nullable();
+            $table->unsignedBigInteger('milestone_id');
             $table->timestamps();
-
-            // Foreign key constraint
             $table->foreign('milestone_id')->references('id')->on('milestones')->onDelete('cascade');
         });
     }

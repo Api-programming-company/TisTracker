@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\AcademicPeriod;
+use App\Models\CompanyUserEvaluation;
 
 class Company extends Model
 {
@@ -26,7 +27,7 @@ class Company extends Model
     }
     public function members()
     {
-        return $this->belongsToMany(User::class, 'company_user')
+        return $this->belongsToMany(User::class, 'company_users')
             ->withPivot('id', 'status', 'permission') // Incluye los campos adicionales
             ->withTimestamps();
     }
@@ -39,8 +40,12 @@ class Company extends Model
     public function userScores()
     {
         return $this->belongsToMany(User::class, 'company_user_score')
-            ->using(CompanyUserScore::class)
+            ->using(CompanyUserEvaluation::class)
             ->withPivot('score')
             ->withTimestamps();
+    }
+    public function evaluations()
+    {
+        return $this->hasMany(CompanyUserEvaluation::class);
     }
 }

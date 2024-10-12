@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class CompanyUser extends Pivot
 {
-    protected $table = 'company_user'; // Nombre de la tabla pivote
-
     protected $fillable = [
         'company_id',
         'user_id',
