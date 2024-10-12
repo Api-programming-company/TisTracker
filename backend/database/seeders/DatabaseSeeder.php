@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Log;
 
-
 class DatabaseSeeder extends Seeder
 {
     public function run()
@@ -17,5 +16,11 @@ class DatabaseSeeder extends Seeder
 
         $usersTableSeeder = new UsersTableSeeder();
         $usersTableSeeder->run($academicPeriodId);
+
+        $companiesTableSeeder = new CompaniesTableSeeder();
+        $companiesTableSeeder->run($academicPeriodId);
+
+        $pendingCompaniesSeeder = new PendingCompaniesSeeder();
+        $pendingCompaniesSeeder->run($academicPeriodId);
     }
 }
