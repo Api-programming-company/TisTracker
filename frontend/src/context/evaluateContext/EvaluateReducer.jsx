@@ -72,7 +72,18 @@ export default (state, action) => {
             }
           : criteria
       );
-      console.log(parameterAdded);
       return { ...state, questions: parameterAdded };
+    case "deleteParameter":
+      const parameterDeleted = state.questions.map((criteria) =>
+        criteria.id === payload.criteria_id
+          ? {
+              ...criteria,
+              answer_options: criteria.answer_options.filter(
+                (option) => option.id !== payload.parameter_id
+              ),
+            }
+          : criteria
+      );
+      return { ...state, questions: parameterDeleted };
   }
 };

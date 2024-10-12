@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import Parameter from "./Parameter";
 import EvaluateContext from "../../context/evaluateContext/EvaluateContext";
 
@@ -62,8 +62,10 @@ const Criteria = ({ criteria }) => {
           />
         </ListItem>
         <Collapse in={toggle}>
-          {criteria.answer_options?.map((e, index) => {
-            return <Parameter key={index} parameter={e} />;
+          {criteria.answer_options?.map((e) => {
+            return (
+              <Parameter key={e.id} parameter={e} criteria_id={criteria.id} />
+            );
           })}
           <Button
             variant="contained"

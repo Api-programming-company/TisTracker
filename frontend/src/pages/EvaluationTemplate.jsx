@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { useCreateEvaluationTemplateMutation } from "../api/evaluationApi";
 import {
   Button,
@@ -43,7 +43,7 @@ const EvaluationTemplate = () => {
     const { name, value } = e.target;
     switch (name) {
       case "title":
-        handleTitleChange(value)
+        handleTitleChange(value);
         break;
       default:
         break;
@@ -75,8 +75,8 @@ const EvaluationTemplate = () => {
         Criterios de Evaluación
       </Typography>
       {state.questions?.length > 0 ? (
-        state.questions.map((e, index) => {
-          return <Criteria key={index} criteria={e} />;
+        state.questions.map((e) => {
+          return <Criteria key={e.id} criteria={e} />;
         })
       ) : (
         <p>no hay questions jaja</p>

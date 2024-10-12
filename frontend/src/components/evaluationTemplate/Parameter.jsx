@@ -1,8 +1,13 @@
 import { Box, Button, Container, Radio, TextField } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import React from "react";
+import React, { useContext } from "react";
+import EvaluateContext from "../../context/evaluateContext/EvaluateContext";
 
-const Parameter = ({ parameter }) => {
+const Parameter = ({ parameter, criteria_id }) => {
+  const { deleteParameter } = useContext(EvaluateContext);
+  const handleDeleteParameter = () => {
+    deleteParameter({ parameter_id: parameter.id, criteria_id: criteria_id });
+  };
   return (
     <Container>
       <Box sx={{ display: "flex" }}>
@@ -16,7 +21,7 @@ const Parameter = ({ parameter }) => {
             },
           }}
           startIcon={<DeleteIcon />}
-          //   onClick={() => setOpen(true)}
+          onClick={handleDeleteParameter}
         ></Button>
       </Box>
     </Container>

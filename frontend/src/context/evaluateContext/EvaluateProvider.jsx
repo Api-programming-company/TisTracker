@@ -74,6 +74,13 @@ const EvaluateProvider = ({ children }) => {
     });
   };
 
+  const deleteParameter = (e) => {
+    dispatch({
+      type: "deleteParameter",
+      payload: e,
+    });
+  };
+
   return (
     <EvaluateContext.Provider
       value={{
@@ -87,6 +94,7 @@ const EvaluateProvider = ({ children }) => {
         handleCriteriaTitleChange,
         addParameter,
         deleteCriteria,
+        deleteParameter,
       }}
     >
       {children}
