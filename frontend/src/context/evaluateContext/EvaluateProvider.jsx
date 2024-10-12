@@ -32,6 +32,28 @@ const EvaluateProvider = ({ children }) => {
     });
   };
 
+  // EvaluationTemplate
+  const updateState = (e) => {
+    dispatch({
+      type: "updateState",
+      payload: e,
+    });
+  };
+
+  const addCriteria = (e) => {
+    dispatch({
+      type: "addCriteria",
+      payload: e,
+    });
+  };
+
+  const addParameter = (e) => {
+    dispatch({
+      type: "addParameter",
+      payload: e,
+    });
+  };
+
   return (
     <EvaluateContext.Provider
       value={{ state, setInitialState, selectAnswer, verifyFields, clearState }}

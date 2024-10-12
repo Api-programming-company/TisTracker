@@ -23,5 +23,12 @@ export default (state, action) => {
         true
       );
       return { ...state, isValid: isValid };
+
+    // EvaluationTemplate
+    case "updateState":
+      return {
+        ...state,
+        ...payload,
+      };
   }
 };
