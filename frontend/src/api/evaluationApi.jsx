@@ -31,6 +31,17 @@ const evaluationApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["evaluation"],
     }),
+    createEvaluationTemplate: builder.mutation({
+      query: (data) => ({
+        url: "evaluations",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: data,
+      }),
+      invalidatesTags: ["evaluation"],
+    }),
   }),
 });
 
@@ -38,4 +49,5 @@ export const {
   useCreateUserEvaluationMutation,
   useCreateCompanyEvaluationMutation,
   useGetCompanyQuestionsByIdQuery,
+  useCreateEvaluationTemplateMutation,
 } = evaluationApi;
