@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Parameter from "./Parameter";
 import EvaluateContext from "../../context/evaluateContext/EvaluateContext";
 
@@ -35,6 +35,10 @@ const Criteria = ({ criteria }) => {
     // addParameter({ id: criteria.id });
   };
   const handleDeleteCriteria = () => {};
+
+  useEffect(() => {
+    console.log(criteria,"Criteria");
+  },[criteria])
 
   return (
     <Container>

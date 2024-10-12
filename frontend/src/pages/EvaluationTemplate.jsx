@@ -62,6 +62,7 @@ const EvaluationTemplate = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log(name,value);
     switch (name) {
       case "title":
         setTemplate((prev) => {
@@ -73,6 +74,10 @@ const EvaluationTemplate = () => {
         break;
     }
   };
+
+  useEffect(() => {
+    console.log(template.questions,"questions");
+  },[template.questions])
 
   return (
     <Container>
@@ -99,8 +104,8 @@ const EvaluationTemplate = () => {
         Criterios de Evaluación
       </Typography>
       {template.questions?.length > 0 ? (
-        template.questions.map((e) => {
-          return <Criteria key={Date.now()} criteria={e} />;
+        template.questions.map((e, index) => {
+          return <Criteria key={index} criteria={e} />;
         })
       ) : (
         <p>no hay questions jaja</p>
