@@ -184,7 +184,7 @@ class CompanyController extends Controller
             $company = Company::with([
                 'planning.milestones.deliverables',
                 'academicPeriod.creator',
-                'members'
+                'members.user'
             ])->find($id);
 
             // Verificar si la compañía existe
