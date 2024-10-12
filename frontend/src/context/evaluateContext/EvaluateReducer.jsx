@@ -45,6 +45,11 @@ export default (state, action) => {
         ...state,
         questions: [...state.questions, criteria],
       };
+    case "deleteCriteria":
+      const deletedCriteria = state.questions.filter(
+        (criteria) => criteria.id !== payload
+      );
+      return { ...state, questions: deletedCriteria };
     case "handleCriteriaTitleChange":
       const newCriteria = state.questions.map((criteria) =>
         criteria.id === payload.id
@@ -58,7 +63,7 @@ export default (state, action) => {
         option_text: "",
         score: "",
       };
-      console.log(payload.id)
+      console.log(payload.id);
       const parameterAdded = state.questions.map((criteria) =>
         criteria.id === payload.id
           ? {
@@ -67,7 +72,7 @@ export default (state, action) => {
             }
           : criteria
       );
-      console.log(parameterAdded)
+      console.log(parameterAdded);
       return { ...state, questions: parameterAdded };
   }
 };

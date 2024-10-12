@@ -16,7 +16,7 @@ import Parameter from "./Parameter";
 import EvaluateContext from "../../context/evaluateContext/EvaluateContext";
 
 const Criteria = ({ criteria }) => {
-  const { handleCriteriaTitleChange, addParameter } =
+  const { handleCriteriaTitleChange, addParameter, deleteCriteria } =
     useContext(EvaluateContext);
   const [toggle, setToggle] = useState(true);
 
@@ -34,7 +34,9 @@ const Criteria = ({ criteria }) => {
   const handleAddParameter = () => {
     addParameter({ id: criteria.id });
   };
-  const handleDeleteCriteria = () => {};
+  const handleDeleteCriteria = () => {
+    deleteCriteria(criteria.id);
+  };
 
   return (
     <Container>

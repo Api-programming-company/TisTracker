@@ -53,6 +53,13 @@ const EvaluateProvider = ({ children }) => {
     });
   };
 
+  const deleteCriteria = (e) => {
+    dispatch({
+      type: "deleteCriteria",
+      payload: e,
+    });
+  };
+
   const handleCriteriaTitleChange = (e) => {
     dispatch({
       type: "handleCriteriaTitleChange",
@@ -79,6 +86,7 @@ const EvaluateProvider = ({ children }) => {
         addCriteria,
         handleCriteriaTitleChange,
         addParameter,
+        deleteCriteria,
       }}
     >
       {children}
