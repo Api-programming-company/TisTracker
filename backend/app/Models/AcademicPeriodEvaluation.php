@@ -12,6 +12,7 @@ class AcademicPeriodEvaluation extends Model
     protected $fillable = [
         'evaluation_id',
         'academic_period_id',
+        'evaluation_type',
         'start_date',
         'end_date',
     ];
