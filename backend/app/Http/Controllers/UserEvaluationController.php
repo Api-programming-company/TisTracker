@@ -49,7 +49,7 @@ class UserEvaluationController extends Controller
 
             // Validar la entrada de datos
             $validatedData = $request->validate([
-                'evaluatee_company_user_id' => 'required|exists:company_users,id',
+                'evaluatee_company_user_id' => 'required|exists:company_user,id',
                 'score' => 'required|integer|min:0|max:100',
             ]);
 

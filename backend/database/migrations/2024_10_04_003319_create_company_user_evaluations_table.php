@@ -15,7 +15,7 @@ class CreateCompanyUserEvaluationsTable extends Migration
     {
         Schema::create('company_user_evaluations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_user_id')->constrained('company_users')->onDelete('cascade');
+            $table->foreignId('company_user_id')->constrained('company_user')->onDelete('cascade');
             $table->foreignId('company_id')->constrained()->onDelete('cascade');
             $table->integer('score');
             $table->timestamps();

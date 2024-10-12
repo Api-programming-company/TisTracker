@@ -25,7 +25,7 @@ class CompanyUserController extends Controller
 
             // Obtener las compañías asociadas al usuario con status 'P'
             $companies = $user->companies()
-                ->where('company_users.status', 'P') // Filtra por status 'P' en la tabla pivote
+                ->where('company_user.status', 'P') // Filtra por status 'P' en la tabla pivote
                 ->withPivot(['id', '*']) // Incluye los campos adicionales del pivote
                 ->withCount([
                     'members as members_count' => function ($query) {
@@ -172,9 +172,9 @@ class CompanyUserController extends Controller
     public function show($id)
     {
         try {
-            // Validar que el ID exista en la tabla company_users
+            // Validar que el ID exista en la tabla company_user
             $validator = Validator::make(['id' => $id], [
-                'id' => 'required|integer|exists:company_users,id',
+                'id' => 'required|integer|exists:company_user,id',
             ]);
 
             // Si la validación falla, retornar un error 400 con los mensajes de validación
@@ -195,7 +195,7 @@ class CompanyUserController extends Controller
 
             // Verificar si el registro en la tabla pivote existe
             if (!$companyUser) {
-                return response()->json(['message' => 'No se encontró el registro especificado en company_users.'], 404);
+                return response()->json(['message' => 'No se encontró el registro especificado en company_user.'], 404);
             }
 
             // Devolver la respuesta con la información de la compañía y el permiso del usuario autenticado
@@ -275,7 +275,7 @@ class CompanyUserController extends Controller
 
             return response()->json([
                 'message' => $message,
-                'company_users' => $companyUser
+                'company_user' => $companyUser
             ], 200);
         } catch (ValidationException $e) {
             return response()->json([

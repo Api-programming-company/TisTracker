@@ -27,7 +27,7 @@ class Company extends Model
     }
     public function members()
     {
-        return $this->belongsToMany(User::class, 'company_users')
+        return $this->belongsToMany(User::class, 'company_user')
             ->withPivot('id', 'status', 'permission') // Incluye los campos adicionales
             ->withTimestamps();
     }
