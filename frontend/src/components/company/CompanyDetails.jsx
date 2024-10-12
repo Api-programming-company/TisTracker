@@ -106,9 +106,9 @@ const CompanyDetails = ({ company }) => {
           </ListItem>
           <Collapse in={openMembers} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              {company.members.filter(member => member.pivot.status === "A").length > 0 ? (
+              {company.members.filter(member => member.status === "A").length > 0 ? (
                 company.members
-                  .filter((member) => member.pivot.status === "A")
+                  .filter((member) => member.status === "A")
                   .map((member) => (
                     <ListItem
                       key={member.id}
@@ -123,22 +123,22 @@ const CompanyDetails = ({ company }) => {
                           mr: 2,
                         }}
                       >
-                        {member.first_name[0]}
-                        {member.last_name[0]}
+                        {member.user.first_name[0]}
+                        {member.user.last_name[0]}
                       </Avatar>
                       <ListItemText
-                        primary={`${member.first_name} ${member.last_name}`}
+                        primary={`${member.user.full_name}`}
                         secondary={
-                          member.pivot.permission === "W"
-                            ? `${member.email} (Encargado)`
-                            : member.email
+                          member.permission === "W"
+                            ? `${member.user.email} (Encargado)`
+                            : member.user.email
                         }
                       />
                       <Button
                         variant="contained"
                         color="primary"
                         onClick={() => {
-                          navigate(`/user-evaluation/${member?.pivot?.id}`);
+                          navigate(`/user-evaluation/${member.id}`);
                         }}
                       >
                         Evaluar
