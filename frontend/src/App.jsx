@@ -68,7 +68,7 @@ function App({ toggleTheme, isDarkMode }) {
               element={<CompanyPlanning />}
             />
 
-            <Route path="/planning_spreadsheet" element={<PlanningSpreadSheet/>}>
+            <Route path="/planning_spreadsheet/:id" element={<PlanningSpreadSheet/>}>
 
             </Route>
 

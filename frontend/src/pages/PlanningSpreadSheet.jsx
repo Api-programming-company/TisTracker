@@ -1,8 +1,11 @@
 import React, { useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { selectCurrentMilestone } from '../reducers/planningSlice'
+import { setMilestones } from '../reducers/planningSlice'
 
 const PlanningSpreadSheet = () => {
+    const dispatch = useDispatch();
+
     const milestone = useSelector(selectCurrentMilestone);
 
     useEffect(() => {
@@ -14,7 +17,7 @@ const PlanningSpreadSheet = () => {
         <h1>Planilla de Seguimiento Semanal</h1>
       </div>
       <div className="section-body">
-
+            
       </div>
     </div>
   )

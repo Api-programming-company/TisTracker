@@ -4,11 +4,11 @@ import "../styles/planning.css";
 import { useParams } from "react-router-dom";
 import { useGetPlanningByCompanyIdQuery } from "../api/planningApi";
 import { CircularProgress, Container, Alert } from "@mui/material";
-import { data } from "../mock_objects/planificacion";
+// import { data } from "../mock_objects/planificacion";
 
 const SeeCompanyPlanning = () => {
   const { id } = useParams();
-  const {isSuccess, isFetching, isError, error } =
+  const {data,isSuccess, isFetching, isError, error } =
     useGetPlanningByCompanyIdQuery(id);
 
   useEffect(() => {
@@ -36,24 +36,24 @@ const SeeCompanyPlanning = () => {
     );
   }
 
-  // if (isError) {
-  //   return (
-  //     <Container
-  //       maxWidth="sm"
-  //       sx={{
-  //         display: "flex",
-  //         justifyContent: "center",
-  //         alignItems: "center",
-  //         height: "80vh",
-  //       }}
-  //     >
-  //       <Alert severity="error">
-  //         Ocurrió un error al cargar la planificación:{" "}
-  //         {error?.data?.message || "Error desconocido"}
-  //       </Alert>
-  //     </Container>
-  //   );
-  // }
+  if (isError) {
+    return (
+      <Container
+        maxWidth="sm"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        <Alert severity="error">
+          Ocurrió un error al cargar la planificación:{" "}
+          {error?.data?.message || "Error desconocido"}
+        </Alert>
+      </Container>
+    );
+  }
 
   return (
     <div className="container" id="conpanyPlanning">

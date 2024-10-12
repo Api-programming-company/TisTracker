@@ -10,7 +10,7 @@ export const planningSlice = createSlice({
     initialState,
     reducers : {
         setMilestones : (state,action) => {
-            console.log(action);
+            console.log(action.payload);
             return state;
         }
     }
@@ -19,5 +19,7 @@ export const planningSlice = createSlice({
 export const selectCurrentMilestone = (state) => {
     return state.planning;
 }
+
+export const {setMilestones} = planningSlice.actions;
 
 export default planningSlice.reducer
