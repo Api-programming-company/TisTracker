@@ -41,6 +41,7 @@ import SetFinalDeliverablePeriod from "./pages/SetFinalDeliverablePeriod";
 import StudentHome from "./components/student/StudentHome";
 import TeacherHome from "./components/teacher/TeacherHome";
 import Test from "./components/Test";
+import EvaluationTemplate from "./pages/EvaluationTemplate";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -100,6 +101,10 @@ function App({ toggleTheme, isDarkMode }) {
             <Route
               path="/company-evaluation/:company_id"
               element={<EvaluationGE />}
+            />
+            <Route
+              path="/evaluationtemplate" ///:company_id
+              element={<EvaluationTemplate />}
             />
 
             {/* pruebas */}
