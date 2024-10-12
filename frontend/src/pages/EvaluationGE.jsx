@@ -30,7 +30,7 @@ const EvaluationGE = () => {
     isFetching: companyQuestionsFetching,
     isError: isCompanyQuestionsError,
     error: companyQuestionsError,
-  } = useGetCompanyQuestionsByIdQuery(3);
+  } = useGetCompanyQuestionsByIdQuery(2);
 
   useEffect(() => {
     if (companyQuestionsSuccess) {

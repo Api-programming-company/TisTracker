@@ -174,7 +174,7 @@ class CompanyUserController extends Controller
         try {
             // Validar que el ID exista en la tabla company_user
             $validator = Validator::make(['id' => $id], [
-                'id' => 'required|integer|exists:company_user,id',
+                'id' => 'required|integer|exists:company_users,id',
             ]);
 
             // Si la validación falla, retornar un error 400 con los mensajes de validación
