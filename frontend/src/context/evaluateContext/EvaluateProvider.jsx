@@ -60,12 +60,12 @@ const EvaluateProvider = ({ children }) => {
     });
   };
 
-  // const addParameter = (e) => {
-  //   dispatch({
-  //     type: "addParameter",
-  //     payload: e,
-  //   });
-  // };
+  const addParameter = (e) => {
+    dispatch({
+      type: "addParameter",
+      payload: e,
+    });
+  };
 
   return (
     <EvaluateContext.Provider
@@ -78,7 +78,7 @@ const EvaluateProvider = ({ children }) => {
         handleTitleChange,
         addCriteria,
         handleCriteriaTitleChange,
-        // addParameter,
+        addParameter,
       }}
     >
       {children}

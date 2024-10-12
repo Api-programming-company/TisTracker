@@ -52,21 +52,22 @@ export default (state, action) => {
           : criteria
       );
       return { ...state, questions: newCriteria };
-    // case "addParameter":
-    //   const answer_option = {
-    //     id: Date.now(),
-    //     option_text: "",
-    //     score: "",
-    //   };
-    //   const parameterAdded = state.questions.map((criteria) =>
-    //     criteria.id === payload
-    //       ? {
-    //           ...criteria,
-    //           answer_options: [...criteria.answer_options, answer_option],
-    //         }
-    //       : criteria
-    //   );
-    //   console.log("llegaxd");
-    //   return { ...state, question: parameterAdded };
+    case "addParameter":
+      const answer_option = {
+        id: Date.now(),
+        option_text: "",
+        score: "",
+      };
+      console.log(payload.id)
+      const parameterAdded = state.questions.map((criteria) =>
+        criteria.id === payload.id
+          ? {
+              ...criteria,
+              answer_options: [...criteria.answer_options, answer_option],
+            }
+          : criteria
+      );
+      console.log(parameterAdded)
+      return { ...state, questions: parameterAdded };
   }
 };

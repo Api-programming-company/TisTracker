@@ -16,7 +16,7 @@ import Parameter from "./Parameter";
 import EvaluateContext from "../../context/evaluateContext/EvaluateContext";
 
 const Criteria = ({ criteria }) => {
-  const { handleCriteriaTitleChange } =
+  const { handleCriteriaTitleChange, addParameter } =
     useContext(EvaluateContext);
   const [toggle, setToggle] = useState(true);
 
@@ -32,13 +32,9 @@ const Criteria = ({ criteria }) => {
   };
 
   const handleAddParameter = () => {
-    // addParameter({ id: criteria.id });
+    addParameter({ id: criteria.id });
   };
   const handleDeleteCriteria = () => {};
-
-  useEffect(() => {
-    console.log(criteria,"Criteria");
-  },[criteria])
 
   return (
     <Container>
@@ -64,13 +60,13 @@ const Criteria = ({ criteria }) => {
           />
         </ListItem>
         <Collapse in={toggle}>
-          {criteria.answer_options?.map((e) => {
-            return <Parameter key={Date.now()} parameter={e} />;
+          {criteria.answer_options?.map((e, index) => {
+            return <Parameter key={index} parameter={e} />;
           })}
           <Button
             variant="contained"
             sx={{ marginX: 3, marginY: 1 }}
-            // onClick={handleAddParameter}
+            onClick={handleAddParameter}
           >
             Agregar Parámetro
           </Button>

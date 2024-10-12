@@ -25,59 +25,30 @@ const EvaluationTemplate = () => {
     }
   }, [isSuccess, isError, error, data]);
 
-  // const { state, clearState, setInitialState, handleTitleChange } =
-  //   useContext(EvaluateContext);
-  // useEffect(() => {
-  //   clearState();
-  //   setInitialState({
-  //     id: Date.now(),
-  //     title: "",
-  //     description: "",
-  //     questions: [
-  //       // las questions son los criterios
-  //     ],
-  //   });
-  // }, []);
-
-  const [template, setTemplate] = useState({
-    id: Date.now(),
-    title: "",
-    description: "",
-    questions: [
-      // las questions son los criterios
-    ],
-  });
-
-  const handleAddCriteria = () => {
-    const newCriteria = {
+  const { state, clearState, setInitialState, handleTitleChange, addCriteria } =
+    useContext(EvaluateContext);
+  useEffect(() => {
+    clearState();
+    setInitialState({
       id: Date.now(),
-      question_text: "",
-      answer_options: [],
-    };
-    setTemplate((prev) => {
-      return { ...prev, questions: [...prev.questions, newCriteria] };
+      title: "",
+      description: "",
+      questions: [
+        // las questions son los criterios
+      ],
     });
-    console.log(template);
-  };
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log(name,value);
     switch (name) {
       case "title":
-        setTemplate((prev) => {
-          return { ...prev, title: value };
-        });
-        console.log(template);
+        handleTitleChange(value)
         break;
       default:
         break;
     }
   };
-
-  useEffect(() => {
-    console.log(template.questions,"questions");
-  },[template.questions])
 
   return (
     <Container>
@@ -90,7 +61,7 @@ const EvaluationTemplate = () => {
       <Divider sx={{ width: "100%", marginY: 3 }} />{" "}
       <TextField
         variant="outlined"
-        value={template.title}
+        value={state.title}
         label="Nombre de plantilla"
         name="title"
         onChange={handleInputChange}
@@ -103,8 +74,8 @@ const EvaluationTemplate = () => {
       >
         Criterios de Evaluación
       </Typography>
-      {template.questions?.length > 0 ? (
-        template.questions.map((e, index) => {
+      {state.questions?.length > 0 ? (
+        state.questions.map((e, index) => {
           return <Criteria key={index} criteria={e} />;
         })
       ) : (
@@ -113,7 +84,7 @@ const EvaluationTemplate = () => {
       <Button
         variant="contained"
         sx={{ marginX: 3, marginY: 3 }}
-        onClick={handleAddCriteria}
+        onClick={addCriteria}
       >
         Agregar Criterio
       </Button>
