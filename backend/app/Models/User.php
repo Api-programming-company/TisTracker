@@ -59,18 +59,16 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function companies()
     {
-        return $this->belongsToMany(Company::class, 'company_user')
-            ->withPivot('status', 'permission') // Incluye los campos adicionales
-            ->withTimestamps();
+        return $this->belongsToMany(Company::class, CompanyUser::class);
     }
 
     public function getCompanyAttribute()
     {
-        $companyUser = $this->companies()
-            ->wherePivot('permission', 'W')
-            ->orWherePivot('status', 'A')
-            ->first();
-        return $companyUser ? $companyUser : null;
+        $companyUser = CompanyUser::where('user_id', $this->id)
+        ->where('permission', 'W')
+        ->where('status', 'A')
+        ->first();
+        return $companyUser;
     }
 
     public function company()
