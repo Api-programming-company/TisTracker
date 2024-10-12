@@ -85,5 +85,19 @@ export default (state, action) => {
           : criteria
       );
       return { ...state, questions: parameterDeleted };
+    case "handleParameterChange":
+      const parameterChanged = state.questions.map((criteria) =>
+        criteria.id === payload.criteria_id
+          ? {
+              ...criteria,
+              answer_options: criteria.answer_options.map((option) =>
+                option.id === payload.parameter_id
+                  ? { ...option, option_text: payload.value }
+                  : option
+              ),
+            }
+          : criteria
+      );
+      return { ...state, questions: parameterChanged };
   }
 };

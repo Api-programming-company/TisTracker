@@ -33,12 +33,6 @@ const EvaluateProvider = ({ children }) => {
   };
 
   // EvaluationTemplate
-  const updateState = (e) => {
-    dispatch({
-      type: "updateState",
-      payload: e,
-    });
-  };
 
   const handleTitleChange = (e) => {
     dispatch({
@@ -81,6 +75,13 @@ const EvaluateProvider = ({ children }) => {
     });
   };
 
+  const handleParameterChange = (e) => {
+    dispatch({
+      type: "handleParameterChange",
+      payload: e,
+    });
+  };
+
   return (
     <EvaluateContext.Provider
       value={{
@@ -95,6 +96,7 @@ const EvaluateProvider = ({ children }) => {
         addParameter,
         deleteCriteria,
         deleteParameter,
+        handleParameterChange,
       }}
     >
       {children}
