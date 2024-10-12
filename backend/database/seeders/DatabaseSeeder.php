@@ -22,5 +22,8 @@ class DatabaseSeeder extends Seeder
 
         $pendingCompaniesSeeder = new PendingCompaniesSeeder();
         $pendingCompaniesSeeder->run($academicPeriodId);
+
+        $activeCompaniesSeeder = new ActiveCompaniesSeeder();
+        $activeCompaniesSeeder->run($academicPeriodId);
     }
 }

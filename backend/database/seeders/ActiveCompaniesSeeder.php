@@ -2,20 +2,19 @@
 
 namespace Database\Seeders;
 
-use App\Models\Company;
-use App\Models\CompanyUser;
 use Illuminate\Database\Seeder;
-use Faker\Factory as Faker;
+use App\Models\CompanyUser;
+use App\Models\Company;
 use App\Models\User;
+use Faker\Factory as Faker;
 use Illuminate\Support\Str;
 
-class PendingCompaniesSeeder extends Seeder
+class ActiveCompaniesSeeder extends Seeder
 {
     public function run($academicPeriodId)
     {
         $faker = Faker::create();
-
-        for ($i = 0; $i < 15; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $company = Company::create([
                 'long_name' => Str::limit($faker->unique()->company, 32),
                 'short_name' => strtoupper(substr($faker->unique()->word, 0, 8)),
@@ -23,7 +22,7 @@ class PendingCompaniesSeeder extends Seeder
                 'address' => $faker->address,
                 'phone' => $faker->unique()->numerify('########'),
                 'academic_period_id' => $academicPeriodId,
-                'status' => 'P',
+                'status' => 'A',
             ]);
 
             $owner = User::create([

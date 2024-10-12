@@ -65,7 +65,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getCompanyAttribute()
     {
         $companyUser = CompanyUser::where('user_id', $this->id)
-            ->where('permission', 'W')
+            ->whereIn('permission', ['W', 'R'])
             ->where('status', 'A')
             ->first();
         return $companyUser;
