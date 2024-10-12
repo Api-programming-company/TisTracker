@@ -40,23 +40,46 @@ const EvaluateProvider = ({ children }) => {
     });
   };
 
-  const addCriteria = (e) => {
+  const handleTitleChange = (e) => {
     dispatch({
-      type: "addCriteria",
+      type: "handleTitleChange",
       payload: e,
     });
   };
 
-  const addParameter = (e) => {
+  const addCriteria = () => {
     dispatch({
-      type: "addParameter",
+      type: "addCriteria",
+    });
+  };
+
+  const handleCriteriaTitleChange = (e) => {
+    dispatch({
+      type: "handleCriteriaTitleChange",
       payload: e,
     });
   };
+
+  // const addParameter = (e) => {
+  //   dispatch({
+  //     type: "addParameter",
+  //     payload: e,
+  //   });
+  // };
 
   return (
     <EvaluateContext.Provider
-      value={{ state, setInitialState, selectAnswer, verifyFields, clearState }}
+      value={{
+        state,
+        setInitialState,
+        selectAnswer,
+        verifyFields,
+        clearState,
+        handleTitleChange,
+        addCriteria,
+        handleCriteriaTitleChange,
+        // addParameter,
+      }}
     >
       {children}
     </EvaluateContext.Provider>

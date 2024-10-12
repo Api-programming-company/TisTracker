@@ -11,11 +11,31 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Parameter from "./Parameter";
+import EvaluateContext from "../../context/evaluateContext/EvaluateContext";
 
 const Criteria = ({ criteria }) => {
+  const { handleCriteriaTitleChange } =
+    useContext(EvaluateContext);
   const [toggle, setToggle] = useState(true);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    switch (name) {
+      case "criteria":
+        handleCriteriaTitleChange({ id: criteria.id, value: value });
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleAddParameter = () => {
+    // addParameter({ id: criteria.id });
+  };
+  const handleDeleteCriteria = () => {};
+
   return (
     <Container>
       <Box sx={{ border: "solid", borderWidth: 1, borderColor: "#CAC4D0" }}>
@@ -26,7 +46,9 @@ const Criteria = ({ criteria }) => {
                 <TextField
                   variant="outlined"
                   label="Criterio"
+                  name="criteria"
                   value={criteria.question_text}
+                  onChange={handleInputChange}
                   fullWidth
                   multiline
                 />
@@ -38,15 +60,23 @@ const Criteria = ({ criteria }) => {
           />
         </ListItem>
         <Collapse in={toggle}>
-          {criteria.answer_options.map((e) => {
-            return <Parameter key={new Date().now} parameter={e} />;
+          {criteria.answer_options?.map((e) => {
+            return <Parameter key={Date.now()} parameter={e} />;
           })}
-          <Button variant="contained" sx={{ marginX: 3, marginY: 1 }}>
+          <Button
+            variant="contained"
+            sx={{ marginX: 3, marginY: 1 }}
+            // onClick={handleAddParameter}
+          >
             Agregar Parámetro
           </Button>
           <Divider sx={{ width: "100%" }} />{" "}
-          <Box sx={{display:'flex', flexDirection:"row-reverse"}}>
-            <Button variant="contained" sx={{ marginX: 3, marginY: 1 }}>
+          <Box sx={{ display: "flex", flexDirection: "row-reverse" }}>
+            <Button
+              variant="contained"
+              sx={{ marginX: 3, marginY: 1 }}
+              onClick={handleDeleteCriteria}
+            >
               Eliminar Criterio
             </Button>
           </Box>
