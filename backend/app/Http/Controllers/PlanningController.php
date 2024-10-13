@@ -126,7 +126,7 @@ class PlanningController extends Controller
             }
 
             // Obtener el permiso del usuario autenticado desde la tabla pivote
-            $userPermission = $member->pivot->permission;
+            $userPermission = $member->permission;
 
             // Devolver la planificación con los permisos del usuario autenticado
             return response()->json([

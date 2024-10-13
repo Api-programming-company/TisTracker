@@ -46,6 +46,7 @@ import PlanningSpreadSheet from "./pages/PlanningSpreadSheet";
 import VerPlantillas from "./pages/VerPlantillas";
 // import PlantillasVisualizer from "./pages/PlantillasVisualizer";
 
+
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
   const userType = user ? user.user_type : "G";
