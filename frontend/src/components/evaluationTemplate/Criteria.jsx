@@ -107,8 +107,8 @@ const Criteria = ({ criteria, findError, setShowError }) => {
               })}
             </SortableContext>
           </DndContext>
-          {findError("parameters") && <p className="text-red-300 text-sm">{findError("parameters")}</p>}
-          {findError("parameter") && <p className="text-red-300 text-sm">{findError("parameter")}</p>}
+          {findError("parameters") && <p className="text-red-300 text-sm ml-1">{findError("parameters")}</p>}
+          {findError("parameter") && <p className="text-red-300 text-sm ml-1">{findError("parameter")}</p>}
           <Button
             variant="contained"
             sx={{ marginX: 3, marginY: 1 }}

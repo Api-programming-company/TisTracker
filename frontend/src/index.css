@@ -145,6 +145,9 @@ p,a,li,button,input,textarea{
   border-color: var(--red-300) !important;
 }
 
+.ml-1 {
+  margin-left: 1rem;
+}
 
 .grid{
   display: grid;
