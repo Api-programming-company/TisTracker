@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Planning;
 use App\Models\Milestone;
 use App\Models\Deliverable;
+use App\Models\AcademicPeriod;
 use Illuminate\Validation\ValidationException;
 use Exception;
 
@@ -24,7 +25,6 @@ class PlanningController extends Controller
     }
 
     // Guardar una nueva planificación
-    // Guardar una nueva planificación
     public function store(Request $request)
     {
         try {
@@ -38,7 +38,7 @@ class PlanningController extends Controller
                 ], 422);
             }
 
-            // Validar los datos
+            // Validar los datos 
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'company_id' => 'required|exists:companies,id',
@@ -50,20 +50,33 @@ class PlanningController extends Controller
                 'milestones.*.deliverables' => 'required|array|min:1',
             ]);
 
-            // Verificar que la suma de billing_percentage no exceda 100
-            $totalBilling = array_sum(array_column($validated['milestones'], 'billing_percentage'));
+            // Buscar el periodo académico sin validarlo como parte de los datos iniciales
+            $academicPeriod = AcademicPeriod::where('company_id', $validated['company_id'])->first();
 
-            if ($totalBilling > 100) {
+            // Validar que el periodo académico exista para la compañía
+            if (!$academicPeriod) {
                 return response()->json([
-                    'message' => 'La suma de los billing_percentage no puede ser mayor a 100%.',
-                    'errors' => ['billing_percentage' => 'El total es ' . $totalBilling . '%.']
+                    'message' => 'No se encontró un periodo académico asociado a la compañía.'
                 ], 422);
+            }
+
+            // Verificar que las fechas de los hitos estén dentro del rango del periodo académico
+            foreach ($validated['milestones'] as $milestone) {
+                if ($milestone['start_date'] < $academicPeriod->start_date || $milestone['end_date'] > $academicPeriod->end_date) {
+                    return response()->json([
+                        'message' => 'Las fechas de los hitos deben estar dentro del rango del periodo académico.',
+                        'errors' => [
+                            'milestones' => 'El hito ' . $milestone['name'] . ' tiene fechas fuera del periodo académico.'
+                        ]
+                    ], 422);
+                }
             }
 
             // Crear planificación
             $planning = Planning::create([
                 'name' => $validated['name'],
                 'company_id' => $validated['company_id'],
+                'academic_period_id' => $academicPeriod->id,  // Asociar la planificación con el periodo académico obtenido
             ]);
 
             // Crear hitos y entregables
