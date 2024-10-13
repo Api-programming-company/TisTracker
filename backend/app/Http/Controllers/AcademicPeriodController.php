@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AcademicPeriod;
+use App\Models\Milestone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -153,28 +154,53 @@ class AcademicPeriodController extends Controller
             if ($user->user_type !== 'D') {
                 return response()->json(['message' => 'Unauthorized'], 403);
             }
-            // Validar los datos
-            $request->validate([
-                'start_date' => 'required|date',
-                'end_date' => 'required|date|after:start_date', // La fecha de fin debe ser mayor que la fecha de inicio
-            ]);
 
             // Buscar el periodo académico
             $academicPeriod = AcademicPeriod::findOrFail($id);
 
-            // Actualizar fechas de inicio y fin
+            // Verificar si el usuario es el creador del periodo académico
+            if ($academicPeriod->user_id !== $user->id) {
+                return response()->json(['message' => 'No tienes permiso para actualizar este periodo académico'], 403);
+            }
+
+            // Validar los datos
+            $request->validate([
+                'start_date' => 'required|date|before:end_date',
+                'end_date' => 'required|date|after:start_date',
+            ]);
+
+            // Obtener las compañías asociadas al periodo académico
+            $companies = $academicPeriod->companies()->pluck('id');
+
+            // Verificar si existen hitos activos para las compañías asociadas al periodo académico
+            $activeMilestones = Milestone::whereHas('planning', function ($query) use ($companies) {
+                    $query->whereIn('company_id', $companies);
+                })
+                ->whereDate('start_date', '<=', now())
+                ->whereDate('end_date', '>=', now())
+                ->exists();
+
+            if ($activeMilestones) {
+                return response()->json([
+                    'message' => 'No puedes actualizar las fechas porque ya existen hitos activos en este periodo.'
+                ], 400);
+            }
+
+            // Actualizar fechas de inicio y fin del periodo académico
             $academicPeriod->start_date = $request->start_date;
             $academicPeriod->end_date = $request->end_date;
             $academicPeriod->save();
 
             // Mensaje de retroalimentación
-            return response()->json(['message' => 'La fecha ha sido ajustada con éxito', 'academic_period' => $academicPeriod], 200);
+            return response()->json([
+                'message' => 'La fecha ha sido ajustada con éxito',
+                'academic_period' => $academicPeriod
+            ], 200);
 
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Error de validación',
                 'errors' => $e->validator->errors(),
-                'request' => $request
             ], 422);
         } catch (Exception $e) {
             return response()->json([
@@ -183,6 +209,7 @@ class AcademicPeriodController extends Controller
             ], 500);
         }
     }
+
 
     public function show($id)
     {
