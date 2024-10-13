@@ -49,10 +49,21 @@ class AcademicPeriodController extends Controller
             // Validar la solicitud
             $request->validate([
                 'name' => 'required|string|max:255|unique:academic_periods',
-                'start_date' => 'required|date',
+                'start_date' => 'required|date|after_or_equal:today', // Solo fechas actuales o posteriores
                 'end_date' => 'required|date|after:start_date',
                 'description' => 'nullable|string',
             ]);
+
+            // Validar que el periodo académico no dure más de 6 meses
+            $startDate = new \Carbon\Carbon($request->start_date);
+            $endDate = new \Carbon\Carbon($request->end_date);
+            $maxEndDate = $startDate->copy()->addMonths(6);
+
+            if ($endDate->gt($maxEndDate)) {
+                return response()->json([
+                    'message' => 'El periodo académico no puede durar más de 6 meses.'
+                ], 422);
+            }
 
             // Crear el periodo académico
             $academicPeriod = AcademicPeriod::create([
@@ -168,6 +179,17 @@ class AcademicPeriodController extends Controller
                 'start_date' => 'required|date|before:end_date',
                 'end_date' => 'required|date|after:start_date',
             ]);
+
+            // Verificar que el periodo no dure más de 6 meses
+            $startDate = new \Carbon\Carbon($request->start_date);
+            $endDate = new \Carbon\Carbon($request->end_date);
+            $maxEndDate = $startDate->copy()->addMonths(6);
+
+            if ($endDate->gt($maxEndDate)) {
+                return response()->json([
+                    'message' => 'El periodo académico no puede durar más de 6 meses.'
+                ], 422);
+            }
 
             // Obtener las compañías asociadas al periodo académico
             $companies = $academicPeriod->companies()->pluck('id');
