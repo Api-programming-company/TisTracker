@@ -16,8 +16,13 @@ export const planningSlice = createSlice({
 })
 
 export const selectCurrentMilestone = (state) => {
-    return state.planning;
+    const today = new Date().toISOString().split('T')[0];
+    return state.planning.find(
+        (milestone) =>
+            milestone.start_date <= today && milestone.end_date >= today
+    );
 }
+
 
 export const {setMilestones} = planningSlice.actions;
 
