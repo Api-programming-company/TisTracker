@@ -50,7 +50,6 @@ class PlanningController extends Controller
                 'milestones.*.deliverables' => 'required|array|min:1',
             ]);
 
-            // Buscar el periodo académico sin validarlo como parte de los datos iniciales
             $academicPeriod = AcademicPeriod::where('company_id', $validated['company_id'])->first();
 
             // Validar que el periodo académico exista para la compañía
@@ -76,7 +75,6 @@ class PlanningController extends Controller
             $planning = Planning::create([
                 'name' => $validated['name'],
                 'company_id' => $validated['company_id'],
-                'academic_period_id' => $academicPeriod->id,  // Asociar la planificación con el periodo académico obtenido
             ]);
 
             // Crear hitos y entregables
