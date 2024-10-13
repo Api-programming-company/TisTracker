@@ -29,7 +29,7 @@ const Autoevaluation = () => {
     isFetching: companyQuestionsFetching,
     isError: isCompanyQuestionsError,
     error: companyQuestionsError,
-  } = useGetCompanyQuestionsByIdQuery(5);
+  } = useGetCompanyQuestionsByIdQuery(3);
 
   useEffect(() => {
     if (companyQuestionsSuccess) {

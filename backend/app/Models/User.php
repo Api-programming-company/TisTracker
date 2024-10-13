@@ -26,7 +26,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
     ];
 
-    protected $appends = ['company', 'academic_period'];
+    protected $appends = ['company', 'academic_period', 'full_name'];
 
     protected $casts = [
         'email_verified_at' => 'datetime',
@@ -34,7 +34,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getFullNameAttribute()
     {
-        return "{$this->first_name} {$this->last_name}";
+        return ucwords("{$this->first_name} {$this->last_name}");
     }
 
     public function getUserTypeDescriptionAttribute()
@@ -59,18 +59,16 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function companies()
     {
-        return $this->belongsToMany(Company::class, 'company_user')
-            ->withPivot('status', 'permission') // Incluye los campos adicionales
-            ->withTimestamps();
+        return $this->belongsToMany(Company::class, CompanyUser::class);
     }
 
     public function getCompanyAttribute()
     {
-        $companyUser = $this->companies()
-            ->wherePivot('permission', 'W')
-            ->orWherePivot('status', 'A')
+        $companyUser = CompanyUser::where('user_id', $this->id)
+            ->whereIn('permission', ['W', 'R'])
+            ->where('status', 'A')
             ->first();
-        return $companyUser ? $companyUser : null;
+        return $companyUser;
     }
 
     public function company()
