@@ -6,6 +6,8 @@ import { useGetPlanningByCompanyIdQuery } from "../api/planningApi";
 import { useParams } from "react-router-dom";
 import { CircularProgress, Container, Alert } from "@mui/material";
 import SeeMilestone from '../components/planning/SeeMilestone';
+import PlanningItem from '../components/planning/PlanningItem';
+import MilestoneItem from '../components/planning/MilestoneItem';
 
 
 
@@ -71,19 +73,20 @@ const PlanningSpreadSheet = () => {
       );
     }
 
+    if(milestone){
+      return (
+        <div id='planning_spreadsheet' className='container'>
+          <div className="section-header">
+            <h1>Planilla de Seguimiento Semanal</h1>
+          </div>
+          <div className="section-body">
+            <MilestoneItem milestone={milestone}/>
+          </div>
+        </div>
+      )
+    }
 
-  return (
-    <div id='planning_spreadsheet' className='container'>
-      <div className="section-header">
-        <h1>Planilla de Seguimiento Semanal</h1>
-      </div>
-      <div className="section-body">
-      {milestone.map((milestone) => (
-            <SeeMilestone key={milestone.id} milestone={milestone} />
-          ))}
-      </div>
-    </div>
-  )
+  
 }
 
 export default PlanningSpreadSheet
