@@ -6,7 +6,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 
-const Parameter = ({ parameter, criteria_id }) => {
+const Parameter = ({ parameter, criteria_id, findError, setShowError }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: parameter.id });
 
@@ -18,6 +18,7 @@ const Parameter = ({ parameter, criteria_id }) => {
   };
 
   const handleChange = (e) => {
+    setShowError(false)
     const { value } = e.target;
     handleParameterChange({
       parameter_id: parameter.id,
@@ -31,6 +32,7 @@ const Parameter = ({ parameter, criteria_id }) => {
     transition,
     display: "flex",
     alignItems: "center",
+    cursor: "pointer",
   };
 
   return (

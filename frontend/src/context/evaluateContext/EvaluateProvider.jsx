@@ -41,6 +41,13 @@ const EvaluateProvider = ({ children }) => {
     });
   };
 
+  const handleDescriptionChange = (e) => {
+    dispatch({
+      type: "handleDescriptionChange",
+      payload: e,
+    });
+  };
+
   const addCriteria = () => {
     dispatch({
       type: "addCriteria",
@@ -89,6 +96,12 @@ const EvaluateProvider = ({ children }) => {
     });
   };
 
+  const validateErrors = () => {
+    dispatch({
+      type: "validateErrors",
+    });
+  };
+
   return (
     <EvaluateContext.Provider
       value={{
@@ -105,6 +118,8 @@ const EvaluateProvider = ({ children }) => {
         deleteParameter,
         handleParameterChange,
         handleParameterOrder,
+        validateErrors,
+        handleDescriptionChange,
       }}
     >
       {children}
