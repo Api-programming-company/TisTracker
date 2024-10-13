@@ -82,6 +82,13 @@ const EvaluateProvider = ({ children }) => {
     });
   };
 
+  const handleParameterOrder = (e) => {
+    dispatch({
+      type: "handleParameterOrder",
+      payload: e,
+    });
+  };
+
   return (
     <EvaluateContext.Provider
       value={{
@@ -97,6 +104,7 @@ const EvaluateProvider = ({ children }) => {
         deleteCriteria,
         deleteParameter,
         handleParameterChange,
+        handleParameterOrder,
       }}
     >
       {children}

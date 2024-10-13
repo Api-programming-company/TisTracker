@@ -99,5 +99,12 @@ export default (state, action) => {
           : criteria
       );
       return { ...state, questions: parameterChanged };
+    case "handleParameterOrder":
+      const parameterOrdered = state.questions.map((criteria) =>
+        criteria.id === payload.criteria_id
+          ? { ...criteria, answer_options: [...payload.newOrder] }
+          : criteria
+      );
+      return { ...state, questions: parameterOrdered };
   }
 };

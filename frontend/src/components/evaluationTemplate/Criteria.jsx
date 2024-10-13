@@ -14,10 +14,20 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import React, { useContext, useState } from "react";
 import Parameter from "./Parameter";
 import EvaluateContext from "../../context/evaluateContext/EvaluateContext";
+import { DndContext, closestCenter } from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
 
 const Criteria = ({ criteria }) => {
-  const { handleCriteriaTitleChange, addParameter, deleteCriteria } =
-    useContext(EvaluateContext);
+  const {
+    handleCriteriaTitleChange,
+    addParameter,
+    deleteCriteria,
+    handleParameterOrder,
+  } = useContext(EvaluateContext);
   const [toggle, setToggle] = useState(true);
 
   const handleInputChange = (e) => {
@@ -36,6 +46,16 @@ const Criteria = ({ criteria }) => {
   };
   const handleDeleteCriteria = () => {
     deleteCriteria(criteria.id);
+  };
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    const oldIndex = criteria.answer_options.findIndex(
+      (e) => e.id === active.id
+    );
+    const newIndex = criteria.answer_options.findIndex((e) => e.id === over.id);
+    const newOrder = arrayMove(criteria.answer_options, oldIndex, newIndex);
+    handleParameterOrder({ criteria_id: criteria.id, newOrder: newOrder });
   };
 
   return (
@@ -62,11 +82,25 @@ const Criteria = ({ criteria }) => {
           />
         </ListItem>
         <Collapse in={toggle}>
-          {criteria.answer_options?.map((e) => {
-            return (
-              <Parameter key={e.id} parameter={e} criteria_id={criteria.id} />
-            );
-          })}
+          <DndContext
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={criteria.answer_options}
+              strategy={verticalListSortingStrategy}
+            >
+              {criteria.answer_options?.map((e) => {
+                return (
+                  <Parameter
+                    key={e.id}
+                    parameter={e}
+                    criteria_id={criteria.id}
+                  />
+                );
+              })}
+            </SortableContext>
+          </DndContext>
           <Button
             variant="contained"
             sx={{ marginX: 3, marginY: 1 }}
