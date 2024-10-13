@@ -44,7 +44,7 @@ import Test from "./components/Test";
 import EvaluationTemplate from "./pages/EvaluationTemplate";
 import PlanningSpreadSheet from "./pages/PlanningSpreadSheet";
 import VerPlantillas from "./pages/VerPlantillas";
-import PlantillasVisualizer from "./pages/PlantillasVisualizer";
+// import PlantillasVisualizer from "./pages/PlantillasVisualizer";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -119,7 +119,7 @@ function App({ toggleTheme, isDarkMode }) {
               path="/verplantillas/:company_id"
               element={<VerPlantillas />}
             />
-            <Route path="/plantillas" element={<PlantillasVisualizer />} />
+            {/* <Route path="/plantillas" element={<PlantillasVisualizer />} /> */}
 
             {/* pruebas */}
             <Route path="/test" element={<Test />} />

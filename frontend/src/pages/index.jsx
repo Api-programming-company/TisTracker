@@ -13,7 +13,7 @@ export { default as Autoevaluation } from "./Autoevaluation";
 export { default as EvaluationGE } from "./EvaluationGE";
 export { default as EvaluationMemberGE } from "./EvaluationMemberGE";
 export { default as VerPlantillas } from "./VerPlantillas";
-export { default as PlantillasVisualizer } from "./PlantillasVisualizer";
+// export { default as PlantillasVisualizer } from "./PlantillasVisualizer";
 export { default as Login } from "./Login";
 export { default as VerifyEmail } from "./VerifyEmail";
 export { default as Example } from "./Example";
