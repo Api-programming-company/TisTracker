@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Planning;
 use App\Models\Milestone;
 use App\Models\Deliverable;
-use App\Models\AcademicPeriod;
+use App\Models\Company;
 use Illuminate\Validation\ValidationException;
 use Exception;
 
@@ -50,7 +50,11 @@ class PlanningController extends Controller
                 'milestones.*.deliverables' => 'required|array|min:1',
             ]);
 
-            $academicPeriod = AcademicPeriod::where('company_id', $validated['company_id'])->first();
+            // Obtener la compañía para la cual se está creando la planificación
+            $company = Company::findOrFail($validated['company_id']);
+
+            // Obtener el periodo académico asociado a la compañía
+            $academicPeriod = $company->academicPeriod;
 
             // Validar que el periodo académico exista para la compañía
             if (!$academicPeriod) {
