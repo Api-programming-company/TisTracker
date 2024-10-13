@@ -5,74 +5,112 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Carbon\Carbon;
+use Faker\Factory as Faker;
+
 class UsersTableSeeder extends Seeder
 {
-    public function run()
-    {
-        // Crear algunos usuarios para las pruebas
+    public $oneToNine;
+    public $nineToOne;
+    public $nineOnes;
+    public $marcelo;
+    public $lupita;
+    public $users = [];
+    public $company1Users = [];
 
-        User::create([
-            'id' => 3,
+    public function run($academicPeriodId)
+    {
+        $faker = Faker::create();
+        $password = bcrypt('Estudiante1234*');
+        $currentTimestamp = Carbon::now();
+
+        // Crear algunos usuarios para las pruebas
+        $this->oneToNine = User::create([
             'first_name' => 'User',
             'last_name' => 'One to Nine',
             'email' => '123456789@est.umss.edu',
-            'password' => bcrypt('Estudiante1234*'),
-            'user_type' => 'E', 
-            'academic_period_id' => 1, 
-            'email_verified_at' => Carbon::now(), 
-            'created_at' => Carbon::now(), 
-            'updated_at' => Carbon::now(), 
+            'password' => $password,
+            'user_type' => 'E',
+            'academic_period_id' => $academicPeriodId,
+            'email_verified_at' => $currentTimestamp,
+            'created_at' => $currentTimestamp,
+            'updated_at' => $currentTimestamp,
         ]);
 
-        User::create([
-            'id' => 4,
+        $this->nineToOne = User::create([
             'first_name' => 'User',
             'last_name' => 'Nine to One',
             'email' => '987654321@est.umss.edu',
-            'password' => bcrypt('Estudiante1234*'),
-            'user_type' => 'E', 
-            'academic_period_id' => 1, 
-            'email_verified_at' => Carbon::now(),
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+            'password' => $password,
+            'user_type' => 'E',
+            'academic_period_id' => $academicPeriodId,
+            'email_verified_at' => $currentTimestamp,
+            'created_at' => $currentTimestamp,
+            'updated_at' => $currentTimestamp,
         ]);
 
-        User::create([
-            'id' => 5,
+        $this->nineOnes = User::create([
             'first_name' => 'User',
             'last_name' => 'Nine Ones',
             'email' => '111111111@est.umss.edu',
-            'password' => bcrypt('Estudiante1234*'),
+            'password' => $password,
             'user_type' => 'E',
-            'email_verified_at' => Carbon::now(),
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+            'academic_period_id' => $academicPeriodId,
+            'email_verified_at' => $currentTimestamp,
+            'created_at' => $currentTimestamp,
+            'updated_at' => $currentTimestamp,
         ]);
 
-        User::create([
-            'id' => 6,
+        $this->marcelo = User::create([
             'first_name' => 'Marcelo',
             'last_name' => 'Ultimo',
             'email' => '111111112@est.umss.edu',
-            'password' => bcrypt('Estudiante1234*'),
+            'password' => $password,
             'user_type' => 'E',
-            'academic_period_id' => 1, 
-            'email_verified_at' => Carbon::now(),
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+            'academic_period_id' => $academicPeriodId,
+            'email_verified_at' => $currentTimestamp,
+            'created_at' => $currentTimestamp,
+            'updated_at' => $currentTimestamp,
         ]);
 
-        User::create([
-            'id' => 7,
+        $this->lupita = User::create([
             'first_name' => 'Lupita',
             'last_name' => 'Terceros',
             'email' => '111121111@est.umss.edu',
-            'password' => bcrypt('Estudiante1234*'),
+            'password' => $password,
             'user_type' => 'E',
-            'academic_period_id' => 1,
-            'email_verified_at' => Carbon::now(),
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+            'academic_period_id' => $academicPeriodId,
+            'email_verified_at' => $currentTimestamp,
+            'created_at' => $currentTimestamp,
+            'updated_at' => $currentTimestamp,
         ]);
+
+        // Crear 15 usuarios aleatorios
+        for ($i = 0; $i < 15; $i++) {
+            $this->users[] = User::create([
+                'first_name' => $faker->firstName,
+                'last_name' => $faker->lastName,
+                'email' => $faker->unique()->safeEmail,
+                'password' => $password,
+                'user_type' => 'E',
+                'academic_period_id' => $academicPeriodId,
+                'email_verified_at' => $currentTimestamp,
+                'created_at' => $currentTimestamp,
+                'updated_at' => $currentTimestamp,
+            ]);
+        }
+
+        for ($i = 0; $i < 5; $i++) {
+            $this->company1Users[] = User::create([
+                'first_name' => $faker->firstName,
+                'last_name' => $faker->lastName,
+                'email' => $faker->unique()->safeEmail,
+                'password' => $password,
+                'user_type' => 'E',
+                'academic_period_id' => $academicPeriodId,
+                'email_verified_at' => $currentTimestamp,
+                'created_at' => $currentTimestamp,
+                'updated_at' => $currentTimestamp,
+            ]);
+        }
     }
 }

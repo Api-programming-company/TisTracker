@@ -29,7 +29,7 @@ const Autoevaluation = () => {
     isFetching: companyQuestionsFetching,
     isError: isCompanyQuestionsError,
     error: companyQuestionsError,
-  } = useGetCompanyQuestionsByIdQuery(5);
+  } = useGetCompanyQuestionsByIdQuery(3);
 
   useEffect(() => {
     if (companyQuestionsSuccess) {
@@ -423,6 +423,11 @@ const Autoevaluation = () => {
     navigate("/");
   };
 
+
+  useEffect(() => {
+    console.log(state.questions,"estado");
+  },[state])
+
   if (companyFetching || companyQuestionsFetching || isLoading) {
     return (
       <Container
@@ -457,7 +462,7 @@ const Autoevaluation = () => {
         </Typography>
 
         <Grid2 container spacing={2}>
-          {state.questions.map((e, index = 0) => {
+          {state.questions && state.questions.map((e, index = 0) => {
             return (
               <>
                 <Grid2 size={{ sm: 12, md: 6 }}>

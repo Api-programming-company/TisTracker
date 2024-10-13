@@ -33,16 +33,30 @@ const EvaluateProvider = ({ children }) => {
   };
 
   // EvaluationTemplate
-  const updateState = (e) => {
+
+  const handleTitleChange = (e) => {
     dispatch({
-      type: "updateState",
+      type: "handleTitleChange",
       payload: e,
     });
   };
 
-  const addCriteria = (e) => {
+  const addCriteria = () => {
     dispatch({
       type: "addCriteria",
+    });
+  };
+
+  const deleteCriteria = (e) => {
+    dispatch({
+      type: "deleteCriteria",
+      payload: e,
+    });
+  };
+
+  const handleCriteriaTitleChange = (e) => {
+    dispatch({
+      type: "handleCriteriaTitleChange",
       payload: e,
     });
   };
@@ -54,9 +68,36 @@ const EvaluateProvider = ({ children }) => {
     });
   };
 
+  const deleteParameter = (e) => {
+    dispatch({
+      type: "deleteParameter",
+      payload: e,
+    });
+  };
+
+  const handleParameterChange = (e) => {
+    dispatch({
+      type: "handleParameterChange",
+      payload: e,
+    });
+  };
+
   return (
     <EvaluateContext.Provider
-      value={{ state, setInitialState, selectAnswer, verifyFields, clearState }}
+      value={{
+        state,
+        setInitialState,
+        selectAnswer,
+        verifyFields,
+        clearState,
+        handleTitleChange,
+        addCriteria,
+        handleCriteriaTitleChange,
+        addParameter,
+        deleteCriteria,
+        deleteParameter,
+        handleParameterChange,
+      }}
     >
       {children}
     </EvaluateContext.Provider>

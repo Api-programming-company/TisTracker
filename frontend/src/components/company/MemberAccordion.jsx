@@ -27,7 +27,7 @@ const MemberAccordion = ({ members }) => {
           <List>
             {members.map((e) => {
               return (
-                <ListItem key={e.user_id}>
+                <ListItem key={e.user.id}>
                   <Avatar
                     sx={{
                       bgcolor: "primary.main",
@@ -37,12 +37,12 @@ const MemberAccordion = ({ members }) => {
                       mr: 2,
                     }}
                   >
-                    {e.first_name[0]}
-                    {e.last_name[0]}
+                    {e.user.first_name[0]}
+                    {e.user.last_name[0]}
                   </Avatar>
                   <ListItemText
-                    primary={e.first_name + " " + e.last_name}
-                    secondary={e.email}
+                    primary={e.user.full_name}
+                    secondary={e.user.email}
                   />
                 </ListItem>
               );

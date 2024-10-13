@@ -30,7 +30,7 @@ const EvaluationGE = () => {
     isFetching: companyQuestionsFetching,
     isError: isCompanyQuestionsError,
     error: companyQuestionsError,
-  } = useGetCompanyQuestionsByIdQuery(3);
+  } = useGetCompanyQuestionsByIdQuery(2);
 
   useEffect(() => {
     if (companyQuestionsSuccess) {
@@ -179,7 +179,7 @@ const EvaluationGE = () => {
       </Typography>
 
       <Grid2 container spacing={2}>
-        {state.questions.map((e, index = 0) => {
+        {state.questions && state.questions.map((e, index = 0) => {
           return (
             <>
               <Grid2 size={{ sm: 12, md: 6 }}>

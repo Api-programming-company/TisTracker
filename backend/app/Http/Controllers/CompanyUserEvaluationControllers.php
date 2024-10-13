@@ -49,7 +49,7 @@ class CompanyUserEvaluationControllers extends Controller
             $request->validate([
                 'company_id' => 'required|exists:companies,id',
                 'score' => 'required|integer|min:1|max:100',
-                'type' => 'required|in:autoevaluation,evaluation', // Validación para el campo type
+                'type' => 'required|in:autoevaluation,evaluation',
             ]);
 
             $user = Auth::user();
