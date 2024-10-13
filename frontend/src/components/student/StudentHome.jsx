@@ -12,7 +12,7 @@ const StudentHome = () => {
     };
 
     const menuItems = [
-        { label: user.company ? "Mi empresa" : "Crear empresa", path: user.company ? `/vergrupoe/${user.company.id}` : "/registroge" },
+        { label: user.company ? "Mi empresa" : "Crear empresa", path: user.company ? `/vergrupoe/${user.company.company_id}` : "/registroge" },
         { label: "Empresas", path: `/academic-period/${user.academic_period_id}/companies/` },
         { label: "Invitaciones", path: "/company-requests" }
     ];

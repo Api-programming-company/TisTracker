@@ -43,6 +43,8 @@ import TeacherHome from "./components/teacher/TeacherHome";
 import Test from "./components/Test";
 import EvaluationTemplate from "./pages/EvaluationTemplate";
 import PlanningSpreadSheet from "./pages/PlanningSpreadSheet";
+import VerPlantillas from "./pages/VerPlantillas";
+import PlantillasVisualizer from "./pages/PlantillasVisualizer";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -68,9 +70,10 @@ function App({ toggleTheme, isDarkMode }) {
               element={<CompanyPlanning />}
             />
 
-            <Route path="/planning_spreadsheet/:id" element={<PlanningSpreadSheet/>}>
-
-            </Route>
+            <Route
+              path="/planning_spreadsheet/:id"
+              element={<PlanningSpreadSheet />}
+            ></Route>
 
             <Route path="/company/:id/invite" element={<StudentSearch />} />
             <Route path="/company/:id/confirm" element={<ConformacionGE />} />
@@ -112,6 +115,11 @@ function App({ toggleTheme, isDarkMode }) {
               path="/evaluationtemplate" ///:company_id
               element={<EvaluationTemplate />}
             />
+            <Route
+              path="/verplantillas/:company_id"
+              element={<VerPlantillas />}
+            />
+            <Route path="/plantillas" element={<PlantillasVisualizer />} />
 
             {/* pruebas */}
             <Route path="/test" element={<Test />} />
@@ -134,8 +142,6 @@ function App({ toggleTheme, isDarkMode }) {
             path="/update-academic-period/:id"
             element={<SetFinalDeliverablePeriod />}
           ></Route>
-
-          
 
           <Route path="/*" element={<NotFound />} />
         </Routes>
