@@ -11,14 +11,20 @@ const SeeCompanyPlanning = () => {
   const {data,isSuccess, isFetching, isError, error } =
     useGetPlanningByCompanyIdQuery(id);
 
-  useEffect(() => {
-    if (isSuccess) {
-      console.log(data);
-    }
-    if (isError) {
-      console.log(error);
-    }
-  }, [isSuccess, isError, error, data]);
+  
+
+
+    useEffect(() => {
+
+      if (isSuccess) {
+        console.log(data.planning.milestones,"Success");
+      }
+      if (isError) {
+        console.log(error);
+      }
+    }, [isSuccess, isError, error, data]);
+
+
 
   if (isFetching) {
     return (
