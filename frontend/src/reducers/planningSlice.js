@@ -10,6 +10,7 @@ export const planningSlice = createSlice({
     initialState,
     reducers : {
         setMilestones : (state,action) => {
+            console.log(action.payload,"action");
             return action.payload;
         }
     }

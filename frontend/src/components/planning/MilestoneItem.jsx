@@ -10,6 +10,7 @@ const MilestoneItem = ({milestone}) => {
         return new Date(date).toLocaleDateString();
       };
 
+
   return (
     <div className="list">
         <h2>{milestone.name}</h2>
@@ -35,15 +36,24 @@ const MilestoneItem = ({milestone}) => {
               
               <div className="deliverables-list">
                 <h4 className='text-neutral-700'>Entregables:</h4>
+                <div className="grid">
+                    <div className="grid-item header">N</div>
+                    <div className="grid-item header">Entregable</div>
+                    <div className="grid-item header">Resultado Observado</div>
+                    <div className="grid-item header">Resultado Esperado</div>
+                    <div className="grid-item header">Observaciones</div>
+                    <div className="grid-item header">Acción</div>
                 {milestone.deliverables?.length > 0 ? (
                   milestone.deliverables.map((deliverable,index) => (
-                    <PlanningItem deliverable={deliverable}
+                    <PlanningItem deliverable={deliverable} index={index} key={index}
                     />
                   ))
                 ) : (
                   <p className="text-neutral-500">
                     No hay entregables asignados</p>
                 )}
+                </div>
+                
               </div>
             
           </LocalizationProvider>

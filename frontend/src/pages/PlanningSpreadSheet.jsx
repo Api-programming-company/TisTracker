@@ -73,17 +73,20 @@ const PlanningSpreadSheet = () => {
       );
     }
 
+    if(milestone){
+      return (
+        <div id='planning_spreadsheet' className='container'>
+          <div className="section-header">
+            <h1>Planilla de Seguimiento Semanal</h1>
+          </div>
+          <div className="section-body">
+            <MilestoneItem milestone={milestone}/>
+          </div>
+        </div>
+      )
+    }
 
-  return (
-    <div id='planning_spreadsheet' className='container'>
-      <div className="section-header">
-        <h1>Planilla de Seguimiento Semanal</h1>
-      </div>
-      <div className="section-body">
-        <MilestoneItem milestone={milestone}/>
-      </div>
-    </div>
-  )
+  
 }
 
 export default PlanningSpreadSheet
