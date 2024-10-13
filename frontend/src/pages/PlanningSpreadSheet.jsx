@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { CircularProgress, Container, Alert } from "@mui/material";
 import SeeMilestone from '../components/planning/SeeMilestone';
 import PlanningItem from '../components/planning/PlanningItem';
+import MilestoneItem from '../components/planning/MilestoneItem';
 
 
 
@@ -79,7 +80,7 @@ const PlanningSpreadSheet = () => {
         <h1>Planilla de Seguimiento Semanal</h1>
       </div>
       <div className="section-body">
-      
+        <MilestoneItem milestone={milestone}/>
       </div>
     </div>
   )
