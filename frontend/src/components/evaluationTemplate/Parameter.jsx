@@ -1,12 +1,13 @@
 import { Box, Button, Container, Radio, TextField } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import EvaluateContext from "../../context/evaluateContext/EvaluateContext";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 
 const Parameter = ({ parameter, criteria_id, findError, setShowError }) => {
+  const [isDraging, setIsDraging] = useState(false);
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: parameter.id });
 
@@ -18,7 +19,7 @@ const Parameter = ({ parameter, criteria_id, findError, setShowError }) => {
   };
 
   const handleChange = (e) => {
-    setShowError(false)
+    setShowError(false);
     const { value } = e.target;
     handleParameterChange({
       parameter_id: parameter.id,
@@ -34,6 +35,14 @@ const Parameter = ({ parameter, criteria_id, findError, setShowError }) => {
     alignItems: "center",
     cursor: "pointer",
   };
+  const style2 = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    display: "flex",
+    alignItems: "center",
+    cursor: "pointer",
+    width: "100%",
+  };
 
   return (
     <Container>
@@ -41,25 +50,27 @@ const Parameter = ({ parameter, criteria_id, findError, setShowError }) => {
         <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
           <DragIndicatorIcon />
         </div>
-        <Radio disabled />
-        <TextField
-          variant="standard"
-          name="parameter"
-          value={parameter.option_text}
-          onChange={handleChange}
-          fullWidth
-          multiline
-        />
-        <Button
-          sx={{
-            backgroundColor: "transparent",
-            "&:hover": {
-              color: "primary.light",
-            },
-          }}
-          startIcon={<DeleteIcon />}
-          onClick={handleDeleteParameter}
-        ></Button>
+        <div ref={setNodeRef} style={style2}>
+          <Radio disabled />
+          <TextField
+            variant="standard"
+            name="parameter"
+            value={parameter.option_text}
+            onChange={handleChange}
+            fullWidth
+            multiline
+          />
+          <Button
+            sx={{
+              backgroundColor: "transparent",
+              "&:hover": {
+                color: "primary.light",
+              },
+            }}
+            startIcon={<DeleteIcon />}
+            onClick={handleDeleteParameter}
+          ></Button>
+        </div>
       </Box>
     </Container>
   );

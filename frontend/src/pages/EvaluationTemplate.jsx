@@ -27,8 +27,8 @@ const EvaluationTemplate = () => {
     }
     if (isError) {
       console.log(error);
-      setOpenSnackBar(true);
       setSnackbarMessage(error?.data.message);
+      setOpenSnackBar(true);
     }
   }, [isSuccess, isError, error, data]);
 
@@ -92,6 +92,8 @@ const EvaluationTemplate = () => {
   const handleCreateTemplate = () => {
     setOpenCreateTemplate(false);
     if (state?.errors?.length >= 1) {
+      setSnackbarMessage("Error en la validación de datos")
+      setOpenSnackBar(true)
       setShowError(true);
     } else {
       setShowError(false);
