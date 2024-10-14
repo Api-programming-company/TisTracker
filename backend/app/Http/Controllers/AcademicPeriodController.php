@@ -147,7 +147,10 @@ class AcademicPeriodController extends Controller
             $user->academic_period_id = $academicPeriod->id;
             $user->save();
 
-            return response()->json(['message' => 'Se inscribió correctamente en el periodo académico']);
+            return response()->json([
+                'message' => 'Se inscribió correctamente en el periodo académico',
+                'user' => $user
+            ]);
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Ocurrio un error',
