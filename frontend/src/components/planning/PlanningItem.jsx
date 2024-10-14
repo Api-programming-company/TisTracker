@@ -1,31 +1,31 @@
 import { Button, TextField } from '@mui/material'
 import React from 'react'
-import { defer } from 'react-router-dom';
+import { changeDeliverable } from '../../reducers/planningSlice';
+import { useDispatch } from 'react-redux';
 
-const PlanningItem = ({deliverable,index}) => {
-  const [inputValue, setInputValue] = React.useState({
-    observedResult: 0,
-    hopeResult: 0,
-    observations: ""
-  });
+const PlanningItem = ({deliverable,index,milestone_id}) => {
+  const dispatch = useDispatch();
+
   const [buttonAction, setButtonAction] = React.useState("Carry Over");
 
   const handleInputChange = (event) => {
+    const change = {};
     switch (event.target.name) {
       case "observedResult":
-        setInputValue((prevState) => ({...prevState, observedResult: parseInt(event.target.value)}));
+        change.observedResult = parseInt(event.target.value);
         break;
       case "hopeResult":
-        setInputValue((prevState) => ({...prevState, hopeResult: parseInt(event.target.value)}));
+        change.hopeResult = parseInt(event.target.value);
         break;
       case "observations":
-        setInputValue((prevState) => ({...prevState, observations: event.target.value}));
+        change.observations = event.target.value;
         break;
       default:
         console.log("This state doesn't exist")
         break;
     }
-  };
+    dispatch(changeDeliverable({id : deliverable.id, field: event.target.name, value: event.target.value,milestone_id}));
+    }
 
   const handleActionButton = () => {
     switch (buttonAction) {
@@ -49,13 +49,13 @@ const PlanningItem = ({deliverable,index}) => {
         </div>
         <div className="grid-item">{deliverable.name}</div>
         <div className="grid-item">
-          <input type="number" placeholder='0' value={inputValue.observedResult} onChange={handleInputChange} name="observedResult" min={0} max={100} className='grid-input number'/>
+          <input type="number" placeholder='0' value={deliverable.observedResult} onChange={handleInputChange} name="observedResult" min={0} max={100} className='grid-input number'/>
         </div>
         <div className="grid-item">
-          <input type="number" placeholder='0' value={inputValue.hopeResult} onChange={handleInputChange} name="hopeResult" min={0} max={100} className='grid-input number'/>
+          <input type="number" placeholder='0' value={deliverable.hopeResult} onChange={handleInputChange} name="hopeResult" min={0} max={100} className='grid-input number'/>
         </div>
         <div className="grid-item">
-          <textarea name="observations" placeholder="Ponga sus observaciones aqui" id="observations" className='grid-input area' value={inputValue.observations} onChange={handleInputChange} ></textarea>
+          <textarea name="observations" placeholder="Ponga sus observaciones aqui" id="observations" className='grid-input area' value={deliverable.observations} onChange={handleInputChange} ></textarea>
         </div>
         <div className="grid-item">
           <Button onClick={handleActionButton}>{buttonAction}</Button>

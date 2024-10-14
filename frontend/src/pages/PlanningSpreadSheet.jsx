@@ -8,6 +8,7 @@ import { CircularProgress, Container, Alert } from "@mui/material";
 import SeeMilestone from '../components/planning/SeeMilestone';
 import PlanningItem from '../components/planning/PlanningItem';
 import MilestoneItem from '../components/planning/MilestoneItem';
+import { planningSpreadsheet } from '../mock_objects/planificacion';
 
 
 
@@ -27,7 +28,8 @@ const PlanningSpreadSheet = () => {
 
     useEffect(() => {
       if (isSuccess) {
-        dispatch(setMilestones(data.planning.milestones));
+        // dispatch(setMilestones(data.planning.milestones));
+        dispatch(setMilestones(planningSpreadsheet.planning.milestones));
       }
       if (isError) {
         console.log(error);

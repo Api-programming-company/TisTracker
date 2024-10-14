@@ -45,7 +45,7 @@ const MilestoneItem = ({milestone}) => {
                     <div className="grid-item header">Acción</div>
                 {milestone.deliverables?.length > 0 ? (
                   milestone.deliverables.map((deliverable,index) => (
-                    <PlanningItem deliverable={deliverable} index={index} key={index}
+                    <PlanningItem deliverable={deliverable} index={index} key={index} milestone_id={milestone.id}
                     />
                   ))
                 ) : (
