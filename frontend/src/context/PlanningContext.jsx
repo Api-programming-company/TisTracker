@@ -59,7 +59,7 @@ const PlanningProvider = ({ children }) => {
 
   const checkErrors = () => {
     let isError = false;
-    const updatedMilestones = milestones.map((milestone) => {
+    const updatedMilestones = milestones.map((milestone, index) => {
       const errors = [];
       if (!milestone.name) errors.push({ errorArea: "name", message: "El nombre del hito es requerido" });
       const milestoneNames = milestones.map((milestone) => milestone.name);
@@ -68,6 +68,13 @@ const PlanningProvider = ({ children }) => {
       if (!milestone.start_date) errors.push({ errorArea: "start_date", message: "La fecha de inicio es requerida" });
       if (milestone.start_date < tisGroup.start_date) errors.push({ errorArea: "start_date", message: "La fecha de inicio debe ser mayor o igual que la fecha de inicio del grupo TIS ("
       + format(tisGroup.start_date, 'dd/MM/yyyy') + ")" });
+      
+      if (index > 0) {
+        const prevMilestone = milestones[index - 1];
+        if (milestone.start_date <= prevMilestone.end_date) {
+          errors.push({ errorArea: "start_date", message: `La fecha de inicio debe ser mayor que la fecha de fin del hito anterior (${format(prevMilestone.end_date, 'dd/MM/yyyy')})` });
+        }
+      }
       
       if (!milestone.end_date) {
         errors.push({ errorArea: "end_date", message: "La fecha de fin es requerida" });
