@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AcademicPeriod;
 use App\Models\AcademicPeriodEvaluation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Exception;
 
 class AcademicPeriodEvaluationController extends Controller
 {
@@ -15,7 +17,6 @@ class AcademicPeriodEvaluationController extends Controller
      */
     public function index()
     {
-        // Obtener las evaluaciones del periodo académico actual del usuario autenticado
         $user = Auth::user();
 
         // Verificar si el usuario tiene asignado un periodo académico
@@ -36,22 +37,46 @@ class AcademicPeriodEvaluationController extends Controller
      */
     public function store(Request $request)
     {
-        // Validar los datos del request
-        $validatedData = $request->validate([
-            'evaluation_id' => 'required|exists:evaluations,id',
-            'academic_period_id' => 'required|exists:academic_periods,id',
-            'evaluation_type' => 'required|string',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-        ]);
+        try {
+            $user = Auth::user();
 
-        // Crear una nueva evaluación de periodo académico
-        $academicPeriodEvaluation = AcademicPeriodEvaluation::create($validatedData);
+            // Validar los datos del request
+            $validatedData = $request->validate([
+                'evaluation_id' => 'required|exists:evaluations,id',
+                'academic_period_id' => 'required|exists:academic_periods,id',
+                'evaluation_type' => 'required|string|in:A,C,U',
+                'start_date' => 'required|date',
+                'end_date' => 'required|date|after_or_equal:start_date',
+            ]);
 
-        return response()->json([
-            'message' => 'Evaluación del periodo académico creada exitosamente.',
-            'academicPeriodEvaluation' => $academicPeriodEvaluation
-        ], 201);
+            // Obtener el periodo académico
+            $academicPeriod = AcademicPeriod::findOrFail($validatedData['academic_period_id']);
+
+            // Validar que las fechas estén dentro del periodo académico
+            if ($validatedData['start_date'] < $academicPeriod->start_date || $validatedData['end_date'] > $academicPeriod->end_date) {
+                return response()->json(['message' => 'Las fechas de la evaluación deben estar dentro del periodo académico.'], 422);
+            }
+
+            // Verificar si ya existe una evaluación del mismo tipo en el mismo periodo académico
+            $existingEvaluation = AcademicPeriodEvaluation::where('academic_period_id', $validatedData['academic_period_id'])
+                ->where('evaluation_type', $validatedData['evaluation_type'])
+                ->first();
+
+            if ($existingEvaluation) {
+                return response()->json(['message' => 'El periodo académico ya tiene una evaluación de este tipo.'], 422);
+            }
+
+            // Crear una nueva evaluación de periodo académico
+            $academicPeriodEvaluation = AcademicPeriodEvaluation::create($validatedData);
+
+            return response()->json([
+                'message' => 'Evaluación del periodo académico creada exitosamente.',
+                'academicPeriodEvaluation' => $academicPeriodEvaluation
+            ], 201);
+
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Error al crear la evaluación del periodo académico.', 'error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -62,6 +87,8 @@ class AcademicPeriodEvaluationController extends Controller
      */
     public function show(AcademicPeriodEvaluation $academicPeriodEvaluation)
     {
+        $user = Auth::user();
+        
         // Mostrar los detalles de una evaluación específica del periodo académico
         return response()->json($academicPeriodEvaluation);
     }
@@ -75,22 +102,52 @@ class AcademicPeriodEvaluationController extends Controller
      */
     public function update(Request $request, AcademicPeriodEvaluation $academicPeriodEvaluation)
     {
-        // Validar los datos del request
-        $validatedData = $request->validate([
-            'evaluation_id' => 'sometimes|exists:evaluations,id',
-            'academic_period_id' => 'sometimes|exists:academic_periods,id',
-            'evaluation_type' => 'sometimes|string',
-            'start_date' => 'sometimes|date',
-            'end_date' => 'sometimes|date|after_or_equal:start_date',
-        ]);
+        try {
+            $user = Auth::user();
 
-        // Actualizar la evaluación del periodo académico con los datos validados
-        $academicPeriodEvaluation->update($validatedData);
+            // Validar los datos del request
+            $validatedData = $request->validate([
+                'evaluation_id' => 'sometimes|exists:evaluations,id',
+                'academic_period_id' => 'sometimes|exists:academic_periods,id',
+                'evaluation_type' => 'sometimes|string|in:A,C,U',
+                'start_date' => 'sometimes|date',
+                'end_date' => 'sometimes|date|after_or_equal:start_date',
+            ]);
 
-        return response()->json([
-            'message' => 'Evaluación del periodo académico actualizada exitosamente.',
-            'academicPeriodEvaluation' => $academicPeriodEvaluation
-        ]);
+            // Verificar si se está actualizando el tipo de evaluación o las fechas
+            if (isset($validatedData['academic_period_id'])) {
+                $academicPeriod = AcademicPeriod::findOrFail($validatedData['academic_period_id']);
+            } else {
+                $academicPeriod = $academicPeriodEvaluation->academicPeriod;
+            }
+
+            // Validar que las fechas estén dentro del periodo académico
+            if (isset($validatedData['start_date']) && ($validatedData['start_date'] < $academicPeriod->start_date || $validatedData['end_date'] > $academicPeriod->end_date)) {
+                return response()->json(['message' => 'Las fechas de la evaluación deben estar dentro del periodo académico.'], 422);
+            }
+
+            // Verificar si ya existe una evaluación del mismo tipo en el mismo periodo académico (solo si se actualiza el tipo)
+            if (isset($validatedData['evaluation_type']) && $validatedData['evaluation_type'] !== $academicPeriodEvaluation->evaluation_type) {
+                $existingEvaluation = AcademicPeriodEvaluation::where('academic_period_id', $academicPeriod->id)
+                    ->where('evaluation_type', $validatedData['evaluation_type'])
+                    ->first();
+
+                if ($existingEvaluation) {
+                    return response()->json(['message' => 'El periodo académico ya tiene una evaluación de este tipo.'], 422);
+                }
+            }
+
+            // Actualizar la evaluación del periodo académico con los datos validados
+            $academicPeriodEvaluation->update($validatedData);
+
+            return response()->json([
+                'message' => 'Evaluación del periodo académico actualizada exitosamente.',
+                'academicPeriodEvaluation' => $academicPeriodEvaluation
+            ]);
+
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Error al actualizar la evaluación del periodo académico.', 'error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -101,11 +158,18 @@ class AcademicPeriodEvaluationController extends Controller
      */
     public function destroy(AcademicPeriodEvaluation $academicPeriodEvaluation)
     {
-        // Eliminar la evaluación del periodo académico
-        $academicPeriodEvaluation->delete();
+        try {
+            $user = Auth::user();
 
-        return response()->json([
-            'message' => 'Evaluación del periodo académico eliminada exitosamente.'
-        ]);
+            // Eliminar la evaluación del periodo académico
+            $academicPeriodEvaluation->delete();
+
+            return response()->json([
+                'message' => 'Evaluación del periodo académico eliminada exitosamente.'
+            ]);
+
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Error al eliminar la evaluación del periodo académico.', 'error' => $e->getMessage()], 500);
+        }
     }
 }
