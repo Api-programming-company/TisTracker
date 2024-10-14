@@ -132,42 +132,42 @@ const planningSpreadsheet = {
                 name: 'Codigo funcional de Ver planificacion',
                 observedResult: 0,
                 hopeResult: 0,
-                state: "GOOD"
+                state: "A"
             },
             {
                 id: 2,
                 name: 'Script de la base de datos',
                 observedResult: 0,
                 hopeResult: 0,
-                state: "GOOD"
+                state: "A"
             },
             {
                 id:3,
                 name: "Manual de usuario parcial",
                 observedResult: 0,
                 hopeResult: 0,
-                state: "GOOD"
+                state: "A"
             },
             {
                 id: 4,
                 name: 'Mockups',
                 observedResult: 0,
                 hopeResult: 0,
-                state: "GOOD"
+                state: "A"
             },
             {
                 id: 5,
                 name: 'Modelo de la base de datos',
                 observedResult: 0,
                 hopeResult: 0,
-                state: "GOOD"
+                state: "A"
             },
             {
                 id: 6,
                 name: 'Documento de sprint backlog',
                 observedResult: 0,
                 hopeResult: 0,
-                state: "GOOD"
+                state: "A"
             }
         ]
     },
@@ -183,28 +183,28 @@ const planningSpreadsheet = {
                 name: 'Sprint 2',
                 observedResult: 0,
                 hopeResult: 0,
-                state: "GOOD"
+                state: "A"
             },
             {
                 id: 4,
                 name: 'Documento de sprint 2',
                 observedResult: 0,
                 hopeResult: 0,
-                state: "GOOD"
+                state: "A"
             },
             {
                 id: 5,
                 name: 'Script de la base de datos',
                 observedResult: 0,
                 hopeResult: 0,
-                state: "GOOD"
+                state: "A"
             },
             {
                 id: 6,
                 name: 'Entregable 2.2',
                 observedResult: 0,
                 hopeResult: 0,
-                state: "GOOD"
+                state: "A"
             },
         ]
     },
@@ -220,14 +220,14 @@ const planningSpreadsheet = {
                 name: 'Entregable 3.1',
                 observedResult: 0,
                 hopeResult: 0,
-                state: "GOOD"
+                state: "A"
             },
             {
                 id: 6,
                 name: 'Entregable 3.2',
                 observedResult: 0,
                 hopeResult: 0,
-                state: "GOOD"
+                state: "A"
             },
         ]
     },
@@ -243,14 +243,14 @@ const planningSpreadsheet = {
                 name: 'Entregable 4.1',
                 observedResult: 0,
                 hopeResult: 0,
-                state: "GOOD"
+                state: "A"
             },
             {
                 id: 8,
                 name: 'Entregable 4.2',
                 observedResult: 0,
                 hopeResult: 0,
-                state: "GOOD"
+                state: "A"
             },
         ]
     },
@@ -266,18 +266,20 @@ const planningSpreadsheet = {
                 name: 'Entregable 5.1',
                 observedResult: 0,
                 hopeResult: 0,
-                state: "GOOD"
+                state: "A"
             },
             {
                 id: 10,
                 name: 'Entregable 5.2',
                 observedResult: 0,
                 hopeResult: 0,
-                state: "GOOD"
+                state: "A"
             },
         ]
     },
 ]
-}}
+}
+}
+
 
 export {data,planningSpreadsheet};

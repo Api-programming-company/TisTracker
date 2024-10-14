@@ -187,6 +187,10 @@ p,a,li,button,input,textarea{
 
 
 
+.bg-red{
+  background-color: var(--red-500);
+  color: white;
+}
 
 @media screen and (max-width: 600px) {
   .container {
