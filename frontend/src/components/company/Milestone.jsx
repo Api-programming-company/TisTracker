@@ -164,11 +164,15 @@ const Milestone = ({ milestone }) => {
                 )}
               </div>
                 
-                {Boolean(findError("deliverables")) &&
+                
+            </ListItem>
+            <ListItem>
+            {Boolean(findError("deliverables")) &&
                 <p className="text-red-300 text-sm">{findError("deliverables")}</p>
                     
                     }
             </ListItem>
+            
             <ListItem
               sx={{ display: "flex", justifyContent: "start", width: "100%" }}
             >

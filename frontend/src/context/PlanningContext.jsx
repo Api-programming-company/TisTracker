@@ -1,6 +1,7 @@
 // MilestonesContext.js
 import { is } from 'date-fns/locale';
 import { createContext, useState,useContext } from 'react';
+import { format } from 'date-fns';
 
 const PlanningContext = createContext();
 
@@ -65,13 +66,15 @@ const PlanningProvider = ({ children }) => {
       if (milestoneNames.length !== new Set(milestoneNames).size) errors.push({ errorArea: "name", message: "Los nombres de los hitos deben ser unicos" });
       
       if (!milestone.start_date) errors.push({ errorArea: "start_date", message: "La fecha de inicio es requerida" });
-      if (milestone.start_date < tisGroup.start_date) errors.push({ errorArea: "start_date", message: "La fecha de inicio debe ser mayor o igual que la fecha de inicio del TIS" });
+      if (milestone.start_date < tisGroup.start_date) errors.push({ errorArea: "start_date", message: "La fecha de inicio debe ser mayor o igual que la fecha de inicio del grupo TIS ("
+      + format(tisGroup.start_date, 'dd/MM/yyyy') + ")" });
       
       if (!milestone.end_date) {
         errors.push({ errorArea: "end_date", message: "La fecha de fin es requerida" });
       }else{
         if (milestone.end_date <= milestone.start_date) errors.push({ errorArea: "end_date", message: "La fecha de fin debe ser mayor que la fecha de inicio" });
-        if (milestone.end_date > tisGroup.end_date) errors.push({ errorArea: "end_date", message: "La fecha de fin debe ser menor o igual que la fecha de fin del TIS" });
+        if (milestone.end_date > tisGroup.end_date) errors.push({ errorArea: "end_date", message: "La fecha de fin debe ser menor o igual que la fecha de fin del grupo TIS (" 
+        + format(tisGroup.end_date, 'dd/MM/yyyy') + ")" });
       }
       if (!milestone.billing_percentage){
         errors.push({ errorArea: "billing_percentage", message: "El porcentaje de facturacion es requerido" });
