@@ -151,19 +151,23 @@ p,a,li,button,input,textarea{
 
 .grid{
   display: grid;
-  grid-template-columns: 1fr 3fr 1fr 1fr 5fr 1fr;
+  grid-template-columns: 1fr 3fr 1fr 1fr 4fr 2fr;
   border-bottom: 1px solid var(--neutral-600);
 }
 
 .grid-item{
-  border: 1px solid var(--neutral-600);
-  padding: 1rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--neutral-300);
+  padding: 0.5rem;
   border-bottom: transparent;
 }
 
 
 .grid-item.header{
   background-color: var(--primary-300);
+  border-color: var(--primary-500);
   color: white;
 }
 
@@ -171,6 +175,17 @@ p,a,li,button,input,textarea{
 .bg-primary{
   background-color: var(--primary-500);
 }
+
+.grid-input{
+  position: relative;
+  box-sizing: content-box;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  width: 100%;
+
+}
+
+
 
 
 @media screen and (max-width: 600px) {
