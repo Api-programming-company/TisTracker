@@ -2,13 +2,17 @@ import React, { useContext, useEffect, useState } from "react";
 import { useCreateEvaluationTemplateMutation } from "../api/evaluationApi";
 import {
   Button,
+  CircularProgress,
   Container,
   Divider,
+  Snackbar,
   TextField,
   Typography,
 } from "@mui/material";
 import EvaluateContext from "../context/evaluateContext/EvaluateContext";
 import Criteria from "../components/evaluationTemplate/Criteria";
+import DialogMod from "../components/DialogMod";
+import { useNavigate } from "react-router-dom";
 
 const EvaluationTemplate = () => {
   const [
@@ -19,9 +23,12 @@ const EvaluationTemplate = () => {
   useEffect(() => {
     if (isSuccess) {
       console.log(data);
+      setOpenConfirm(true)
     }
     if (isError) {
       console.log(error);
+      setOpenSnackBar(true);
+      setSnackbarMessage(error?.data.message);
     }
   }, [isSuccess, isError, error, data]);
 
@@ -33,6 +40,7 @@ const EvaluationTemplate = () => {
     handleDescriptionChange,
     addCriteria,
     validateErrors,
+    handleScore,
   } = useContext(EvaluateContext);
   useEffect(() => {
     clearState();
@@ -47,6 +55,11 @@ const EvaluationTemplate = () => {
   }, []);
 
   const [showError, setShowError] = useState(false);
+  const [openCreateTemplate, setOpenCreateTemplate] = useState(false);
+  const [openSnackBar, setOpenSnackBar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const navigate = useNavigate()
 
   const handleInputChange = (e) => {
     setShowError(false);
@@ -77,13 +90,30 @@ const EvaluationTemplate = () => {
   };
 
   const handleCreateTemplate = () => {
-    validateErrors();
+    setOpenCreateTemplate(false);
     if (state?.errors?.length >= 1) {
       setShowError(true);
     } else {
       setShowError(false);
+      createEvaluationTemplate(state);
     }
   };
+
+  if (isLoading) {
+    return (
+      <Container
+        maxWidth="sm"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        <CircularProgress />
+      </Container>
+    );
+  }
 
   return (
     <Container>
@@ -110,9 +140,11 @@ const EvaluationTemplate = () => {
         sx={{ marginY: 1 }}
         variant="outlined"
         value={state.description}
-        label="Descripción (opcional)"
+        label="Descripción*"
         name="description"
         onChange={handleInputChange}
+        error={showError}
+        helperText={findError("description")}
         fullWidth
         multiline
       />
@@ -130,6 +162,7 @@ const EvaluationTemplate = () => {
               criteria={e}
               findError={findError}
               setShowError={setShowError}
+              showError={showError}
             />
           );
         })
@@ -152,11 +185,39 @@ const EvaluationTemplate = () => {
         <Button
           variant="contained"
           sx={{ marginX: 3, marginY: 3, display: "block" }}
-          onClick={handleCreateTemplate}
+          onClick={() => {
+            validateErrors();
+            handleScore();
+            setOpenCreateTemplate(true);
+          }}
         >
           Crear Plantilla
         </Button>
+        <DialogMod
+          open={openCreateTemplate}
+          setOpen={setOpenCreateTemplate}
+          title={"Crear plantilla"}
+          content={"¿Estás seguro de realizar esta acción?"}
+          onAccept={handleCreateTemplate}
+        />
+
+        <DialogMod
+          open={openConfirm}
+          setOpen={setOpenConfirm}
+          title={"Confirmar"}
+          content={"Se registró su plantilla con exito"}
+          onAccept={()=>navigate('/')}
+          onCancel={()=>navigate('/')}
+          showButtonCancel={false}
+        />
       </div>
+      <Snackbar
+        open={openSnackBar}
+        autoHideDuration={8000}
+        onClose={() => setOpenSnackBar(false)}
+        message={snackbarMessage}
+        // action={action}
+      />
     </Container>
   );
 };

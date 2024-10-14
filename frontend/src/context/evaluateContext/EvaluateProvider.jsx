@@ -102,6 +102,12 @@ const EvaluateProvider = ({ children }) => {
     });
   };
 
+  const handleScore = () => {
+    dispatch({
+      type: "handleScore",
+    });
+  };
+
   return (
     <EvaluateContext.Provider
       value={{
@@ -120,6 +126,7 @@ const EvaluateProvider = ({ children }) => {
         handleParameterOrder,
         validateErrors,
         handleDescriptionChange,
+        handleScore,
       }}
     >
       {children}

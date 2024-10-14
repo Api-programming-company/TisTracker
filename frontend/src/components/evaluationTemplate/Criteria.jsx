@@ -21,7 +21,7 @@ import {
   arrayMove,
 } from "@dnd-kit/sortable";
 
-const Criteria = ({ criteria, findError, setShowError }) => {
+const Criteria = ({ criteria, findError, setShowError, showError }) => {
   const {
     handleCriteriaTitleChange,
     addParameter,
@@ -74,6 +74,7 @@ const Criteria = ({ criteria, findError, setShowError }) => {
                   name="criteria"
                   value={criteria.question_text}
                   onChange={handleInputChange}
+                  error={showError}
                   helperText={findError("question_text")}
                   fullWidth
                   multiline
