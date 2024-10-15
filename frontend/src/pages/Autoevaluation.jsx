@@ -150,7 +150,7 @@ const Autoevaluation = () => {
     <Container sx={{ paddingY: 1 }} maxWidth="xl">
       <Typography
         component="h1"
-        sx={{ color: "black", fontSize: "40px", lineHeight: "1", marginY: 3 }}
+        sx={{ fontSize: "40px", lineHeight: "1", marginY: 3 }}
       >
         {state.title}
       </Typography>
@@ -198,7 +198,7 @@ const Autoevaluation = () => {
       <DialogMod
         open={open}
         setOpen={setOpen}
-        title={"Enviar"}
+        title={"Enviar Autoevaluación"}
         content={"¿Estás seguro de realizar esta acción?"}
         onAccept={handleAccept}
       />
