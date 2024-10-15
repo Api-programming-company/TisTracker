@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\AcademicPeriod;
 use App\Models\Planning;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
+
 /**
  * @OA\Schema(
  *     schema="Company",
@@ -59,21 +61,20 @@ class CompanyController extends Controller
     public function store(Request $request)
     {
         try {
-            // Obtener el usuario autenticado
             $user = Auth::user();
 
-            // Verificar si el usuario ya tiene permisos de escritura en alguna compañía
-            $hasWritePermission = $user->companies()
-                ->wherePivot('permission', 'W')
-                ->exists();
-
-            if ($hasWritePermission) {
+            if ($user->companies()->wherePivot('permission', 'W')->exists()) {
                 return response()->json([
                     'message' => 'Ya eres el encargado de una empresa, no puedes crear otra'
-                ], 403); // 403 Forbidden
+                ], Response::HTTP_FORBIDDEN);
             }
 
-            // Validar los datos de entrada
+            if ($user->companies()->wherePivot('status', 'A')->exists()) {
+                return response()->json([
+                    'message' => 'Ya perteneces a una empresa'
+                ], Response::HTTP_FORBIDDEN);
+            }
+
             $validatedData = $request->validate([
                 'long_name' => 'required|string|max:32|unique:companies,long_name',
                 'short_name' => 'required|string|max:8|unique:companies,short_name',
@@ -83,10 +84,15 @@ class CompanyController extends Controller
                 'academic_period_id' => 'required|exists:academic_periods,id',
             ]);
 
-            // Obtener el periodo académico
             $academicPeriod = AcademicPeriod::findOrFail($validatedData['academic_period_id']);
+            $currentDate = now();
 
-            // Crear la compañía con estado inicial 'C' y sin planificación
+            if ($currentDate->lt($academicPeriod->start_date) || $currentDate->gt($academicPeriod->end_date)) {
+                return response()->json([
+                    'message' => 'No esta en dentro de las fechas de registro de empresas.',
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
             $company = Company::create([
                 'long_name' => $validatedData['long_name'],
                 'short_name' => $validatedData['short_name'],
@@ -94,29 +100,30 @@ class CompanyController extends Controller
                 'address' => $validatedData['address'],
                 'phone' => $validatedData['phone'],
                 'academic_period_id' => $academicPeriod->id,
-                'status' => 'C', // Establece el estado de la compañía como 'C'
+                'status' => 'C',
             ]);
 
-            // Registrar al usuario autenticado como miembro de la compañía con permiso 'W' (escritura)
-            $company->members()->attach($user->id, [
-                'status' => 'A',  // Estado 'A' para aceptado
-                'permission' => 'W'  // Permiso 'W' para escritura
+            $company->members()->create([
+                'user_id' => $user->id,
+                'status' => 'A',
+                'permission' => 'W'
             ]);
 
             return response()->json([
-                'message' => 'Compañía creada y usuario registrado como miembro con permisos de escritura.',
+                'message' => 'Compañía creada exitosamente.',
                 'company' => $company,
-            ], 201);
+                'user' => $user
+            ], Response::HTTP_CREATED);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Error de validación',
                 'errors' => $e->errors()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Se ha producido un error inesperado al crear la compañía.',
                 'error' => $e->getMessage(),
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -136,30 +143,30 @@ class CompanyController extends Controller
 
             // Verificar si el usuario tiene permiso
             if ($academicPeriod->creator->id !== $user->id && $user->academic_period_id !== $academicPeriod->id) {
-                return response()->json(['message' => 'No tienes permiso para ver las compañías de este periodo académico.'], 403);
+                return response()->json(['message' => 'No tienes permiso para ver las compañías de este periodo académico.'], Response::HTTP_FORBIDDEN);
             }
 
             // Obtener las compañías activas asociadas al periodo académico
             $companies = Company::withCount('members')
                 ->where('academic_period_id', $request->id)
-                ->where('status', 'A') // Solo compañías activas
+                ->where('status', 'A')
                 ->get();
 
             return response()->json([
                 'message' => 'Compañías obtenidas correctamente.',
                 'companies' => $companies
-            ], 200);
+            ], Response::HTTP_OK);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Error de validación.',
                 'errors' => $e->errors(),
                 "request" => $request
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Ocurrió un error al obtener las compañías.',
                 'error' => $e->getMessage()
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -175,7 +182,7 @@ class CompanyController extends Controller
                 return response()->json([
                     'message' => 'Error de validación.',
                     'errors' => $validator->errors(),
-                ], 422);
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
             // Obtener el usuario autenticado
             $user = Auth::user();
@@ -189,18 +196,18 @@ class CompanyController extends Controller
 
             // Verificar si la compañía existe
             if (!$company) {
-                return response()->json(['message' => 'No se encontró la compañía especificada.'], 404);
+                return response()->json(['message' => 'No se encontró la compañía especificada.'], Response::HTTP_NOT_FOUND);
             }
 
             return response()->json([
                 'message' => 'Compañía obtenida correctamente.',
                 'company' => $company,
-            ], 200);
+            ], Response::HTTP_OK);
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Ocurrió un error al obtener la información de la compañía.',
                 'error' => $e->getMessage()
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -218,24 +225,24 @@ class CompanyController extends Controller
             // Verificar si el usuario es el creador del periodo académico
             $academicPeriod = AcademicPeriod::find($request->academic_period_id);
             if ($academicPeriod->creator->id !== $user->id) {
-                return response()->json(['message' => 'No tienes permiso para acceder a estas compañías.'], 403);
+                return response()->json(['message' => 'No tienes permiso para acceder a estas compañías.'], Response::HTTP_FORBIDDEN);
             }
 
             // Obtener las compañías pendientes
             $companies = Company::where('academic_period_id', $request->academic_period_id)
-                ->where('status', 'P') // Estado Pendiente
+                ->where('status', 'P')
                 ->withCount('members')
                 ->get();
 
             return response()->json([
                 'message' => 'Compañías pendientes obtenidas correctamente.',
                 'companies' => $companies
-            ], 200);
+            ], Response::HTTP_OK);
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Ocurrió un error al obtener las compañías pendientes.',
                 'error' => $e->getMessage()
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -247,7 +254,7 @@ class CompanyController extends Controller
 
             // Verificar si la compañía existe
             if (!$company) {
-                return response()->json(['message' => 'No se encontró la compañía especificada.'], 404);
+                return response()->json(['message' => 'No se encontró la compañía especificada.'], Response::HTTP_NOT_FOUND);
             }
 
             // Obtener el periodo académico asociado
@@ -256,7 +263,7 @@ class CompanyController extends Controller
             // Verificar si el usuario tiene permiso
             $user = auth()->user();
             if ($academicPeriod->creator->id !== $user->id) {
-                return response()->json(['message' => 'No tienes permiso para aceptar esta compañía.'], 403);
+                return response()->json(['message' => 'No tienes permiso para aceptar esta compañía.'], Response::HTTP_FORBIDDEN);
             }
 
             // Cambiar el estado de la compañía a 'Aceptada'
@@ -266,12 +273,12 @@ class CompanyController extends Controller
             return response()->json([
                 'message' => 'Compañía aceptada correctamente.',
                 'company' => $company
-            ], 200);
+            ], Response::HTTP_OK);
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Ocurrió un error al aceptar la compañía.',
                 'error' => $e->getMessage()
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -285,13 +292,13 @@ class CompanyController extends Controller
             return response()->json([
                 'message' => 'Lista de compañías obtenida correctamente.',
                 'companies' => $companies
-            ], 200); // 200 OK
+            ], Response::HTTP_OK);
         } catch (Exception $e) {
             // Manejar otros errores
             return response()->json([
                 'message' => 'Ocurrió un error al obtener la lista de compañías.',
                 'error' => $e->getMessage()
-            ], 500); // 500 Internal Server Error
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -302,7 +309,7 @@ class CompanyController extends Controller
             $company = Company::find($id);
 
             if (!$company) {
-                return response()->json(['message' => 'No se encontró la compañía especificada.'], 404);
+                return response()->json(['message' => 'No se encontró la compañía especificada.'], Response::HTTP_NOT_FOUND);
             }
 
             // Obtener el usuario autenticado
@@ -317,7 +324,7 @@ class CompanyController extends Controller
             if (!$isAcademicPeriodCreator && (!$member || $member->pivot->permission !== 'W')) {
                 return response()->json([
                     'message' => 'No tienes permisos para actualizar esta compañía.'
-                ], 403);
+                ], Response::HTTP_FORBIDDEN);
             }
 
             // Validar los datos entrantes
@@ -341,7 +348,7 @@ class CompanyController extends Controller
                 if ($acceptedMembersCount < 3) {
                     return response()->json([
                         'message' => 'Debe haber al menos 3 miembros con estado "A" para aceptar la compañía.'
-                    ], 400); // Bad Request
+                    ], Response::HTTP_BAD_REQUEST);
                 }
 
                 // Eliminar miembros que no tienen estado 'A'
@@ -358,7 +365,7 @@ class CompanyController extends Controller
                         // Si el miembro no existe, añadirlo con permiso 'R' y estado 'P' (pendiente)
                         $company->members()->attach($memberId, [
                             'permission' => 'R',
-                            'status' => 'P' // Estado 'P' para pendiente
+                            'status' => 'P'
                         ]);
                     }
                 }
@@ -373,20 +380,21 @@ class CompanyController extends Controller
             return response()->json([
                 'message' => 'Compañía actualizada correctamente.',
                 'company' => $company,
-                'members' => $updatedMembers // Incluir los miembros en la respuesta
-            ], 200);
+                'members' => $updatedMembers
+            ], Response::HTTP_OK);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Error de validación.',
                 'errors' => $e->errors()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Ocurrió un error al actualizar la compañía.',
                 'error' => $e->getMessage()
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
     public function destroy($id)
     {
         try {
@@ -397,7 +405,7 @@ class CompanyController extends Controller
             if (!$company) {
                 return response()->json([
                     'message' => 'No se encontró la compañía especificada.'
-                ], 404); // 404 Not Found
+                ], Response::HTTP_NOT_FOUND);
             }
 
             // Eliminar la compañía
@@ -406,14 +414,14 @@ class CompanyController extends Controller
             // Devolver una respuesta de éxito
             return response()->json([
                 'message' => 'Compañía eliminada correctamente.'
-            ], 200); // 200 OK
+            ], Response::HTTP_OK);
 
         } catch (Exception $e) {
             // Manejar otros errores
             return response()->json([
                 'message' => 'Ocurrió un error al eliminar la compañía.',
                 'error' => $e->getMessage()
-            ], 500); // 500 Internal Server Error
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -427,35 +435,35 @@ class CompanyController extends Controller
             // Obtener las compañías donde el usuario está como miembro con estado 'P' (Pendiente)
             $companies = Company::whereHas('members', function ($query) use ($user) {
                 $query->where('user_id', $user->id)
-                    ->where('status', 'P'); // Estado pendiente
+                    ->where('status', 'P');
             })
                 ->with([
                     'members' => function ($query) use ($user) {
                         // Incluir solo la información del usuario autenticado
                         $query->where('user_id', $user->id)
-                            ->withPivot('created_at') // Obtener la fecha de la invitación (asumiendo 'created_at')
-                            ->select('users.id as user_id', 'email');  // Renombrar 'id' para evitar ambigüedad
+                            ->withPivot('created_at')
+                            ->select('users.id as user_id', 'email');
                     }
                 ])
                 ->withCount('members')
                 ->get();
             $data = $companies->map(function ($company) use ($user) {
-                $member = $company->members->first(); // El miembro es el usuario autenticado
+                $member = $company->members->first();
                 return [
                     'company' => $company,
-                    'invitation_date' => $member->pivot->created_at, // Fecha de invitación
+                    'invitation_date' => $member->pivot->created_at,
                 ];
             });
             return response()->json([
                 'message' => 'Compañías pendientes obtenidas correctamente.',
                 'companies' => $data
-            ], 200); // 200 OK
+            ], Response::HTTP_OK);
         } catch (Exception $e) {
             // Manejar otros errores
             return response()->json([
                 'message' => 'Ocurrió un error al obtener las compañías pendientes.',
                 'error' => $e->getMessage()
-            ], 500); // 500 Internal Server Error
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }
