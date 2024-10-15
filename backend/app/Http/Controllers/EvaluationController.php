@@ -20,7 +20,7 @@ class EvaluationController extends Controller
             $user = Auth::user();
 
             // Obtener todas las evaluaciones del usuario autenticado
-            $evaluations = $user->evaluations()->with('questions.answerOptions')->get();
+            $evaluations = $user->evaluations()->get();
 
             return response()->json($evaluations);
         } catch (Exception $e) {
@@ -45,7 +45,7 @@ class EvaluationController extends Controller
             }
 
             // Validación de los datos
-            $request->validate([
+            $validatedData = $request->validate([
                 'title' => 'required|string|max:255',
                 'description' => 'nullable|string',
                 'questions' => 'required|array',
@@ -57,20 +57,17 @@ class EvaluationController extends Controller
 
             // Crear la evaluación
             $evaluation = $user->evaluations()->create([
-                'title' => $request->title,
-                'description' => $request->description,
+                'title' => $validatedData['title'],
+                'description' => $validatedData['description'],
                 'user_id' => $user->id,
             ]);
 
             // Crear las preguntas y sus opciones de respuesta
-            foreach ($request->questions as $questionData) {
+            foreach ($validatedData['questions'] as $questionData) {
                 $question = $evaluation->questions()->create([
                     'question_text' => $questionData['question_text'],
                 ]);
-
-                foreach ($questionData['answer_options'] as $optionData) {
-                    $question->answerOptions()->create($optionData);
-                }
+                $question->answerOptions()->createMany($questionData['answer_options']);
             }
 
             return response()->json($evaluation->load('questions.answerOptions'), 201);
