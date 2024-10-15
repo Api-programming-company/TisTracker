@@ -466,4 +466,59 @@ class CompanyController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function getEvaluationByCompanyId($id, $evaluation_type)
+    {
+        try {
+            $validator = Validator::make(['id' => $id, 'evaluation_type' => $evaluation_type], [
+                'id' => 'required|integer|exists:companies,id',
+                'evaluation_type' => 'required|string|in:A,C,U'
+            ]);
+
+            // Si la validación falla, retornar un error 400 con los mensajes de validación
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Error de validación.',
+                    'errors' => $validator->errors(),
+                    'id' => $id,
+                    'evaluation_type' => $evaluation_type
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            // Obtener el usuario autenticado
+            $user = Auth::user();
+
+            // Buscar la compañía por ID, incluyendo relaciones necesarias
+            $company = Company::with([
+                'academicPeriod.creator',
+            ])->find($id);
+
+            // Verificar si la compañía existe
+            if (!$company) {
+                return response()->json(['message' => 'No se encontró la compañía especificada.'], Response::HTTP_NOT_FOUND);
+            }
+
+            // Obtener la evaluación del periodo académico si existe
+            $academic_period_evaluation = $company->academicPeriod->evaluations()
+                ->where('evaluation_type', $evaluation_type)
+                ->with(['evaluation.questions.answerOptions'])
+                ->first();
+
+            if (!$academic_period_evaluation) {
+                return response()->json(['message' => 'El periodo academico no cuenta con la evaluacion.'], Response::HTTP_NOT_FOUND);
+            }
+
+            return response()->json([
+                'message' => 'Compañía y evaluación obtenidas correctamente.',
+                'company' => $company,
+                'evaluation' => $academic_period_evaluation->evaluation,
+                'academic_period' => $company->academicPeriod
+            ], Response::HTTP_OK);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Ocurrió un error al obtener la información de la compañía y la evaluación.',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }

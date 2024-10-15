@@ -67,6 +67,7 @@ Route::middleware('auth')->group(function () {
 
    
     Route::get('academic-periods/companies/pending', [CompanyController::class, 'getPendingCompanies']);
+    Route::get('evaluation-company/{id}/{evaluation_type}', [CompanyController::class, 'getEvaluationByCompanyId']);
     Route::post('companies/accept/{id}', [CompanyController::class, 'acceptCompanyById']);
     Route::apiResource('invitations', CompanyUserController::class);
 

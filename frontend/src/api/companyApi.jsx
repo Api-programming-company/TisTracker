@@ -47,14 +47,21 @@ const companyApi = apiSlice.injectEndpoints({
     }),
     updateCompanyPlanningById: builder.mutation({
       query: ({ id, data }) => ({
-        url: `plannings/${id}`, // Cambiado a /companyplanning
-        method: "PUT", // O `PATCH` según lo necesites
+        url: `plannings/${id}`,
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: data,
       }),
       invalidatesTags: ["company", "invitation"],
+    }),
+    getEvaluationByCompanyId: builder.query({
+      query: ({id, evaluation_type}) => ({
+        url: `evaluation-company/${id}/${evaluation_type}`,
+        method: "GET",
+      }),
+      providesTags: ["company", "evaluation"],
     }),
   }),
 });
@@ -66,4 +73,5 @@ export const {
   useGetCompaniesQuery,
   useUpdateCompanyByIdMutation,
   useUpdateCompanyPlanningByIdMutation,
+  useGetEvaluationByCompanyIdQuery
 } = companyApi;

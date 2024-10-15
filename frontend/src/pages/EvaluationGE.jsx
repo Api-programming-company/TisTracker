@@ -18,6 +18,7 @@ import RadioOption from "../components/evaluation/RadioOption";
 import EvaluateContext from "../context/evaluateContext/EvaluateContext";
 import { evaluate } from "../utils/evaluaLikert";
 import { useGetCompanyQuestionsByIdQuery } from "../api/evaluationApi";
+import { useGetEvaluationByCompanyIdQuery } from "../api/companyApi";
 
 const EvaluationGE = () => {
   const { company_id } = useParams();
@@ -30,13 +31,15 @@ const EvaluationGE = () => {
     isFetching: companyQuestionsFetching,
     isError: isCompanyQuestionsError,
     error: companyQuestionsError,
-  } = useGetCompanyQuestionsByIdQuery(2);
+  } = useGetEvaluationByCompanyIdQuery({
+    id: company_id,
+    evaluation_type: "C",
+  });
 
   useEffect(() => {
     if (companyQuestionsSuccess) {
       console.log(companyQuestions);
-      setInitialState(companyQuestions);
-      
+      setInitialState(companyQuestions.evaluation);
     }
     if (isCompanyQuestionsError) {
       console.log(companyQuestionsError);
@@ -47,31 +50,6 @@ const EvaluationGE = () => {
     isCompanyQuestionsError,
     companyQuestionsError,
     companyQuestionsSuccess,
-  ]);
-
-  const {
-    data: company,
-    isSuccess: companySuccess,
-    isFetching: companyFetching,
-    isError: isCompanyError,
-    error: companyError,
-    isLoading: companyLoading,
-  } = useGetCompanyByIdQuery(company_id);
-
-  useEffect(() => {
-    if (companySuccess) {
-      console.log(company);
-    }
-    if (isCompanyError) {
-      console.log(companyError);
-    }
-  }, [
-    company,
-    companyFetching,
-    isCompanyError,
-    companyError,
-    companySuccess,
-    companyLoading,
   ]);
 
   const [
@@ -131,7 +109,7 @@ const EvaluationGE = () => {
     navigate("/");
   };
 
-  if (companyFetching || isLoading || companyQuestionsFetching) {
+  if (isLoading || companyQuestionsFetching) {
     return (
       <Container
         maxWidth="sm"
@@ -143,6 +121,25 @@ const EvaluationGE = () => {
         }}
       >
         <CircularProgress />
+      </Container>
+    );
+  }
+
+  if (isCompanyQuestionsError) {
+    return (
+      <Container
+        maxWidth="sm"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        <Typography variant="h6" color="error">
+          {companyQuestionsError.data?.message ||
+            "Error al cargar los datos. Por favor, inténtelo de nuevo más tarde."}
+        </Typography>
       </Container>
     );
   }
@@ -168,7 +165,7 @@ const EvaluationGE = () => {
         sx={{ fontSize: "20px", lineHeight: "1", marginY: 3 }}
       >
         <strong>Grupo Empresa a evaluar: </strong>{" "}
-        {company?.company?.short_name}
+        {companyQuestions.company?.short_name}
       </Typography>
 
       <Typography
@@ -179,21 +176,25 @@ const EvaluationGE = () => {
       </Typography>
 
       <Grid2 container spacing={2}>
-        {state.questions && state.questions.map((e, index = 0) => {
-          return (
-            <>
-              <Grid2 size={{ sm: 12, md: 6 }}>
-                <Question key={e.id} question={`${index + 1}. ${e.question_text}`} />
-              </Grid2>
-              <RadioOption
-                key={e.id}
-                answer_options={e.answer_options}
-                question_id={e.id}
-              />
-              <Divider sx={{ width: "100%" }} />{" "}
-            </>
-          );
-        })}
+        {state.questions &&
+          state.questions.map((e, index = 0) => {
+            return (
+              <>
+                <Grid2 size={{ sm: 12, md: 6 }}>
+                  <Question
+                    key={e.id}
+                    question={`${index + 1}. ${e.question_text}`}
+                  />
+                </Grid2>
+                <RadioOption
+                  key={e.id}
+                  answer_options={e.answer_options}
+                  question_id={e.id}
+                />
+                <Divider sx={{ width: "100%" }} />{" "}
+              </>
+            );
+          })}
       </Grid2>
       <Box sx={{ display: "flex", justifyContent: "center", margin: 5 }}>
         <Button

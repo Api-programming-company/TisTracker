@@ -32,4 +32,9 @@ class AcademicPeriod extends Model
     {
         return $this->hasMany(Company::class);
     }
+
+    public function evaluations()
+    {
+        return $this->hasMany(AcademicPeriodEvaluation::class, 'academic_period_id');
+    }
 }
