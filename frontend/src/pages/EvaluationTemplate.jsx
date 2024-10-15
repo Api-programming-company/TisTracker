@@ -133,7 +133,7 @@ const EvaluationTemplate = () => {
     <Container>
       <Typography
         component={"h1"}
-        sx={{ color: "black", fontSize: "40px", lineHeight: "1", mt: 12 }}
+        sx={{ fontSize: "40px", lineHeight: "1", mt: 12 }}
       >
         Crear Plantilla de Evaluación
       </Typography>
