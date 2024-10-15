@@ -9,13 +9,11 @@ import {
 import Question from "../components/evaluation/Question";
 import RadioOption from "../components/evaluation/RadioOption";
 import EvaluateContext from "../context/evaluateContext/EvaluateContext";
-import { useGetCompanyByIdQuery } from "../api/companyApi";
-import { useCreateCompanyEvaluationMutation } from "../api/evaluationApi";
 import { useParams } from "react-router-dom";
 import { useGetCompanyQuestionsByIdQuery } from "../api/evaluationApi";
 
 const VerPlantillas = () => {
-  const { company_id } = useParams();
+  const { evaluation_id } = useParams();
 
   const {
     data: companyQuestions,
@@ -23,7 +21,7 @@ const VerPlantillas = () => {
     isFetching: companyQuestionsFetching,
     isError: isCompanyQuestionsError,
     error: companyQuestionsError,
-  } = useGetCompanyQuestionsByIdQuery(5);
+  } = useGetCompanyQuestionsByIdQuery(evaluation_id);
 
   useEffect(() => {
     if (companyQuestionsSuccess) {
@@ -41,42 +39,13 @@ const VerPlantillas = () => {
     companyQuestionsSuccess,
   ]);
 
-  const {
-    data: company,
-    isSuccess: companySuccess,
-    isFetching: companyFetching,
-    isError: isCompanyError,
-    error: companyError,
-  } = useGetCompanyByIdQuery(company_id);
-
-  useEffect(() => {
-    if (companySuccess) {
-      console.log(company);
-    }
-    if (isCompanyError) {
-      console.log(companyError);
-    }
-  }, [company, companyFetching, isCompanyError, companyError, companySuccess]);
-
-  const [{ data, isSuccess, isError, error, isLoading }] =
-    useCreateCompanyEvaluationMutation();
-
-  useEffect(() => {
-    if (isSuccess) {
-      console.log(data);
-    }
-    if (isError) {
-      console.log(error);
-    }
-  }, [data, isSuccess, isError, error, isLoading]);
-
   const { state, setInitialState } = useContext(EvaluateContext);
 
   useEffect(() => {
     console.log(state.questions, "estado");
   }, [state]);
 
-  if (companyFetching || companyQuestionsFetching || isLoading) {
+  if (companyQuestionsFetching) {
     return (
       <Container
         maxWidth="sm"

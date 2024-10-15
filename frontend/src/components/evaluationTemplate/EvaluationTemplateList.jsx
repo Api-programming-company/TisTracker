@@ -7,6 +7,7 @@ import {
   ListItemText,
   CircularProgress,
   Typography,
+  Container,
 } from "@mui/material";
 
 const EvaluationTemplateList = () => {
@@ -22,7 +23,21 @@ const EvaluationTemplateList = () => {
     }
   }, []);
 
-  if (isFetching) return <CircularProgress />;
+  if (isFetching) {
+    return (
+      <Container
+        maxWidth="sm"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        <CircularProgress />
+      </Container>
+    );
+  }
   if (isError)
     return <Typography>Error loading evaluation templates</Typography>;
 
