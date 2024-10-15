@@ -42,6 +42,7 @@ import StudentHome from "./components/student/StudentHome";
 import TeacherHome from "./components/teacher/TeacherHome";
 import Test from "./components/Test";
 import EvaluationTemplate from "./pages/EvaluationTemplate";
+import PlanningSpreadSheet from "./pages/PlanningSpreadSheet";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -66,6 +67,11 @@ function App({ toggleTheme, isDarkMode }) {
               path="/company/:id/plannification"
               element={<CompanyPlanning />}
             />
+
+            <Route path="/planning_spreadsheet" element={<PlanningSpreadSheet/>}>
+
+            </Route>
+
             <Route path="/company/:id/invite" element={<StudentSearch />} />
             <Route path="/company/:id/confirm" element={<ConformacionGE />} />
             <Route path="/company/:id/uninvite" element={<EditarListaGE />} />
@@ -128,6 +134,8 @@ function App({ toggleTheme, isDarkMode }) {
             path="/update-academic-period/:id"
             element={<SetFinalDeliverablePeriod />}
           ></Route>
+
+          
 
           <Route path="/*" element={<NotFound />} />
         </Routes>
