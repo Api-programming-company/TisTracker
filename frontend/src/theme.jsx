@@ -36,7 +36,7 @@ const darkTheme = createTheme({
     mode: "dark",
     primary: {
       main: "#0B3F69", // Azul oscuro
-      towhite: "#ffffff",
+      towhite: "#f0f0f0",
     },
     secondary: {
       main: "#ffab91", // Coral pastel
@@ -49,6 +49,7 @@ const darkTheme = createTheme({
     },
     info: {
       main: "#81d4fa", // Azul pastel
+      details: "#8e9090",
       gray: "#000000", // Transparente
     },
     success: {

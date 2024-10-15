@@ -45,12 +45,12 @@ const DialogMod = ({
       </DialogContent>
       <DialogActions>
         {showButtonCancel ? (
-          <Button onClick={handleClose} color="primary.towhite">
+          <Button onClick={handleClose} sx={{ color: "primary.towhite" }}>
             Cancelar
           </Button>
         ) : null}
         <Button
-          color="primary.towhite"
+          sx={{ color: "primary.towhite" }}
           onClick={() => onAccept(paramsAccept)}
           autoFocus
         >
