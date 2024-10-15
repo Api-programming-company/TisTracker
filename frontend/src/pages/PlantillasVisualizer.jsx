@@ -13,18 +13,18 @@ import {
 const PlantillasVisualizer = () => {
   const navigate = useNavigate();
   const plantillas = [
-    { id: 50, title: "Plantilla para evaluación de estudiante" },
-    { id: 52, title: "Autoevaluación de grupo empresas" },
-    { id: 53, title: "Plantilla 2" },
-    { id: 61, title: "Plantilla 100" },
-    { id: 63, title: "Prueba de plantilla xd" },
+    { id: 1, title: "Plantilla para evaluación de estudiante" },
+    { id: 2, title: "Autoevaluación de grupo empresas" },
+    { id: 3, title: "Plantilla 2" },
+    { id: 4, title: "Plantilla 100" },
+    { id: 5, title: "Prueba de plantilla xd" },
   ];
 
   const handlePlantilla = (idPlantilla) => {
     navigate(`/verplantillas/${idPlantilla}`);
   };
   const handleCrearPlantilla = () => {
-    navigate("/"); //Aumentar para redirigir al crear plantilla
+    navigate("/evaluation-templates/create");
   };
 
   return (
