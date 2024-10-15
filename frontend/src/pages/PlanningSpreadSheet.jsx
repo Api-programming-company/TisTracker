@@ -28,7 +28,7 @@ const PlanningSpreadSheet = () => {
 
     useEffect(() => {
       if (isSuccess) {
-        // dispatch(setMilestones(data.planning.milestones));
+        // dispatch(setMile stones(data.planning.milestones));
         dispatch(setMilestones(planningSpreadsheet.planning.milestones));
       }
       if (isError) {

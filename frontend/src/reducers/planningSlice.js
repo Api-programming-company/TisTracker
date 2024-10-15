@@ -13,6 +13,7 @@ export const planningSlice = createSlice({
             console.log(action.payload,"action");
             return action.payload;
         },
+       
         changeDeliverable: (state,action) => {
         const {milestone_id,id,field,value} = action.payload;
             const currentState = current(state);
@@ -33,7 +34,7 @@ export const planningSlice = createSlice({
              },
              ...currentState.slice(milestoneIndex + 1),
          ];
-        }
+        },
 
     }
 })

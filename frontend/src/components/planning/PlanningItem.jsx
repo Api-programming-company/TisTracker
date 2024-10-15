@@ -3,6 +3,8 @@ import React from 'react'
 import { changeDeliverable } from '../../reducers/planningSlice';
 import { useDispatch } from 'react-redux';
 import { de } from 'date-fns/locale';
+import Checkbox from '@mui/material/Checkbox';
+
 
 const PlanningItem = ({deliverable,index,milestone_id}) => {
   const dispatch = useDispatch();
@@ -57,17 +59,7 @@ const PlanningItem = ({deliverable,index,milestone_id}) => {
           <textarea name="observations" placeholder="Ponga sus observaciones aqui" id="observations" className='grid-input area' value={deliverable.observations} onChange={handleInputChange} ></textarea>
         </div>
         <div className={`grid-item ${deliverable.state === "C" ? "bg-red" : ""}`}>
-          <Button 
-            onClick={handleActionButton} 
-            variant="outlined" 
-            color="white"
-            sx={{
-              color: deliverable.state !== "C" ? "white" : "black",
-              backgroundColor: deliverable.state === "C" ? "white" : "primary.main"
-            }}
-            >
-            {deliverable.state === "A" ? "Mandar a Carry Over" : "Sacar de Carry Over"}
-          </Button>
+          <Checkbox  color="error" />
         </div>
 
     </>
