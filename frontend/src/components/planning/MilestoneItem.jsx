@@ -37,12 +37,12 @@ const MilestoneItem = ({milestone}) => {
               <div className="deliverables-list">
                 <h4 className='text-neutral-700'>Entregables:</h4>
                 <div className="grid header">
-                    <div className="grid-item header">N</div>
-                    <div className="grid-item header">Entregable</div>
-                    <div className="grid-item header">Resultado Observado</div>
-                    <div className="grid-item header">Resultado Esperado</div>
-                    <div className="grid-item header">Observaciones</div>
-                    <div className="grid-item header">Carry Over</div>
+                    <div className="grid-item">N</div>
+                    <div className="grid-item">Entregable</div>
+                    <div className="grid-item">Resultado Observado</div>
+                    <div className="grid-item ">Resultado Esperado</div>
+                    <div className="grid-item">Observaciones</div>
+                    <div className="grid-item">Carry Over</div>
                   </div>
                 {milestone.deliverables?.length > 0 ? (
                   milestone.deliverables.map((deliverable,index) => (
