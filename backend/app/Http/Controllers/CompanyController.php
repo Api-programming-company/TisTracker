@@ -508,6 +508,12 @@ class CompanyController extends Controller
                 return response()->json(['message' => 'El periodo academico no cuenta con la evaluacion.'], Response::HTTP_NOT_FOUND);
             }
 
+            // Validar que la fecha actual esté dentro del rango de fechas de la evaluación
+            $currentDate = now();
+            if ($currentDate->lt($academic_period_evaluation->start_date) || $currentDate->gt($academic_period_evaluation->end_date)) {
+                return response()->json(['message' => 'El periodo academico no esta dentro de la fecha de evaluacion.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
             return response()->json([
                 'message' => 'Compañía y evaluación obtenidas correctamente.',
                 'company' => $company,

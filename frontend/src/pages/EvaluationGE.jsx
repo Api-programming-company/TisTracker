@@ -10,14 +10,12 @@ import {
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useGetCompanyByIdQuery } from "../api/companyApi";
 import { useCreateCompanyEvaluationMutation } from "../api/evaluationApi";
 import DialogMod from "../components/DialogMod";
 import Question from "../components/evaluation/Question";
 import RadioOption from "../components/evaluation/RadioOption";
 import EvaluateContext from "../context/evaluateContext/EvaluateContext";
 import { evaluate } from "../utils/evaluaLikert";
-import { useGetCompanyQuestionsByIdQuery } from "../api/evaluationApi";
 import { useGetEvaluationByCompanyIdQuery } from "../api/companyApi";
 
 const EvaluationGE = () => {
