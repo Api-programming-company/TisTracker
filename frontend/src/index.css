@@ -1,7 +1,7 @@
 :root{
   --title-font-family: 'Poppins', sans-serif;
   --body-font-family: 'Poppins', sans-serif;
-  --green-100: #5CDC79;
+  --green-100: #dafae2;
   --neutral-black: #1F2223;
   --neutral-white: #FFFFFF;
   --neutral-800:#363939;
@@ -15,8 +15,10 @@
   --primary-500: #0B3F69;
   --primary-300: #2A628F;
   --primary-100: #6A98BC;
+  --red-100: #fff1f1;
   --red-300: #f48fb1;
   --red-500: #D32F2F;
+  
 }
 
 body {
@@ -206,8 +208,11 @@ input[type="checkbox"]{
 
 
 .bg-red{
-  background-color: var(--red-500);
-  color: white;
+  background-color: var(--red-100);
+}
+
+.bg-green{
+  background-color: var(--green-100);
 }
 
 @media screen and (max-width: 600px) {

@@ -10,7 +10,6 @@ export const planningSlice = createSlice({
     initialState,
     reducers : {
         setMilestones : (state,action) => {
-            console.log(action.payload,"action");
             return action.payload;
         },
        
@@ -19,6 +18,9 @@ export const planningSlice = createSlice({
             const currentState = current(state);
          const milestoneIndex = currentState.findIndex((milestone) => milestone.id === milestone_id);
          const deliverableIndex = currentState[milestoneIndex].deliverables.findIndex((deliverable) => deliverable.id === id);
+         
+
+
          return [
              ...currentState.slice(0, milestoneIndex),
              {

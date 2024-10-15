@@ -29,7 +29,6 @@ const PlanningItem = ({deliverable,index,milestone_id}) => {
     dispatch(changeDeliverable({id : deliverable.id, field: event.target.name, value: event.target.value,milestone_id}));
     }
 
-  const [buttonAction, setButtonAction] = React.useState("Mandar a Carry Over");
   const handleActionButton = () => {
     switch (deliverable.state) {
       case "A":
@@ -46,7 +45,7 @@ const PlanningItem = ({deliverable,index,milestone_id}) => {
   };
 
   return (
-    <>
+    <div className='grid'>
         <div className={`grid-item ${deliverable.state === "C" ? "bg-red" : ""}`}>{index}</div>
         <div className={`grid-item ${deliverable.state === "C" ? "bg-red" : ""}`}>{deliverable.name}</div>
         <div className={`grid-item ${deliverable.state === "C" ? "bg-red" : ""}`}>
@@ -59,10 +58,10 @@ const PlanningItem = ({deliverable,index,milestone_id}) => {
           <textarea name="observations" placeholder="Ponga sus observaciones aqui" id="observations" className='grid-input area' value={deliverable.observations} onChange={handleInputChange} ></textarea>
         </div>
         <div className={`grid-item ${deliverable.state === "C" ? "bg-red" : ""}`}>
-          <Checkbox  color="error" />
+          <Checkbox  color="primary" onChange={handleActionButton}/>
         </div>
 
-    </>
+    </div>
   )
 }
 

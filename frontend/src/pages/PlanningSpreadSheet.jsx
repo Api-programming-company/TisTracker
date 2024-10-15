@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect,useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectCurrentMilestone } from '../reducers/planningSlice'
 import { setMilestones } from '../reducers/planningSlice'
@@ -7,11 +7,17 @@ import { useParams } from "react-router-dom";
 import { CircularProgress, Container, Alert, Box } from "@mui/material";
 import MilestoneItem from '../components/planning/MilestoneItem';
 import { planningSpreadsheet } from '../mock_objects/planificacion';
-import { Button, TextField } from '@mui/material'
+import { Button, Snackbar } from '@mui/material'
+import DialogMod from "../DialogMod";
 
 const PlanningSpreadSheet = () => {
 
     const { id } = useParams();
+
+    const [open, setOpen] = useState({state: true, message: ""});
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState("");
+    const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
     const dispatch = useDispatch();
 
@@ -21,6 +27,9 @@ const PlanningSpreadSheet = () => {
     useGetPlanningByCompanyIdQuery(id);
 
 
+    const handleConfirm = () => {
+      console.log("confirm");
+    }
 
     useEffect(() => {
       if (isSuccess) {
@@ -32,9 +41,13 @@ const PlanningSpreadSheet = () => {
       }
     }, [isSuccess, isError, error, data, dispatch]);
 
-    useEffect(() => {
-      console.log(milestone,"current Milestone");
-    },[milestone])
+   useEffect(() => {
+    window.onbeforeunload = confirmExit;
+            function confirmExit()
+            {
+              return "show warning";
+            }
+   },[])
   
     if (isFetching) {
       return (
@@ -90,8 +103,27 @@ const PlanningSpreadSheet = () => {
                   border: 'white',
                 }
               }
-            >Enviar</Button>
+            >Confirmar</Button>
           </Box>
+          <DialogMod
+            open={open.state}
+            setOpen={setOpen}
+            title={"Confirmar"}
+            content={"¿Está seguro de realizar esta acción?"}
+            onAccept={handleConfirm}
+            onCancel={() => setOpen(false)}
+      />
+
+<Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
           
         </div>
       )
