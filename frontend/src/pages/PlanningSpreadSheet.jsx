@@ -14,7 +14,7 @@ const PlanningSpreadSheet = () => {
 
     const { id } = useParams();
 
-    const [open, setOpen] = useState({state: true, message: ""});
+    const [open, setOpen] = useState({state: true, message: "", title : ""});
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [snackbarSeverity, setSnackbarSeverity] = useState("success");
@@ -108,10 +108,10 @@ const PlanningSpreadSheet = () => {
           <DialogMod
             open={open.state}
             setOpen={setOpen}
-            title={"Confirmar"}
-            content={"¿Está seguro de realizar esta acción?"}
+            title={open.title}
+            content={open.message}
             onAccept={handleConfirm}
-            onCancel={() => setOpen(false)}
+            onCancel={() => setOpen({...open,state: false})}
       />
 
 <Snackbar
