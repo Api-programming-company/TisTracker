@@ -29,12 +29,13 @@ const PlanningSpreadSheet = () => {
 
     const handleConfirm = () => {
       console.log("confirm");
+      setOpen({...open,state: false})
     }
 
     useEffect(() => {
       if (isSuccess) {
-        // dispatch(setMile stones(data.planning.milestones));
-        dispatch(setMilestones(planningSpreadsheet.planning.milestones));
+        dispatch(setMilestones(data.planning.milestones));
+        // dispatch(setMilestones(planningSpreadsheet.planning.milestones));
       }
       if (isError) {
         console.log(error);
