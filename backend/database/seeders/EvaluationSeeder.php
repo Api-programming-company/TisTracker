@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\AcademicPeriodEvaluation;
 use Illuminate\Database\Seeder;
 use App\Models\Evaluation;
 use App\Models\Question;
@@ -14,7 +15,7 @@ class EvaluationSeeder extends Seeder
      *
      * @return void
      */
-    public function run($userId)
+    public function run($userId, $academicPeriodId)
     {
         $evaluationMember = Evaluation::create([
             'title' => 'Evaluación a Integrantes de Grupo Empresa',
@@ -343,5 +344,27 @@ class EvaluationSeeder extends Seeder
                 $question->answerOptions()->create($optionData);
             }
         }
+
+        AcademicPeriodEvaluation::create([
+            'evaluation_id' => $evaluationMember->id,
+            'academic_period_id' => $academicPeriodId,
+            'start_date' => '2024-10-10',
+            'end_date' => '2024-10-30',
+            'evaluation_type' => 'U',
+        ]);
+        AcademicPeriodEvaluation::create([
+            'evaluation_id' => $selfEvaluation->id,
+            'academic_period_id' => $academicPeriodId,
+            'start_date' => '2024-10-10',
+            'end_date' => '2024-10-30',
+            'evaluation_type' => 'A',
+        ]);
+        AcademicPeriodEvaluation::create([
+            'evaluation_id' => $companyEvaluation->id,
+            'academic_period_id' => $academicPeriodId,
+            'start_date' => '2024-10-10',
+            'end_date' => '2024-10-30',
+            'evaluation_type' => 'C',
+        ]);
     }
 }

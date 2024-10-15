@@ -27,6 +27,6 @@ class DatabaseSeeder extends Seeder
         $activeCompaniesSeeder->run($academicPeriodId);
 
         $evaluationSeeder = new EvaluationSeeder();
-        $evaluationSeeder->run($teacherAndAcademicPeriodSeeder->boris->id);
+        $evaluationSeeder->run($teacherAndAcademicPeriodSeeder->boris->id, $academicPeriodId);
     }
 }
