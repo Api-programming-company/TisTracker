@@ -8,13 +8,13 @@ import { CircularProgress, Container, Alert, Box } from "@mui/material";
 import MilestoneItem from '../components/planning/MilestoneItem';
 import { planningSpreadsheet } from '../mock_objects/planificacion';
 import { Button, Snackbar } from '@mui/material'
-import DialogMod from "../DialogMod";
+import DialogMod from "../components/DialogMod";
 
 const PlanningSpreadSheet = () => {
 
     const { id } = useParams();
 
-    const [open, setOpen] = useState({state: true, message: "", title : ""});
+    const [open, setOpen] = useState({state: false, message: "", title : ""});
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [snackbarSeverity, setSnackbarSeverity] = useState("success");
@@ -103,6 +103,11 @@ const PlanningSpreadSheet = () => {
                   border: 'white',
                 }
               }
+              onClick={() => setOpen({
+                state: true, 
+                message: "Estas seguro que quieres confirmar?",
+                title: "Confirmar"
+              })}
             >Confirmar</Button>
           </Box>
           <DialogMod
