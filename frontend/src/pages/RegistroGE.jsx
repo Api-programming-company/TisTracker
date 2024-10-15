@@ -20,7 +20,7 @@ import { useContext } from "react";
 const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
 
 const RegistroGE = () => {
-  const { user } = useContext(AppContext);
+  const { user, setUser } = useContext(AppContext);
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -33,6 +33,9 @@ const RegistroGE = () => {
   useEffect(() => {
     if (isSuccess) {
       setConfirmationOpen(true); // Abrir el dialog cuando la creación sea exitosa
+      console.log("nueva informacion del usuario: ", data.user);
+      
+      setUser(data.user)
     }
 
     if (isError) {
