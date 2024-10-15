@@ -44,9 +44,9 @@ import Test from "./components/Test";
 import EvaluationTemplate from "./pages/EvaluationTemplate";
 import PlanningSpreadSheet from "./pages/PlanningSpreadSheet";
 import VerPlantillas from "./pages/VerPlantillas";
+import CrearEvaluacion from "./pages/CrearEvaluacion";
 import EvaluationTemplateList from "./components/evaluationTemplate/EvaluationTemplateList";
 // import PlantillasVisualizer from "./pages/PlantillasVisualizer";
-
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -127,6 +127,7 @@ function App({ toggleTheme, isDarkMode }) {
               element={<EvaluationTemplateList />}
             />
             {/* <Route path="/plantillas" element={<PlantillasVisualizer />} /> */}
+            <Route path="/crearevaluacion" element={<CrearEvaluacion />} />
 
             {/* pruebas */}
             <Route path="/test" element={<Test />} />
