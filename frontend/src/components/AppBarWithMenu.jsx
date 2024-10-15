@@ -65,7 +65,10 @@ function AppBarWithMenu({ isDarkMode, toggleDarkMode, userType }) {
     ],
     D: [
       { label: "Periodos Académicos", path: "/academic-periods" },
-      { label: "Crear plantilla de evaluacion", path: "/evaluation-templates/create" },
+      {
+        label: "Crear plantilla de evaluacion",
+        path: "/evaluation-templates/create",
+      },
       { label: "Plantillas de evaluacion", path: "/evaluation-templates" },
       { label: "Cerrar sesión", path: "/logout" },
     ],
@@ -125,12 +128,15 @@ function AppBarWithMenu({ isDarkMode, toggleDarkMode, userType }) {
           ¿Estás seguro de que quieres cerrar sesión?
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancelLogout} color="primary">
+          <Button
+            onClick={handleCancelLogout}
+            sx={{ color: "primary.towhite" }}
+          >
             Cancelar
           </Button>
           <Button
             onClick={handleConfirmLogout}
-            color="primary"
+            sx={{ color: "primary.towhite" }}
             autoFocus
             disabled={logoutConfirm}
           >

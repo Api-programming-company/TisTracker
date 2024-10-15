@@ -181,7 +181,7 @@ const EvaluationTemplate = () => {
           );
         })
       ) : (
-        <p>no hay questions jaja</p>
+        <p>Ningún criterio ha sido agregado todavía.</p>
       )}
       {findError("questions") && (
         <p className="text-red-300 text-sm ml-1">{findError("questions")}</p>
