@@ -97,7 +97,15 @@ const EvaluationTemplate = () => {
       setShowError(true);
     } else {
       setShowError(false);
+      // quitar el id del state y enviarlo
+      const { id, ...templateData } = state;
+      const questionsWithoutId = templateData.questions.map(({ id, ...rest }) => ({
+        ...rest,
+        answer_options: rest.answer_options.map(({ id, ...optionRest }) => optionRest),
+      }));
+      const dataToSend = { ...templateData, questions: questionsWithoutId };
       createEvaluationTemplate(state);
+      console.log(state);
     }
   };
 

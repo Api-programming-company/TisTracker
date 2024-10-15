@@ -39,6 +39,11 @@ class EvaluationController extends Controller
         try {
             $user = Auth::user();
 
+            // Validar que el usuario tenga el tipo de usuario 'D'
+            if ($user->user_type !== 'D') {
+                return response()->json(['message' => 'Solo un docente puede crear una plantilla de evaluacion.'], 403);
+            }
+
             // Validación de los datos
             $request->validate([
                 'title' => 'required|string|max:255',
