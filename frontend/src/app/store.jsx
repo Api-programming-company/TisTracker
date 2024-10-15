@@ -13,4 +13,6 @@ export const store = configureStore({
     getDefaultMiddleware().concat(apiSlice.middleware, authMiddleware),
 });
 
+// Infer the type of `store`
+
 export default store;
