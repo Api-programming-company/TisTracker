@@ -13,12 +13,13 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
+        'name',
         'first_name',
         'last_name',
         'email',
         'password',
         'user_type',
-        'academic_period_id', // Añadido para asociar al estudiante con el periodo académico
+        'academic_period_id',
     ];
 
     protected $hidden = [
