@@ -94,8 +94,8 @@ class AcademicPeriodController extends Controller
         try {
             $currentDate = now();
             $academicPeriods = AcademicPeriod::with('creator')
-                ->where('start_date', '<', $currentDate)
-                ->where('end_date', '>', $currentDate)
+                ->where('start_date', '<=', $currentDate)
+                ->where('end_date', '>=', $currentDate)
                 ->get();
 
             // Agrupar los periodos por docente (user_id)
