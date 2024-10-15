@@ -42,11 +42,12 @@ const PlanningSpreadSheet = () => {
     }, [isSuccess, isError, error, data, dispatch]);
 
    useEffect(() => {
-    window.onbeforeunload = confirmExit;
-            function confirmExit()
-            {
-              return "show warning";
-            }
+    window.onbeforeunload = (e) => {
+      e.preventDefault();
+      return false;
+    } 
+            
+            
    },[])
   
     if (isFetching) {
