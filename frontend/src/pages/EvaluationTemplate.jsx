@@ -23,7 +23,7 @@ const EvaluationTemplate = () => {
   useEffect(() => {
     if (isSuccess) {
       console.log(data);
-      setOpenConfirm(true)
+      setOpenConfirm(true);
     }
     if (isError) {
       console.log(error);
@@ -59,7 +59,7 @@ const EvaluationTemplate = () => {
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [openConfirm, setOpenConfirm] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     setShowError(false);
@@ -92,17 +92,21 @@ const EvaluationTemplate = () => {
   const handleCreateTemplate = () => {
     setOpenCreateTemplate(false);
     if (state?.errors?.length >= 1) {
-      setSnackbarMessage("Error en la validación de datos")
-      setOpenSnackBar(true)
+      setSnackbarMessage("Error en la validación de datos");
+      setOpenSnackBar(true);
       setShowError(true);
     } else {
       setShowError(false);
       // quitar el id del state y enviarlo
       const { id, ...templateData } = state;
-      const questionsWithoutId = templateData.questions.map(({ id, ...rest }) => ({
-        ...rest,
-        answer_options: rest.answer_options.map(({ id, ...optionRest }) => optionRest),
-      }));
+      const questionsWithoutId = templateData.questions.map(
+        ({ id, ...rest }) => ({
+          ...rest,
+          answer_options: rest.answer_options.map(
+            ({ id, ...optionRest }) => optionRest
+          ),
+        })
+      );
       const dataToSend = { ...templateData, questions: questionsWithoutId };
       createEvaluationTemplate(state);
       console.log(state);
@@ -129,7 +133,7 @@ const EvaluationTemplate = () => {
     <Container>
       <Typography
         component={"h1"}
-        sx={{ color: "black", fontSize: "40px", lineHeight: "1" }}
+        sx={{ color: "black", fontSize: "40px", lineHeight: "1", mt: 12 }}
       >
         Crear Plantilla de Evaluación
       </Typography>
@@ -216,8 +220,8 @@ const EvaluationTemplate = () => {
           setOpen={setOpenConfirm}
           title={"Confirmar"}
           content={"Se registró su plantilla con exito"}
-          onAccept={()=>navigate('/')}
-          onCancel={()=>navigate('/')}
+          onAccept={() => navigate("/")}
+          onCancel={() => navigate("/")}
           showButtonCancel={false}
         />
       </div>
