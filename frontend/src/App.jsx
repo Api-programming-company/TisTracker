@@ -44,6 +44,7 @@ import Test from "./components/Test";
 import EvaluationTemplate from "./pages/EvaluationTemplate";
 import PlanningSpreadSheet from "./pages/PlanningSpreadSheet";
 import VerPlantillas from "./pages/VerPlantillas";
+import EvaluationTemplateList from "./components/evaluationTemplate/EvaluationTemplateList";
 // import PlantillasVisualizer from "./pages/PlantillasVisualizer";
 
 
@@ -113,12 +114,17 @@ function App({ toggleTheme, isDarkMode }) {
               element={<EvaluationGE />}
             />
             <Route
-              path="/evaluationtemplate" ///:company_id
+              path="/evaluation-templates/create"
               element={<EvaluationTemplate />}
             />
             <Route
-              path="/verplantillas/:company_id"
+              path="/evaluation-templates/:evaluation_id"
               element={<VerPlantillas />}
+            />
+
+            <Route
+              path="/evaluation-templates"
+              element={<EvaluationTemplateList />}
             />
             {/* <Route path="/plantillas" element={<PlantillasVisualizer />} /> */}
 

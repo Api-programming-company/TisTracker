@@ -65,7 +65,8 @@ function AppBarWithMenu({ isDarkMode, toggleDarkMode, userType }) {
     ],
     D: [
       { label: "Periodos Académicos", path: "/academic-periods" },
-      { label: "Crear plantilla de evaluacion", path: "/evaluationtemplate" },
+      { label: "Crear plantilla de evaluacion", path: "/evaluation-templates/create" },
+      { label: "Plantillas de evaluacion", path: "/evaluation-templates" },
       { label: "Cerrar sesión", path: "/logout" },
     ],
   };
