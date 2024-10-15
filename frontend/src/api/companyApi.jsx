@@ -63,6 +63,13 @@ const companyApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["company", "evaluation"],
     }),
+    getEvaluationByCompanyUserId: builder.query({
+      query: ({id}) => ({
+        url: `evaluation-company-user/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["company-user", "evaluation"],
+    }),
   }),
 });
 
@@ -73,5 +80,6 @@ export const {
   useGetCompaniesQuery,
   useUpdateCompanyByIdMutation,
   useUpdateCompanyPlanningByIdMutation,
-  useGetEvaluationByCompanyIdQuery
+  useGetEvaluationByCompanyIdQuery,
+  useGetEvaluationByCompanyUserIdQuery
 } = companyApi;

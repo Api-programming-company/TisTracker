@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\CompanyUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -67,6 +66,7 @@ Route::middleware('auth')->group(function () {
 
    
     Route::get('academic-periods/companies/pending', [CompanyController::class, 'getPendingCompanies']);
+    Route::get('evaluation-company-user/{id}', [CompanyUserController::class, 'getEvaluationByCompanyUserId']);
     Route::get('evaluation-company/{id}/{evaluation_type}', [CompanyController::class, 'getEvaluationByCompanyId']);
     Route::post('companies/accept/{id}', [CompanyController::class, 'acceptCompanyById']);
     Route::apiResource('invitations', CompanyUserController::class);

@@ -364,4 +364,65 @@ class CompanyUserController extends Controller
             ], 500);
         }
     }
+
+    public function getEvaluationByCompanyUserId($id)
+    {
+        try {
+            $validator = Validator::make(['id' => $id], [
+                'id' => 'required|integer|exists:company_users,id',
+            ]);
+
+            // Si la validación falla, retornar un error 400 con los mensajes de validación
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Error de validación.',
+                    'errors' => $validator->errors(),
+                    'id' => $id,
+                ], 422);
+            }
+
+            // Obtener el usuario autenticado
+            $user = Auth::user();
+
+            // Buscar el registro en la tabla pivote por su ID
+            $companyUser = CompanyUser::with('company.academicPeriod.creator')
+                ->where('id', $id)
+                ->first();
+
+            // Verificar si el registro en la tabla pivote existe
+            if (!$companyUser) {
+                return response()->json(['message' => 'No se encontró el registro especificado en company_user.'], 404);
+            }
+
+            // Obtener la compañía del companyUser
+            $company = $companyUser->company;
+
+            // Obtener la evaluación del periodo académico si existe
+            $academic_period_evaluation = $company->academicPeriod->evaluations()
+                ->where('evaluation_type', 'U')
+                ->with(['evaluation.questions.answerOptions'])
+                ->first();
+
+            if (!$academic_period_evaluation) {
+                return response()->json(['message' => 'El periodo academico no cuenta con la evaluacion.'], 404);
+            }
+
+            // Validar que la fecha actual esté dentro del rango de fechas de la evaluación
+            $currentDate = now();
+            if ($currentDate->lt($academic_period_evaluation->start_date) || $currentDate->gt($academic_period_evaluation->end_date)) {
+                return response()->json(['message' => 'El periodo academico no esta dentro de la fecha de evaluacion.'], 422);
+            }
+
+            return response()->json([
+                'message' => 'Evaluado y evaluación obtenidas correctamente.',
+                'evaluation' => $academic_period_evaluation->evaluation,
+                'evaluatee' => $companyUser->user,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Ocurrió un error al obtener la información de la compañía y la evaluación.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
