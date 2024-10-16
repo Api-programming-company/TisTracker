@@ -1,4 +1,3 @@
-import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
@@ -17,10 +16,7 @@ import {
 } from "@mui/material";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import {
-  useGetCompanyByIdQuery,
-  useUpdateCompanyByIdMutation,
-} from "../../api/companyApi";
+import { useGetCompanyByIdQuery } from "../../api/companyApi";
 import { useLazySearchStudentQuery } from "../../api/studentApi";
 import AppContext from "../../context/AppContext";
 import StudentCard from "./StudentCard";
@@ -30,16 +26,13 @@ const StudentSearch = () => {
   const { id } = useParams();
   const { user } = useContext(AppContext);
   const [members, setMembers] = useState([]);
-  const [invitations,setInvitations] = useState([])
+  const [invitations, setInvitations] = useState([]);
   const [email, setEmail] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [openNoStudentModal, setOpenNoStudentModal] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-
-
-  
 
   const [
     createInvitation,
@@ -52,8 +45,6 @@ const StudentSearch = () => {
     },
   ] = useCreateInvitationMutation();
 
-  
-
   const {
     data: companyData,
     isSuccess: isCompanySuccess,
@@ -62,25 +53,21 @@ const StudentSearch = () => {
     error: companyError,
   } = useGetCompanyByIdQuery(id, { refetchOnMountOrArgChange: true });
 
-
-
-  const getInvitations =  useCallback(() => {
+  const getInvitations = useCallback(() => {
     return companyData?.company?.members?.filter(
-      (member) => member.pivot.status === "P"
+      (member) => member.status === "P"
     );
-  },[companyData?.company?.members]);
-
-  
+  }, [companyData?.company?.members]);
 
   useEffect(() => {
     if (isCompanySuccess) {
       console.log("company data:", companyData?.company?.members);
-      setInvitations(companyData?.company?.members?.filter(
-        (member) => member.pivot.status === "P"
-      ));
-      setMembers(companyData?.company?.members.filter(
-        (member) => member.pivot.status === "A"
-      ));
+      setInvitations(
+        companyData?.company?.members?.filter((member) => member.status === "P")
+      );
+      setMembers(
+        companyData?.company?.members.filter((member) => member.status === "A")
+      );
       console.log("company obtenida:", companyData);
     }
 
@@ -89,7 +76,13 @@ const StudentSearch = () => {
       setSnackbarMessage("Error al obtener la compañía");
       setSnackbarOpen(true);
     }
-  }, [isCompanySuccess, isCompanyError, companyData, companyError, getInvitations]);
+  }, [
+    isCompanySuccess,
+    isCompanyError,
+    companyData,
+    companyError,
+    getInvitations,
+  ]);
 
   const [
     searchStudent,
@@ -97,7 +90,7 @@ const StudentSearch = () => {
   ] = useLazySearchStudentQuery();
 
   useEffect(() => {
-    console.log(isFetching,"fetching");
+    console.log(isFetching, "fetching");
     if (isSuccess) {
       setOpenModal(true);
       console.log("Estudiante encontrado:", data);
@@ -109,10 +102,9 @@ const StudentSearch = () => {
       setSnackbarMessage("Error al buscar el estudiante");
       setSnackbarOpen(true);
     }
-  }, [isSuccess, isError, data, error, isRefetching,isFetching]);
+  }, [isSuccess, isError, data, error, isRefetching, isFetching]);
 
   const MAX_STUDENTS = 6;
-
 
   const handleSearch = () => {
     searchStudent(email);
@@ -150,26 +142,23 @@ const StudentSearch = () => {
   };
 
   useEffect(() => {
-    console.log(invitations,"invitations");	
-  },[invitations]);
+    console.log(invitations, "invitations");
+  }, [invitations]);
 
   useEffect(() => {
     if (isCreateInvitationSuccess) {
       console.log("Invitación creada exitosamente:", createInvitationData);
-      
+
       const tempInvitations = companyData?.company?.members?.filter(
-        (member) => member.pivot.status === "P"
-      
+        (member) => member.status === "P"
       );
       setInvitations(tempInvitations);
-      setMembers(companyData?.company?.members.filter(
-        (member) => member.pivot.status === "A"
-      ));
+      setMembers(
+        companyData?.company?.members.filter((member) => member.status === "A")
+      );
       setSnackbarMessage("Invitación creada exitosamente");
       setSnackbarOpen(true);
     }
-
-    
 
     if (isCreateInvitationError) {
       console.error(
@@ -181,8 +170,13 @@ const StudentSearch = () => {
       );
       setSnackbarOpen(true);
     }
-  }, [isCreateInvitationSuccess, isCreateInvitationError, createInvitationData, createInvitationError, companyData?.company?.members]);
-
+  }, [
+    isCreateInvitationSuccess,
+    isCreateInvitationError,
+    createInvitationData,
+    createInvitationError,
+    companyData?.company?.members,
+  ]);
 
   if (isCreateInvitationLoading || isCompanyLoading) {
     return (
@@ -238,8 +232,8 @@ const StudentSearch = () => {
           <StudentCard
             key={user.id}
             student={companyData.company.members.find(
-              (member) => member.pivot.permission === "W"
-            )}
+              (member) => member.permission === "W"
+            ).user}
           />
         </Typography>
       </Box>
@@ -247,17 +241,17 @@ const StudentSearch = () => {
       <Box sx={{ marginTop: 4 }}>
         <Typography variant="h6">Integrantes</Typography>
         {members
-          .filter((member) => member.pivot.permission === "R")
+          .filter((member) => member.permission === "R")
           .map((member) => (
-            <StudentCard key={member.id} student={member} />
+            <StudentCard key={member.id} student={member.user} />
           ))}
       </Box>
       <Box sx={{ marginTop: 4 }}>
         <Typography variant="h6">Invitaciones</Typography>
         {invitations
-          .filter((member) => member.pivot.permission === "R")
+          .filter((member) => member.permission === "R")
           .map((member) => (
-            <StudentCard key={member.id} student={member} />
+            <StudentCard key={member.id} student={member.user} />
           ))}
       </Box>
 
