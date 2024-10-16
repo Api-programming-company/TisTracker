@@ -11,7 +11,7 @@ const PendingCompanyCard = ({ request }) => {
   return (
     <Box
       sx={{
-        backgroundColor: "whitesmoke",
+        backgroundColor: "info.gray",
         borderRadius: "15px",
         padding: 2,
         mb: 5,
@@ -31,31 +31,35 @@ const PendingCompanyCard = ({ request }) => {
           <Typography
             component="h1"
             align="center"
-            sx={{ color: "black", fontSize: "40px", lineHeight: "1" }}
+            sx={{ fontSize: "40px", lineHeight: "1" }}
           >
             {request.long_name}
           </Typography>
-          <Typography
-            component="h2"
-            align="center"
-            sx={{ color: "black", fontSize: "26px" }}
-          >
+          <Typography component="h2" align="center" sx={{ fontSize: "26px" }}>
             {request.short_name}
           </Typography>
 
-          <Typography component="p" sx={{ color: "#8E9090", fontSize: "14px" }}>
+          <Typography
+            component="p"
+            sx={{ color: "info.details", fontSize: "14px" }}
+          >
             <PersonIcon />
             Cuenta con {request.members_count} integrantes.
           </Typography>
 
-          <Typography component="p" sx={{ color: "#8E9090", fontSize: "14px" }}>
+          <Typography
+            component="p"
+            sx={{ color: "info.details", fontSize: "14px" }}
+          >
             <CalendarMonthIcon />
             La solicitud se realizó el {formatDate(request.created_at)}.
           </Typography>
         </Box>
 
         <Button
-          onClick={() => navigate(`/request/${request.id}/pending`, {state: {request}})}
+          onClick={() =>
+            navigate(`/request/${request.id}/pending`, { state: { request } })
+          }
           variant="contained"
           color="primary"
           sx={{

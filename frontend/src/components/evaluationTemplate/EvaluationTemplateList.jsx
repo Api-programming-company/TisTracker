@@ -50,7 +50,7 @@ const EvaluationTemplateList = () => {
   }
 
   return (
-    <List sx={{ width: "100%", maxWidth: 600, margin: "0 auto" }}>
+    <List sx={{ width: "100%", maxWidth: 600, margin: "0 auto", mt: 12 }}>
       {data.map((template) => (
         <ListItem
           button
@@ -63,7 +63,7 @@ const EvaluationTemplateList = () => {
             padding: "16px",
             cursor: "pointer",
             "&:hover": {
-              backgroundColor: "#f5f5f5",
+              backgroundColor: "info.gray",
             },
           }}
         >

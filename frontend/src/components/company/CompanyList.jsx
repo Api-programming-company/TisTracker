@@ -117,7 +117,7 @@ const CompanyList = () => {
         display="flex"
         flexWrap="wrap"
         justifyContent="flex-start" // Mantener alineación de izquierda a derecha
-        sx={{ gap: 2 }} // Espacio entre tarjetas
+        sx={{ gap: 2, mb: 12 }} // Espacio entre tarjetas
       >
         {data?.companies?.length === 0 ? (
           <Typography variant="h6" color="textSecondary">

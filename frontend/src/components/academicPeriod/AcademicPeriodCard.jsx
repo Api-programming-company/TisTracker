@@ -61,7 +61,7 @@ const AcademicPeriodCard = ({ period, isEnroll = true }) => {
         cursor: "pointer",
         transition: "background-color 0.3s, box-shadow 0.3s",
         "&:hover": {
-          backgroundColor: "#f0f0f0",
+          backgroundColor: "info.gray",
           boxShadow: 4,
         },
       }}

@@ -133,7 +133,7 @@ const EvaluationTemplate = () => {
     <Container>
       <Typography
         component={"h1"}
-        sx={{ color: "black", fontSize: "40px", lineHeight: "1", mt: 12 }}
+        sx={{ fontSize: "40px", lineHeight: "1", mt: 12 }}
       >
         Crear Plantilla de Evaluación
       </Typography>
@@ -181,7 +181,7 @@ const EvaluationTemplate = () => {
           );
         })
       ) : (
-        <p>no hay questions jaja</p>
+        <p>Ningún criterio ha sido agregado todavía.</p>
       )}
       {findError("questions") && (
         <p className="text-red-300 text-sm ml-1">{findError("questions")}</p>

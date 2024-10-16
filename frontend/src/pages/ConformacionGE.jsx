@@ -54,7 +54,7 @@ const ConformacionGE = () => {
 
   useEffect(() => {
     if (isUpdateCompanySuccess) {
-      setOpenConfirmModal(true)
+      setOpenConfirmModal(true);
       setSnackbarMessage("Formulario enviado correctamente");
       setSnackbarOpen(true);
       console.log(updateCompanyData);
@@ -214,7 +214,7 @@ const ConformacionGE = () => {
 
             <Typography
               component="p"
-              sx={{ color: "#8E9090", fontSize: "14px", mt: 2 }}
+              sx={{ color: "info.details", fontSize: "14px", mt: 2 }}
             >
               Nota: Solamente se enviará la solicitud de conformación de la
               grupo empresa, tu docente todavía debe aceptar a tu equipo de
