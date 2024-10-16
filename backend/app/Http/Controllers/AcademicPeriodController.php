@@ -177,9 +177,12 @@ class AcademicPeriodController extends Controller
                 return response()->json(['message' => 'No tienes permiso para actualizar este periodo académico'], 403);
             }
 
-            // Validar los datos
+            // Obtener fechas límite
+            $threeMonthsAgo = now()->subMonths(3);
+            $threeMonthsFromNow = now()->addMonths(3);
+
             $request->validate([
-                'start_date' => 'required|date|before:end_date',
+                'start_date' => 'required|date|before:end_date|after_or_equal:' . $threeMonthsAgo->toDateString() . '|before_or_equal:' . $threeMonthsFromNow->toDateString(),
                 'end_date' => 'required|date|after:start_date',
             ]);
 
@@ -199,8 +202,8 @@ class AcademicPeriodController extends Controller
 
             // Verificar si existen hitos activos para las compañías asociadas al periodo académico
             $activeMilestones = Milestone::whereHas('planning', function ($query) use ($companies) {
-                    $query->whereIn('company_id', $companies);
-                })
+                $query->whereIn('company_id', $companies);
+            })
                 ->whereDate('start_date', '<=', now())
                 ->whereDate('end_date', '>=', now())
                 ->exists();
