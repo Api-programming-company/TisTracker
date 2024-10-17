@@ -7,12 +7,14 @@ import {
   CircularProgress,
   CardHeader,
   IconButton,
+  Tooltip,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit"; // Importar el icono de lápiz
+import EditIcon from "@mui/icons-material/Edit";
 import { format } from "date-fns";
 import { useEnrollInAcademicPeriodMutation } from "../../api/academicPeriodApi";
 import AppContext from "../../context/AppContext";
 import { useNavigate } from "react-router-dom";
+import AssignmentIcon from "@mui/icons-material/Assignment";
 
 const formatDate = (date) => format(new Date(date), "dd MMM yyyy");
 
@@ -23,10 +25,15 @@ const AcademicPeriodCard = ({ period, isEnroll = true }) => {
     navigate(`/academic-period/${period.id}/companies`);
   };
 
-  // Manejar la redirección al editar
+
   const handleEdit = (event) => {
-    event.stopPropagation(); // Evitar que el clic en el botón dispare el clic en el Card
+    event.stopPropagation();
     navigate(`/update-academic-period/${period.id}`);
+  };
+
+  const handleAssign = (event) => {
+    event.stopPropagation();
+    navigate(`/crearevaluacion/${period.id}`);
   };
 
   const [enrollInAcademicPeriod, { isLoading, isSuccess, isError, error }] =
@@ -103,17 +110,33 @@ const AcademicPeriodCard = ({ period, isEnroll = true }) => {
         )}
 
         {/* Icono de editar */}
-        <IconButton
-          onClick={handleEdit}
-          sx={{
-            mt: 2, // Espaciado superior para separar del contenido anterior
-            "&:hover": {
-              backgroundColor: "transparent", // Sin fondo al pasar el mouse
-            },
-          }}
-        >
-          <EditIcon color="secondary" />
-        </IconButton>
+        <Tooltip title="Editar" arrow>
+          <IconButton
+            onClick={handleEdit}
+            sx={{
+              mt: 2, // Espaciado superior para separar del contenido anterior
+              "&:hover": {
+                backgroundColor: "transparent", // Sin fondo al pasar el mouse
+              },
+            }}
+          >
+            <EditIcon color="secondary" />
+          </IconButton>
+        </Tooltip>
+        {/* Icono de asignar evaluación */}
+        <Tooltip title="Asignar Evaluación" arrow>
+          <IconButton
+            onClick={handleAssign} // Define la función que manejará la asignación
+            sx={{
+              mt: 2, // Espaciado superior para separar del contenido anterior
+              "&:hover": {
+                backgroundColor: "transparent", // Sin fondo al pasar el mouse
+              },
+            }}
+          >
+            <AssignmentIcon color="primary" />
+          </IconButton>
+        </Tooltip>
       </CardContent>
     </Card>
   );
