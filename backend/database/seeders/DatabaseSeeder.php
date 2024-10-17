@@ -12,21 +12,21 @@ class DatabaseSeeder extends Seeder
         $teacherAndAcademicPeriodSeeder = new TeacherAndAcademicPeriod();
         $teacherAndAcademicPeriodSeeder->run();
 
-        $academicPeriodId = $teacherAndAcademicPeriodSeeder->academicPeriod2024->id;
+        $academicPeriod = $teacherAndAcademicPeriodSeeder->academicPeriod2024;
 
         $usersTableSeeder = new UsersTableSeeder();
-        $usersTableSeeder->run($academicPeriodId);
+        $usersTableSeeder->run($academicPeriod->id);
 
         $companiesTableSeeder = new CompaniesTableSeeder();
-        $companiesTableSeeder->run($academicPeriodId);
+        $companiesTableSeeder->run($academicPeriod->id);
 
         $pendingCompaniesSeeder = new PendingCompaniesSeeder();
-        $pendingCompaniesSeeder->run($academicPeriodId);
+        $pendingCompaniesSeeder->run($academicPeriod->id);
 
         $activeCompaniesSeeder = new ActiveCompaniesSeeder();
-        $activeCompaniesSeeder->run($academicPeriodId);
+        $activeCompaniesSeeder->run($academicPeriod->id, $academicPeriod->start_date, $academicPeriod->end_date);
 
         $evaluationSeeder = new EvaluationSeeder();
-        $evaluationSeeder->run($teacherAndAcademicPeriodSeeder->boris->id, $academicPeriodId);
+        $evaluationSeeder->run($teacherAndAcademicPeriodSeeder->boris->id, $academicPeriod->id);
     }
 }
