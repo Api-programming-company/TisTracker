@@ -21,26 +21,80 @@ import {
   DatePicker,
   TimePicker,
 } from "@mui/x-date-pickers";
+import { useGetAllEvaluationTemplatesQuery } from "../api/evaluationApi";
+import { set } from "date-fns";
+import { useParams } from "react-router-dom";
+import { useCreateAcademicPeriodEvaluationMutation } from "../api/academicPeriodEvaluationsApi";
 
 const RegistroGE = () => {
   const navigate = useNavigate();
+  const { academic_period_id } = useParams();
+
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [plantillas, setPlantillas] = useState([]);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
 
   const [selectedEvaluation, setSelectedEvaluation] = useState("");
   const [selectedPlantilla, setSelectedPlantilla] = useState("");
+  const [selectedPlantillaId, setSelectedPlantillaId] = useState(null);
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
+  const { data, error, isFetching, isError, isSuccess } =
+    useGetAllEvaluationTemplatesQuery();
+  useEffect(() => {
+    if (isSuccess) {
+      console.log(data);
+      setPlantillas(data);
+    }
+    if (isError) {
+      console.log(error);
+    }
+  }, [data, error, isSuccess, isError]);
+
+  const [
+    createAcademicPeriodEvaluation,
+    {
+      isLoading: isCreatingEvaluation,
+      isSuccess: isCreated,
+      isError: isCreateError,
+      data: createData,
+      error: createError,
+    },
+  ] = useCreateAcademicPeriodEvaluationMutation();
 
   useEffect(() => {
-    console.log("Crear Evaluacion");
-  });
+    if (isCreated) {
+      setConfirmationOpen(true);
+      console.log(createData);
+      
+    }
+    if (isCreateError) {
+      setSnackbarOpen(true);
+      setSnackbarMessage(createError.data?.message || "Error al crear la evaluación");
+      console.log(createError);
+      
+    
+    }
+  }, [createData, createError, isCreated, isCreateError]);
 
-  const handleNavigate = () => {
-    alert("Se ha creado la evaluación correctamente");
-    //navigate("/");
+  const handleNavigate = async (e) => {
+    e.preventDefault();
+    const evaluationMap = {
+      Autoevaluación: "A",
+      "Evaluación Cruzada": "C",
+      "Evaluación de Pares": "U",
+    };
+
+    const formData = {
+      evaluation_id: selectedPlantillaId,
+      academic_period_id: academic_period_id,
+      evaluation_type: evaluationMap[selectedEvaluation],
+      start_date: startTime,
+      end_date: endTime,
+    };
+    createAcademicPeriodEvaluation(formData);
   };
 
   const handleSnackbarClose = () => {
@@ -61,14 +115,9 @@ const RegistroGE = () => {
     { id: 3, title: "Evaluación de Pares" },
   ];
 
-  const plantillas = [
-    { id: 1, title: "Plantilla 1" },
-    { id: 2, title: "Plantilla para Evaluación Cruzada" },
-    { id: 3, title: "Autoevaluación" },
-    { id: 4, title: "Plantilla de prueba" },
-    { id: 5, title: "Plantilla 100" },
-    { id: 6, title: "Evaluación de grupo empresas" },
-  ];
+  if (isFetching|| isCreatingEvaluation) {
+    return <Typography>Cargando...</Typography>;
+  }
 
   return (
     <Box
@@ -88,7 +137,6 @@ const RegistroGE = () => {
         Crear Evaluación
       </Typography>
       <form onSubmit={handleNavigate}>
-        {/* Selector de docentes */}
         <FormControl fullWidth sx={{ mb: 3 }}>
           <InputLabel>Seleccionar tipo de evaluación</InputLabel>
           <Select
@@ -104,16 +152,22 @@ const RegistroGE = () => {
           </Select>
         </FormControl>
 
-        {/* Selector de docentes */}
+        {/* Selector de plantillas */}
         <FormControl fullWidth sx={{ mb: 3 }}>
           <InputLabel>Seleccionar Plantilla</InputLabel>
           <Select
             value={selectedPlantilla}
-            onChange={(e) => setSelectedPlantilla(e.target.value)}
+            onChange={(e) => {
+              setSelectedPlantilla(e.target.value);
+              const selectedPlantillaObj = plantillas.find(
+                (plantilla) => plantilla.title === e.target.value
+              );
+              setSelectedPlantillaId(selectedPlantillaObj.id);
+            }}
             label="Seleccionar Plantilla"
           >
             {plantillas.map((plantilla) => (
-              <MenuItem key={plantilla.title} value={plantilla.title}>
+              <MenuItem key={plantilla.id} value={plantilla.title}>
                 {plantilla.title}
               </MenuItem>
             ))}
@@ -201,6 +255,7 @@ const RegistroGE = () => {
           Crear Evaluación
         </Button>
       </form>
+
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}

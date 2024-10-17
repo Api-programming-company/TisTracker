@@ -127,7 +127,7 @@ function App({ toggleTheme, isDarkMode }) {
               element={<EvaluationTemplateList />}
             />
             <Route path="/plantillas" element={<PlantillasVisualizer />} />
-            <Route path="/crearevaluacion" element={<CrearEvaluacion />} />
+            <Route path="/crearevaluacion/:academic_period_id" element={<CrearEvaluacion />} />
 
             {/* pruebas */}
             <Route path="/test" element={<Test />} />
