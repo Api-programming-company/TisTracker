@@ -1,5 +1,4 @@
-import React,{useState} from 'react'
-
+import React, { useState } from "react";
 import {
   ListItem,
   ListItemText,
@@ -7,7 +6,7 @@ import {
   IconButton,
   List,
   Box,
-  Typography
+  Typography,
 } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -17,8 +16,7 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 
 import SeeDeliverable from "./SeeDeliverable";
 
-
-const SeeMilestone = ({milestone}) => {
+const SeeMilestone = ({ milestone }) => {
   const [openDeliverables, setOpenDeliverables] = useState(false);
 
   const formatDate = (date) => {
@@ -27,12 +25,12 @@ const SeeMilestone = ({milestone}) => {
 
   return (
     <div className="milestone-item" key={milestone.id}>
-      <div className='list-header'button onClick={() => setOpenDeliverables(!openDeliverables)}>
-        <ListItemText
-          primary={
-                <h2>{milestone.name}</h2>
-          }
-        />
+      <div
+        className="list-header"
+        button
+        onClick={() => setOpenDeliverables(!openDeliverables)}
+      >
+        <ListItemText primary={<h2>{milestone.name}</h2>} />
         <IconButton>
           {openDeliverables ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </IconButton>
@@ -40,46 +38,50 @@ const SeeMilestone = ({milestone}) => {
       <Collapse in={openDeliverables} timeout="auto" unmountOnExit>
         <div className="list">
           <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <div className="list-item2">
-                <div className="date-item-card">
-                  <h4 className='text-neutral-700'>Fecha de inicio:</h4>  
-                  <p className='text-neutral-500'>{formatDate(milestone.start_date)}</p>
-                </div>
-                
-                  <div className="date-item-card">
-                  <h4 className='text-neutral-700'>Fecha de fin:</h4> 
-                  <p className='text-neutral-500'>{formatDate(milestone.end_date)}</p>
-                </div>
-              </div>
-              
             <div className="list-item2">
               <div className="date-item-card">
-                <h4 className='text-neutral-700'>Porcentaje de cobro:</h4>{" "}	
-                <p className='text-neutral-500'>{milestone.billing_percentage}%</p>
+                <h4 className="text-neutral-700">Fecha de inicio:</h4>
+                <p className="text-neutral-500">
+                  {formatDate(milestone.start_date)}
+                </p>
+              </div>
+
+              <div className="date-item-card">
+                <h4 className="text-neutral-700">Fecha de fin:</h4>
+                <p className="text-neutral-500">
+                  {formatDate(milestone.end_date)}
+                </p>
               </div>
             </div>
-              
-              <div className="deliverables-list">
-                <h4 className='text-neutral-700'>Entregables:</h4>
-                {milestone.deliverables?.length > 0 ? (
-                  milestone.deliverables.map((deliverable,index) => (
-                    <SeeDeliverable
-                      key={index}
-                      index={index + 1 }
-                      deliverable={deliverable}
-                    />
-                  ))
-                ) : (
-                  <p className="text-neutral-500">
-                    No hay entregables asignados</p>
-                )}
+
+            <div className="list-item2">
+              <div className="date-item-card">
+                <h4 className="text-neutral-700">Porcentaje de cobro:</h4>{" "}
+                <p className="text-neutral-500">
+                  {milestone.billing_percentage}%
+                </p>
               </div>
-            
+            </div>
+
+            <div className="deliverables-list">
+              <h4 className="text-neutral-700">Entregables:</h4>
+              {milestone.deliverables?.length > 0 ? (
+                milestone.deliverables.map((deliverable, index) => (
+                  <SeeDeliverable
+                    key={index}
+                    index={index + 1}
+                    deliverable={deliverable}
+                  />
+                ))
+              ) : (
+                <p className="text-neutral-500">No hay entregables asignados</p>
+              )}
+            </div>
           </LocalizationProvider>
         </div>
       </Collapse>
-      </div>
-  )
-}
+    </div>
+  );
+};
 
-export default SeeMilestone
+export default SeeMilestone;
