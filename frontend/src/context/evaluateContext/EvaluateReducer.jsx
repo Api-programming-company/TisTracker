@@ -152,6 +152,13 @@ export default (state, action) => {
             message: "Debe haber por lo menos dos parámetros de evaluación.",
           });
         } else {
+          if (criteria.answer_options.length > 10) {
+            errors.push({
+              from: "parameters",
+              id: criteria.id,
+              message: "La cantidad máxima de parámetros es 10.",
+            });
+          }
           const parameters = criteria.answer_options.map((e) => e.option_text);
           if (parameters.includes("")) {
             errors.push({
