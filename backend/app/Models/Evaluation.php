@@ -27,4 +27,17 @@ class Evaluation extends Model
     {
         return $this->hasMany(Question::class);
     }
+
+    public static function getFieldLabels()
+    {
+        return [
+            'title' => 'título',
+            'description' => 'descripción',
+            'questions' => 'preguntas',
+            'question_text' => 'texto de la pregunta',
+            'answer_options' => 'criterios',
+            'option_text' => 'texto del criterio',
+            'score' => 'puntuación',
+        ];
+    }
 }
