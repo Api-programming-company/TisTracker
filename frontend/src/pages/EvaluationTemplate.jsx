@@ -147,8 +147,8 @@ const EvaluationTemplate = () => {
         label="Nombre de plantilla*"
         name="title"
         onChange={handleInputChange}
-        error={showError}
-        helperText={findError("title")}
+        error={Boolean(error?.data?.errors?.title)}
+        helperText={findError("title")||error?.data?.errors?.title}
         fullWidth
         multiline
       />
@@ -159,7 +159,7 @@ const EvaluationTemplate = () => {
         label="Descripción*"
         name="description"
         onChange={handleInputChange}
-        error={showError}
+        error={Boolean(findError("description"))}
         helperText={findError("description")}
         fullWidth
         multiline
