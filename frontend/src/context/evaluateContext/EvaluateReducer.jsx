@@ -128,6 +128,14 @@ export default (state, action) => {
         });
       }
 
+      const criterias = state.questions.map((e) => e.question_text);
+      if (new Set(criterias).size < criterias.length) {
+        errors.push({
+          from: "questions",
+          message: "Los criterios de evaluación no pueden ser repetidos.",
+        });
+      }
+
       state.questions.forEach((criteria) => {
         if (!criteria.question_text) {
           errors.push({
@@ -136,6 +144,7 @@ export default (state, action) => {
             message: "El criterio de evaluación es obligatorio.",
           });
         }
+        // parameters
         if (criteria.answer_options.length < 2) {
           errors.push({
             from: "parameters",
