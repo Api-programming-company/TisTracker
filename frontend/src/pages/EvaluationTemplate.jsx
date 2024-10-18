@@ -92,7 +92,9 @@ const EvaluationTemplate = () => {
   const handleCreateTemplate = () => {
     setOpenCreateTemplate(false);
     if (state?.errors?.length >= 1) {
-      setSnackbarMessage("Error en la validación de datos");
+      setSnackbarMessage(
+        "Error, llena el formulario adecuadamente"
+      );
       setOpenSnackBar(true);
       setShowError(true);
     } else {

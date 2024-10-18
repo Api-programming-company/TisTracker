@@ -107,6 +107,8 @@ export default (state, action) => {
           : criteria
       );
       return { ...state, questions: parameterOrdered };
+
+    // Validacion de errores
     case "validateErrors":
       const errors = [];
       if (!state.title)
@@ -119,43 +121,68 @@ export default (state, action) => {
           from: "description",
           message: "La descripción es obligatoria.",
         });
-
-      state.questions.forEach((criteria) => {
-        if (!criteria.question_text)
-          errors.push({
-            from: "question_text",
-            message: "El criterio de evaluación es obligatorio.",
-          });
-      });
       if (state.questions.length < 1) {
         errors.push({
           from: "questions",
           message: "Debe haber por lo menos un criterio de evaluación.",
         });
-      } else {
-        state.questions.forEach((criteria) => {
-          if (criteria.answer_options.length < 2) {
-            errors.push({
-              from: "parameters",
-              message: "Debe haber por lo menos dos parámetros de evaluación.",
-            });
-          } else {
-            criteria.answer_options.forEach((option) => {
-              if (!option.option_text)
-                errors.push({
-                  from: "parameter",
-                  message: "Los parámetros de evaluación son obligatorios.",
-                });
-            });
-          }
+      }
+
+      const criterias = state.questions.map((e) => e.question_text);
+      if (new Set(criterias).size < criterias.length) {
+        errors.push({
+          from: "questions",
+          message: "Los criterios de evaluación no pueden ser repetidos.",
         });
       }
+
+      state.questions.forEach((criteria) => {
+        if (!criteria.question_text) {
+          errors.push({
+            from: "question_text",
+            id: criteria.id,
+            message: "El criterio de evaluación es obligatorio.",
+          });
+        }
+        // parameters
+        if (criteria.answer_options.length < 2) {
+          errors.push({
+            from: "parameters",
+            id: criteria.id,
+            message: "Debe haber por lo menos dos parámetros de evaluación.",
+          });
+        } else {
+          if (criteria.answer_options.length > 10) {
+            errors.push({
+              from: "parameters",
+              id: criteria.id,
+              message: "La cantidad máxima de parámetros es 10.",
+            });
+          }
+          const parameters = criteria.answer_options.map((e) => e.option_text);
+          if (parameters.includes("")) {
+            errors.push({
+              from: "parameter",
+              id: criteria.id,
+              message: "Los parámetros de evaluación son obligatorios.",
+            });
+          }
+          if (new Set(parameters).size < parameters.length) {
+            errors.push({
+              from: "parameter",
+              id: criteria.id,
+              message: "Los parámetros de evaluación no pueden ser repetidos.",
+            });
+          }
+        }
+      });
+
       if (errors.length > 0) {
         return { ...state, errors: errors };
-      } else {
-        delete state.errors;
-        return { ...state };
       }
+      delete state?.errors;
+      return { ...state };
+
     case "handleScore":
       const scoreHandled = state.questions.map((criteria) => {
         const newOptions = criteria.answer_options.map((option, index) => {
