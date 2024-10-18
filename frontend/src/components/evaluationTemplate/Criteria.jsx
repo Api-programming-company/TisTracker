@@ -21,8 +21,9 @@ import {
   arrayMove,
 } from "@dnd-kit/sortable";
 
-const Criteria = ({ criteria, findError, setShowError, showError }) => {
+const Criteria = ({ criteria, setShowError, showError }) => {
   const {
+    state,
     handleCriteriaTitleChange,
     addParameter,
     deleteCriteria,
@@ -32,7 +33,7 @@ const Criteria = ({ criteria, findError, setShowError, showError }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setShowError(false)
+    setShowError(false);
     switch (name) {
       case "criteria":
         handleCriteriaTitleChange({ id: criteria.id, value: value });
@@ -42,12 +43,22 @@ const Criteria = ({ criteria, findError, setShowError, showError }) => {
     }
   };
 
+  const findError = (field) => {
+    const x = state?.errors?.filter(
+      (e) => e.from === field && e?.id === criteria.id
+    );
+    if (x?.length >= 1 && showError) {
+      return x[0].message;
+    }
+    return "";
+  };
+
   const handleAddParameter = () => {
-    setShowError(false)
+    setShowError(false);
     addParameter({ id: criteria.id });
   };
   const handleDeleteCriteria = () => {
-    setShowError(false)
+    setShowError(false);
     deleteCriteria(criteria.id);
   };
 
@@ -63,7 +74,14 @@ const Criteria = ({ criteria, findError, setShowError, showError }) => {
 
   return (
     <Container>
-      <Box sx={{ border: "solid", borderWidth: 1, borderColor: "#CAC4D0",margin:3}}>
+      <Box
+        sx={{
+          border: "solid",
+          borderWidth: 1,
+          borderColor: "#CAC4D0",
+          margin: 3,
+        }}
+      >
         <ListItem>
           <ListItemText
             primary={
@@ -108,8 +126,16 @@ const Criteria = ({ criteria, findError, setShowError, showError }) => {
               })}
             </SortableContext>
           </DndContext>
-          {findError("parameters") && <p className="text-red-300 text-sm ml-1">{findError("parameters")}</p>}
-          {findError("parameter") && <p className="text-red-300 text-sm ml-1">{findError("parameter")}</p>}
+          {findError("parameters") && (
+            <p className="text-red-300 text-sm ml-1">
+              {findError("parameters")}
+            </p>
+          )}
+          {findError("parameter") && (
+            <p className="text-red-300 text-sm ml-1">
+              {findError("parameter")}
+            </p>
+          )}
           <Button
             variant="contained"
             sx={{ marginX: 3, marginY: 1 }}
