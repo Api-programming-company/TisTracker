@@ -19,11 +19,26 @@ export const validateEmail = (email) => {
   return emailRegex.test(email);
 };
 
-export const formatDate = (date) => {
-  const newDate = new Date(date);
-  newDate.setDate(newDate.getDate() + 1);
-  const formatedDate = newDate.toLocaleDateString();
-  return formatedDate;
+export const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString(undefined, { // Sin especificar locale, usa la configuración regional del navegador
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+};
+
+export const formatDateTime = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleString(undefined, { // Sin especificar locale, usa la configuración regional del navegador
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false, 
+  });
 };
 
 export const isNumeric = (cadena) => {
