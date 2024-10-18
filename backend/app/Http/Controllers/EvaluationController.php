@@ -46,7 +46,7 @@ class EvaluationController extends Controller
 
             // Validación de los datos
             $validatedData = $request->validate([
-                'title' => 'required|string|max:255',
+                'title' => 'required|string|max:255|unique:evaluations,title,NULL,id,user_id,' . $user->id,
                 'description' => 'nullable|string',
                 'questions' => 'required|array',
                 'questions.*.question_text' => 'required|string|max:255',
