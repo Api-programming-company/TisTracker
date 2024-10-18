@@ -65,7 +65,6 @@ function App({ toggleTheme, isDarkMode }) {
           <Route element={<ProtectedRoutes user={user} />}>
             <Route path="/enroll-to-ap" element={<EnrollToAcademicPeriod />} />
             <Route path="/vergrupoe/:id" element={<VerGE />} />
-            <Route path="/grupo_empresas/:id" element={<SeeWeeklyGE/>}></Route>
             <Route path="/registroge" element={<RegistroGE />} />
             <Route path="/company-requests" element={<InvitacionesGE />} />
 
@@ -89,6 +88,9 @@ function App({ toggleTheme, isDarkMode }) {
               path="/academic-period/:id/companies"
               element={<CompanyList />}
             />
+            <Route 
+            path="/academic-period/:id/weekly_companies" 
+            element={<SeeWeeklyGE/>}></Route>
             <Route
               path="/academic-period/:id/pending"
               element={<SolicitudesGE />}
