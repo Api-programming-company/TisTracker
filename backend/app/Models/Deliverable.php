@@ -14,9 +14,12 @@ class Deliverable extends Model
         'responsible',
         'objective',
         'milestone_id',
+        'expected_result',
+        'actual_result',
+        'observations',
+        'status',
     ];
 
-    // Relación con Milestone
     public function milestone()
     {
         return $this->belongsTo(Milestone::class);
