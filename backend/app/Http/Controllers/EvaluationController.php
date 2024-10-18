@@ -52,9 +52,14 @@ class EvaluationController extends Controller
                 'questions.*.question_text' => 'required|string|max:255',
                 'questions.*.answer_options' => 'required|array',
                 'questions.*.answer_options.*.option_text' => 'required|string|max:255',
-                'questions.*.answer_options.*.score' => 'required|integer|min:0|max:10',
+                'questions.*.answer_options.*.score' => 'required|integer|min:0',
             ]);
 
+            foreach ($validatedData['questions'] as $question) {
+                if (count($question['answer_options']) > 10) {
+                    return response()->json(['message' => 'Cada pregunta debe tener como maximo 10 criterios.'], 422);
+                }
+            }
             // Crear la evaluación
             $evaluation = $user->evaluations()->create([
                 'title' => $validatedData['title'],
