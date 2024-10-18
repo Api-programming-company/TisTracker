@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectCurrentMilestone, isEditing } from "../reducers/planningSlice";
-import { setMilestones } from "../reducers/planningSlice";
+import { selectCurrentMilestone, getStatus } from "../reducers/planningSlice";
+import { setMilestones, confirmChanges } from "../reducers/planningSlice";
 import { useGetPlanningByCompanyIdQuery } from "../api/planningApi";
 import { useParams } from "react-router-dom";
 import { CircularProgress, Container, Alert, Box } from "@mui/material";
@@ -18,7 +18,7 @@ const PlanningSpreadSheet = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const dispatch = useDispatch();
   const milestone = useSelector(selectCurrentMilestone);
-  const isEdit = useSelector(isEditing);
+  const status = useSelector(getStatus);
   const { data, isSuccess, isFetching, isError, error } =
     useGetPlanningByCompanyIdQuery(id);
 
@@ -35,11 +35,13 @@ const PlanningSpreadSheet = () => {
 
   const handleConfirm = () => {
     console.log("confirm");
+    dispatch(confirmChanges());
     setOpen({ ...open, state: false });
+
   };
 
   useEffect(() => {
-    if(isEdit){
+    if(status === "E"){
       window.onbeforeunload = (e) => { 
           e.preventDefault();
           return ;
@@ -47,7 +49,7 @@ const PlanningSpreadSheet = () => {
     }
 
     
-  }, [isEdit]);
+  }, [status]);
 
   if (isFetching) {
     return (
@@ -92,7 +94,12 @@ const PlanningSpreadSheet = () => {
         </div>
         <div className="section-body">
           <MilestoneItem milestone={milestone} />
+          
+          {status === "E" && <p className="text-red-500">Editando</p>}
+          {status === "C" && <p className="text-success">Cambios guardados</p>}  
+      
         </div>
+
         <Box>
           <Button
             variant="outlined"
