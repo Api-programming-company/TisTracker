@@ -92,7 +92,7 @@ const Criteria = ({ criteria, setShowError, showError }) => {
                   name="criteria"
                   value={criteria.question_text}
                   onChange={handleInputChange}
-                  error={showError}
+                  error={Boolean(findError("question_text"))}
                   helperText={findError("question_text")}
                   fullWidth
                   multiline
@@ -119,7 +119,6 @@ const Criteria = ({ criteria, setShowError, showError }) => {
                     key={e.id}
                     parameter={e}
                     criteria_id={criteria.id}
-                    findError={findError}
                     setShowError={setShowError}
                   />
                 );

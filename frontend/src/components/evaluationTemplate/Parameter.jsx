@@ -6,7 +6,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 
-const Parameter = ({ parameter, criteria_id, findError, setShowError }) => {
+const Parameter = ({ parameter, criteria_id, setShowError }) => {
   const [isDraging, setIsDraging] = useState(false);
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: parameter.id });
