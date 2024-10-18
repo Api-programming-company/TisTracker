@@ -2,6 +2,7 @@
   --title-font-family: 'Poppins', sans-serif;
   --body-font-family: 'Poppins', sans-serif;
   --green-100: #dafae2;
+  --green-300: #198754;
   --neutral-black: #1F2223;
   --neutral-white: #FFFFFF;
   --neutral-800:#363939;
@@ -100,6 +101,10 @@ p,a,li,button,input,textarea{
 }
 .text-red-300 {
   color: var(--red-300);
+}
+
+.text-success{
+  color : var(--green-300)
 }
 
 

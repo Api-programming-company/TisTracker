@@ -47,6 +47,7 @@ import VerPlantillas from "./pages/VerPlantillas";
 import CrearEvaluacion from "./pages/CrearEvaluacion";
 import EvaluationTemplateList from "./components/evaluationTemplate/EvaluationTemplateList";
 import PlantillasVisualizer from "./pages/PlantillasVisualizer";
+import SeeWeeklyGE from "./pages/SeeWeeklyGE";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -87,6 +88,9 @@ function App({ toggleTheme, isDarkMode }) {
               path="/academic-period/:id/companies"
               element={<CompanyList />}
             />
+            <Route 
+            path="/academic-period/:id/weekly_companies" 
+            element={<SeeWeeklyGE/>}></Route>
             <Route
               path="/academic-period/:id/pending"
               element={<SolicitudesGE />}
