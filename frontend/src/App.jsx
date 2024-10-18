@@ -124,7 +124,7 @@ function App({ toggleTheme, isDarkMode }) {
               element={<EvaluationTemplate />}
             />
             <Route
-              path="/evaluation-templates/edit/:evaluation_id"
+              path="/evaluation-templates/:evaluation_id/update"
               element={<EditEvaluationTemplate />}
             />
             <Route

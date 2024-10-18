@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useGetCompanyQuestionsByIdQuery } from "../api/evaluationApi";
+import { useUpdateEvaluationTemplateMutation } from "../api/evaluationApi";
 
 const EditEvaluationTemplate = () => {
   const { evaluation_id } = useParams();
@@ -15,7 +16,6 @@ const EditEvaluationTemplate = () => {
   useEffect(() => {
     if (companyQuestionsSuccess) {
       console.log(companyQuestions);
-    //   setInitialState(companyQuestions);
     }
     if (isCompanyQuestionsError) {
       console.log(companyQuestionsError);
@@ -27,6 +27,20 @@ const EditEvaluationTemplate = () => {
     companyQuestionsError,
     companyQuestionsSuccess,
   ]);
+
+  const [
+    updateEvaluationTemplate,
+    { isLoading, data, error, isError, isSuccess },
+  ] = useUpdateEvaluationTemplateMutation();
+  useEffect(() => {
+    if (isSuccess) {
+      console.log(data);
+    }
+    if (isError) {
+      console.log(error);
+    }
+  }, [data, isLoading, isError, isSuccess]);
+
   return <div>EditEvaluationTemplate</div>;
 };
 

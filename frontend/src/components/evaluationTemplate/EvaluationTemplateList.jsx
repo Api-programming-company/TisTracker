@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetAllEvaluationTemplatesQuery } from "../../api/evaluationApi";
+
 import {
   List,
   ListItem,
@@ -8,7 +9,10 @@ import {
   CircularProgress,
   Typography,
   Container,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
 
 const EvaluationTemplateList = () => {
   const navigate = useNavigate();
@@ -21,7 +25,7 @@ const EvaluationTemplateList = () => {
     if (isError) {
       console.log(error);
     }
-  }, []);
+  }, [isSuccess, isError, data, error]);
 
   if (isFetching) {
     return (
@@ -45,6 +49,10 @@ const EvaluationTemplateList = () => {
     navigate(`/evaluation-templates/${id}`);
   };
 
+  const handleEditClick = (id) => {
+    navigate(`/evaluation-templates/${id}/update`);
+  };
+
   if (data.length === 0) {
     return <Typography>No tiene plantillas de evaluacion.</Typography>;
   }
@@ -53,9 +61,7 @@ const EvaluationTemplateList = () => {
     <List sx={{ width: "100%", maxWidth: 600, margin: "0 auto", mt: 12 }}>
       {data.map((template) => (
         <ListItem
-          button
           key={template.id}
-          onClick={() => handleItemClick(template.id)}
           sx={{
             mb: 2,
             border: "1px solid #ccc",
@@ -78,7 +84,17 @@ const EvaluationTemplateList = () => {
                 {template.description}
               </Typography>
             }
+            onClick={() => handleItemClick(template.id)}
           />
+          <Tooltip title="Edit Template">
+            <IconButton
+              edge="end"
+              aria-label="editar"
+              onClick={() => handleEditClick(template.id)}
+            >
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
         </ListItem>
       ))}
     </List>
