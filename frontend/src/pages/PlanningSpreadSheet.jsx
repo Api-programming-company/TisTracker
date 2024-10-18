@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectCurrentMilestone } from "../reducers/planningSlice";
+import { selectCurrentMilestone, isEditing } from "../reducers/planningSlice";
 import { setMilestones } from "../reducers/planningSlice";
 import { useGetPlanningByCompanyIdQuery } from "../api/planningApi";
 import { useParams } from "react-router-dom";
@@ -18,6 +18,7 @@ const PlanningSpreadSheet = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const dispatch = useDispatch();
   const milestone = useSelector(selectCurrentMilestone);
+  const isEdit = useSelector(isEditing);
   const { data, isSuccess, isFetching, isError, error } =
     useGetPlanningByCompanyIdQuery(id);
 
@@ -38,11 +39,15 @@ const PlanningSpreadSheet = () => {
   };
 
   useEffect(() => {
-    window.onbeforeunload = (e) => {
-      e.preventDefault();
-      return false;
-    };
-  }, []);
+    if(isEdit){
+      window.onbeforeunload = (e) => { 
+          e.preventDefault();
+          return ;
+      };
+    }
+
+    
+  }, [isEdit]);
 
   if (isFetching) {
     return (

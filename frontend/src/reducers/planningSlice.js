@@ -23,9 +23,7 @@ export const planningSlice = createSlice({
     changeDeliverable: (state, action) => {
       const { milestone_id, id, field, value } = action.payload;
       const currentState = current(state);
-      console.log(currentState);
       const { milestones: currentMilestones } = currentState;
-      console.log(currentMilestones);
       const milestoneIndex = currentMilestones.findIndex(
         (milestone) => milestone.id === milestone_id
       );
@@ -44,6 +42,7 @@ export const planningSlice = createSlice({
 
       return {
         ...currentState,
+        editing : true,
         milestones: [
           ...currentMilestones.slice(0, milestoneIndex),
           {
@@ -82,6 +81,11 @@ export const selectCurrentMilestone = (state) => {
     return null;
   }
 };
+
+export const isEditing = (state) => {
+    return state.planning.editing && state.planning.editing;
+}
+
 
 export const { setMilestones, changeDeliverable } = planningSlice.actions;
 
