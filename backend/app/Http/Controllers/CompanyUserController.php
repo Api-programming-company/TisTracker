@@ -24,19 +24,25 @@ class CompanyUserController extends Controller
             $user = Auth::user();
 
             // Obtener las compañías asociadas al usuario con status 'P'
-            $companies = $user->companies()
-                ->where('company_user.status', 'P') // Filtra por status 'P' en la tabla pivote
-                ->withPivot(['id', '*']) // Incluye los campos adicionales del pivote
-                ->withCount([
-                    'members as members_count' => function ($query) {
-                        $query->where('status', 'A'); // Filtra solo los miembros activos
-                    }
-                ])
+            $companyUsers = CompanyUser::where('user_id', $user->id)
+                ->where('status', 'P') // Filtra por status 'P' en la tabla pivote
+                ->with(['company' => function ($query) {
+                    $query->withCount([
+                        'members as members_count' => function ($query) {
+                            $query->where('status', 'A'); // Filtra solo los miembros activos
+                        }
+                    ]);
+                }])
                 ->get();
 
             return response()->json([
                 'message' => 'Invitaciones obtenidas correctamente.',
-                'companies' => $companies,
+                'companies' => $companyUsers->map(function ($companyUser) {
+                    return [
+                        'company' => $companyUser->company,
+                        'company_user' => $companyUser
+                    ];
+                }),
             ], 200);
         } catch (Exception $e) {
             return response()->json([
