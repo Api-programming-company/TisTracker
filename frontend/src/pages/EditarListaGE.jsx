@@ -38,7 +38,7 @@ const EditarListaGE = () => {
       console.log(itemIdToRemove);
 
       setSelectedItems((prevItems) =>
-        prevItems.filter((member) => member.pivot.id !== itemIdToRemove)
+        prevItems.filter((member) => member.id !== itemIdToRemove)
       );
       setSnackbarMessage("Invitación retirada correctamente");
       setSnackbarOpen(true);
@@ -66,7 +66,7 @@ const EditarListaGE = () => {
     if (isCompanySuccess) {
       console.log(companyData);
       const pending = companyData.company.members.filter((member) => {
-        return member.pivot.status === "P";
+        return member.status === "P";
       });
       setSelectedItems(pending);
     }
@@ -125,13 +125,13 @@ const EditarListaGE = () => {
               <List>
                 {selectedItems.map((member) => (
                   <ListItem
-                    key={member.pivot.id}
+                    key={member.id}
                     secondaryAction={
                       <IconButton
                         edge="end"
                         aria-label="delete"
                         onClick={() => {
-                          setItemIdToRemove(member.pivot.id);
+                          setItemIdToRemove(member.id);
                           setOpenA(true);
                         }}
                       >
@@ -153,16 +153,16 @@ const EditarListaGE = () => {
                           mr: 2,
                         }}
                       >
-                        {member.first_name[0]}
-                        {member.last_name[0]}
+                        {member.user.first_name[0]}
+                        {member.user.last_name[0]}
                       </Avatar>
                     </ListItemIcon>
                     <ListItemText
-                      primary={`${member.first_name} ${member.last_name}`}
+                      primary={`${member.user.first_name} ${member.user.last_name}`}
                       secondary={
                         <Box>
                           <Typography variant="body2">
-                            {member.email}
+                            {member.user.email}
                           </Typography>
                           <Typography variant="body2">
                             Invitación realizada en:{" "}
