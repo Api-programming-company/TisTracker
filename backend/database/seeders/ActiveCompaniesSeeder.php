@@ -8,6 +8,7 @@ use App\Models\Company;
 use App\Models\User;
 use Faker\Factory as Faker;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 use App\Models\Deliverable;
 use App\Models\Planning;
 use App\Models\Milestone;
@@ -65,36 +66,42 @@ class ActiveCompaniesSeeder extends Seeder
             }
 
             // Crear un Planning para la empresa
-            // Crear un Planning para la empresa
             $planning = Planning::create([
                 'name' => $faker->sentence(3),
                 'company_id' => $company->id,
             ]);
 
             // Generar entre 2 y 4 Milestones aleatorios para el Planning
-            $numberOfMilestones = rand(2, 4);
+            $numberOfMilestones = rand(3, 5);
+
+            // Calcular la duración total del período académico
+            $academicPeriodStartDate = Carbon::parse($academicPeriodStartDate);
+            $academicPeriodEndDate = Carbon::parse($academicPeriodEndDate);
+            $totalDuration = $academicPeriodEndDate->diffInDays($academicPeriodStartDate);
+
+            // Calcular la duración de cada milestone
+            $milestoneDuration = intdiv($totalDuration, $numberOfMilestones);
 
             // Inicializar la cantidad total de porcentaje de facturación disponible
             $totalBillingPercentage = 100;
-            $remainingMilestones = $numberOfMilestones;
 
             for ($k = 0; $k < $numberOfMilestones; $k++) {
-                $startDate = $faker->dateTimeBetween($academicPeriodStartDate, $academicPeriodEndDate);
-                $endDate = $faker->dateTimeBetween($startDate, $academicPeriodEndDate);
+                // Calcular fechas de inicio y fin para cada milestone
+                $startDate = $academicPeriodStartDate->copy()->addDays($k * $milestoneDuration);
+                $endDate = $startDate->copy()->addDays($milestoneDuration - 1); // menos 1 porque el final es inclusivo
 
                 // Calcular el porcentaje de facturación del milestone actual
-                if ($remainingMilestones === 1) {
+                if ($k === $numberOfMilestones - 1) {
                     // Si es el último Milestone, usar el porcentaje restante
                     $billingPercentage = $totalBillingPercentage;
                 } else {
                     // Generar un porcentaje aleatorio proporcional al restante
-                    $maxPercentage = $totalBillingPercentage / $remainingMilestones;
+                    $maxPercentage = $totalBillingPercentage / ($numberOfMilestones - $k);
                     $billingPercentage = $faker->randomFloat(2, 0, $maxPercentage);
                 }
 
                 // Reducir el total de porcentaje disponible
                 $totalBillingPercentage -= $billingPercentage;
-                $remainingMilestones--;
 
                 $milestone = Milestone::create([
                     'name' => $faker->sentence(2),
@@ -115,6 +122,7 @@ class ActiveCompaniesSeeder extends Seeder
                     ]);
                 }
             }
+
 
         }
     }
