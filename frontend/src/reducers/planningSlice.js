@@ -17,15 +17,13 @@ export const planningSlice = createSlice({
           deliverable.state = "A";
         });
       });
-      return { editing: false, milestones: tempMilestones };
+      return { status: "S", milestones: tempMilestones };
     },
 
     changeDeliverable: (state, action) => {
       const { milestone_id, id, field, value } = action.payload;
       const currentState = current(state);
-      console.log(currentState);
       const { milestones: currentMilestones } = currentState;
-      console.log(currentMilestones);
       const milestoneIndex = currentMilestones.findIndex(
         (milestone) => milestone.id === milestone_id
       );
@@ -44,6 +42,7 @@ export const planningSlice = createSlice({
 
       return {
         ...currentState,
+        status: "E",
         milestones: [
           ...currentMilestones.slice(0, milestoneIndex),
           {
@@ -68,8 +67,16 @@ export const planningSlice = createSlice({
         ],
       };
     },
+    confirmChanges : (state,action) => {
+        console.log("dispatching");
+        return{
+            ...state,
+            status : "C"
+        }
+    }
   },
 });
+
 
 export const selectCurrentMilestone = (state) => {
   const today = new Date().toISOString().split("T")[0];
@@ -83,6 +90,11 @@ export const selectCurrentMilestone = (state) => {
   }
 };
 
-export const { setMilestones, changeDeliverable } = planningSlice.actions;
+export const getStatus = (state) => {
+    return state.planning.status && state.planning.status;
+}
+
+
+export const { setMilestones, changeDeliverable,confirmChanges } = planningSlice.actions;
 
 export default planningSlice.reducer;

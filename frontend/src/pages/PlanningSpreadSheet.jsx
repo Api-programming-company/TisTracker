@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectCurrentMilestone } from "../reducers/planningSlice";
-import { setMilestones } from "../reducers/planningSlice";
+import { selectCurrentMilestone, getStatus } from "../reducers/planningSlice";
+import { setMilestones, confirmChanges } from "../reducers/planningSlice";
 import { useGetPlanningByCompanyIdQuery } from "../api/planningApi";
 import { useParams } from "react-router-dom";
 import { CircularProgress, Container, Alert, Box } from "@mui/material";
@@ -18,6 +18,7 @@ const PlanningSpreadSheet = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const dispatch = useDispatch();
   const milestone = useSelector(selectCurrentMilestone);
+  const status = useSelector(getStatus);
   const { data, isSuccess, isFetching, isError, error } =
     useGetPlanningByCompanyIdQuery(id);
 
@@ -35,14 +36,24 @@ const PlanningSpreadSheet = () => {
   const handleConfirm = () => {
     console.log("confirm");
     setOpen({ ...open, state: false });
+    //Si es el endpoint se envia correctamente hacer que se ejecute este bloque de codigo debajo
+    dispatch(confirmChanges());
+    setSnackbarMessage("Cambios guardados correctamente");
+    setSnackbarSeverity("success");
+    setSnackbarOpen(true);
+
   };
 
   useEffect(() => {
-    window.onbeforeunload = (e) => {
-      e.preventDefault();
-      return false;
-    };
-  }, []);
+    if(status === "E"){
+      window.onbeforeunload = (e) => { 
+          e.preventDefault();
+          return ;
+      };
+    }
+
+    
+  }, [status]);
 
   if (isFetching) {
     return (
@@ -87,7 +98,12 @@ const PlanningSpreadSheet = () => {
         </div>
         <div className="section-body">
           <MilestoneItem milestone={milestone} />
+          
+          {status === "E" && <p className="text-red-500">Editando</p>}
+          {status === "C" && <p className="text-success">Cambios guardados</p>}  
+      
         </div>
+
         <Box>
           <Button
             variant="outlined"
