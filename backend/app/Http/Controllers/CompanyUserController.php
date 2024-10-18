@@ -135,10 +135,13 @@ class CompanyUserController extends Controller
             }
 
             // Asignar el usuario a la compañía
-            $company->members()->attach($request->user_id, [
+            $companyUser = new CompanyUser([
+                'user_id' => $request->user_id,
+                'company_id' => $request->company_id,
                 'status' => $request->status,
                 'permission' => $request->permission
             ]);
+            $companyUser->save();
 
             // Recargar la compañía con los miembros y sus pivotes
             $company->load('members');
