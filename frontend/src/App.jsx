@@ -47,6 +47,7 @@ import VerPlantillas from "./pages/VerPlantillas";
 import CrearEvaluacion from "./pages/CrearEvaluacion";
 import EvaluationTemplateList from "./components/evaluationTemplate/EvaluationTemplateList";
 import PlantillasVisualizer from "./pages/PlantillasVisualizer";
+import SeeWeeklyGE from "./pages/SeeWeeklyGE";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -64,6 +65,7 @@ function App({ toggleTheme, isDarkMode }) {
           <Route element={<ProtectedRoutes user={user} />}>
             <Route path="/enroll-to-ap" element={<EnrollToAcademicPeriod />} />
             <Route path="/vergrupoe/:id" element={<VerGE />} />
+            <Route path="/grupo_empresas/:id" element={<SeeWeeklyGE/>}></Route>
             <Route path="/registroge" element={<RegistroGE />} />
             <Route path="/company-requests" element={<InvitacionesGE />} />
 
