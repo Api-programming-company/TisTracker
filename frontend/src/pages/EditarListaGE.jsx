@@ -20,7 +20,7 @@ import DialogMod from "../components/DialogMod";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useGetCompanyByIdQuery } from "../api/companyApi";
-import { useUpdateInvitationByIdMutation } from "../api/invitationApi";
+import { useDeleteInvitationByIdMutation } from "../api/invitationApi";
 
 const EditarListaGE = () => {
   const { id } = useParams();
@@ -30,7 +30,7 @@ const EditarListaGE = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const [updateInvitation, { data, error, isSuccess, isError, isLoading }] =
-    useUpdateInvitationByIdMutation();
+  useDeleteInvitationByIdMutation();
 
   useEffect(() => {
     if (isSuccess) {
@@ -74,7 +74,7 @@ const EditarListaGE = () => {
   }, [companyData, companyError, isCompanySuccess, isCompanyError]);
 
   const handleRemoveItem = () => {
-    updateInvitation({ id: itemIdToRemove, data: { status: "R" } });
+    updateInvitation(itemIdToRemove);
     setOpenA(false);
   };
 
