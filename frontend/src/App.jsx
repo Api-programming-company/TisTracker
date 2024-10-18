@@ -48,6 +48,7 @@ import CrearEvaluacion from "./pages/CrearEvaluacion";
 import EvaluationTemplateList from "./components/evaluationTemplate/EvaluationTemplateList";
 import PlantillasVisualizer from "./pages/PlantillasVisualizer";
 import SeeWeeklyGE from "./pages/SeeWeeklyGE";
+import EditEvaluationTemplate from "./pages/EditEvaluationTemplate";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -88,9 +89,10 @@ function App({ toggleTheme, isDarkMode }) {
               path="/academic-period/:id/companies"
               element={<CompanyList />}
             />
-            <Route 
-            path="/academic-period/:id/weekly_companies" 
-            element={<SeeWeeklyGE/>}></Route>
+            <Route
+              path="/academic-period/:id/weekly_companies"
+              element={<SeeWeeklyGE />}
+            ></Route>
             <Route
               path="/academic-period/:id/pending"
               element={<SolicitudesGE />}
@@ -122,6 +124,10 @@ function App({ toggleTheme, isDarkMode }) {
               element={<EvaluationTemplate />}
             />
             <Route
+              path="/evaluation-templates/edit/:evaluation_id"
+              element={<EditEvaluationTemplate />}
+            />
+            <Route
               path="/evaluation-templates/:evaluation_id"
               element={<VerPlantillas />}
             />
@@ -131,7 +137,10 @@ function App({ toggleTheme, isDarkMode }) {
               element={<EvaluationTemplateList />}
             />
             <Route path="/plantillas" element={<PlantillasVisualizer />} />
-            <Route path="/crearevaluacion/:academic_period_id" element={<CrearEvaluacion />} />
+            <Route
+              path="/crearevaluacion/:academic_period_id"
+              element={<CrearEvaluacion />}
+            />
 
             {/* pruebas */}
             <Route path="/test" element={<Test />} />
