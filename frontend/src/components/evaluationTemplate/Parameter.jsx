@@ -15,6 +15,7 @@ const Parameter = ({ parameter, criteria_id, findError, setShowError }) => {
     useContext(EvaluateContext);
 
   const handleDeleteParameter = () => {
+    setShowError(false);
     deleteParameter({ parameter_id: parameter.id, criteria_id: criteria_id });
   };
 
