@@ -55,7 +55,7 @@ class EvaluationController extends Controller
                 'questions.*.answer_options.*.score' => 'required|integer|min:0',
             ], [
                 'title.required' => __('validation.attributes.evaluation.title') . ' es requerido.',
-                'title.unique' => ' El '.__('validation.attributes.evaluation.title').' ya esta registrado en sus planillas',
+                'title.unique' => ' El '.__('validation.attributes.evaluation.title').' ya esta registrado en sus plantillas',
                 'title.string' => __('validation.attributes.evaluation.title') . ' debe ser una cadena.',
             ]);
 

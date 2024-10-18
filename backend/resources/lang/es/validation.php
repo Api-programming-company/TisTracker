@@ -148,7 +148,7 @@ return [
 
     'attributes' => [
         'evaluation' => [
-            'title' => 'nombre de planilla',
+            'title' => 'nombre',
             'description' => 'descripción',
             'questions' => 'preguntas',
             'question_text' => 'texto de la pregunta',
