@@ -35,8 +35,12 @@ const PlanningSpreadSheet = () => {
 
   const handleConfirm = () => {
     console.log("confirm");
-    dispatch(confirmChanges());
     setOpen({ ...open, state: false });
+    //Si es el endpoint se envia correctamente hacer que se ejecute este bloque de codigo debajo
+    dispatch(confirmChanges());
+    setSnackbarMessage("Cambios guardados correctamente");
+    setSnackbarSeverity("success");
+    setSnackbarOpen(true);
 
   };
 
