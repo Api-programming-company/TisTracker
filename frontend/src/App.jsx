@@ -2,6 +2,8 @@ import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import { useContext } from "react";
 import AppContext from "./context/AppContext";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import {
   Home,
   NotFound,
@@ -56,117 +58,125 @@ function App({ toggleTheme, isDarkMode }) {
 
   return (
     <>
-      <AppBarWithMenu
-        darkMode={isDarkMode}
-        toggleDarkMode={toggleTheme}
-        userType={userType}
-      />
-      <Box sx={{ marginTop: "64px" }}>
-        <Routes>
-          <Route element={<ProtectedRoutes user={user} />}>
-            <Route path="/enroll-to-ap" element={<EnrollToAcademicPeriod />} />
-            <Route path="/vergrupoe/:id" element={<VerGE />} />
-            <Route path="/registroge" element={<RegistroGE />} />
-            <Route path="/company-requests" element={<InvitacionesGE />} />
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <AppBarWithMenu
+          darkMode={isDarkMode}
+          toggleDarkMode={toggleTheme}
+          userType={userType}
+        />
+        <Box sx={{ marginTop: "64px" }}>
+          <Routes>
+            <Route element={<ProtectedRoutes user={user} />}>
+              <Route
+                path="/enroll-to-ap"
+                element={<EnrollToAcademicPeriod />}
+              />
+              <Route path="/vergrupoe/:id" element={<VerGE />} />
+              <Route path="/registroge" element={<RegistroGE />} />
+              <Route path="/company-requests" element={<InvitacionesGE />} />
+
+              <Route
+                path="/company/:id/plannification"
+                element={<CompanyPlanning />}
+              />
+
+              <Route
+                path="/planning_spreadsheet/:id"    //Generar planillas de evaluación semanal
+                element={<PlanningSpreadSheet />}
+              ></Route>
+
+              <Route path="/company/:id/invite" element={<StudentSearch />} />
+              <Route path="/company/:id/confirm" element={<ConformacionGE />} />
+              <Route path="/company/:id/uninvite" element={<EditarListaGE />} />
+              <Route
+                path="/academic-periods"
+                element={<AcademicPeriodList />}
+              />
+              <Route path="/register-ap" element={<RegisterAcademicPeriod />} />
+
+              <Route
+                path="/academic-period/:id/companies"
+                element={<CompanyList />}
+              />
+              <Route
+                path="/academic-period/:id/weekly_companies"
+                element={<SeeWeeklyGE />}
+              ></Route>
+              <Route
+                path="/academic-period/:id/pending"
+                element={<SolicitudesGE />}
+              />
+              <Route
+                path="/request/:id/pending"
+                element={<AcceptDeclineCompany />}
+              />
+              <Route
+                path="/invitation/:id/pending"
+                element={<AcceptDeclineInvitation />}
+              />
+
+              {/* evaluacion */}
+              <Route
+                path="/autoevaluation/:company_id"
+                element={<Autoevaluation />}
+              />
+              <Route
+                path="/user-evaluation/:id"
+                element={<EvaluationMemberGE />}
+              />
+              <Route
+                path="/company-evaluation/:company_id"
+                element={<EvaluationGE />}
+              />
+              <Route
+                path="/evaluation-templates/create"
+                element={<EvaluationTemplate />}
+              />
+              <Route
+                path="/evaluation-templates/:evaluation_id/update"
+                element={<EditEvaluationTemplate />}
+              />
+              <Route
+                path="/evaluation-templates/:evaluation_id"
+                element={<VerPlantillas />}
+              />
+
+              <Route
+                path="/evaluation-templates"
+                element={<EvaluationTemplateList />}
+              />
+              <Route path="/plantillas" element={<PlantillasVisualizer />} />
+              <Route
+                path="/crearevaluacion/:academic_period_id"
+                element={<CrearEvaluacion />}
+              />
+
+              {/* pruebas */}
+              <Route path="/test" element={<Test />} />
+            </Route>
+
+            <Route path="/registro-estudiante" element={<UserRegister />} />
+            <Route path="/registro-docente" element={<RegistroDocente />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/verify-email/:token" element={<VerifyEmail />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/student-home" element={<StudentHome />} />
+            <Route path="/teacher-home" element={<TeacherHome />} />
+
+            <Route path="/upload" element={<ImageUpload />} />
+            <Route path="/example" element={<Example />} />
+            <Route path="/planning/:id" element={<SeeCompanyPlanning />} />
 
             <Route
-              path="/company/:id/plannification"
-              element={<CompanyPlanning />}
-            />
-
-            <Route
-              path="/planning_spreadsheet/:id"
-              element={<PlanningSpreadSheet />}
+              path="/update-academic-period/:id"
+              element={<SetFinalDeliverablePeriod />}
             ></Route>
 
-            <Route path="/company/:id/invite" element={<StudentSearch />} />
-            <Route path="/company/:id/confirm" element={<ConformacionGE />} />
-            <Route path="/company/:id/uninvite" element={<EditarListaGE />} />
-            <Route path="/academic-periods" element={<AcademicPeriodList />} />
-            <Route path="/register-ap" element={<RegisterAcademicPeriod />} />
-
-            <Route
-              path="/academic-period/:id/companies"
-              element={<CompanyList />}
-            />
-            <Route
-              path="/academic-period/:id/weekly_companies"
-              element={<SeeWeeklyGE />}
-            ></Route>
-            <Route
-              path="/academic-period/:id/pending"
-              element={<SolicitudesGE />}
-            />
-            <Route
-              path="/request/:id/pending"
-              element={<AcceptDeclineCompany />}
-            />
-            <Route
-              path="/invitation/:id/pending"
-              element={<AcceptDeclineInvitation />}
-            />
-
-            {/* evaluacion */}
-            <Route
-              path="/autoevaluation/:company_id"
-              element={<Autoevaluation />}
-            />
-            <Route
-              path="/user-evaluation/:id"
-              element={<EvaluationMemberGE />}
-            />
-            <Route
-              path="/company-evaluation/:company_id"
-              element={<EvaluationGE />}
-            />
-            <Route
-              path="/evaluation-templates/create"
-              element={<EvaluationTemplate />}
-            />
-            <Route
-              path="/evaluation-templates/:evaluation_id/update"
-              element={<EditEvaluationTemplate />}
-            />
-            <Route
-              path="/evaluation-templates/:evaluation_id"
-              element={<VerPlantillas />}
-            />
-
-            <Route
-              path="/evaluation-templates"
-              element={<EvaluationTemplateList />}
-            />
-            <Route path="/plantillas" element={<PlantillasVisualizer />} />
-            <Route
-              path="/crearevaluacion/:academic_period_id"
-              element={<CrearEvaluacion />}
-            />
-
-            {/* pruebas */}
-            <Route path="/test" element={<Test />} />
-          </Route>
-
-          <Route path="/registro-estudiante" element={<UserRegister />} />
-          <Route path="/registro-docente" element={<RegistroDocente />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/verify-email/:token" element={<VerifyEmail />} />
-          <Route path="/" element={<Home />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/student-home" element={<StudentHome />} />
-          <Route path="/teacher-home" element={<TeacherHome />} />
-
-          <Route path="/upload" element={<ImageUpload />} />
-          <Route path="/example" element={<Example />} />
-          <Route path="/planning/:id" element={<SeeCompanyPlanning />} />
-
-          <Route
-            path="/update-academic-period/:id"
-            element={<SetFinalDeliverablePeriod />}
-          ></Route>
-
-          <Route path="/*" element={<NotFound />} />
-        </Routes>
-      </Box>
+            <Route path="/*" element={<NotFound />} />
+          </Routes>
+        </Box>
+      </LocalizationProvider>
     </>
   );
 }

@@ -26,13 +26,15 @@ class CompanyUserController extends Controller
             // Obtener las compañías asociadas al usuario con status 'P'
             $companyUsers = CompanyUser::where('user_id', $user->id)
                 ->where('status', 'P') // Filtra por status 'P' en la tabla pivote
-                ->with(['company' => function ($query) {
-                    $query->withCount([
-                        'members as members_count' => function ($query) {
-                            $query->where('status', 'A'); // Filtra solo los miembros activos
-                        }
-                    ]);
-                }])
+                ->with([
+                    'company' => function ($query) {
+                        $query->withCount([
+                            'members as members_count' => function ($query) {
+                                $query->where('status', 'A'); // Filtra solo los miembros activos
+                            }
+                        ]);
+                    }
+                ])
                 ->get();
 
             return response()->json([
@@ -97,7 +99,7 @@ class CompanyUserController extends Controller
 
             // Obtener el usuario a agregar
             $member = User::find($request->user_id);
-            
+
             // Verificar si el miembro ya está activo en otra grupo empresa
             $isActiveInAnotherCompany = CompanyUser::where('user_id', $request->user_id)
                 ->where('status', 'A')  // Estado 'A' para activo
@@ -309,16 +311,29 @@ class CompanyUserController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            // Validar el ID del usuario a eliminar
-            $request->validate([
-                'user_id' => 'required|exists:users,id',
+            // Validar que el ID exista en la tabla company_user
+            $validator = Validator::make(['id' => $id], [
+                'id' => 'required|integer|exists:company_users,id',
             ]);
 
-            // Buscar la compañía
-            $company = Company::findOrFail($id); // Usa $id para buscar la compañía
+            // Si la validación falla, retornar un error 422 con los mensajes de validación
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Error de validación.',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
 
-            // Desvincular al usuario de la compañía
-            $company->members()->detach($request->user_id);
+            $companyUser = CompanyUser::findOrFail($id);
+
+            // Verificar si el estado es 'P'
+            if ($companyUser->status !== 'P') {
+                return response()->json([
+                    'message' => 'Solo se pueden eliminar invitaciones en estado pendiente.'
+                ], 403); // 403 Forbidden
+            }
+
+            $companyUser->delete();
 
             return response()->json(['message' => 'Miembro eliminado correctamente de la compañía.'], 200);
         } catch (ValidationException $e) {
