@@ -11,6 +11,7 @@ use App\Models\AcademicPeriod;
 use App\Models\Planning;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\CompanyUser;
 
 /**
  * @OA\Schema(
@@ -319,9 +320,12 @@ class CompanyController extends Controller
             $isAcademicPeriodCreator = $company->academicPeriod->creator->id === $user->id;
 
             // Verificar si el usuario tiene permiso de escritura ('W') en la compañía
-            $member = $company->members()->where('user_id', $user->id)->first();
+            $companyUser = CompanyUser::where('user_id', $user->id)
+                ->where('company_id', $company->id)
+                ->where('permission', 'W')
+                ->first();
 
-            if (!$isAcademicPeriodCreator && (!$member || $member->pivot->permission !== 'W')) {
+            if (!$isAcademicPeriodCreator && !$companyUser) {
                 return response()->json([
                     'message' => 'No tienes permisos para actualizar esta compañía.'
                 ], Response::HTTP_FORBIDDEN);
@@ -342,7 +346,7 @@ class CompanyController extends Controller
             // Si el estado de la compañía va a cambiar a "A", verificar las condiciones
             if ($request->status === 'A') {
                 // Contar los miembros de la compañía con estado 'A'
-                $acceptedMembersCount = $company->members()->wherePivot('status', 'A')->count();
+                $acceptedMembersCount = $company->members()->where('status', 'A')->count();
 
                 // Verificar que al menos 3 miembros tienen estado 'A'
                 if ($acceptedMembersCount < 3) {
@@ -352,7 +356,7 @@ class CompanyController extends Controller
                 }
 
                 // Eliminar miembros que no tienen estado 'A'
-                $company->members()->wherePivot('status', '!=', 'A')->detach();
+                $company->members()->where('status', '!=', 'A')->delete();
             }
 
             // Si el request tiene miembros
@@ -363,7 +367,8 @@ class CompanyController extends Controller
                     $existingMember = $company->members()->where('user_id', $memberId)->first();
                     if (!$existingMember) {
                         // Si el miembro no existe, añadirlo con permiso 'R' y estado 'P' (pendiente)
-                        $company->members()->attach($memberId, [
+                        $company->members()->create([
+                            'user_id' => $memberId,
                             'permission' => 'R',
                             'status' => 'P'
                         ]);
@@ -375,7 +380,9 @@ class CompanyController extends Controller
             $company->update($request->except('members'));
 
             // Obtener la lista actualizada de miembros con sus permisos y estado
-            $updatedMembers = $company->members()->get(['user_id', 'company_user.permission', 'company_user.status']);
+            // Obtener la lista actualizada de miembros con sus permisos y estado
+            $updatedMembers = $company->members()->get(['user_id', 'company_users.permission', 'company_users.status']);
+
 
             return response()->json([
                 'message' => 'Compañía actualizada correctamente.',
