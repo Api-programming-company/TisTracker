@@ -191,5 +191,102 @@ export default (state, action) => {
         return { ...criteria, answer_options: newOptions };
       });
       return { ...state, questions: scoreHandled };
+    //------------------------------------------------------------------------------
+    case "handleGetDifference":
+      //utils
+      const head = (list) => list[0];
+
+      // option puede ser question o answer_option,
+      const itemById = (id, option, questionId = null) => {
+        if (option === "question") {
+          return head(payload.questions.filter((e) => e.id === id));
+        } else if (option === "answer_option") {
+          const question = head(
+            payload.questions.filter((e) => e.id === questionId)
+          );
+          const answer_option = head(
+            question.answer_options.filter((e) => e.id === id)
+          );
+          return answer_option;
+        }
+      };
+
+      const modified = { questions: [], answer_options: [] };
+      const deleted = { questions: [], answer_options: [] };
+      const added = { questions: [], answer_options: [] };
+
+      if (state.title !== payload.title) modified["title"] = state.title;
+      if (state.description !== payload.description)
+        modified["description"] = state.description;
+
+      const initialQuestionIds = payload.questions.map((e) => e.id);
+      state.questions.forEach((criteria) => {
+        if (initialQuestionIds.includes(criteria.id)) {
+          const initialQuestion = itemById(criteria.id, "question");
+          // validar si cambia el criterio
+          if (initialQuestion.question_text !== criteria.question_text) {
+            modified["questions"].push({
+              id: criteria.id,
+              question_text: criteria.question_text,
+            });
+          }
+          // valiar si cambia sus answer_options
+          const initialAnswerOptionsIds = initialQuestion.answer_options.map(
+            (e) => e.id
+          );
+          criteria.answer_options.forEach((option) => {
+            if (initialAnswerOptionsIds.includes(option.id)) {
+              const initialOption = itemById(
+                option.id,
+                "answer_option",
+                criteria.id
+              );
+              if (
+                initialOption.option_text !== option.option_text ||
+                initialOption.score !== option.score
+              ) {
+                modified["answer_options"].push({
+                  question_id: criteria.id,
+                  ...option,
+                });
+              }
+            } else {
+              //si llega aqui es porque es un parametro nuevo
+              added["answer_options"].push({
+                question_id: criteria.id,
+                ...option,
+              });
+            }
+          });
+          //validar si ha eliminado parametros
+          const actualAnswerOptionsIds = criteria.answer_options.map(
+            (e) => e.id
+          );
+          initialAnswerOptionsIds.forEach((e) => {
+            if (!actualAnswerOptionsIds.includes(e)) {
+              const option = itemById(e, "answer_option", criteria.id);
+              deleted["answer_options"].push({
+                question_id: criteria.id,
+                ...option,
+              });
+            }
+          });
+        } else {
+          //si llega aqui es porque es un criterio nuevo
+          added["questions"].push({ ...criteria });
+        }
+      });
+      //validar si ha eliminado criterios
+      const actualQuestionIds = state.questions.map((e) => e.id);
+      initialQuestionIds.forEach((e) => {
+        if (!actualQuestionIds.includes(e)) {
+          const question = itemById(e, "question");
+          deleted["questions"].push({ ...question });
+        }
+      });
+      return {
+        ...state,
+        changes: { modified: modified, deleted: deleted, added: added },
+      };
   }
 };

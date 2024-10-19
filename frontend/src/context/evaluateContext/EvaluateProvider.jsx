@@ -108,6 +108,15 @@ const EvaluateProvider = ({ children }) => {
     });
   };
 
+  //Edit Evaluation Template
+
+  const handleGetDifference = (e) => {
+    dispatch({
+      type: "handleGetDifference",
+      payload: e,
+    });
+  };
+
   return (
     <EvaluateContext.Provider
       value={{
@@ -127,6 +136,7 @@ const EvaluateProvider = ({ children }) => {
         validateErrors,
         handleDescriptionChange,
         handleScore,
+        handleGetDifference,
       }}
     >
       {children}
