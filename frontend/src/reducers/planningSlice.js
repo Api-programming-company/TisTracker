@@ -17,7 +17,7 @@ export const planningSlice = createSlice({
           deliverable.state = "A";
         });
       });
-      return { status: "S", milestones: tempMilestones };
+      return { status: "S", milestones: tempMilestones , currentMilestone : -1 };
     },
 
     changeDeliverable: (state, action) => {
@@ -73,28 +73,52 @@ export const planningSlice = createSlice({
             ...state,
             status : "C"
         }
+    },
+    setCurrentMilestone: (state, action) => {
+        return {
+            ...state,
+            currentMilestone: action.payload
+        };
+
     }
   },
 });
 
 
 export const selectCurrentMilestone = (state) => {
-  const today = new Date().toISOString().split("T")[0];
-  if (state.planning.milestones) {
+  console.log(state);
+  if(state.planning.currentMilestone === -1){
+      const today = new Date().toISOString().split("T")[0];
+    if (state.planning.milestones) {
+      return state.planning.milestones.find(
+        (milestone) =>
+          milestone.start_date <= today && milestone.end_date >= today
+      );
+    } else {
+      return null;
+    }
+  }else{
     return state.planning.milestones.find(
-      (milestone) =>
-        milestone.start_date <= today && milestone.end_date >= today
+      (milestone) => milestone.id === state.planning.currentMilestone
     );
-  } else {
-    return null;
-  }
+  } 
+  
 };
 
 export const getStatus = (state) => {
     return state.planning.status && state.planning.status;
 }
 
+export const getMilestonesList = (state) => {
+  
+    return state.planning.milestones.map(milestone => ({
+      id: milestone.id,
+      name: milestone.name,
+    }));
 
-export const { setMilestones, changeDeliverable,confirmChanges } = planningSlice.actions;
+}
+
+
+export const { setMilestones, changeDeliverable,confirmChanges,setCurrentMilestone } = planningSlice.actions;
 
 export default planningSlice.reducer;
