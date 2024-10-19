@@ -81,7 +81,7 @@ function App({ toggleTheme, isDarkMode }) {
               />
 
               <Route
-                path="/planning_spreadsheet/:id"
+                path="/planning_spreadsheet/:id"    //Generar planillas de evaluación semanal
                 element={<PlanningSpreadSheet />}
               ></Route>
 
