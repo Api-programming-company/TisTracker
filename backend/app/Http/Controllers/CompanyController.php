@@ -289,44 +289,51 @@ class CompanyController extends Controller
 
     public function index(Request $request)
     {
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-        $academicPeriodId = $request->input('academic_period_id');
-        $status = $request->input('status');
+        try {
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            $academicPeriodId = $request->input('academic_period_id');
+            $status = $request->input('status');
 
-        $query = Company::query();
+            $query = Company::query();
 
-        // Filtrar por academic_period_id y status
-        $query->when($academicPeriodId, function ($q) use ($academicPeriodId) {
-            return $q->where('academic_period_id', $academicPeriodId);
-        });
-
-        $query->when($status, function ($q) use ($status) {
-            return $q->where('status', $status);
-        });
-
-        // Filtrar por el rango de fechas de los milestones
-        if ($startDate && $endDate) {
-            $query->whereHas('planning.milestones', function ($milestoneQuery) use ($startDate, $endDate) {
-                $milestoneQuery->whereBetween('end_date', [$startDate, $endDate]);
+            // Filtrar por academic_period_id y status
+            $query->when($academicPeriodId, function ($q) use ($academicPeriodId) {
+                return $q->where('academic_period_id', $academicPeriodId);
             });
-        }
 
-        // Obtener las compañías filtradas junto con la planificación, hitos y entregables
-        $companies = $query->with([
-            'planning.milestones' => function ($milestoneQuery) use ($startDate, $endDate) {
-                if ($startDate && $endDate) {
+            $query->when($status, function ($q) use ($status) {
+                return $q->where('status', $status);
+            });
+
+            // Filtrar por el rango de fechas de los milestones
+            if ($startDate && $endDate) {
+                $query->whereHas('planning.milestones', function ($milestoneQuery) use ($startDate, $endDate) {
                     $milestoneQuery->whereBetween('end_date', [$startDate, $endDate]);
-                }
-                $milestoneQuery->with('deliverables');
+                });
             }
-        ])->get();
 
-        return response()->json($companies->transform(function ($company) {
-            $milestone = $company->planning ? $company->planning->milestones->first() : null;
-            $company->delivery_day = $milestone ? $milestone->end_date : null;
-            return $company;
-        }));
+            // Obtener las compañías filtradas junto con la planificación, hitos y entregables
+            $companies = $query->with([
+                'planning.milestones' => function ($milestoneQuery) use ($startDate, $endDate) {
+                    if ($startDate && $endDate) {
+                        $milestoneQuery->whereBetween('end_date', [$startDate, $endDate]);
+                    }
+                    $milestoneQuery->with('deliverables');
+                }
+            ])->get();
+
+            return response()->json($companies->transform(function ($company) {
+                $milestone = $company->planning ? $company->planning->milestones->first() : null;
+                $company->delivery_day = $milestone ? $milestone->end_date : null;
+                return $company;
+            }));
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Ocurrió un error al obtener las compañías.',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     public function update(Request $request, $id)
