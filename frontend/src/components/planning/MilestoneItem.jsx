@@ -5,6 +5,7 @@ import PlanningItem from "./PlanningItem";
 import { setCurrentMilestone } from "../../reducers/planningSlice";
 import { getMilestonesList } from "../../reducers/planningSlice";
 import { useSelector } from "react-redux";
+import { FormControl,InputLabel,Select,MenuItem } from "@mui/material";
 
 const MilestoneItem = ({ milestone }) => {
 
@@ -13,13 +14,33 @@ const MilestoneItem = ({ milestone }) => {
     return new Date(date).toLocaleDateString();
   };
 
+
+  const onChangeListItem = (index) => {
+    console.log(index);
+  }
+
   useEffect(() => {
     console.log(list);
   },[list])
 
   return (
     <div className="list">
-      <h2>{milestone.name}</h2>
+      <FormControl fullWidth>
+        <InputLabel id="demo-simple-select-label">Hito</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={list.find((item) => item.current)}
+          label="Hito"
+          onChange={(e) => onChangeListItem(list.indexOf(e.target.value))}
+        >
+          {list.map((item) => (
+            <MenuItem key={item.id} value={item}>
+              {item.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <div className="list-item2">
           <div className="date-item-card">

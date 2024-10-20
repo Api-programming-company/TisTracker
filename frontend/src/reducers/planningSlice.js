@@ -8,6 +8,7 @@ export const planningSlice = createSlice({
   initialState,
   reducers: {
     setMilestones: (state, action) => {
+      console.log("Setting");
       const tempMilestones = JSON.parse(JSON.stringify(action.payload));
       tempMilestones.forEach((milestone) => {
         milestone.deliverables.forEach((deliverable) => {
@@ -24,6 +25,7 @@ export const planningSlice = createSlice({
         (milestone) =>
           milestone.start_date <= today && milestone.end_date >= today
       );
+      console.log(tempMilestones,currentMilestone);
       return { milestones: tempMilestones , currentMilestone };
     },
 
@@ -104,25 +106,22 @@ export const planningSlice = createSlice({
 
 
 export const selectCurrentMilestone = (state) => {
-    return state.planning.milestones && state.planning.milestones.find(
-      (milestone) => milestone.id === state.planning.currentMilestone
-    );
+  console.log(state.planning);
+    return state.planning.milestones && state.planning.milestones[state.planning.currentMilestone]
 };
 
 export const getStatus = (state) => {
   
-  const currentMilestone = state.planning.milestones?.find(
-    (milestone) => milestone.id === state.planning.currentMilestone
-  );
-  return currentMilestone ? currentMilestone.status : null;
+  const {currentMilestone,milestones} = state.planning;
+  return currentMilestone ? milestones[currentMilestone].status : null;
 }
 
 export const getMilestonesList = (state) => {
   if(state.planning.milestones){
-    return state.planning.milestones.map(milestone => ({
+    return state.planning.milestones.map((milestone,index) => ({
       id: milestone.id,
       name: milestone.name,
-      current : milestone.id === state.planning.currentMilestone
+      current : index === state.planning.currentMilestone
     }));
   }else{
     return null;
