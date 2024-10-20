@@ -232,7 +232,9 @@ class CompanyController extends Controller
             // Obtener las compañías pendientes
             $companies = Company::where('academic_period_id', $request->academic_period_id)
                 ->where('status', 'P')
-                ->withCount('members')
+                ->withCount(['members' => function ($query) {
+                    $query->where('status', 'A');
+                }])
                 ->get();
 
             return response()->json([
