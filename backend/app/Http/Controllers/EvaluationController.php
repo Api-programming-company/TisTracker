@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Evaluation;
+use App\Models\AcademicPeriodEvaluation;
 use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Validation\ValidationException;
@@ -123,6 +124,15 @@ class EvaluationController extends Controller
     {
         try {
             $user = Auth::user();
+
+            $evaluation = Evaluation::findOrFail($id);
+            $isUsed = AcademicPeriodEvaluation::where('evaluation_id', $evaluation->id)->exists();
+
+            if ($isUsed) {
+                return response()->json([
+                    'message' => 'Esta evaluación no se puede modificar porque ya forma parte de un periodo académico.',
+                ], 403);
+            }
 
             // Validar la entrada
             $request->validate([

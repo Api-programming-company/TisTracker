@@ -139,22 +139,26 @@ class PlanningController extends Controller
                 'company_id' => 'sometimes|required|exists:companies,id',
                 'milestones' => 'sometimes|array',
                 'milestones.*.id' => 'nullable|exists:milestones,id',
-                'milestones.*.name' => 'required_with:milestones|string|max:255',
-                'milestones.*.start_date' => 'required_with:milestones|date|before:milestones.*.end_date',
-                'milestones.*.end_date' => 'required_with:milestones|date|after:milestones.*.start_date',
-                'milestones.*.billing_percentage' => 'required_with:milestones|integer|min:0',
-                'milestones.*.status' => 'nullable|in:A,P',
-                'milestones.*.deliverables' => 'required_with:milestones|array|min:1',
-                'milestones.*.deliverables.*.name' => 'required|string|max:255',
-                'milestones.*.deliverables.*.responsible' => 'required|string|max:255',
-                'milestones.*.deliverables.*.objective' => 'required|string',
+                'milestones.*.name' => 'sometimes|required|string|max:255',
+                'milestones.*.start_date' => 'sometimes|required|date|before:milestones.*.end_date',
+                'milestones.*.end_date' => 'sometimes|required|date|after:milestones.*.start_date',
+                'milestones.*.billing_percentage' => 'sometimes|required|integer|min:0',
+                'milestones.*.status' => 'sometimes|in:A,P',
+                'milestones.*.deliverables' => 'sometimes|array|min:1',
+                'milestones.*.deliverables.*.name' => 'sometimes|required|string|max:255',
+                'milestones.*.deliverables.*.responsible' => 'sometimes|required|string|max:255',
+                'milestones.*.deliverables.*.objective' => 'sometimes|required|string',
+                'milestones.*.deliverables.*.expected_result' => 'sometimes|nullable|integer|min:0',
+                'milestones.*.deliverables.*.actual_result' => 'sometimes|nullable|integer|min:0',
+                'milestones.*.deliverables.*.observations' => 'sometimes|nullable|string|max:255',
+                'milestones.*.deliverables.*.status' => 'sometimes|required|in:A,C', 
             ]);
 
             // Buscar la planificación
             $planning = Planning::findOrFail($id);
             $planning->update($validatedData);
 
-            // Actualizar hitos y entregables
+            // Validar que la suma de porcentajes no exceda 100%
             if (isset($validatedData['milestones'])) {
                 $totalBilling = array_sum(array_column($validatedData['milestones'], 'billing_percentage'));
 
@@ -165,6 +169,7 @@ class PlanningController extends Controller
                     ], 422);
                 }
 
+                // Actualizar o crear hitos y sus entregables
                 foreach ($validatedData['milestones'] as $milestoneData) {
                     $milestone = Milestone::updateOrCreate(
                         ['id' => $milestoneData['id'] ?? null],
@@ -193,6 +198,7 @@ class PlanningController extends Controller
             return response()->json(['message' => 'Error al actualizar la planificación', 'error' => $e->getMessage()], 500);
         }
     }
+
 
     // Eliminar una planificación
     public function destroy($id)

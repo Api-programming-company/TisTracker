@@ -22,6 +22,7 @@ const PlanningSpreadSheet = () => {
   const { data, isSuccess, isFetching, isError, error } =
     useGetPlanningByCompanyIdQuery(id);
 
+
   useEffect(() => {
     if (isSuccess) {
       console.log(data);
@@ -100,7 +101,7 @@ const PlanningSpreadSheet = () => {
           <MilestoneItem milestone={milestone} />
           
           {status === "E" && <p className="text-red-500">Editando</p>}
-          {status === "C" && <p className="text-success">Cambios guardados</p>}  
+          {status === "V" && <p className="text-success">Hito Validado</p>}  
       
         </div>
 
@@ -115,8 +116,8 @@ const PlanningSpreadSheet = () => {
             onClick={() =>
               setOpen({
                 state: true,
-                message: "Estas seguro que quieres confirmar?",
-                title: "Confirmar",
+                message: "Al presionar aceptar ya no podras realizar cambios en la validación de este hito",
+                title: "¿Estas seguro que quieres confirmar?",
               })
             }
           >
