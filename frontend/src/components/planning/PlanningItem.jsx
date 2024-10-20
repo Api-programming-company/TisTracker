@@ -49,11 +49,12 @@ const PlanningItem = ({deliverable,index,milestone_id}) => {
         <div className="grid-item">{index}</div>
         <div className="grid-item">{deliverable.name}</div>
         <div className="grid-item">
-          <input type="number" placeholder="0" value={deliverable.observedResult} onChange={handleInputChange} name="observedResult" min={0} max={100} className="grid-input number"/>
-        </div>
-        <div className="grid-item">
           <input type="number" placeholder="0" value={deliverable.hopeResult} onChange={handleInputChange} name="hopeResult" min={0} max={100} className="grid-input number"/>
         </div>
+        <div className="grid-item">
+          <input type="number" placeholder="0" value={deliverable.observedResult} onChange={handleInputChange} name="observedResult" min={0} max={100} className="grid-input number"/>
+        </div>
+        
         <div className="grid-item">
           <textarea name="observations" placeholder="Ponga sus observaciones aqui" id="observations" className="grid-input area" value={deliverable.observations} onChange={handleInputChange} ></textarea>
         </div>

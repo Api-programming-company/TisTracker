@@ -47,8 +47,8 @@ const MilestoneItem = ({ milestone }) => {
           <div className="grid header">
             <div className="grid-item">N</div>
             <div className="grid-item">Entregable</div>
-            <div className="grid-item">Resultado Observado</div>
-            <div className="grid-item ">Resultado Esperado</div>
+            <div className="grid-item">Resultado Esperado</div>
+            <div className="grid-item ">Resultado Observado</div>
             <div className="grid-item">Observaciones</div>
             <div className="grid-item">Carry Over</div>
           </div>
