@@ -162,12 +162,20 @@ const Autoevaluation = () => {
         Criterios de Evaluación
       </Typography>
 
-      <Grid2 container spacing={2}>
+      <Grid2
+        container
+        spacing={0}
+        sx={{
+          "--Grid-columns": 6,
+          "--Grid-columnSpacing": "0px",
+          "--Grid-rowSpacing": "16px",
+        }}
+      >
         {state.questions &&
           state.questions.map((e, index = 0) => {
             return (
               <>
-                <Grid2 size={{ sm: 12, md: 6 }}>
+                <Grid2 sx={{ width: "100%" }}>
                   <Question
                     key={e.id}
                     question={`${index + 1}. ${e.question_text}`}
