@@ -1,12 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import PlanningItem from "./PlanningItem";
+import { setCurrentMilestone } from "../../reducers/planningSlice";
+import { getMilestonesList } from "../../reducers/planningSlice";
+import { useSelector } from "react-redux";
 
 const MilestoneItem = ({ milestone }) => {
+
+  const list = useSelector(getMilestonesList)
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString();
   };
+
+  useEffect(() => {
+    console.log(list);
+  },[list])
 
   return (
     <div className="list">

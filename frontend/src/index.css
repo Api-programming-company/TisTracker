@@ -199,8 +199,12 @@ p,a,li,button,input,textarea{
 .grid-input:focus{
   box-shadow: none;
   outline: none;
-  border: 1px solid var(--neutral-500);
-  box-shadow: var(--neutral-500) 0 0 5px 1px;
+  border: 1px solid var(--primary-300);
+  box-shadow: var(--primary-300) 0 0 5px 1px;
+}
+
+.grid-input.area{
+  resize: vertical;
 }
 
 .grid-input[type="checkbox"]{

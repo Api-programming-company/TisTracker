@@ -86,7 +86,6 @@ export const planningSlice = createSlice({
 
 
 export const selectCurrentMilestone = (state) => {
-  console.log(state);
   if(state.planning.currentMilestone === -1){
       const today = new Date().toISOString().split("T")[0];
     if (state.planning.milestones) {
@@ -98,7 +97,7 @@ export const selectCurrentMilestone = (state) => {
       return null;
     }
   }else{
-    return state.planning.milestones.find(
+    return state.planning.milestones && state.planning.milestones.find(
       (milestone) => milestone.id === state.planning.currentMilestone
     );
   } 
@@ -110,11 +109,16 @@ export const getStatus = (state) => {
 }
 
 export const getMilestonesList = (state) => {
-  
+  if(state.planning.milestones){
     return state.planning.milestones.map(milestone => ({
       id: milestone.id,
       name: milestone.name,
+      current : milestone.id === state.planning.currentMilestone
     }));
+  }else{
+    return null;
+  }
+    
 
 }
 

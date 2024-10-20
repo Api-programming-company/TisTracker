@@ -55,11 +55,12 @@ const PlanningItem = ({deliverable,index,milestone_id}) => {
           <input type="number" placeholder="0" value={deliverable.hopeResult} onChange={handleInputChange} name="hopeResult" min={0} max={100} className="grid-input number"/>
         </div>
         <div className="grid-item">
-          <textarea name="observations" placeholder="Ponga sus observaciones aqui" id="observations" className="grid-input area" value={deliverable.observations} onChange={handleInputChange}></textarea>
+          <textarea name="observations" placeholder="Ponga sus observaciones aqui" id="observations" className="grid-input area" value={deliverable.observations} onChange={handleInputChange} ></textarea>
         </div>
         <div className="grid-item">
           <Checkbox color="primary" onChange={handleActionButton}/>
         </div>
+
     </div>
   )
 }
