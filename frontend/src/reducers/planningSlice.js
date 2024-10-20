@@ -78,10 +78,7 @@ export const planningSlice = createSlice({
     },
     confirmChanges : (state,action) => {
         const currentState = current(state);
-        const { milestones: currentMilestones } = currentState;
-        const milestoneIndex = currentMilestones.findIndex(
-            (milestone) => milestone.id === state.currentMilestone
-        );
+        const { milestones: currentMilestones, currentMilestone : milestoneIndex } = currentState;
         return {
             ...state,
             milestones: [
@@ -106,14 +103,13 @@ export const planningSlice = createSlice({
 
 
 export const selectCurrentMilestone = (state) => {
-  console.log(state.planning);
     return state.planning.milestones && state.planning.milestones[state.planning.currentMilestone]
 };
 
 export const getStatus = (state) => {
   
   const {currentMilestone,milestones} = state.planning;
-  return currentMilestone ? milestones[currentMilestone].status : null;
+  return milestones ? milestones[currentMilestone].status : null;
 }
 
 export const getMilestonesList = (state) => {

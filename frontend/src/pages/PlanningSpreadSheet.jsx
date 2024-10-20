@@ -101,7 +101,7 @@ const PlanningSpreadSheet = () => {
           <MilestoneItem milestone={milestone} />
           
           {status === "E" && <p className="text-red-500">Editando</p>}
-          {status === "V" && <p className="text-success">Cambios guardados</p>}  
+          {status === "V" && <p className="text-success">Hito Validado</p>}  
       
         </div>
 

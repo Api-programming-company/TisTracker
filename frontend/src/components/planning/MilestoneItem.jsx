@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import PlanningItem from "./PlanningItem";
@@ -12,14 +12,22 @@ const MilestoneItem = ({ milestone }) => {
 
   const list = useSelector(getMilestonesList)
   const status = useSelector(getStatus);
+  const [open,setOpen] = useState(false);
   const dispatch = useDispatch();
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString();
   };
 
+  const currentMilestone = () => {
+    const today = new Date();
+    const startDate = new Date(milestone.start_date);
+    const endDate = new Date(milestone.end_date);
+    return today >= startDate && today <= endDate;
+  }
 
   const onChangeListItem = (index) => {
     console.log(index);
+    
     dispatch(setCurrentMilestone(index))
   }
 
@@ -29,6 +37,7 @@ const MilestoneItem = ({ milestone }) => {
 
   return (
     <div className="list">
+      {!currentMilestone() && <p className="text-red-500">Este hito no corresponde a la validación actual</p> }
       <FormControl fullWidth>
         <InputLabel id="demo-simple-select-label">Hito</InputLabel>
         <Select
