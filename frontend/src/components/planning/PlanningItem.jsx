@@ -47,26 +47,29 @@ const PlanningItem = ({deliverable,index,milestone_id}) => {
     }
   };
 
+  const editable = status === "V" ? false : true;
+
   return (
     <div className={`grid ${deliverable.state === "C" ? "bg-red" : ""}`}>
         <div className="grid-item">{index}</div>
         <div className="grid-item">{deliverable.name}</div>
         <div className="grid-item">
-          <input type="number" placeholder="0" value={deliverable.hopeResult} onChange={handleInputChange} name="hopeResult" min={0} max={100} className="grid-input number"/>
+          <input type="number" placeholder="0" value={deliverable.hopeResult} onChange={handleInputChange} name="hopeResult" min={0} max={100} className="grid-input number" readOnly={!editable}/>
         </div>
         <div className="grid-item">
-          <input type="number" placeholder="0" value={deliverable.observedResult} onChange={handleInputChange} name="observedResult" min={0} max={100} className="grid-input number"/>
+          <input type="number" placeholder="0" value={deliverable.observedResult} onChange={handleInputChange} name="observedResult" min={0} max={100} className="grid-input number" readOnly={!editable}/>
         </div>
         
         <div className="grid-item">
-          <textarea name="observations" placeholder="Ponga sus observaciones aqui" id="observations" className="grid-input area" value={deliverable.observations} onChange={handleInputChange} ></textarea>
+          <textarea name="observations" placeholder="Ponga sus observaciones aqui" id="observations" className="grid-input area" value={deliverable.observations} onChange={handleInputChange} readOnly={!editable} ></textarea>
         </div>
         <div className="grid-item">
-          <Checkbox color="primary" onChange={handleActionButton}/>
+          <Checkbox color="primary" onChange={handleActionButton} disabled={!editable}/>
         </div>
 
     </div>
   )
+
 }
 
 export default PlanningItem
