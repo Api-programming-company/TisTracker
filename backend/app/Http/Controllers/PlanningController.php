@@ -139,18 +139,18 @@ class PlanningController extends Controller
                 'company_id' => 'sometimes|required|exists:companies,id',
                 'milestones' => 'sometimes|array',
                 'milestones.*.id' => 'nullable|exists:milestones,id',
-                'milestones.*.name' => 'required_with:milestones|string|max:255',
-                'milestones.*.start_date' => 'required_with:milestones|date|before:milestones.*.end_date',
-                'milestones.*.end_date' => 'required_with:milestones|date|after:milestones.*.start_date',
-                'milestones.*.billing_percentage' => 'required_with:milestones|integer|min:0',
-                'milestones.*.deliverables' => 'required_with:milestones|array|min:1',
-                'milestones.*.deliverables.*.name' => 'required|string|max:255',
-                'milestones.*.deliverables.*.responsible' => 'required|string|max:255',
-                'milestones.*.deliverables.*.objective' => 'required|string',
-                'expected_result' => 'sometimes|nullable|integer|min:0',
-                'actual_result' => 'sometimes|nullable|integer|min:0',
-                'milestones.*.deliverables.*.observations' => 'nullable|string|max:255',
-                'milestones.*.deliverables.*.status' => 'required|in:A,C', 
+                'milestones.*.name' => 'sometimes|required|string|max:255',
+                'milestones.*.start_date' => 'sometimes|required|date|before:milestones.*.end_date',
+                'milestones.*.end_date' => 'sometimes|required|date|after:milestones.*.start_date',
+                'milestones.*.billing_percentage' => 'sometimes|required|integer|min:0',
+                'milestones.*.deliverables' => 'sometimes|array|min:1',
+                'milestones.*.deliverables.*.name' => 'sometimes|required|string|max:255',
+                'milestones.*.deliverables.*.responsible' => 'sometimes|required|string|max:255',
+                'milestones.*.deliverables.*.objective' => 'sometimes|required|string',
+                'milestones.*.deliverables.*.expected_result' => 'sometimes|nullable|integer|min:0',
+                'milestones.*.deliverables.*.actual_result' => 'sometimes|nullable|integer|min:0',
+                'milestones.*.deliverables.*.observations' => 'sometimes|nullable|string|max:255',
+                'milestones.*.deliverables.*.status' => 'sometimes|required|in:A,C', 
             ]);
 
             // Buscar la planificación
@@ -194,6 +194,7 @@ class PlanningController extends Controller
             return response()->json(['message' => 'Error al actualizar la planificación', 'error' => $e->getMessage()], 500);
         }
     }
+
 
     // Eliminar una planificación
     public function destroy($id)
