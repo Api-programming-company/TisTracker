@@ -143,6 +143,7 @@ class PlanningController extends Controller
                 'milestones.*.start_date' => 'sometimes|required|date|before:milestones.*.end_date',
                 'milestones.*.end_date' => 'sometimes|required|date|after:milestones.*.start_date',
                 'milestones.*.billing_percentage' => 'sometimes|required|integer|min:0',
+                'milestones.*.status' => 'sometimes|in:A,P',
                 'milestones.*.deliverables' => 'sometimes|array|min:1',
                 'milestones.*.deliverables.*.name' => 'sometimes|required|string|max:255',
                 'milestones.*.deliverables.*.responsible' => 'sometimes|required|string|max:255',
@@ -172,7 +173,10 @@ class PlanningController extends Controller
                 foreach ($validatedData['milestones'] as $milestoneData) {
                     $milestone = Milestone::updateOrCreate(
                         ['id' => $milestoneData['id'] ?? null],
-                        array_merge($milestoneData, ['planning_id' => $planning->id])
+                        array_merge(
+                            $milestoneData,
+                            ['planning_id' => $planning->id, 'status' => $milestoneData['status'] ?? 'P']
+                        )
                     );
 
                     // Crear o actualizar entregables
