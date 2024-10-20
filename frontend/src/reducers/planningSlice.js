@@ -117,7 +117,8 @@ export const getMilestonesList = (state) => {
     return state.planning.milestones.map((milestone,index) => ({
       id: milestone.id,
       name: milestone.name,
-      current : index === state.planning.currentMilestone
+      selected : index === state.planning.currentMilestone,
+      current: new Date().toISOString().split('T')[0] >= milestone.start_date && new Date().toISOString().split('T')[0] <= milestone.end_date
     }));
   }else{
     return null;

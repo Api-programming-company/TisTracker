@@ -37,19 +37,21 @@ const MilestoneItem = ({ milestone }) => {
 
   return (
     <div className="list">
-      {!currentMilestone() && <p className="text-red-500">Este hito no corresponde a la validación actual</p> }
+      {!currentMilestone() ? <p className="text-red-500 text-sm">Este hito no corresponde a la validación actual</p> :
+      milestone.end_date !== new Date().toISOString().split('T')[0] && <p className="text-sm text-red-500">{`Aun quedan ${Math.ceil(Math.abs(new Date(milestone.end_date) - new Date()) / (1000 * 60 * 60 * 24))} días para la validación de este hito.`}</p> }
+      
       <FormControl fullWidth>
         <InputLabel id="demo-simple-select-label">Hito</InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value={list.find((item) => item.current)}
+          value={list.find((item) => item.selected)}
           label="Hito"
           onChange={(e) => onChangeListItem(list.indexOf(e.target.value))}
         >
           {list.map((item) => (
             <MenuItem key={item.id} value={item}>
-              {item.name}
+              {item.name} {item.current && <span className="text-sm text-primary">(actual)</span>}
             </MenuItem>
           ))}
         </Select>

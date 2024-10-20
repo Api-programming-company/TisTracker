@@ -106,6 +106,9 @@ p,a,li,button,input,textarea{
 .text-success{
   color : var(--green-300)
 }
+.text-primary{
+  color : var(--primary-500)
+}
 
 
 /* Font Sizes */
