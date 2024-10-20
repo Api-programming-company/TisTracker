@@ -56,7 +56,7 @@ class EvaluationController extends Controller
                 'questions.*.answer_options.*.score' => 'required|integer|min:0',
             ], [
                 'title.required' => __('validation.attributes.evaluation.title') . ' es requerido.',
-                'title.unique' => ' El '.__('validation.attributes.evaluation.title').' ya esta registrado en sus plantillas',
+                'title.unique' => ' El ' . __('validation.attributes.evaluation.title') . ' ya esta registrado en sus plantillas',
                 'title.string' => __('validation.attributes.evaluation.title') . ' debe ser una cadena.',
             ]);
 
@@ -157,11 +157,19 @@ class EvaluationController extends Controller
 
             // Actualizar preguntas y opciones de respuesta (si se proporcionaron)
             if ($request->has('questions')) {
+                // Eliminar preguntas que ya no están en la solicitud
+                $newQuestionIds = collect($request->questions)->pluck('id')->filter()->all();
+                $evaluation->questions()->whereNotIn('id', $newQuestionIds)->delete();
+
                 foreach ($request->questions as $questionData) {
                     $question = $evaluation->questions()->updateOrCreate(
                         ['id' => $questionData['id']],
                         ['question_text' => $questionData['question_text']]
                     );
+
+                    // Eliminar opciones de respuesta que ya no están en la solicitud
+                    $newOptionIds = collect($questionData['answer_options'])->pluck('id')->filter()->all();
+                    $question->answerOptions()->whereNotIn('id', $newOptionIds)->delete();
 
                     foreach ($questionData['answer_options'] as $optionData) {
                         $question->answerOptions()->updateOrCreate(
