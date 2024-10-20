@@ -16,7 +16,6 @@ export const planningSlice = createSlice({
           deliverable.observations = "";
           deliverable.state = "A";
         });
-        milestone.status = "P"
       });
 
       const today = new Date().toISOString().split("T")[0];
@@ -84,7 +83,7 @@ export const planningSlice = createSlice({
                 ...currentMilestones.slice(0, milestoneIndex),
                 {
                     ...currentMilestones[milestoneIndex],
-                    status: "V"
+                    status: "A"
                 },
                 ...currentMilestones.slice(milestoneIndex + 1),
             ]
