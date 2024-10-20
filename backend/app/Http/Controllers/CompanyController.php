@@ -283,24 +283,39 @@ class CompanyController extends Controller
         }
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            // Obtener todas las compañías
-            $companies = Company::all();
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $academicPeriodId = $request->input('academic_period_id');
+        $status = $request->input('status');
 
-            // Devolver una respuesta con la lista de compañías
-            return response()->json([
-                'message' => 'Lista de compañías obtenida correctamente.',
-                'companies' => $companies
-            ], Response::HTTP_OK);
-        } catch (Exception $e) {
-            // Manejar otros errores
-            return response()->json([
-                'message' => 'Ocurrió un error al obtener la lista de compañías.',
-                'error' => $e->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        $query = Company::query();
+
+        if ($academicPeriodId) {
+            $query->where('academic_period_id', $academicPeriodId);
         }
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        // Filtrar por el rango de fechas de los milestones
+        if ($startDate && $endDate) {
+            $query->whereHas('planning.milestones', function ($milestoneQuery) use ($startDate, $endDate) {
+                $milestoneQuery->whereBetween('end_date', [$startDate, $endDate]);
+            });
+        }
+
+        // Obtener las compañías filtradas junto con la planificación, hitos y entregables
+        $companies = $query->with(['planning.milestones' => function ($milestoneQuery) use ($startDate, $endDate) {
+            if ($startDate && $endDate) {
+                $milestoneQuery->whereBetween('end_date', [$startDate, $endDate])
+                            ->with('deliverables'); 
+            }
+        }])->get();
+
+        return response()->json($companies);
     }
 
     public function update(Request $request, $id)
