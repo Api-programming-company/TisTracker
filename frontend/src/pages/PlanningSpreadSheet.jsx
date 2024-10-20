@@ -6,7 +6,6 @@ import { useGetPlanningByCompanyIdQuery } from "../api/planningApi";
 import { useParams } from "react-router-dom";
 import { CircularProgress, Container, Alert, Box } from "@mui/material";
 import MilestoneItem from "../components/planning/MilestoneItem";
-import { planningSpreadsheet } from "../mock_objects/planificacion";
 import { Button, Snackbar } from "@mui/material";
 import DialogMod from "../components/DialogMod";
 
@@ -101,7 +100,7 @@ const PlanningSpreadSheet = () => {
           <MilestoneItem milestone={milestone} />
           
           {status === "E" && <p className="text-red-500">Editando</p>}
-          {status === "V" && <p className="text-success">Hito Validado</p>}  
+          {status === "A" && <p className="text-success">Hito Validado</p>}  
       
         </div>
 

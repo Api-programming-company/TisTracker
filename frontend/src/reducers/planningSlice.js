@@ -8,7 +8,6 @@ export const planningSlice = createSlice({
   initialState,
   reducers: {
     setMilestones: (state, action) => {
-      console.log("Setting");
       const tempMilestones = JSON.parse(JSON.stringify(action.payload));
       tempMilestones.forEach((milestone) => {
         milestone.deliverables.forEach((deliverable) => {

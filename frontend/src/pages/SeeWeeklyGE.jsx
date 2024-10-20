@@ -2,15 +2,13 @@ import {
   Container,
   Box,
   Typography,
-  IconButton,
   CircularProgress,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
-import AddIcon from "@mui/icons-material/Add";
-import PendingActionsIcon from "@mui/icons-material/PendingActions"; // Importar el icono para solicitudes pendientes
 import React, { useContext, useEffect } from "react";
 import { useGetCompaniesByAcademicPeriodQuery} from "../api/academicPeriodApi";
 import AppContext from "../context/AppContext";
+import { CompanyCard } from "../components";
 
 const SeeWeeklyGE = () => {
   const { id } = useParams();
@@ -97,7 +95,7 @@ const SeeWeeklyGE = () => {
               }}
               sx={{ minWidth: 0 }}
             >
-              {/* <CompanyCard company={company} /> */}
+              <CompanyCard company={company} />
             </Box>
           ))
         )}
