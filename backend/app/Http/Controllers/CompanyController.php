@@ -317,6 +317,13 @@ class CompanyController extends Controller
             }
         }])->get();
 
+        if ($startDate && $endDate) {
+            // Añadir el end_date del milestone como delivery_day a cada compañía
+            $companies->each(function ($company) use ($startDate, $endDate) {
+                $milestone = $company->planning->milestones->whereBetween('end_date', [$startDate, $endDate])->first();
+                $company->delivery_day = $milestone ? $milestone->end_date : null;
+            });
+        }
         return response()->json($companies);
     }
 
