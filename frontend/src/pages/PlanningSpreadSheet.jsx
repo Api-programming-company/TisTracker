@@ -22,6 +22,7 @@ const PlanningSpreadSheet = () => {
   const { data, isSuccess, isFetching, isError, error } =
     useGetPlanningByCompanyIdQuery(id);
 
+
   useEffect(() => {
     if (isSuccess) {
       console.log(data);

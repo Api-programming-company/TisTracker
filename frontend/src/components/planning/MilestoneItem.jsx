@@ -6,10 +6,13 @@ import { setCurrentMilestone } from "../../reducers/planningSlice";
 import { getMilestonesList } from "../../reducers/planningSlice";
 import { useSelector } from "react-redux";
 import { FormControl,InputLabel,Select,MenuItem } from "@mui/material";
-
+import { useDispatch } from "react-redux";
+import { getStatus } from "../../reducers/planningSlice";
 const MilestoneItem = ({ milestone }) => {
 
   const list = useSelector(getMilestonesList)
+  const status = useSelector(getStatus);
+  const dispatch = useDispatch();
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString();
   };
@@ -17,6 +20,7 @@ const MilestoneItem = ({ milestone }) => {
 
   const onChangeListItem = (index) => {
     console.log(index);
+    dispatch(setCurrentMilestone(index))
   }
 
   useEffect(() => {
