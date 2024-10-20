@@ -15,6 +15,7 @@ class Milestone extends Model
         'end_date',
         'billing_percentage',
         'planning_id',
+        'status'
     ];
 
     // Relación con Planning
