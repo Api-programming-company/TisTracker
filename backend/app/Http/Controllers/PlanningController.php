@@ -147,13 +147,17 @@ class PlanningController extends Controller
                 'milestones.*.deliverables.*.name' => 'required|string|max:255',
                 'milestones.*.deliverables.*.responsible' => 'required|string|max:255',
                 'milestones.*.deliverables.*.objective' => 'required|string',
+                'expected_result' => 'sometimes|nullable|integer|min:0',
+                'actual_result' => 'sometimes|nullable|integer|min:0',
+                'milestones.*.deliverables.*.observations' => 'nullable|string|max:255',
+                'milestones.*.deliverables.*.status' => 'required|in:A,C', 
             ]);
 
             // Buscar la planificación
             $planning = Planning::findOrFail($id);
             $planning->update($validatedData);
 
-            // Actualizar hitos y entregables
+            // Validar que la suma de porcentajes no exceda 100%
             if (isset($validatedData['milestones'])) {
                 $totalBilling = array_sum(array_column($validatedData['milestones'], 'billing_percentage'));
 
@@ -164,6 +168,7 @@ class PlanningController extends Controller
                     ], 422);
                 }
 
+                // Actualizar o crear hitos y sus entregables
                 foreach ($validatedData['milestones'] as $milestoneData) {
                     $milestone = Milestone::updateOrCreate(
                         ['id' => $milestoneData['id'] ?? null],
