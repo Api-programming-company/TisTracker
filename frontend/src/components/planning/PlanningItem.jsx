@@ -64,7 +64,7 @@ const PlanningItem = ({deliverable,index,milestone_id}) => {
           <textarea name="observations" placeholder="Ponga sus observaciones aqui" id="observations" className="grid-input area" value={deliverable.observations} onChange={handleInputChange} readOnly={!editable} ></textarea>
         </div>
         <div className="grid-item">
-          <Checkbox color="primary" onChange={handleActionButton} disabled={!editable}/>
+          <Checkbox color="primary" name="state" onChange={handleActionButton} disabled={!editable} checked= {deliverable.state === "C"}/>
         </div>
 
     </div>

@@ -106,7 +106,7 @@ export const planningSlice = createSlice({
                         hopeResult: 0,
                         observedResult: 0,
                         observations: "",
-                        carry_over: false
+                        state: "A"
                     }))
                 },
                 ...currentMilestones.slice(milestoneIndex + 1),
