@@ -115,8 +115,8 @@ const PlanningSpreadSheet = () => {
             onClick={() =>
               setOpen({
                 state: true,
-                message: "Estas seguro que quieres confirmar?",
-                title: "Confirmar",
+                message: "Al presionar aceptar ya no podras realizar cambios en la validación de este hito",
+                title: "¿Estas seguro que quieres confirmar?",
               })
             }
           >

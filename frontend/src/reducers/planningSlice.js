@@ -16,8 +16,15 @@ export const planningSlice = createSlice({
           deliverable.observations = "";
           deliverable.state = "A";
         });
+        milestone.status = "P"
       });
-      return { status: "S", milestones: tempMilestones , currentMilestone : -1 };
+
+      const today = new Date().toISOString().split("T")[0];
+      const currentMilestone = tempMilestones.findIndex(
+        (milestone) =>
+          milestone.start_date <= today && milestone.end_date >= today
+      );
+      return { milestones: tempMilestones , currentMilestone };
     },
 
     changeDeliverable: (state, action) => {
@@ -42,7 +49,6 @@ export const planningSlice = createSlice({
 
       return {
         ...currentState,
-        status: "E",
         milestones: [
           ...currentMilestones.slice(0, milestoneIndex),
           {
@@ -62,17 +68,29 @@ export const planningSlice = createSlice({
                 deliverableIndex + 1
               ),
             ],
+            status : "E"
           },
           ...currentMilestones.slice(milestoneIndex + 1),
         ],
       };
     },
     confirmChanges : (state,action) => {
-        console.log("dispatching");
-        return{
+        const currentState = current(state);
+        const { milestones: currentMilestones } = currentState;
+        const milestoneIndex = currentMilestones.findIndex(
+            (milestone) => milestone.id === state.currentMilestone
+        );
+        return {
             ...state,
-            status : "C"
-        }
+            milestones: [
+                ...currentMilestones.slice(0, milestoneIndex),
+                {
+                    ...currentMilestones[milestoneIndex],
+                    status: "V"
+                },
+                ...currentMilestones.slice(milestoneIndex + 1),
+            ]
+        };
     },
     setCurrentMilestone: (state, action) => {
         return {
@@ -86,26 +104,17 @@ export const planningSlice = createSlice({
 
 
 export const selectCurrentMilestone = (state) => {
-  if(state.planning.currentMilestone === -1){
-      const today = new Date().toISOString().split("T")[0];
-    if (state.planning.milestones) {
-      return state.planning.milestones.find(
-        (milestone) =>
-          milestone.start_date <= today && milestone.end_date >= today
-      );
-    } else {
-      return null;
-    }
-  }else{
     return state.planning.milestones && state.planning.milestones.find(
       (milestone) => milestone.id === state.planning.currentMilestone
     );
-  } 
-  
 };
 
 export const getStatus = (state) => {
-    return state.planning.status && state.planning.status;
+  
+  const currentMilestone = state.planning.milestones?.find(
+    (milestone) => milestone.id === state.planning.currentMilestone
+  );
+  return currentMilestone ? currentMilestone.status : null;
 }
 
 export const getMilestonesList = (state) => {

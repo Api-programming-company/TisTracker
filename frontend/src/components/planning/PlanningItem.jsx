@@ -4,10 +4,13 @@ import { changeDeliverable } from '../../reducers/planningSlice';
 import { useDispatch } from 'react-redux';
 import { de } from 'date-fns/locale';
 import Checkbox from '@mui/material/Checkbox';
-
+import { useSelector } from 'react-redux';
+import { getStatus } from '../../reducers/planningSlice';
 
 const PlanningItem = ({deliverable,index,milestone_id}) => {
   const dispatch = useDispatch();
+  const status = useSelector(getStatus);
+
 
 
   const handleInputChange = (event) => {
