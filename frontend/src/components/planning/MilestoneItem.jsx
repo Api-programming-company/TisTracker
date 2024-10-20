@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import PlanningItem from "./PlanningItem";
@@ -8,11 +8,12 @@ import { useSelector } from "react-redux";
 import { FormControl,InputLabel,Select,MenuItem } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { getStatus } from "../../reducers/planningSlice";
+import DialogMod from "../DialogMod"
 const MilestoneItem = ({ milestone }) => {
 
   const list = useSelector(getMilestonesList)
   const status = useSelector(getStatus);
-  const [open,setOpen] = useState(false);
+  const [open,setOpen] = useState({state : false,value : 0});
   const dispatch = useDispatch();
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString();
@@ -25,15 +26,24 @@ const MilestoneItem = ({ milestone }) => {
     return today >= startDate && today <= endDate;
   }
 
+
+  const handleChangeListItem = (index) => {
+    dispatch(setCurrentMilestone(index));
+  }
   const onChangeListItem = (index) => {
-    console.log(index);
-    
-    dispatch(setCurrentMilestone(index))
+    if(status === "E") {
+      setOpen({state: true, value: index});
+    } else {
+      handleChangeListItem(index);
+    }
   }
 
-  useEffect(() => {
-    console.log(list);
-  },[list])
+  const handleConfirm = () => {
+    console.log("Confirming");
+    setOpen({...open, state : false})
+    handleChangeListItem(open.value)
+  }
+
 
   return (
     <div className="list">
@@ -56,6 +66,7 @@ const MilestoneItem = ({ milestone }) => {
           ))}
         </Select>
       </FormControl>
+      
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <div className="list-item2">
           <div className="date-item-card">
@@ -102,6 +113,13 @@ const MilestoneItem = ({ milestone }) => {
           )}
         </div>
       </LocalizationProvider>
+      <DialogMod
+          open={open.state}
+          title="¿Estás seguro de cambiar de hito ahora?"
+          content="Tienes cambios sin confirmar y los perderás al cambiar de hito"
+          onAccept={handleConfirm}
+          onCancel={() => setOpen({ ...open, state: false })}
+        />
     </div>
   );
 };

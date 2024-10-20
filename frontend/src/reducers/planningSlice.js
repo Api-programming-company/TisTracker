@@ -92,8 +92,25 @@ export const planningSlice = createSlice({
         };
     },
     setCurrentMilestone: (state, action) => {
+        const currentState = current(state);
+        const { milestones: currentMilestones, currentMilestone : milestoneIndex } = currentState;
         return {
             ...state,
+            milestones: [
+                ...currentMilestones.slice(0, milestoneIndex),
+                {
+                    ...currentMilestones[milestoneIndex],
+                    status: "P",
+                    deliverables: currentMilestones[milestoneIndex].deliverables.map(deliverable => ({
+                        ...deliverable,
+                        hopeResult: 0,
+                        observedResult: 0,
+                        observations: "",
+                        carry_over: false
+                    }))
+                },
+                ...currentMilestones.slice(milestoneIndex + 1),
+            ],
             currentMilestone: action.payload
         };
 
