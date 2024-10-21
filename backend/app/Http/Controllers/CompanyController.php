@@ -148,7 +148,11 @@ class CompanyController extends Controller
             }
 
             // Obtener las compañías activas asociadas al periodo académico
-            $companies = Company::withCount('members')
+            $companies = Company::with([
+                'planning' => function ($query) {
+                    $query->with('milestones');
+                }
+            ])
                 ->where('academic_period_id', $request->id)
                 ->where('status', 'A')
                 ->get();
@@ -170,6 +174,7 @@ class CompanyController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
 
     public function show($id)
     {
