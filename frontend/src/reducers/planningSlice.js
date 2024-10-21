@@ -84,8 +84,17 @@ export const planningSlice = createSlice({
       };
     },
     confirmChanges: (state, action) => {
+      
         const currentState = current(state);
         const { milestones: currentMilestones, currentMilestone: milestoneIndex } = currentState;
+        if(currentMilestones[milestoneIndex].status !== "L"){
+          return {
+            ...state,
+            milestones: currentMilestones.map((milestone, index) =>
+              index === milestoneIndex ? { ...milestone, status: "L" } : milestone
+            ),
+          };
+        }
         const newMilestones = [...currentMilestones];
         const milestone = newMilestones[milestoneIndex];
         const deliverablesPending = milestone.deliverables.filter(

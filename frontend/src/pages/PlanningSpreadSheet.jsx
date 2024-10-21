@@ -90,6 +90,7 @@ const PlanningSpreadSheet = () => {
 
   useEffect(() => {
     if (updatedSuccessfully) {
+      dispatch(confirmChanges());
       setSnackbarMessage("Hito validado correctamente");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
@@ -159,7 +160,7 @@ const PlanningSpreadSheet = () => {
               color: "white",
               border: "white",
             }}
-            disabled={pendingMilestoneIndex !== milestone_index}
+            disabled={pendingMilestoneIndex !== milestone_index || updateLoading}
             onClick={() =>
               setOpen({
                 state: true,
