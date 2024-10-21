@@ -148,7 +148,7 @@ const EditEvaluationTemplate = () => {
         component={"h1"}
         sx={{ fontSize: "40px", lineHeight: "1", mt: 12 }}
       >
-        Crear Plantilla de Evaluación
+        Editar Plantilla de Evaluación
       </Typography>
       <Divider sx={{ width: "100%", marginY: 3 }} />{" "}
       <TextField
