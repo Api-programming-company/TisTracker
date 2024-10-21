@@ -17,10 +17,10 @@ const PlanningItem = ({deliverable,index,milestone_id}) => {
     const change = {};
     switch (event.target.name) {
       case "expected_result":
-        change.expectedResult = parseInt(event.target.value);
+        change.expected_result = parseInt(event.target.value);
         break;
       case "actual_result":
-        change.actualResult = parseInt(event.target.value);
+        change.actual_result = parseInt(event.target.value);
         break;
       case "observations":
         change.observations = event.target.value;

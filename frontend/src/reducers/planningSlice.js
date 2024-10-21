@@ -10,6 +10,17 @@ export const planningSlice = createSlice({
     setMilestones: (state, action) => {
       const tempMilestones = JSON.parse(JSON.stringify(action.payload));
       
+      tempMilestones.forEach(milestone => {
+        milestone.deliverables.forEach(deliverable => {
+          if (deliverable.expected_result === null) {
+            deliverable.expected_result = 0;
+          }
+          if (deliverable.actual_result === null) {
+            deliverable.actual_result = 0;
+          }
+        });
+      });
+
       const currentMilestone = tempMilestones.findIndex(
         (milestone) => milestone.status === "P"
       );
@@ -95,7 +106,9 @@ export const planningSlice = createSlice({
                         actual_result: 0,
                         observations: "",
                         status: "A"
-                    }))
+                    })
+                  ),
+                    status: "P"
                 },
                 ...currentMilestones.slice(milestoneIndex + 1),
             ],
