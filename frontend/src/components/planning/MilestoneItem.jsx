@@ -39,7 +39,6 @@ const MilestoneItem = ({ milestone }) => {
   }
 
   const handleConfirm = () => {
-    console.log("Confirming");
     setOpen({...open, state : false})
     handleChangeListItem(open.value)
   }
@@ -47,9 +46,23 @@ const MilestoneItem = ({ milestone }) => {
 
   return (
     <div className="list">
-      {!currentMilestone() ? <p className="text-red-500 text-sm">Este hito no corresponde a la validación actual</p> :
-      milestone.end_date !== new Date().toISOString().split('T')[0] && <p className="text-sm text-red-500">{`Aun quedan ${Math.ceil(Math.abs(new Date(milestone.end_date) - new Date()) / (1000 * 60 * 60 * 24))} días para la validación de este hito.`}</p> }
-      
+      {status !== "A" && (
+        new Date() > new Date(milestone.end_date) ? (
+          <p className="text-red-500 text-sm">
+            {`Validación retrasada por ${Math.ceil(
+              Math.abs(new Date(milestone.end_date) - new Date()) /
+                (1000 * 60 * 60 * 24)
+            )} días.`}
+          </p>
+        ) : (
+          <p className="text-sm text-red-500">
+            {`Aun quedan ${Math.ceil(
+              Math.abs(new Date(milestone.end_date) - new Date()) /
+                (1000 * 60 * 60 * 24)
+            )} días para la validación de este hito.`}
+          </p>
+        )
+      )}
       <FormControl fullWidth>
         <InputLabel id="demo-simple-select-label">Hito</InputLabel>
         <Select

@@ -10,14 +10,11 @@ export const planningSlice = createSlice({
     setMilestones: (state, action) => {
       const tempMilestones = JSON.parse(JSON.stringify(action.payload));
       
-
-      const today = new Date().toISOString().split("T")[0];
       const currentMilestone = tempMilestones.findIndex(
-        (milestone) =>
-          milestone.start_date <= today && milestone.end_date >= today
+        (milestone) => milestone.status === "P"
       );
       console.log(tempMilestones);
-      return { milestones: tempMilestones , currentMilestone };
+      return { milestones: tempMilestones , currentMilestone, pendingMilestone: currentMilestone };
     },
 
     changeDeliverable: (state, action) => {
