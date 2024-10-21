@@ -32,14 +32,6 @@ const SeeWeeklyGE = () => {
     }
   }, [isSuccess, isError, data, error]);
 
-  const handleAddCompany = () => {
-    navigate("/registroge");
-  };
-
-  const handlePendingRequests = () => {
-    navigate(`/academic-period/${id}/pending`); // Navegar a solicitudes pendientes
-  };
-
   if (isLoading) {
     return (
       <Container

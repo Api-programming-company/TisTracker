@@ -428,13 +428,13 @@ class CompanyUserController extends Controller
                 ->first();
 
             if (!$academic_period_evaluation) {
-                return response()->json(['message' => 'El periodo academico no cuenta con la evaluacion.'], 404);
+                return response()->json(['message' => 'El periodo académico no cuenta con la evaluación.'], 404);
             }
 
             // Validar que la fecha actual esté dentro del rango de fechas de la evaluación
             $currentDate = now();
             if ($currentDate->lt($academic_period_evaluation->start_date) || $currentDate->gt($academic_period_evaluation->end_date)) {
-                return response()->json(['message' => 'El periodo academico no esta dentro de la fecha de evaluacion.'], 422);
+                return response()->json(['message' => 'El periodo académico no está dentro de la fecha de evaluación.'], 422);
             }
 
             return response()->json([

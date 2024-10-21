@@ -60,6 +60,8 @@ const Parameter = ({ parameter, criteria_id, setShowError }) => {
             onChange={handleChange}
             fullWidth
             multiline
+            inputProps={{ maxLength: 255 }}
+            autoFocus
           />
           <Button
             sx={{

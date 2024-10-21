@@ -5,11 +5,13 @@ import { useDispatch } from 'react-redux';
 import { de } from 'date-fns/locale';
 import Checkbox from '@mui/material/Checkbox';
 import { useSelector } from 'react-redux';
-import { getStatus } from '../../reducers/planningSlice';
+import { getStatus,getCurrentMilestoneIndex,getPendingMilestoneIndex } from '../../reducers/planningSlice';
 
 const PlanningItem = ({deliverable,index,milestone_id}) => {
   const dispatch = useDispatch();
   const status = useSelector(getStatus);
+  const currentMilestoneIndex = useSelector(getCurrentMilestoneIndex);
+  const pendingMilestoneIndex = useSelector(getPendingMilestoneIndex);
 
 
 
@@ -17,10 +19,10 @@ const PlanningItem = ({deliverable,index,milestone_id}) => {
     const change = {};
     switch (event.target.name) {
       case "expected_result":
-        change.expectedResult = parseInt(event.target.value);
+        change.expected_result = parseInt(event.target.value);
         break;
       case "actual_result":
-        change.actualResult = parseInt(event.target.value);
+        change.actual_result = parseInt(event.target.value);
         break;
       case "observations":
         change.observations = event.target.value;
@@ -47,7 +49,7 @@ const PlanningItem = ({deliverable,index,milestone_id}) => {
     }
   };
 
-  const editable = status === "A" ? false : true;
+  const editable = (status === "A" || status === "L" || currentMilestoneIndex !== pendingMilestoneIndex) ? false : true;
 
   return (
     <div className={`grid ${deliverable.status === "C" ? "bg-red" : ""}`}>

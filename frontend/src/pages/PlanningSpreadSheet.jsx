@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectCurrentMilestone, getStatus } from "../reducers/planningSlice";
+import { selectCurrentMilestone, getStatus,getCurrentMilestoneIndex, getPendingMilestoneIndex } from "../reducers/planningSlice";
 import { setMilestones, confirmChanges } from "../reducers/planningSlice";
 import { useGetPlanningByCompanyIdQuery } from "../api/planningApi";
+import { useUpdateCompanyPlanningByIdMutation } from "../api/companyApi";
 import { useParams } from "react-router-dom";
 import { CircularProgress, Container, Alert, Box } from "@mui/material";
 import MilestoneItem from "../components/planning/MilestoneItem";
@@ -18,42 +19,89 @@ const PlanningSpreadSheet = () => {
   const dispatch = useDispatch();
   const milestone = useSelector(selectCurrentMilestone);
   const status = useSelector(getStatus);
+  const pendingMilestoneIndex = useSelector(getPendingMilestoneIndex);
   const { data, isSuccess, isFetching, isError, error } =
     useGetPlanningByCompanyIdQuery(id);
+  const milestone_index = useSelector(getCurrentMilestoneIndex);
+  const [
+    update, 
+    {isLoading : updateLoading, 
+      isSuccess: updatedSuccessfully, 
+      isError: updateIsError, 
+      error: updateError}] = useUpdateCompanyPlanningByIdMutation();
 
 
   useEffect(() => {
     if (isSuccess) {
-      console.log(data);
       dispatch(setMilestones(data.planning.milestones));
       // dispatch(setMilestones(planningSpreadsheet.planning.milestones));
-    }
-    if (isError) {
-      console.log(error);
     }
   }, [isSuccess, isError, error, data, dispatch]);
 
   const handleConfirm = () => {
-    console.log("confirm");
     setOpen({ ...open, state: false });
-    //Si es el endpoint se envia correctamente hacer que se ejecute este bloque de codigo debajo
     dispatch(confirmChanges());
-    setSnackbarMessage("Cambios guardados correctamente");
-    setSnackbarSeverity("success");
-    setSnackbarOpen(true);
-
+    const formData = data.planning.milestones.map((t_milestone, index) => {
+      if (index === milestone_index) {
+        return {
+          ...milestone,
+          status: "A"
+        };
+      }else if(index === milestone_index + 1){
+        return {
+          ...t_milestone,
+          deliverables : [...t_milestone.deliverables,...milestone.deliverables.filter((deliverable,i) => {
+            return deliverable.status === "C"
+          }).map((newDeliverable,index) => { return {
+            ...newDeliverable,
+            id: index + t_milestone.deliverables.length,
+            status : "A",
+            name : newDeliverable.name,
+            expected_result : 0,
+            actual_result : 0,
+            observations : "",
+          }})]
+        }
+      }
+      return t_milestone;
+    });
+    update({
+      id,
+      data: {
+        milestones: formData,
+        company_id: data.planning.company_id
+      }
+    });
+  
   };
 
   useEffect(() => {
-    if(status === "E"){
+    console.log(status,"");
       window.onbeforeunload = (e) => { 
+        if(status === "E"){
           e.preventDefault();
           return ;
-      };
+        }
+          
     }
 
     
   }, [status]);
+
+  useEffect(() => {
+    if (updatedSuccessfully) {
+      dispatch(confirmChanges());
+      setSnackbarMessage("Hito validado correctamente");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+    }
+    if (updateIsError) {
+      console.log(updateError);
+      setSnackbarMessage(updateError.data?.message);
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+  }, [ isSuccess, error, isError, updatedSuccessfully, updateIsError]);
 
   if (isFetching) {
     return (
@@ -112,6 +160,7 @@ const PlanningSpreadSheet = () => {
               color: "white",
               border: "white",
             }}
+            disabled={pendingMilestoneIndex !== milestone_index || updateLoading}
             onClick={() =>
               setOpen({
                 state: true,

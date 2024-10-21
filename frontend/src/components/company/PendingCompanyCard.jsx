@@ -23,8 +23,8 @@ const PendingCompanyCard = ({ request }) => {
           flexDirection: "column",
           mb: 1,
           mt: 3,
-          mr: 3,
-          ml: 3,
+          mr: { xs: 0, sm: 3 },
+          ml: { xs: 0, sm: 3 },
         }}
       >
         <Box sx={{ flex: 1, mr: 2, mb: 3 }}>
@@ -64,9 +64,9 @@ const PendingCompanyCard = ({ request }) => {
           color="primary"
           sx={{
             mb: 2,
-            px: 12,
             py: 1,
             position: "relative",
+            width: "100%",
           }}
         >
           Ver solicitud
