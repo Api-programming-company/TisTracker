@@ -56,6 +56,10 @@ const PlanningSpreadSheet = () => {
             ...newDeliverable,
             id: index + t_milestone.deliverables.length,
             status : "A",
+            name : newDeliverable.name,
+            expected_result : 0,
+            actual_result : 0,
+            observations : "",
           }})]
         }
       }

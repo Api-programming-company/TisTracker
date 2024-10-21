@@ -83,19 +83,43 @@ export const planningSlice = createSlice({
         ],
       };
     },
-    confirmChanges : (state,action) => {  
+    confirmChanges: (state, action) => {
         const currentState = current(state);
-        const { milestones: currentMilestones, currentMilestone : milestoneIndex } = currentState;
+        const { milestones: currentMilestones, currentMilestone: milestoneIndex } = currentState;
         const newMilestones = [...currentMilestones];
+        const milestone = newMilestones[milestoneIndex];
+        const deliverablesPending = milestone.deliverables.filter(
+          (deliverable) => deliverable.status === "C"
+        );
+        if (milestoneIndex + 1 < newMilestones.length) {
+          const nextMilestone = newMilestones[milestoneIndex + 1];
+          const newDeliverables = nextMilestone.deliverables.concat(
+            deliverablesPending.map((deliverable,i) => ({
+              ...deliverable,
+              id: nextMilestone.deliverables.length + i,
+              status: "A",
+              name : deliverable.name + "(carry over)",
+              expected_result : 0,
+              actual_result : 0,
+              observations : "",
+            }))
+          );
+          newMilestones[milestoneIndex + 1] = {
+            ...nextMilestone,
+            deliverables: newDeliverables,
+          };
+        }
         newMilestones[milestoneIndex] = {
-            ...newMilestones[milestoneIndex],
-            status: "A"
+          ...milestone,
+          status: "A",
         };
         return {
-            ...state,
-            milestones: newMilestones
+          ...state,
+          milestones: newMilestones,
+          pendingMilestone: state.pendingMilestone+1
         };
     },
+
 
     setCurrentMilestone: (state, action) => {
         const currentState = current(state);
