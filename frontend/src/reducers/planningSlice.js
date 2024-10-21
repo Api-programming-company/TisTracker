@@ -21,12 +21,19 @@ export const planningSlice = createSlice({
         });
       });
 
+      tempMilestones.sort((a,b) => {
+        const dateA = new Date(a.end_date);
+        const dateB = new Date(b.end_date);
+        return dateA - dateB;
+      });
+
       const currentMilestone = tempMilestones.findIndex(
         (milestone) => milestone.status === "P"
       );
       console.log(tempMilestones);
       return { milestones: tempMilestones , currentMilestone, pendingMilestone: currentMilestone };
     },
+
 
     changeDeliverable: (state, action) => {
       const { milestone_id, id, field, value } = action.payload;
@@ -142,7 +149,8 @@ export const getMilestonesList = (state) => {
       id: milestone.id,
       name: milestone.name,
       selected : index === state.planning.currentMilestone,
-      current: new Date().toISOString().split('T')[0] >= milestone.start_date && new Date().toISOString().split('T')[0] <= milestone.end_date
+      current: new Date().toISOString().split('T')[0] >= milestone.start_date && new Date().toISOString().split('T')[0] <= milestone.end_date,
+      pending: index === state.planning.pendingMilestone,
     }));
   }else{
     return null;

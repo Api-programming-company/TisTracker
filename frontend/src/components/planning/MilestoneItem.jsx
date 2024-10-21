@@ -76,9 +76,11 @@ const MilestoneItem = ({ milestone }) => {
           label="Hito"
           onChange={(e) => onChangeListItem(list.indexOf(e.target.value))}
         >
-          {list.map((item) => (
+          {list.map((item,index) => (
             <MenuItem key={item.id} value={item}>
               {item.name} {item.current && <span className="text-sm text-primary">(actual)</span>}
+              {item.pending && <span className="text-sm text-red-500">(pendiente)</span>}
+              {index < pendingMilestoneIndex && <span className="text-sm text-success">(validado)</span>}
             </MenuItem>
           ))}
         </Select>
