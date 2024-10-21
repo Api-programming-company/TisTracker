@@ -79,7 +79,7 @@ const MilestoneItem = ({ milestone }) => {
           {list.map((item,index) => (
             <MenuItem key={item.id} value={item}>
               {item.name} {item.current && <span className="text-sm text-primary">(actual)</span>}
-              {item.pending && <span className="text-sm text-red-500">(pendiente)</span>}
+              {item.pending && <span className={`text-sm ${item.current ? "text-primary" : index < currentMilestoneIndex ? "text-red": "text-success"}`}>(pendiente)</span>}
               {index < pendingMilestoneIndex && <span className="text-sm text-success">(validado)</span>}
             </MenuItem>
           ))}
