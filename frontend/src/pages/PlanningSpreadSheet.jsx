@@ -43,13 +43,11 @@ const PlanningSpreadSheet = () => {
     dispatch(confirmChanges());
     const formData = data.planning.milestones.map((t_milestone, index) => {
       if (index === milestone_index) {
-        console.log("updating",milestone,milestone_index,index);
         return {
           ...milestone,
           status: "A"
         };
       }else if(index === milestone_index + 1){
-        console.log("adding");
         return {
           ...t_milestone,
           deliverables : [...t_milestone.deliverables,...milestone.deliverables.filter((deliverable,i) => {
@@ -63,7 +61,6 @@ const PlanningSpreadSheet = () => {
       }
       return t_milestone;
     });
-    console.log("Sending" , formData);
     update({
       id,
       data: formData
@@ -72,12 +69,13 @@ const PlanningSpreadSheet = () => {
   };
 
   useEffect(() => {
-    console.log(status);
-    if(status === "E"){
+    console.log(status,"");
       window.onbeforeunload = (e) => { 
+        if(status === "E"){
           e.preventDefault();
           return ;
-      };
+        }
+          
     }
 
     

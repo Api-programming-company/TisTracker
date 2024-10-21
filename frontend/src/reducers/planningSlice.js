@@ -71,19 +71,17 @@ export const planningSlice = createSlice({
     confirmChanges : (state,action) => {  
         const currentState = current(state);
         const { milestones: currentMilestones, currentMilestone : milestoneIndex } = currentState;
-        console.log("confirming", milestoneIndex);
+        const newMilestones = [...currentMilestones];
+        newMilestones[milestoneIndex] = {
+            ...newMilestones[milestoneIndex],
+            status: "A"
+        };
         return {
             ...state,
-            milestones: [
-                ...currentMilestones.slice(0, milestoneIndex),
-                {
-                    ...currentMilestones[milestoneIndex],
-                    status: "A"
-                },
-                ...currentMilestones.slice(milestoneIndex + 1),
-            ]
+            milestones: newMilestones
         };
     },
+
     setCurrentMilestone: (state, action) => {
         const currentState = current(state);
         const { milestones: currentMilestones, currentMilestone : milestoneIndex } = currentState;
