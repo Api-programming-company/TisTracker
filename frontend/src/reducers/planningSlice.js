@@ -126,6 +126,10 @@ export const selectCurrentMilestone = (state) => {
     return state.planning.milestones && state.planning.milestones[state.planning.currentMilestone]
 };
 
+export const getPendingMilestoneIndex = (state) => {
+  return state.planning.milestones && state.planning.pendingMilestone
+}
+
 export const getStatus = (state) => {
   
   const {currentMilestone,milestones} = state.planning;

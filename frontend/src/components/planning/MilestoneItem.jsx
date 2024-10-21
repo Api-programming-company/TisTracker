@@ -3,7 +3,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import PlanningItem from "./PlanningItem";
 import { setCurrentMilestone } from "../../reducers/planningSlice";
-import { getMilestonesList } from "../../reducers/planningSlice";
+import { getMilestonesList,getCurrentMilestoneIndex,getPendingMilestoneIndex } from "../../reducers/planningSlice";
 import { useSelector } from "react-redux";
 import { FormControl,InputLabel,Select,MenuItem } from "@mui/material";
 import { useDispatch } from "react-redux";
@@ -18,6 +18,8 @@ const MilestoneItem = ({ milestone }) => {
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString();
   };
+  const currentMilestoneIndex = useSelector(getCurrentMilestoneIndex);
+  const pendingMilestoneIndex = useSelector(getPendingMilestoneIndex);
 
   const currentMilestone = () => {
     const today = new Date();
@@ -47,6 +49,7 @@ const MilestoneItem = ({ milestone }) => {
   return (
     <div className="list">
       {status !== "A" && (
+        currentMilestoneIndex === pendingMilestoneIndex ? ( 
         new Date() > new Date(milestone.end_date) ? (
           <p className="text-red-500 text-sm">
             {`Validación retrasada por ${Math.ceil(
@@ -61,7 +64,8 @@ const MilestoneItem = ({ milestone }) => {
                 (1000 * 60 * 60 * 24)
             )} días para la validación de este hito.`}
           </p>
-        )
+        )):
+        <p className="text-sm text-red-500">Debes validar los hitos anteriores para poder validar este</p>
       )}
       <FormControl fullWidth>
         <InputLabel id="demo-simple-select-label">Hito</InputLabel>

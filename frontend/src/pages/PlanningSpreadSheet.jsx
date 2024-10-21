@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectCurrentMilestone, getStatus,getCurrentMilestoneIndex } from "../reducers/planningSlice";
+import { selectCurrentMilestone, getStatus,getCurrentMilestoneIndex, getPendingMilestoneIndex } from "../reducers/planningSlice";
 import { setMilestones, confirmChanges } from "../reducers/planningSlice";
 import { useGetPlanningByCompanyIdQuery } from "../api/planningApi";
 import { useUpdateCompanyPlanningByIdMutation } from "../api/companyApi";
@@ -19,6 +19,7 @@ const PlanningSpreadSheet = () => {
   const dispatch = useDispatch();
   const milestone = useSelector(selectCurrentMilestone);
   const status = useSelector(getStatus);
+  const pendingMilestoneIndex = useSelector(getPendingMilestoneIndex);
   const { data, isSuccess, isFetching, isError, error } =
     useGetPlanningByCompanyIdQuery(id);
   const milestone_index = useSelector(getCurrentMilestoneIndex);
@@ -32,7 +33,6 @@ const PlanningSpreadSheet = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      console.log("setting", data);
       dispatch(setMilestones(data.planning.milestones));
       // dispatch(setMilestones(planningSpreadsheet.planning.milestones));
     }
@@ -155,7 +155,7 @@ const PlanningSpreadSheet = () => {
               color: "white",
               border: "white",
             }}
-            
+            disabled={pendingMilestoneIndex !== milestone_index}
             onClick={() =>
               setOpen({
                 state: true,
