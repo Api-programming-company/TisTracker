@@ -32,7 +32,7 @@ const PlanningSpreadSheet = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      console.log("setting");
+      console.log("setting", data);
       dispatch(setMilestones(data.planning.milestones));
       // dispatch(setMilestones(planningSpreadsheet.planning.milestones));
     }
@@ -63,7 +63,10 @@ const PlanningSpreadSheet = () => {
     });
     update({
       id,
-      data: formData
+      data: {
+        milestones: formData,
+        company_id: data.planning.company_id
+      }
     });
   
   };
@@ -88,6 +91,7 @@ const PlanningSpreadSheet = () => {
       setSnackbarOpen(true);
     }
     if (updateIsError) {
+      console.log(updateError);
       setSnackbarMessage(updateError.data?.message);
       setSnackbarSeverity("error");
       setSnackbarOpen(true);

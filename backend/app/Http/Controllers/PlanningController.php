@@ -132,6 +132,7 @@ class PlanningController extends Controller
     // Actualizar una planificación
     public function update(Request $request, $id)
     {
+
         try {
             // Validar los datos de actualización
             $validatedData = $request->validate([
@@ -142,7 +143,7 @@ class PlanningController extends Controller
                 'milestones.*.name' => 'sometimes|required|string|max:255',
                 'milestones.*.start_date' => 'sometimes|required|date|before:milestones.*.end_date',
                 'milestones.*.end_date' => 'sometimes|required|date|after:milestones.*.start_date',
-                'milestones.*.billing_percentage' => 'sometimes|required|integer|min:0',
+                // 'milestones.*.billing_percentage' => 'sometimes|required|integer|min:0',
                 'milestones.*.status' => 'sometimes|in:A,P',
                 'milestones.*.deliverables' => 'sometimes|array|min:1',
                 'milestones.*.deliverables.*.name' => 'sometimes|required|string|max:255',
