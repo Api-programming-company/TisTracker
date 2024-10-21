@@ -1,5 +1,5 @@
 import { createSlice, current } from "@reduxjs/toolkit";
-import { data, planningSpreadsheet } from "../mock_objects/planificacion";
+import { planningSpreadsheet } from "../mock_objects/planificacion";
 
 const initialState = planningSpreadsheet.planning.milestones;
 
@@ -9,26 +9,20 @@ export const planningSlice = createSlice({
   reducers: {
     setMilestones: (state, action) => {
       const tempMilestones = JSON.parse(JSON.stringify(action.payload));
-      tempMilestones.forEach((milestone) => {
-        milestone.deliverables.forEach((deliverable) => {
-          deliverable.hopeResult = 0;
-          deliverable.observedResult = 0;
-          deliverable.observations = "";
-          deliverable.state = "A";
-        });
-      });
+      
 
       const today = new Date().toISOString().split("T")[0];
       const currentMilestone = tempMilestones.findIndex(
         (milestone) =>
           milestone.start_date <= today && milestone.end_date >= today
       );
-      console.log(tempMilestones,currentMilestone);
+      console.log(tempMilestones);
       return { milestones: tempMilestones , currentMilestone };
     },
 
     changeDeliverable: (state, action) => {
       const { milestone_id, id, field, value } = action.payload;
+      console.log(field,value);
       const currentState = current(state);
       const { milestones: currentMilestones } = currentState;
       const milestoneIndex = currentMilestones.findIndex(
@@ -41,9 +35,9 @@ export const planningSlice = createSlice({
       const numberValue = Number(value);
       const numberHopeResult = Number(
         currentMilestones[milestoneIndex].deliverables[deliverableIndex]
-          .hopeResult
+          .expected_result
       );
-      if (field === "observedResult" && numberValue > numberHopeResult) {
+      if (field === "actual_result" && numberValue > numberHopeResult) {
         return { ...currentState };
       }
 
@@ -74,9 +68,10 @@ export const planningSlice = createSlice({
         ],
       };
     },
-    confirmChanges : (state,action) => {
+    confirmChanges : (state,action) => {  
         const currentState = current(state);
         const { milestones: currentMilestones, currentMilestone : milestoneIndex } = currentState;
+        console.log("confirming", milestoneIndex);
         return {
             ...state,
             milestones: [
@@ -92,24 +87,26 @@ export const planningSlice = createSlice({
     setCurrentMilestone: (state, action) => {
         const currentState = current(state);
         const { milestones: currentMilestones, currentMilestone : milestoneIndex } = currentState;
-        return {
+        
+        return currentMilestones[milestoneIndex].status === "E" ? {
             ...state,
             milestones: [
                 ...currentMilestones.slice(0, milestoneIndex),
                 {
                     ...currentMilestones[milestoneIndex],
-                    status: "P",
                     deliverables: currentMilestones[milestoneIndex].deliverables.map(deliverable => ({
                         ...deliverable,
-                        hopeResult: 0,
-                        observedResult: 0,
+                        expected_result: 0,
+                        actual_result: 0,
                         observations: "",
-                        state: "A"
+                        status: "A"
                     }))
                 },
                 ...currentMilestones.slice(milestoneIndex + 1),
             ],
             currentMilestone: action.payload
+        } : {
+          ...state, currentMilestone: action.payload
         };
 
     }
@@ -138,10 +135,11 @@ export const getMilestonesList = (state) => {
   }else{
     return null;
   }
-    
-
 }
 
+export const getCurrentMilestoneIndex = (state) => {
+  return state.planning.currentMilestone;
+}
 
 export const { setMilestones, changeDeliverable,confirmChanges,setCurrentMilestone } = planningSlice.actions;
 

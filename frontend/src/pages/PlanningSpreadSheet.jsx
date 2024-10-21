@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectCurrentMilestone, getStatus } from "../reducers/planningSlice";
+import { selectCurrentMilestone, getStatus,getCurrentMilestoneIndex } from "../reducers/planningSlice";
 import { setMilestones, confirmChanges } from "../reducers/planningSlice";
 import { useGetPlanningByCompanyIdQuery } from "../api/planningApi";
+import { useUpdateCompanyPlanningByIdMutation } from "../api/companyApi";
 import { useParams } from "react-router-dom";
 import { CircularProgress, Container, Alert, Box } from "@mui/material";
 import MilestoneItem from "../components/planning/MilestoneItem";
@@ -20,31 +21,58 @@ const PlanningSpreadSheet = () => {
   const status = useSelector(getStatus);
   const { data, isSuccess, isFetching, isError, error } =
     useGetPlanningByCompanyIdQuery(id);
+  const milestone_index = useSelector(getCurrentMilestoneIndex);
+  const [
+    update, 
+    {isLoading : updateLoading, 
+      isSuccess: updatedSuccessfully, 
+      isError: updateIsError, 
+      error: updateError}] = useUpdateCompanyPlanningByIdMutation();
 
 
   useEffect(() => {
     if (isSuccess) {
-      console.log(data);
+      console.log("setting");
       dispatch(setMilestones(data.planning.milestones));
       // dispatch(setMilestones(planningSpreadsheet.planning.milestones));
-    }
-    if (isError) {
-      console.log(error);
     }
   }, [isSuccess, isError, error, data, dispatch]);
 
   const handleConfirm = () => {
-    console.log("confirm");
     setOpen({ ...open, state: false });
-    //Si es el endpoint se envia correctamente hacer que se ejecute este bloque de codigo debajo
     dispatch(confirmChanges());
-    setSnackbarMessage("Cambios guardados correctamente");
-    setSnackbarSeverity("success");
-    setSnackbarOpen(true);
-
+    const formData = data.planning.milestones.map((t_milestone, index) => {
+      if (index === milestone_index) {
+        console.log("updating",milestone,milestone_index,index);
+        return {
+          ...milestone,
+          status: "A"
+        };
+      }else if(index === milestone_index + 1){
+        console.log("adding");
+        return {
+          ...t_milestone,
+          deliverables : [...t_milestone.deliverables,...milestone.deliverables.filter((deliverable,i) => {
+            return deliverable.status === "C"
+          }).map((newDeliverable,index) => { return {
+            ...newDeliverable,
+            id: index + t_milestone.deliverables.length,
+            status : "A",
+          }})]
+        }
+      }
+      return t_milestone;
+    });
+    console.log("Sending" , formData);
+    update({
+      id,
+      data: formData
+    });
+  
   };
 
   useEffect(() => {
+    console.log(status);
     if(status === "E"){
       window.onbeforeunload = (e) => { 
           e.preventDefault();
@@ -54,6 +82,19 @@ const PlanningSpreadSheet = () => {
 
     
   }, [status]);
+
+  useEffect(() => {
+    if (updatedSuccessfully) {
+      setSnackbarMessage("Hito validado correctamente");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+    }
+    if (updateIsError) {
+      setSnackbarMessage(updateError.data?.message);
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+  }, [ isSuccess, error, isError, updatedSuccessfully, updateIsError]);
 
   if (isFetching) {
     return (
@@ -112,6 +153,7 @@ const PlanningSpreadSheet = () => {
               color: "white",
               border: "white",
             }}
+            
             onClick={() =>
               setOpen({
                 state: true,
