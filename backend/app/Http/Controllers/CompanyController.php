@@ -90,7 +90,7 @@ class CompanyController extends Controller
 
             if ($currentDate->lt($academicPeriod->start_date) || $currentDate->gt($academicPeriod->end_date)) {
                 return response()->json([
-                    'message' => 'No esta en dentro de las fechas de registro de empresas.',
+                    'message' => 'No está dentro de las fechas de registro de empresas.',
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
@@ -232,9 +232,11 @@ class CompanyController extends Controller
             // Obtener las compañías pendientes
             $companies = Company::where('academic_period_id', $request->academic_period_id)
                 ->where('status', 'P')
-                ->withCount(['members' => function ($query) {
-                    $query->where('status', 'A');
-                }])
+                ->withCount([
+                    'members' => function ($query) {
+                        $query->where('status', 'A');
+                    }
+                ])
                 ->get();
 
             return response()->json([
@@ -287,44 +289,51 @@ class CompanyController extends Controller
 
     public function index(Request $request)
     {
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-        $academicPeriodId = $request->input('academic_period_id');
-        $status = $request->input('status');
+        try {
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            $academicPeriodId = $request->input('academic_period_id');
+            $status = $request->input('status');
 
-        $query = Company::query();
+            $query = Company::query();
 
-        if ($academicPeriodId) {
-            $query->where('academic_period_id', $academicPeriodId);
-        }
-
-        if ($status) {
-            $query->where('status', $status);
-        }
-
-        // Filtrar por el rango de fechas de los milestones
-        if ($startDate && $endDate) {
-            $query->whereHas('planning.milestones', function ($milestoneQuery) use ($startDate, $endDate) {
-                $milestoneQuery->whereBetween('end_date', [$startDate, $endDate]);
+            // Filtrar por academic_period_id y status
+            $query->when($academicPeriodId, function ($q) use ($academicPeriodId) {
+                return $q->where('academic_period_id', $academicPeriodId);
             });
-        }
 
-        // Obtener las compañías filtradas junto con la planificación, hitos y entregables
-        $companies = $query->with(['planning.milestones' => function ($milestoneQuery) use ($startDate, $endDate) {
+            $query->when($status, function ($q) use ($status) {
+                return $q->where('status', $status);
+            });
+
+            // Filtrar por el rango de fechas de los milestones
             if ($startDate && $endDate) {
-                $milestoneQuery->whereBetween('end_date', [$startDate, $endDate])
-                            ->with('deliverables'); 
+                $query->whereHas('planning.milestones', function ($milestoneQuery) use ($startDate, $endDate) {
+                    $milestoneQuery->whereBetween('end_date', [$startDate, $endDate]);
+                });
             }
-        }])->get();
 
-        if ($startDate && $endDate) {
-            // Añadir el end_date del milestone como delivery_day a cada compañía
-            $companies->each(function ($company) use ($startDate, $endDate) {
-                $milestone = $company->planning->milestones->whereBetween('end_date', [$startDate, $endDate])->first();
+            // Obtener las compañías filtradas junto con la planificación, hitos y entregables
+            $companies = $query->with([
+                'planning.milestones' => function ($milestoneQuery) use ($startDate, $endDate) {
+                    if ($startDate && $endDate) {
+                        $milestoneQuery->whereBetween('end_date', [$startDate, $endDate]);
+                    }
+                    $milestoneQuery->with('deliverables');
+                }
+            ])->get();
+
+            return response()->json($companies->transform(function ($company) {
+                $milestone = $company->planning ? $company->planning->milestones->first() : null;
                 $company->delivery_day = $milestone ? $milestone->end_date : null;
-            });
+                return $company;
+            }));
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Ocurrió un error al obtener las compañías.',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return response()->json($companies);
     }
 
     public function update(Request $request, $id)
@@ -536,13 +545,13 @@ class CompanyController extends Controller
                 ->first();
 
             if (!$academic_period_evaluation) {
-                return response()->json(['message' => 'El periodo academico no cuenta con la evaluacion.'], Response::HTTP_NOT_FOUND);
+                return response()->json(['message' => 'El periodo académico no cuenta con la evaluación.'], Response::HTTP_NOT_FOUND);
             }
 
             // Validar que la fecha actual esté dentro del rango de fechas de la evaluación
             $currentDate = now();
             if ($currentDate->lt($academic_period_evaluation->start_date) || $currentDate->gt($academic_period_evaluation->end_date)) {
-                return response()->json(['message' => 'El periodo academico no esta dentro de la fecha de evaluacion.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+                return response()->json(['message' => 'El periodo académico no está dentro de la fecha de evaluación.'], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
             return response()->json([

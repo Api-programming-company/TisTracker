@@ -15,7 +15,7 @@ const RadioOption = ({ answer_options, question_id }) => {
       {answer_options.map((option) => {
         return (
           <Grid2
-            size={{ xs: 4, md: 1 }}
+            size={{ xs: 2, md: 1 }}
             sx={{
               display: "flex",
               justifyContent: "end",

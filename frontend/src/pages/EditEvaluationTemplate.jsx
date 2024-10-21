@@ -105,7 +105,7 @@ const EditEvaluationTemplate = () => {
     return "";
   };
 
-  const handleCreateTemplate = () => {
+  const handleUpdateTemplate = () => {
     setOpenCreateTemplate(false);
     if (state?.errors?.length >= 1) {
       setSnackbarMessage("Error, llena el formulario adecuadamente");
@@ -113,24 +113,12 @@ const EditEvaluationTemplate = () => {
       setShowError(true);
     } else {
       setShowError(false);
-      // quitar el id del state y enviarlo
-      const { id, ...templateData } = state;
-      const questionsWithoutId = templateData.questions.map(
-        ({ id, ...rest }) => ({
-          ...rest,
-          answer_options: rest.answer_options.map(
-            ({ id, ...optionRest }) => optionRest
-          ),
-        })
-      );
-      const dataToSend = { ...templateData, questions: questionsWithoutId };
-      // createEvaluationTemplate(state);
-      console.log(state);
-      // console.log(initialStateCopy);
+      console.log({id:evaluation_id, data:state});
+      updateEvaluationTemplate({id:evaluation_id, data:state});
     }
   };
 
-  if (companyQuestionsFetching) {
+  if (companyQuestionsFetching || isLoading) {
     return (
       <Container
         maxWidth="sm"
@@ -230,7 +218,7 @@ const EditEvaluationTemplate = () => {
           setOpen={setOpenCreateTemplate}
           title={"Crear plantilla"}
           content={"¿Estás seguro de realizar esta acción?"}
-          onAccept={handleCreateTemplate}
+          onAccept={handleUpdateTemplate}
         />
 
         <DialogMod

@@ -54,7 +54,7 @@ const EvaluationTemplateList = () => {
   };
 
   if (data.length === 0) {
-    return <Typography>No tiene plantillas de evaluacion.</Typography>;
+    return <Typography>No tiene plantillas de evaluación.</Typography>;
   }
 
   return (
