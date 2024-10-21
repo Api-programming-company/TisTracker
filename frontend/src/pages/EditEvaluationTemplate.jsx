@@ -25,6 +25,13 @@ const EditEvaluationTemplate = () => {
     isError: isCompanyQuestionsError,
     error: companyQuestionsError,
   } = useGetCompanyQuestionsByIdQuery(evaluation_id);
+  const [showError, setShowError] = useState(false);
+  const [openCreateTemplate, setOpenCreateTemplate] = useState(false);
+  const [openSnackBar, setOpenSnackBar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (companyQuestionsSuccess) {
       console.log(companyQuestions);
@@ -49,6 +56,7 @@ const EditEvaluationTemplate = () => {
   useEffect(() => {
     if (isSuccess) {
       console.log(data);
+      setOpenConfirm(true);
     }
     if (isError) {
       console.log(error);
@@ -69,13 +77,6 @@ const EditEvaluationTemplate = () => {
   useEffect(() => {
     clearState();
   }, []);
-
-  const [showError, setShowError] = useState(false);
-  const [openCreateTemplate, setOpenCreateTemplate] = useState(false);
-  const [openSnackBar, setOpenSnackBar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [openConfirm, setOpenConfirm] = useState(false);
-  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     setShowError(false);
@@ -113,8 +114,8 @@ const EditEvaluationTemplate = () => {
       setShowError(true);
     } else {
       setShowError(false);
-      console.log({id:evaluation_id, data:state});
-      updateEvaluationTemplate({id:evaluation_id, data:state});
+      console.log({ id: evaluation_id, data: state });
+      updateEvaluationTemplate({ id: evaluation_id, data: state });
     }
   };
 
@@ -207,7 +208,7 @@ const EditEvaluationTemplate = () => {
           onClick={() => {
             validateErrors();
             handleScore();
-            handleGetDifference(initialStateCopy)
+            handleGetDifference(initialStateCopy);
             setOpenCreateTemplate(true);
           }}
         >
@@ -216,17 +217,21 @@ const EditEvaluationTemplate = () => {
         <DialogMod
           open={openCreateTemplate}
           setOpen={setOpenCreateTemplate}
-          title={"Crear plantilla"}
-          content={"¿Estás seguro de realizar esta acción?"}
+          title={"Actualizar plantilla"}
+          content={
+            "¿Estás seguro de guardar los cambios realizados en esta plantilla?"
+          }
           onAccept={handleUpdateTemplate}
         />
 
         <DialogMod
           open={openConfirm}
           setOpen={setOpenConfirm}
-          title={"Confirmar"}
-          content={"Se registró su plantilla con exito"}
-          onAccept={() => navigate("/")}
+          title={"Confirmación de cambios"}
+          content={
+            "Se han registrado los cambios en su plantilla correctamente"
+          }
+          onAccept={() => navigate("/evaluation-templates")}
           onCancel={() => navigate("/")}
           showButtonCancel={false}
         />
