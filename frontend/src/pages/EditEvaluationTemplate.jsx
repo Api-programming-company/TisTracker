@@ -60,6 +60,9 @@ const EditEvaluationTemplate = () => {
     }
     if (isError) {
       console.log(error);
+      setShowError(true);
+      setSnackbarMessage(error?.data.message);
+      setOpenSnackBar(true);
     }
   }, [data, isLoading, isError, isSuccess]);
 
@@ -103,6 +106,10 @@ const EditEvaluationTemplate = () => {
     if (x?.length >= 1 && showError) {
       return x[0].message;
     }
+    return "";
+  };
+  const titleError = () => {
+    if (showError) return error?.data?.errors?.title;
     return "";
   };
 
@@ -151,10 +158,11 @@ const EditEvaluationTemplate = () => {
         label="Nombre de plantilla*"
         name="title"
         onChange={handleInputChange}
-        error={Boolean(error?.data?.errors?.title)}
-        helperText={findError("title") || error?.data?.errors?.title}
+        error={Boolean(error?.data?.errors?.title && showError)}
+        helperText={findError("title") || titleError()}
         fullWidth
         multiline
+        inputProps={{ maxLength: 255 }}
       />
       <TextField
         sx={{ marginY: 1 }}
@@ -167,6 +175,7 @@ const EditEvaluationTemplate = () => {
         helperText={findError("description")}
         fullWidth
         multiline
+        inputProps={{ maxLength: 500 }}
       />
       <Typography
         component={"h2"}
