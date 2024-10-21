@@ -101,7 +101,9 @@ class EvaluationController extends Controller
     {
         try {
             // Buscar la evaluación en la tabla evaluations
-            $evaluation = Evaluation::with('questions.answerOptions')->find($id);
+            $evaluation = Evaluation::with(['questions.answerOptions' => function ($query) {
+                $query->orderBy('score');
+            }])->find($id);
 
             if (!$evaluation) {
                 return response()->json(['message' => 'Evaluación no encontrada.'], 404);
