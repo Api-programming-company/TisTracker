@@ -27,11 +27,15 @@ export const planningSlice = createSlice({
         return dateA - dateB;
       });
 
-      const currentMilestone = tempMilestones.findIndex(
+      let currentMilestone = tempMilestones.findIndex(
         (milestone) => milestone.status === "P"
       );
+    
       console.log(tempMilestones);
-      return { milestones: tempMilestones , currentMilestone, pendingMilestone: currentMilestone };
+      return { milestones: tempMilestones , 
+        currentMilestone : currentMilestone === -1 ? 0 : currentMilestone, 
+        pendingMilestone: currentMilestone === -1 ? 10000: currentMilestone 
+      };
     },
 
 
