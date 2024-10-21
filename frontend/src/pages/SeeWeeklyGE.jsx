@@ -30,7 +30,7 @@ const SeeWeeklyGE = () => {
         navigate("/");
       }
     }
-  }, [isSuccess, isError, data, error]);
+  }, [isSuccess, isError, data, error, checkUser, navigate]);
 
   if (isLoading) {
     return (

@@ -17,24 +17,36 @@ const PlanningItem = ({deliverable,index,milestone_id}) => {
 
   const handleInputChange = (event) => {
     const change = {};
-    switch (event.target.name) {
-      case "expected_result":
-        change.expected_result = parseInt(event.target.value);
-        break;
-      case "actual_result":
-        change.actual_result = parseInt(event.target.value);
-        break;
-      case "observations":
-        change.observations = event.target.value;
-        break;
-      default:
-        console.log("This state doesn't exist")
-        break;
-    }
-    dispatch(changeDeliverable({id : deliverable.id, field: event.target.name, value: event.target.value,milestone_id}));
+
+    const {name,value} = event.target;    
+    
+    if(name === "expected_result" || name === "actual_result"){
+      if(isNaN(value) || value < 0 || value > 100 || value === ""){
+        return;
+      }
     }
 
+    switch (name) {
+      
+        case "expected_result":
+            change[name] = parseInt(value);
+        break;
+        case "actual_result":
+                change[name] = parseInt(value);
+            break;
+        case "observations":
+            change.observations = value;
+            break;
+        default:
+            console.log("This state doesn't exist");
+            break;
+    }
+    
+    dispatch(changeDeliverable({id : deliverable.id, field: name, value, milestone_id}));
+}
+
   const handleActionButton = () => {
+   
     switch (deliverable.status) {
       case "A":
         dispatch(changeDeliverable({id : deliverable.id, field: "status", value: "C",milestone_id}));
