@@ -30,8 +30,7 @@ const RegistroGE = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [plantillas, setPlantillas] = useState([]);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [confirmationOpen, setConfirmationOpen] = useState(false);
+
   const [openConfirm, setOpenConfirm] = useState(false);
   const [opentoConfirm, setOpentoConfirm] = useState(false);
 
@@ -75,7 +74,6 @@ const RegistroGE = () => {
 
   useEffect(() => {
     if (isCreated) {
-      setConfirmationOpen(true);
       console.log(createData);
       setOpenConfirm(true);
     }
@@ -289,6 +287,7 @@ const RegistroGE = () => {
                 onChange={(newValue) => {
                   setStartDate(newValue);
                   setStartDateError(false);
+                  setEndDateError(false);
                 }}
                 slotProps={{
                   textField: {
@@ -304,6 +303,7 @@ const RegistroGE = () => {
                 value={endDate}
                 onChange={(newValue) => {
                   setEndDate(newValue);
+                  setStartDateError(false);
                   setEndDateError(false);
                 }}
                 slotProps={{
