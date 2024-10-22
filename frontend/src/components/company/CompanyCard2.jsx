@@ -35,7 +35,7 @@ const CompanyCard2 = ({company}) => {
           noWrap
           sx={{
             color: "primary.main",
-            mt: 2,
+            mt: 1,
             mb: 0,
             ml: 2,
             mr: 2,
@@ -50,9 +50,17 @@ const CompanyCard2 = ({company}) => {
 
         <CardHeader
           title={<Typography variant="h6">{company.long_name}</Typography>}
-          
+          sx={{
+            mt: 0,
+            pt: 0,
+            pb: 1,
+          }}
         />
-        <CardContent>
+        <CardContent
+          sx={{
+            pt: 0,
+          }}
+        >
           <Typography variant="body2" noWrap>
             <b>Nombre corto:</b> {company.short_name}
           </Typography>
