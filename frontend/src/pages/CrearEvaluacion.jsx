@@ -5,11 +5,8 @@ import {
   Typography,
   Box,
   Snackbar,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
+  CircularProgress,
+  Container,
   FormControl,
   InputLabel,
   Select,
@@ -22,7 +19,7 @@ import {
   TimePicker,
 } from "@mui/x-date-pickers";
 import { useGetAllEvaluationTemplatesQuery } from "../api/evaluationApi";
-import { set, format } from "date-fns";
+import DialogMod from "../components/DialogMod";
 import { useParams } from "react-router-dom";
 import { useCreateAcademicPeriodEvaluationMutation } from "../api/academicPeriodEvaluationsApi";
 
@@ -40,12 +37,20 @@ const RegistroGE = () => {
   const [selectedEvaluation, setSelectedEvaluation] = useState("");
   const [selectedPlantilla, setSelectedPlantilla] = useState("");
   const [selectedPlantillaId, setSelectedPlantillaId] = useState(null);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
+
+  const [startDateError, setStartDateError] = useState(null);
+  const [endDateError, setEndDateError] = useState(null);
+  const [startTimeError, setStartTimeError] = useState(null);
+  const [endTimeError, setEndTimeError] = useState(null);
+
   const { data, error, isFetching, isError, isSuccess } =
-    useGetAllEvaluationTemplatesQuery(undefined, {
-      refetchOnMountOrArgChange: true,
-    });
+    useGetAllEvaluationTemplatesQuery();
+
   useEffect(() => {
     if (isSuccess) {
       console.log(data);
@@ -70,6 +75,7 @@ const RegistroGE = () => {
   useEffect(() => {
     if (isCreated) {
       console.log(createData);
+      setOpenConfirm(true);
     }
     if (isCreateError) {
       setSnackbarOpen(true);
@@ -109,40 +115,83 @@ const RegistroGE = () => {
       "Evaluación de Pares": "U",
     };
 
-    // Formatear las fechas con el desplazamiento horario
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const formattedStartTime = format(
-      new Date(startTime),
-      "yyyy-MM-dd'T'HH:mm:ssXXX",
-      { timeZone }
-    );
-    const formattedEndTime = format(
-      new Date(endTime),
-      "yyyy-MM-dd'T'HH:mm:ssXXX",
-      { timeZone }
-    );
-
     const formData = {
       evaluation_id: selectedPlantillaId,
       academic_period_id: academic_period_id,
       evaluation_type: evaluationMap[selectedEvaluation],
-      start_date: formattedStartTime,
-      end_date: formattedEndTime,
+      start_date: startTime,
+      end_date: endTime,
     };
-    console.log(formData);
     createAcademicPeriodEvaluation(formData);
+  };
+
+  const validateDates = (startDate, endDate, startTime, endTime) => {
+    let today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (startDate && endDate) {
+      if (startDate < today) {
+        setSnackbarMessage(
+          "La fecha de inicio no puede ser anterior a la fecha actual."
+        );
+        setSnackbarOpen(true);
+        setStartDateError(true);
+        return false;
+      }
+      if (endDate < today) {
+        setSnackbarMessage(
+          "La fecha de fin no puede ser anterior a la fecha actual."
+        );
+        setSnackbarOpen(true);
+        setEndDateError(true);
+        return false;
+      }
+      if (startDate > endDate) {
+        setSnackbarMessage(
+          "La fecha de inicio no puede ser posterior a la fecha de fin."
+        );
+        setSnackbarOpen(true);
+        setStartDateError(true);
+        setEndDateError(true);
+        return false;
+      }
+
+      const startDateTime = new Date(startDate);
+      const endDateTime = new Date(endDate);
+
+      if (startDate.getTime() === endDate.getTime()) {
+        if (startTime && endTime) {
+          const startHour = new Date(
+            startDateTime.setHours(startTime.getHours(), startTime.getMinutes())
+          );
+          const endHour = new Date(
+            endDateTime.setHours(endTime.getHours(), endTime.getMinutes())
+          );
+
+          if (startHour.getTime() === endHour.getTime()) {
+            setSnackbarMessage(
+              "La hora de inicio no puede ser la misma que la hora de fin."
+            );
+            setSnackbarOpen(true);
+            setStartTimeError(true);
+            return false;
+          }
+          if (startHour > endHour) {
+            setSnackbarMessage(
+              "La hora de inicio no puede ser mayor a la hora de fin."
+            );
+            setSnackbarOpen(true);
+            setStartTimeError(true);
+            return false;
+          }
+        }
+      }
+    }
+    return true;
   };
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
-  };
-
-  const handleDialogOpen = () => {
-    setDialogOpen(true);
-  };
-
-  const handleDialogClose = () => {
-    setDialogOpen(false);
   };
 
   const evaluations = [
@@ -152,7 +201,19 @@ const RegistroGE = () => {
   ];
 
   if (isFetching || isCreatingEvaluation) {
-    return <Typography>Cargando...</Typography>;
+    return (
+      <Container
+        maxWidth="sm"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        <CircularProgress />
+      </Container>
+    );
   }
 
   return (
@@ -203,16 +264,10 @@ const RegistroGE = () => {
             label="Seleccionar Plantilla"
           >
             {plantillas.map((plantilla) => (
-              <MenuItem
-                key={plantilla.id}
-                value={plantilla.title}
-                title={plantilla.title}
-              >
-                {plantilla.title.length > 50
-                  ? `${plantilla.title.substring(0, 50)}...`
-                  : plantilla.title}
+              <MenuItem key={plantilla.id} value={plantilla.title}>
+                {plantilla.title}
               </MenuItem>
-            ))}{" "}
+            ))}
           </Select>
         </FormControl>
 
@@ -238,6 +293,7 @@ const RegistroGE = () => {
                   textField: {
                     helperText: "DD/MM/AAAA",
                     fullWidth: true,
+                    error: startDateError,
                   },
                 }}
                 format="dd/MM/yyyy"
@@ -254,6 +310,7 @@ const RegistroGE = () => {
                   textField: {
                     helperText: "DD/MM/AAAA",
                     fullWidth: true,
+                    error: endDateError,
                   },
                 }}
                 format="dd/MM/yyyy"
@@ -274,11 +331,15 @@ const RegistroGE = () => {
               <TimePicker
                 label="Hora de Inicio"
                 value={startTime}
-                onChange={(e) => setStartTime(e)}
+                onChange={(newValue) => {
+                  setStartTime(newValue);
+                  setStartTimeError(false);
+                }}
                 slotProps={{
                   textField: {
                     helperText: "HH:MM",
                     fullWidth: true,
+                    error: startTimeError,
                   },
                 }}
                 format="HH:mm"
@@ -286,11 +347,15 @@ const RegistroGE = () => {
               <TimePicker
                 label="Hora de Fin"
                 value={endTime}
-                onChange={(e) => setEndTime(e)}
+                onChange={(newValue) => {
+                  setEndTime(newValue);
+                  setEndTimeError(false);
+                }}
                 slotProps={{
                   textField: {
                     helperText: "HH:MM",
                     fullWidth: true,
+                    error: endTimeError,
                   },
                 }}
                 fullWidth
@@ -338,24 +403,6 @@ const RegistroGE = () => {
         }}
         onCancel={() => setOpentoConfirm(false)}
       />
-      <Dialog
-        open={confirmationOpen}
-        onClose={handleDialogClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{"Registro exitoso"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            La Evaluación se ha creado correctamente.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose} color="primary">
-            Aceptar
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 };
