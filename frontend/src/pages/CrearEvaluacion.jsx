@@ -22,7 +22,6 @@ import { useGetAllEvaluationTemplatesQuery } from "../api/evaluationApi";
 import DialogMod from "../components/DialogMod";
 import { useParams } from "react-router-dom";
 import { useCreateAcademicPeriodEvaluationMutation } from "../api/academicPeriodEvaluationsApi";
-import { format } from "date-fns";
 
 const RegistroGE = () => {
   const navigate = useNavigate();
@@ -115,29 +114,46 @@ const RegistroGE = () => {
       "Evaluación Cruzada": "C",
       "Evaluación de Pares": "U",
     };
-    // Formatear las fechas con el desplazamiento horario
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const formattedStartTime = format(
-      new Date(startTime),
-      "yyyy-MM-dd'T'HH:mm:ssXXX",
-      { timeZone }
-    );
-    const formattedEndTime = format(
-      new Date(endTime),
-      "yyyy-MM-dd'T'HH:mm:ssXXX",
-      { timeZone }
-    );
 
     const formData = {
       evaluation_id: selectedPlantillaId,
       academic_period_id: academic_period_id,
       evaluation_type: evaluationMap[selectedEvaluation],
-      start_date: formattedStartTime,
-      end_date: formattedEndTime,
+      start_date: formatDate(startDate),
+      end_date: formatDate(endDate),
     };
+    console.log("Mis fechas");
+    console.log(formData.start_date);
+    console.log(formData.end_date);
+    console.log(startDate);
+    console.log(endDate);
 
-    console.log(formData);
     createAcademicPeriodEvaluation(formData);
+  };
+
+  const formatDate = (date) => {
+    if (!date) return "";
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // +1 porque getMonth() es 0-indexed
+    const day = String(date.getDate()).padStart(2, "0");
+
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+
+    // Obtener el desplazamiento de la zona horaria
+    const timezoneOffset = -date.getTimezoneOffset();
+    const offsetHours = String(
+      Math.floor(Math.abs(timezoneOffset) / 60)
+    ).padStart(2, "0");
+    const offsetMinutes = String(Math.abs(timezoneOffset) % 60).padStart(
+      2,
+      "0"
+    );
+    const offsetSign = timezoneOffset >= 0 ? "+" : "-";
+
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${offsetSign}${offsetHours}:${offsetMinutes}`;
   };
 
   const validateDates = (startDate, endDate, startTime, endTime) => {
