@@ -405,6 +405,16 @@ class CompanyController extends Controller
                 $company->members()->where('status', '!=', 'A')->delete();
             }
 
+            // Si el estado de la compañía va a cambiar a "P"
+            if ($request->status === 'P') {
+                // Verificar si la compañía ya está en estado "A"
+                if ($company->status === 'A') {
+                    return response()->json([
+                        'message' => 'La empresa ya fue aceptada, no puede volver a enviar el formulario.'
+                    ], Response::HTTP_BAD_REQUEST);
+                }
+            }
+
             // Si el request tiene miembros
             if ($request->has('members')) {
                 // Registrar los nuevos miembros con permiso 'R'
