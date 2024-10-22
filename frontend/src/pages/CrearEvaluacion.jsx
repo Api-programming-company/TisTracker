@@ -22,6 +22,8 @@ import { useGetAllEvaluationTemplatesQuery } from "../api/evaluationApi";
 import DialogMod from "../components/DialogMod";
 import { useParams } from "react-router-dom";
 import { useCreateAcademicPeriodEvaluationMutation } from "../api/academicPeriodEvaluationsApi";
+import { format } from "date-fns";
+
 
 const RegistroGE = () => {
   const navigate = useNavigate();
@@ -108,9 +110,10 @@ const RegistroGE = () => {
     setOpentoConfirm(true);
   };
 
-  const handleNavigate = async (e) => {
+  const handleNavigate = (e) => {
+    console.log("Creating");
     const evaluationMap = {
-      Autoevaluación: "A",
+      "Autoevaluación" : "A",
       "Evaluación Cruzada": "C",
       "Evaluación de Pares": "U",
     };
@@ -119,8 +122,8 @@ const RegistroGE = () => {
       evaluation_id: selectedPlantillaId,
       academic_period_id: academic_period_id,
       evaluation_type: evaluationMap[selectedEvaluation],
-      start_date: formatDate(startDate),
-      end_date: formatDate(endDate),
+      start_date: formatDate(startDate,startTime),
+      end_date: formatDate(endDate, endTime),
     };
     console.log("Mis fechas");
     console.log(formData.start_date);
@@ -131,29 +134,20 @@ const RegistroGE = () => {
     createAcademicPeriodEvaluation(formData);
   };
 
-  const formatDate = (date) => {
-    if (!date) return "";
+  const formatDate = (date,hour) => {
+    if (!date || !hour) return;
 
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // +1 porque getMonth() es 0-indexed
-    const day = String(date.getDate()).padStart(2, "0");
+    console.log(date,hour);
+    const formattedDate = new Date(Date.UTC(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      hour.getHours(),
+      hour.getMinutes(),
+      hour.getSeconds()
+    ));
 
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    const seconds = String(date.getSeconds()).padStart(2, "0");
-
-    // Obtener el desplazamiento de la zona horaria
-    const timezoneOffset = -date.getTimezoneOffset();
-    const offsetHours = String(
-      Math.floor(Math.abs(timezoneOffset) / 60)
-    ).padStart(2, "0");
-    const offsetMinutes = String(Math.abs(timezoneOffset) % 60).padStart(
-      2,
-      "0"
-    );
-    const offsetSign = timezoneOffset >= 0 ? "+" : "-";
-
-    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${offsetSign}${offsetHours}:${offsetMinutes}`;
+    return formattedDate.toISOString();
   };
 
   const validateDates = (startDate, endDate, startTime, endTime) => {
