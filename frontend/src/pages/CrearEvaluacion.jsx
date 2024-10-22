@@ -5,7 +5,6 @@ import {
   Typography,
   Box,
   Snackbar,
-  FormHelperText,
   CircularProgress,
   Container,
   FormControl,
@@ -20,7 +19,6 @@ import {
   TimePicker,
 } from "@mui/x-date-pickers";
 import { useGetAllEvaluationTemplatesQuery } from "../api/evaluationApi";
-import { set } from "date-fns";
 import DialogMod from "../components/DialogMod";
 import { useParams } from "react-router-dom";
 import { useCreateAcademicPeriodEvaluationMutation } from "../api/academicPeriodEvaluationsApi";
@@ -107,7 +105,7 @@ const RegistroGE = () => {
 
     validateDates(startDate, endDate, startTime, endTime);
     if (!validateDates(startDate, endDate, startTime, endTime)) {
-      return; // Si las fechas no son válidas, no continuar
+      return;
     }
 
     const evaluationMap = {
