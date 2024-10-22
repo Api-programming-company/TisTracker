@@ -48,8 +48,8 @@ class AcademicPeriodEvaluationController extends Controller
                 'academic_period_id' => 'required|exists:academic_periods,id',
                 'evaluation_type' => 'required|string|in:A,C,U',
                 'start_date' => 'required|date_format:Y-m-d\TH:i:sP',
-                // 'end_date' => 'required|date_format:Y-m-d\TH:i:sP|after:start_date',
-                'end_date' => 'required|date_format:Y-m-d\TH:i:sP',
+                'end_date' => 'required|date_format:Y-m-d\TH:i:sP|after:start_date',
+                //'end_date' => 'required|date_format:Y-m-d\TH:i:sP',
             ]);
 
             // Obtener el periodo académico
@@ -62,7 +62,7 @@ class AcademicPeriodEvaluationController extends Controller
             // Validar que las fechas estén dentro del periodo académico
             if ($validatedData['start_date'] < $academicPeriod->start_date || $validatedData['end_date'] > $academicPeriod->end_date) {
                 return response()->json(['message' => 'Las fechas de la evaluación deben estar dentro del periodo académico.'], 422);
-            }
+            }   
 
             // Verificar si ya existe una evaluación del mismo tipo en el mismo periodo académico
             $existingEvaluation = AcademicPeriodEvaluation::where('academic_period_id', $validatedData['academic_period_id'])
