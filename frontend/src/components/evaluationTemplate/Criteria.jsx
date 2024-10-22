@@ -65,6 +65,7 @@ const Criteria = ({ criteria, setShowError, showError }) => {
   };
 
   const handleDragEnd = (event) => {
+    setShowError(false);
     const { active, over } = event;
     const oldIndex = criteria.answer_options.findIndex(
       (e) => e.id === active.id
