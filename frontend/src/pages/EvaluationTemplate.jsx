@@ -27,7 +27,6 @@ const EvaluationTemplate = () => {
     }
     if (isError) {
       console.log(error);
-      setShowError(true);
       setSnackbarMessage(error?.data.message);
       setOpenSnackBar(true);
     }
@@ -90,14 +89,12 @@ const EvaluationTemplate = () => {
     return "";
   };
 
-  const titleError = () => {
-    if (showError) return error?.data?.errors?.title;
-    return "";
-  };
   const handleCreateTemplate = () => {
     setOpenCreateTemplate(false);
     if (state?.errors?.length >= 1) {
-      setSnackbarMessage("Error, llena el formulario adecuadamente");
+      setSnackbarMessage(
+        "Error, llena el formulario adecuadamente"
+      );
       setOpenSnackBar(true);
       setShowError(true);
     } else {
@@ -134,7 +131,6 @@ const EvaluationTemplate = () => {
     );
   }
 
-
   return (
     <Container>
       <Typography
@@ -151,11 +147,10 @@ const EvaluationTemplate = () => {
         label="Nombre de plantilla*"
         name="title"
         onChange={handleInputChange}
-        error={Boolean(error?.data?.errors?.title && showError)}
-        helperText={findError("title") || titleError()}
+        error={Boolean(error?.data?.errors?.title)}
+        helperText={findError("title")||error?.data?.errors?.title}
         fullWidth
         multiline
-        inputProps={{ maxLength: 255 }}
       />
       <TextField
         sx={{ marginY: 1 }}
@@ -168,7 +163,6 @@ const EvaluationTemplate = () => {
         helperText={findError("description")}
         fullWidth
         multiline
-        inputProps={{ maxLength: 500 }}
       />
       <Typography
         component={"h2"}

@@ -62,9 +62,6 @@ const EditEvaluationTemplate = () => {
     }
     if (isError) {
       console.log(error);
-      setShowError(true);
-      setSnackbarMessage(error?.data.message);
-      setOpenSnackBar(true);
     }
   }, [data, isLoading, isError, isSuccess]);
 
@@ -110,10 +107,6 @@ const EditEvaluationTemplate = () => {
     }
     return "";
   };
-  const titleError = () => {
-    if (showError) return error?.data?.errors?.title;
-    return "";
-  };
 
   const handleUpdateTemplate = () => {
     setOpenCreateTemplate(false);
@@ -150,7 +143,7 @@ const EditEvaluationTemplate = () => {
         component={"h1"}
         sx={{ fontSize: "40px", lineHeight: "1", mt: 12 }}
       >
-        Editar Plantilla de Evaluación
+        Crear Plantilla de Evaluación
       </Typography>
       <Divider sx={{ width: "100%", marginY: 3 }} />{" "}
       <TextField
@@ -160,11 +153,10 @@ const EditEvaluationTemplate = () => {
         label="Nombre de plantilla*"
         name="title"
         onChange={handleInputChange}
-        error={Boolean(error?.data?.errors?.title && showError)}
-        helperText={findError("title") || titleError()}
+        error={Boolean(error?.data?.errors?.title)}
+        helperText={findError("title") || error?.data?.errors?.title}
         fullWidth
         multiline
-        inputProps={{ maxLength: 255 }}
       />
       <TextField
         sx={{ marginY: 1 }}
@@ -177,7 +169,6 @@ const EditEvaluationTemplate = () => {
         helperText={findError("description")}
         fullWidth
         multiline
-        inputProps={{ maxLength: 500 }}
       />
       <Typography
         component={"h2"}

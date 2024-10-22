@@ -147,27 +147,15 @@ class CompanyController extends Controller
                 return response()->json(['message' => 'No tienes permiso para ver las compañías de este periodo académico.'], Response::HTTP_FORBIDDEN);
             }
 
-            $currentDate = now();
-
             // Obtener las compañías activas asociadas al periodo académico
-            $companies = Company::with([
-                'planning.milestones' => function ($query) use ($currentDate) {
-                    $query->whereDate('start_date', '<=', $currentDate)
-                          ->whereDate('end_date', '>=', $currentDate);
-                }
-            ])
+            $companies = Company::withCount('members')
                 ->where('academic_period_id', $request->id)
                 ->where('status', 'A')
                 ->get();
 
-            $totalIntegrants = $companies->sum(function ($company) {
-                return $company->members->count();
-            });
-
             return response()->json([
                 'message' => 'Compañías obtenidas correctamente.',
-                'companies' => $companies,
-                'total_integrants' => $totalIntegrants
+                'companies' => $companies
             ], Response::HTTP_OK);
         } catch (ValidationException $e) {
             return response()->json([
@@ -182,7 +170,6 @@ class CompanyController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
 
     public function show($id)
     {
@@ -563,7 +550,7 @@ class CompanyController extends Controller
 
             // Validar que la fecha actual esté dentro del rango de fechas de la evaluación
             $currentDate = now();
-            if (!$currentDate->between($academic_period_evaluation->start_date, $academic_period_evaluation->end_date)) {
+            if ($currentDate->lt($academic_period_evaluation->start_date) || $currentDate->gt($academic_period_evaluation->end_date)) {
                 return response()->json(['message' => 'El periodo académico no está dentro de la fecha de evaluación.'], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
