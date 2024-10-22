@@ -555,7 +555,7 @@ class CompanyController extends Controller
 
             // Validar que la fecha actual esté dentro del rango de fechas de la evaluación
             $currentDate = now();
-            if ($currentDate->lt($academic_period_evaluation->start_date) || $currentDate->gt($academic_period_evaluation->end_date)) {
+            if (!$currentDate->between($academic_period_evaluation->start_date, $academic_period_evaluation->end_date)) {
                 return response()->json(['message' => 'El periodo académico no está dentro de la fecha de evaluación.'], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 

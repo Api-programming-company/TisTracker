@@ -7,6 +7,8 @@ use App\Models\AcademicPeriodEvaluation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Exception;
+use Illuminate\Validation\ValidationException;
+use Carbon\Carbon;
 
 class AcademicPeriodEvaluationController extends Controller
 {
@@ -45,12 +47,16 @@ class AcademicPeriodEvaluationController extends Controller
                 'evaluation_id' => 'required|exists:evaluations,id',
                 'academic_period_id' => 'required|exists:academic_periods,id',
                 'evaluation_type' => 'required|string|in:A,C,U',
-                'start_date' => 'required|date',
-                'end_date' => 'required|date|after_or_equal:start_date',
+                'start_date' => 'required|date_format:Y-m-d\TH:i:sP',
+                'end_date' => 'required|date_format:Y-m-d\TH:i:sP|after:start_date',
             ]);
 
             // Obtener el periodo académico
             $academicPeriod = AcademicPeriod::findOrFail($validatedData['academic_period_id']);
+            
+            // Convertir las fechas a UTC
+            $validatedData['start_date'] = Carbon::parse($validatedData['start_date'])->setTimezone('UTC');
+            $validatedData['end_date'] = Carbon::parse($validatedData['end_date'])->setTimezone('UTC');
 
             // Validar que las fechas estén dentro del periodo académico
             if ($validatedData['start_date'] < $academicPeriod->start_date || $validatedData['end_date'] > $academicPeriod->end_date) {
@@ -74,6 +80,8 @@ class AcademicPeriodEvaluationController extends Controller
                 'academicPeriodEvaluation' => $academicPeriodEvaluation
             ], 201);
 
+        } catch (ValidationException $e) {
+            return response()->json(['message' => 'Error de validación.', 'errors' => $e->errors()], 422);
         } catch (Exception $e) {
             return response()->json(['message' => 'Error al crear la evaluación del periodo académico.', 'error' => $e->getMessage()], 500);
         }
@@ -88,7 +96,7 @@ class AcademicPeriodEvaluationController extends Controller
     public function show(AcademicPeriodEvaluation $academicPeriodEvaluation)
     {
         $user = Auth::user();
-        
+
         // Mostrar los detalles de una evaluación específica del periodo académico
         return response()->json($academicPeriodEvaluation);
     }

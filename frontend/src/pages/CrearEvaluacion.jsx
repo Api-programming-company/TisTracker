@@ -22,7 +22,7 @@ import {
   TimePicker,
 } from "@mui/x-date-pickers";
 import { useGetAllEvaluationTemplatesQuery } from "../api/evaluationApi";
-import { set } from "date-fns";
+import { set, format } from "date-fns";
 import { useParams } from "react-router-dom";
 import { useCreateAcademicPeriodEvaluationMutation } from "../api/academicPeriodEvaluationsApi";
 
@@ -87,13 +87,19 @@ const RegistroGE = () => {
       "Evaluación de Pares": "U",
     };
 
+    // Formatear las fechas con el desplazamiento horario
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const formattedStartTime = format(new Date(startTime), "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone });
+    const formattedEndTime = format(new Date(endTime), "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone });
+
     const formData = {
       evaluation_id: selectedPlantillaId,
       academic_period_id: academic_period_id,
       evaluation_type: evaluationMap[selectedEvaluation],
-      start_date: startTime,
-      end_date: endTime,
+      start_date: formattedStartTime,
+      end_date: formattedEndTime,
     };
+    console.log(formData);
     createAcademicPeriodEvaluation(formData);
   };
 
