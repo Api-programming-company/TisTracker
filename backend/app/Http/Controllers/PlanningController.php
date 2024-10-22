@@ -137,23 +137,23 @@ class PlanningController extends Controller
         try {
             // Validar los datos de actualización
             $validatedData = $request->validate([
-                'name' => 'sometimes|required|string|max:255',
-                'company_id' => 'sometimes|required|exists:companies,id',
+                'name' => 'sometimes|string|max:255',
+                'company_id' => 'sometimes|exists:companies,id',
                 'milestones' => 'sometimes|array',
                 'milestones.*.id' => 'nullable|exists:milestones,id',
-                'milestones.*.name' => 'sometimes|required|string|max:255',
-                'milestones.*.start_date' => 'sometimes|required|date|before:milestones.*.end_date',
-                'milestones.*.end_date' => 'sometimes|required|date|after:milestones.*.start_date',
+                'milestones.*.name' => 'sometimes|string|max:255',
+                'milestones.*.start_date' => 'sometimes|date|before:milestones.*.end_date',
+                'milestones.*.end_date' => 'sometimes|date|after:milestones.*.start_date',
                 // 'milestones.*.billing_percentage' => 'sometimes|required|integer|min:0',
                 'milestones.*.status' => 'sometimes|in:A,P',
                 'milestones.*.deliverables' => 'sometimes|array|min:1',
-                'milestones.*.deliverables.*.name' => 'sometimes|required|string|max:255',
-                'milestones.*.deliverables.*.responsible' => 'sometimes|required|string|max:255',
-                'milestones.*.deliverables.*.objective' => 'sometimes|required|string',
+                'milestones.*.deliverables.*.name' => 'sometimes|string|max:255',
+                //'milestones.*.deliverables.*.responsible' => 'sometimes|string|max:255',
+                //'milestones.*.deliverables.*.objective' => 'sometimes|string',
                 'milestones.*.deliverables.*.expected_result' => 'sometimes|nullable|integer|min:0',
                 'milestones.*.deliverables.*.actual_result' => 'sometimes|nullable|integer|min:0',
                 'milestones.*.deliverables.*.observations' => 'sometimes|nullable|string|max:255',
-                'milestones.*.deliverables.*.status' => 'sometimes|required|in:A,C',
+                'milestones.*.deliverables.*.status' => 'sometimes|in:A,C',
             ]);
 
             $user = Auth::user();

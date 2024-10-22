@@ -1,6 +1,11 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectCurrentMilestone, getStatus,getCurrentMilestoneIndex, getPendingMilestoneIndex } from "../reducers/planningSlice";
+import {
+  selectCurrentMilestone,
+  getStatus,
+  getCurrentMilestoneIndex,
+  getPendingMilestoneIndex,
+} from "../reducers/planningSlice";
 import { setMilestones, confirmChanges } from "../reducers/planningSlice";
 import { useGetPlanningByCompanyIdQuery } from "../api/planningApi";
 import { useUpdateCompanyPlanningByIdMutation } from "../api/companyApi";
@@ -29,12 +34,14 @@ const PlanningSpreadSheet = () => {
     
   const milestone_index = useSelector(getCurrentMilestoneIndex);
   const [
-    update, 
-    {isLoading : updateLoading, 
-      isSuccess: updatedSuccessfully, 
-      isError: updateIsError, 
-      error: updateError}] = useUpdateCompanyPlanningByIdMutation();
-
+    update,
+    {
+      isLoading: updateLoading,
+      isSuccess: updatedSuccessfully,
+      isError: updateIsError,
+      error: updateError,
+    },
+  ] = useUpdateCompanyPlanningByIdMutation();
 
   useEffect(() => {
     if (isSuccess) {
@@ -56,47 +63,58 @@ const PlanningSpreadSheet = () => {
       if (index === milestone_index) {
         return {
           ...milestone,
-          status: "A"
+          status: "A",
         };
-      }else if(index === milestone_index + 1){
+      } else if (index === milestone_index + 1) {
         return {
           ...t_milestone,
-          deliverables : [...t_milestone.deliverables,...milestone.deliverables.filter((deliverable,i) => {
-            return deliverable.status === "C"
-          }).map((newDeliverable,index) => { return {
-            ...newDeliverable,
-            id: index + t_milestone.deliverables.length,
-            status : "A",
-            name : newDeliverable.name,
-            expected_result : 0,
-            actual_result : 0,
-            observations : "",
-          }})]
-        }
+          deliverables: [
+            ...t_milestone.deliverables,
+            ...milestone.deliverables
+              .filter((deliverable, i) => {
+                return deliverable.status === "C";
+              })
+              .map((newDeliverable, index) => {
+                return {
+                  ...newDeliverable,
+                  id: index + t_milestone.deliverables.length,
+                  status: "A",
+                  name: newDeliverable.name,
+                  expected_result: 0,
+                  actual_result: 0,
+                  observations: "",
+                };
+              }),
+          ],
+        };
       }
       return t_milestone;
     });
+    console.log("dataaa", {
+      id,
+      data: {
+        milestones: formData,
+        company_id: data.planning.company_id,
+      },
+    });
+
     update({
       id,
       data: {
         milestones: formData,
-        company_id: data.planning.company_id
-      }
+        company_id: data.planning.company_id,
+      },
     });
-  
   };
 
   useEffect(() => {
-    console.log(status,"");
-      window.onbeforeunload = (e) => { 
-        if(status === "E"){
-          e.preventDefault();
-          return ;
-        }
-          
-    }
-
-    
+    console.log(status, "");
+    window.onbeforeunload = (e) => {
+      if (status === "E") {
+        e.preventDefault();
+        return;
+      }
+    };
   }, [status]);
 
   useEffect(() => {
@@ -112,7 +130,7 @@ const PlanningSpreadSheet = () => {
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
     }
-  }, [ isSuccess, error, isError, updatedSuccessfully, updateIsError]);
+  }, [isSuccess, error, isError, updatedSuccessfully, updateIsError]);
 
   if (isFetching) {
     return (
@@ -157,10 +175,9 @@ const PlanningSpreadSheet = () => {
         </div>
         <div className="section-body">
           <MilestoneItem milestone={milestone} />
-          
+
           {status === "E" && <p className="text-red-500">Editando</p>}
-          {status === "A" && <p className="text-success">Hito Validado</p>}  
-      
+          {status === "A" && <p className="text-success">Hito Validado</p>}
         </div>
 
         <Box>
@@ -171,11 +188,14 @@ const PlanningSpreadSheet = () => {
               color: "white",
               border: "white",
             }}
-            disabled={pendingMilestoneIndex !== milestone_index || updateLoading}
+            disabled={
+              pendingMilestoneIndex !== milestone_index || updateLoading
+            }
             onClick={() =>
               setOpen({
                 state: true,
-                message: "Al presionar aceptar ya no podras realizar cambios en la validación de este hito",
+                message:
+                  "Al presionar aceptar ya no podras realizar cambios en la validación de este hito",
                 title: "¿Estas seguro que quieres confirmar?",
               })
             }

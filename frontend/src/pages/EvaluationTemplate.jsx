@@ -134,7 +134,6 @@ const EvaluationTemplate = () => {
     );
   }
 
-
   return (
     <Container>
       <Typography
@@ -151,7 +150,7 @@ const EvaluationTemplate = () => {
         label="Nombre de plantilla*"
         name="title"
         onChange={handleInputChange}
-        error={Boolean(error?.data?.errors?.title && showError)}
+        error={Boolean(error?.data?.errors?.title && showError) || showError}
         helperText={findError("title") || titleError()}
         fullWidth
         multiline
@@ -211,6 +210,7 @@ const EvaluationTemplate = () => {
             validateErrors();
             handleScore();
             setOpenCreateTemplate(true);
+            setShowError(false)
           }}
         >
           Crear Plantilla

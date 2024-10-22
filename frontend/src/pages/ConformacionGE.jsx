@@ -60,7 +60,7 @@ const ConformacionGE = () => {
       console.log(updateCompanyData);
     }
     if (isUpdateCompanyError) {
-      setSnackbarMessage("Error al enviar el formulario");
+      setSnackbarMessage(updateCompanyError.data?.message || "Error al enviar el formulario");
       setSnackbarOpen(true);
       console.log(updateCompanyError);
     }
