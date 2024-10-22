@@ -85,7 +85,10 @@ const Autoevaluation = () => {
   const handleAccept = () => {
     if (!state.isValid) {
       setOpenSnack(!openSnack);
-      setOpen(!setOpen);
+      setSnackbarMessage(
+        "Error al enviar la evaluación " || error?.data?.message
+      );
+      setOpen(!open);
       return;
     }
 
