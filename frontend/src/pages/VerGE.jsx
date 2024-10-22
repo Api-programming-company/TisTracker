@@ -131,6 +131,11 @@ const VerGE = () => {
             path: `/planning/${data?.company?.planning?.id}`,
           },
           {
+            text: "Seguimiento semanal",
+            color: "info",
+            path: `/planning_spreadsheet/${data?.company?.planning?.id}`,
+          },
+          {
             text: "Evaluar Empresa",
             color: "error",
             path: `/company-evaluation/${id}`,
