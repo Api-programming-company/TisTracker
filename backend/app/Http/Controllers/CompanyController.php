@@ -147,19 +147,27 @@ class CompanyController extends Controller
                 return response()->json(['message' => 'No tienes permiso para ver las compañías de este periodo académico.'], Response::HTTP_FORBIDDEN);
             }
 
+            $currentDate = now();
+
             // Obtener las compañías activas asociadas al periodo académico
             $companies = Company::with([
-                'planning' => function ($query) {
-                    $query->with('milestones');
+                'planning.milestones' => function ($query) use ($currentDate) {
+                    $query->whereDate('start_date', '<=', $currentDate)
+                          ->whereDate('end_date', '>=', $currentDate);
                 }
             ])
                 ->where('academic_period_id', $request->id)
                 ->where('status', 'A')
                 ->get();
 
+            $totalIntegrants = $companies->sum(function ($company) {
+                return $company->members->count();
+            });
+
             return response()->json([
                 'message' => 'Compañías obtenidas correctamente.',
-                'companies' => $companies
+                'companies' => $companies,
+                'total_integrants' => $totalIntegrants
             ], Response::HTTP_OK);
         } catch (ValidationException $e) {
             return response()->json([

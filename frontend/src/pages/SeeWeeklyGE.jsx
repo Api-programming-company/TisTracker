@@ -9,6 +9,7 @@ import React, { useContext, useEffect } from "react";
 import { useGetCompaniesByAcademicPeriodQuery} from "../api/academicPeriodApi";
 import AppContext from "../context/AppContext";
 import { CompanyCard } from "../components";
+import CompanyCard2 from "../components/company/CompanyCard2";
 
 const SeeWeeklyGE = () => {
   const { id } = useParams();
@@ -30,7 +31,7 @@ const SeeWeeklyGE = () => {
         navigate("/");
       }
     }
-  }, [isSuccess, isError, data, error]);
+  }, [isSuccess, isError, data, error, checkUser, navigate]);
 
   if (isLoading) {
     return (
@@ -59,6 +60,41 @@ const SeeWeeklyGE = () => {
     );
   }
 
+  const groupedCompanies = data?.companies?.reduce((acc, company) => {
+    if (!company.planning || !company.planning.milestones) {
+      acc.undefined.push(company);
+    } else {
+      company.planning.milestones.forEach((milestone) => {
+        const endDate = new Date(milestone.end_date);
+        const weekDay = endDate.toLocaleString('default', { weekday: 'long' });
+        if (!acc[weekDay]) {
+          acc[weekDay] = [];
+        }
+        acc[weekDay].push(company);
+      });
+    }
+    return acc;
+  }, { undefined: [] });
+
+  const daysOrder = ['domingo', 'lunes', 'martes', 'miércoles','jueves', 'viernes', 'sábado'];
+  const sortedGroupedCompanies = Object.keys(groupedCompanies)
+    .sort((a, b) => {
+      if (a === 'undefined') {
+        return 1;
+      } else if (b === 'undefined') {
+        return -1;
+      } else {
+        return daysOrder.indexOf(a) - daysOrder.indexOf(b);
+      }
+    })
+
+    
+    .reduce((acc, day) => {
+
+      acc[day] = groupedCompanies[day];
+      return acc;
+    }, {});
+
   return (
     <Container maxWidth="lg" sx={{ mt: 12 }}>
       <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -66,32 +102,36 @@ const SeeWeeklyGE = () => {
           Lista de Grupo Empresas
         </Typography>
       </Box>
-      <Box
-        display="flex"
-        flexWrap="wrap"
-        justifyContent="flex-start" // Mantener alineación de izquierda a derecha
-        sx={{ gap: 2, mb: 12 }} // Espacio entre tarjetas
-      >
-        {data?.companies?.length === 0 ? (
-          <Typography variant="h6" color="textSecondary">
-            No hay empresas registradas en este período académico.
+      {Object.entries(sortedGroupedCompanies).map(([day, companies]) => (
+        <Box key={day} sx={{ mb: 4 }}>
+          <Typography variant="h5" gutterBottom>
+            {day === 'undefined' ? 'Sin actividades' : `Día: ${day}`}
           </Typography>
-        ) : (
-          data?.companies?.map((company) => (
-            <Box
-              key={company.id}
-              flexBasis={{
-                xs: "100%", // 1 item
-                sm: "48%", // 2 items
-                md: "30%", // 3 items
-              }}
-              sx={{ minWidth: 0 }}
-            >
-              <CompanyCard company={company} />
-            </Box>
-          ))
-        )}
-      </Box>
+          <Box
+            
+          >
+            {companies.length === 0 ? (
+              <Typography variant="h6" color="textSecondary">
+                No hay empresas para este grupo.
+              </Typography>
+            ) : (
+              companies.map((company) => (
+                <Box
+                  key={company.id}
+                  flexBasis={{
+                    xs: "100%",
+                    sm: "48%",
+                    md: "30%",
+                  }}
+                  sx={{ minWidth: 0 }}
+                >
+                  <CompanyCard2 company={company} />
+                </Box>
+              ))
+            )}
+          </Box>
+        </Box>
+      ))}
     </Container>
   );
 };
