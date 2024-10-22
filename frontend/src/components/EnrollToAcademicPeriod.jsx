@@ -113,6 +113,21 @@ const EnrollToAcademicPeriod = () => {
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
+  if (isLoading) {
+    return (
+      <Container
+        maxWidth="sm"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        <CircularProgress />
+      </Container>
+    );
+  }
 
   return (
     <Container
