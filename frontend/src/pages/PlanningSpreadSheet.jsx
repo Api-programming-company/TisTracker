@@ -184,7 +184,10 @@ const PlanningSpreadSheet = () => {
           <Button
             variant="outlined"
             sx={{
-              backgroundColor: "primary.main",
+              backgroundColor:
+                pendingMilestoneIndex !== milestone_index || updateLoading
+                  ? "#eee"
+                  : "primary.main",
               color: "white",
               border: "white",
             }}
