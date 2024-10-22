@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectCurrentMilestone,
@@ -9,24 +9,29 @@ import {
 import { setMilestones, confirmChanges } from "../reducers/planningSlice";
 import { useGetPlanningByCompanyIdQuery } from "../api/planningApi";
 import { useUpdateCompanyPlanningByIdMutation } from "../api/companyApi";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { CircularProgress, Container, Alert, Box } from "@mui/material";
 import MilestoneItem from "../components/planning/MilestoneItem";
 import { Button, Snackbar } from "@mui/material";
 import DialogMod from "../components/DialogMod";
+import AppContext from "../context/AppContext";
+
 
 const PlanningSpreadSheet = () => {
   const { id } = useParams();
   const [open, setOpen] = useState({ state: false, message: "", title: "" });
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const navigate = useNavigate();
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const dispatch = useDispatch();
   const milestone = useSelector(selectCurrentMilestone);
   const status = useSelector(getStatus);
+  const { user, checkUser } = useContext(AppContext);
   const pendingMilestoneIndex = useSelector(getPendingMilestoneIndex);
   const { data, isSuccess, isFetching, isError, error } =
     useGetPlanningByCompanyIdQuery(id);
+    
   const milestone_index = useSelector(getCurrentMilestoneIndex);
   const [
     update,
@@ -44,6 +49,12 @@ const PlanningSpreadSheet = () => {
       // dispatch(setMilestones(planningSpreadsheet.planning.milestones));
     }
   }, [isSuccess, isError, error, data, dispatch]);
+
+  useEffect(() => {
+    if(user.user_type === "E"){
+      navigate("/")
+    }
+  },[navigate, user])
 
   const handleConfirm = () => {
     setOpen({ ...open, state: false });
@@ -173,7 +184,10 @@ const PlanningSpreadSheet = () => {
           <Button
             variant="outlined"
             sx={{
-              backgroundColor: "primary.main",
+              backgroundColor:
+                pendingMilestoneIndex !== milestone_index || updateLoading
+                  ? "#eee"
+                  : "primary.main",
               color: "white",
               border: "white",
             }}

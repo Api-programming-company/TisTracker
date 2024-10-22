@@ -24,6 +24,7 @@ import { useParams } from "react-router-dom";
 import { useCreateAcademicPeriodEvaluationMutation } from "../api/academicPeriodEvaluationsApi";
 import { format } from "date-fns";
 
+
 const RegistroGE = () => {
   const navigate = useNavigate();
   const { academic_period_id } = useParams();
@@ -109,33 +110,44 @@ const RegistroGE = () => {
     setOpentoConfirm(true);
   };
 
-  const handleNavigate = async (e) => {
+  const handleNavigate = (e) => {
+    console.log("Creating");
     const evaluationMap = {
-      Autoevaluación: "A",
+      "Autoevaluación" : "A",
       "Evaluación Cruzada": "C",
       "Evaluación de Pares": "U",
     };
-    // Formatear las fechas con el desplazamiento horario
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const formattedStartTime = format(
-      new Date(startTime),
-      "yyyy-MM-dd'T'HH:mm:ssXXX",
-      { timeZone }
-    );
-    const formattedEndTime = format(
-      new Date(endTime),
-      "yyyy-MM-dd'T'HH:mm:ssXXX",
-      { timeZone }
-    );
 
     const formData = {
       evaluation_id: selectedPlantillaId,
       academic_period_id: academic_period_id,
       evaluation_type: evaluationMap[selectedEvaluation],
-      start_date: formattedStartTime,
-      end_date: formattedEndTime,
+      start_date: formatDate(startDate,startTime),
+      end_date: formatDate(endDate, endTime),
     };
+    console.log("Mis fechas");
+    console.log(formData.start_date);
+    console.log(formData.end_date);
+    console.log(startDate);
+    console.log(endDate);
+
     createAcademicPeriodEvaluation(formData);
+  };
+
+  const formatDate = (date,hour) => {
+    if (!date || !hour) return;
+
+    console.log(date,hour);
+    const formattedDate = new Date(Date.UTC(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      hour.getHours(),
+      hour.getMinutes(),
+      hour.getSeconds()
+    ));
+
+    return formattedDate.toISOString();
   };
 
   const validateDates = (startDate, endDate, startTime, endTime) => {
