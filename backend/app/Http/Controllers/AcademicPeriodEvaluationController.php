@@ -48,7 +48,8 @@ class AcademicPeriodEvaluationController extends Controller
                 'academic_period_id' => 'required|exists:academic_periods,id',
                 'evaluation_type' => 'required|string|in:A,C,U',
                 'start_date' => 'required|date_format:Y-m-d\TH:i:sP',
-                'end_date' => 'required|date_format:Y-m-d\TH:i:sP|after:start_date',
+                // 'end_date' => 'required|date_format:Y-m-d\TH:i:sP|after:start_date',
+                'end_date' => 'required|date_format:Y-m-d\TH:i:sP',
             ]);
 
             // Obtener el periodo académico

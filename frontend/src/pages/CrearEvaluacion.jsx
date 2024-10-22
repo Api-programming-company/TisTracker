@@ -135,6 +135,8 @@ const RegistroGE = () => {
       start_date: formattedStartTime,
       end_date: formattedEndTime,
     };
+
+    console.log(formData);
     createAcademicPeriodEvaluation(formData);
   };
 
