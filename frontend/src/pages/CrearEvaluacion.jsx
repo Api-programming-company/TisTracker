@@ -118,12 +118,25 @@ const RegistroGE = () => {
       "Evaluación de Pares": "U",
     };
 
+    // Formatear las fechas con el desplazamiento horario
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const formattedStartTime = format(
+      new Date(startTime),
+      "yyyy-MM-dd'T'HH:mm:ssXXX",
+      { timeZone }
+    );
+    const formattedEndTime = format(
+      new Date(endTime),
+      "yyyy-MM-dd'T'HH:mm:ssXXX",
+      { timeZone }
+    );
+    
     const formData = {
       evaluation_id: selectedPlantillaId,
       academic_period_id: academic_period_id,
       evaluation_type: evaluationMap[selectedEvaluation],
-      start_date: formatDate(startDate,startTime),
-      end_date: formatDate(endDate, endTime),
+      start_date: formattedStartTime,
+      end_date: formattedEndTime,
     };
     console.log("Mis fechas");
     console.log(formData.start_date);
