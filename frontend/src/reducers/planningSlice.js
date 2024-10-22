@@ -111,7 +111,7 @@ export const planningSlice = createSlice({
               ...deliverable,
               id: nextMilestone.deliverables.length + i,
               status: "A",
-              name : deliverable.name + "(carry over)",
+              name : deliverable.name + "(C.O.)",
               expected_result : 0,
               actual_result : 0,
               observations : "",
