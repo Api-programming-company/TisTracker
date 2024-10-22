@@ -96,6 +96,8 @@ const Criteria = ({ criteria, setShowError, showError }) => {
                   helperText={findError("question_text")}
                   fullWidth
                   multiline
+                  inputProps={{ maxLength: 255 }}
+                  autoFocus
                 />
                 <IconButton button onClick={() => setToggle(!toggle)}>
                   {toggle ? <ExpandLessIcon /> : <ExpandMoreIcon />}
@@ -145,7 +147,7 @@ const Criteria = ({ criteria, setShowError, showError }) => {
           <Divider sx={{ width: "100%" }} />{" "}
           <Box sx={{ display: "flex", flexDirection: "row-reverse" }}>
             <Button
-              variant="contained"
+              variant="outlined"
               sx={{ marginX: 3, marginY: 1 }}
               onClick={handleDeleteCriteria}
             >
