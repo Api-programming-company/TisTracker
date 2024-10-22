@@ -24,7 +24,6 @@ import { useParams } from "react-router-dom";
 import { useCreateAcademicPeriodEvaluationMutation } from "../api/academicPeriodEvaluationsApi";
 import { format } from "date-fns";
 
-
 const RegistroGE = () => {
   const navigate = useNavigate();
   const { academic_period_id } = useParams();
@@ -113,7 +112,7 @@ const RegistroGE = () => {
   const handleNavigate = (e) => {
     console.log("Creating");
     const evaluationMap = {
-      "Autoevaluación" : "A",
+      Autoevaluación: "A",
       "Evaluación Cruzada": "C",
       "Evaluación de Pares": "U",
     };
@@ -121,16 +120,18 @@ const RegistroGE = () => {
     // Formatear las fechas con el desplazamiento horario
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const formattedStartTime = format(
-      new Date(startTime),
+      new Date(
+        startDate.setHours(startTime.getHours(), startTime.getMinutes())
+      ),
       "yyyy-MM-dd'T'HH:mm:ssXXX",
       { timeZone }
     );
     const formattedEndTime = format(
-      new Date(endTime),
+      new Date(endDate.setHours(endTime.getHours(), endTime.getMinutes())),
       "yyyy-MM-dd'T'HH:mm:ssXXX",
       { timeZone }
     );
-    
+
     const formData = {
       evaluation_id: selectedPlantillaId,
       academic_period_id: academic_period_id,
@@ -147,18 +148,20 @@ const RegistroGE = () => {
     createAcademicPeriodEvaluation(formData);
   };
 
-  const formatDate = (date,hour) => {
+  const formatDate = (date, hour) => {
     if (!date || !hour) return;
 
-    console.log(date,hour);
-    const formattedDate = new Date(Date.UTC(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate(),
-      hour.getHours(),
-      hour.getMinutes(),
-      hour.getSeconds()
-    ));
+    console.log(date, hour);
+    const formattedDate = new Date(
+      Date.UTC(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        hour.getHours(),
+        hour.getMinutes(),
+        hour.getSeconds()
+      )
+    );
 
     return formattedDate.toISOString();
   };
