@@ -42,7 +42,9 @@ const RegistroGE = () => {
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
   const { data, error, isFetching, isError, isSuccess } =
-    useGetAllEvaluationTemplatesQuery();
+    useGetAllEvaluationTemplatesQuery(undefined, {
+      refetchOnMountOrArgChange: true,
+    });
   useEffect(() => {
     if (isSuccess) {
       console.log(data);
@@ -68,14 +70,13 @@ const RegistroGE = () => {
     if (isCreated) {
       setConfirmationOpen(true);
       console.log(createData);
-      
     }
     if (isCreateError) {
       setSnackbarOpen(true);
-      setSnackbarMessage(createError.data?.message || "Error al crear la evaluación");
+      setSnackbarMessage(
+        createError.data?.message || "Error al crear la evaluación"
+      );
       console.log(createError);
-      
-    
     }
   }, [createData, createError, isCreated, isCreateError]);
 
@@ -89,8 +90,16 @@ const RegistroGE = () => {
 
     // Formatear las fechas con el desplazamiento horario
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const formattedStartTime = format(new Date(startTime), "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone });
-    const formattedEndTime = format(new Date(endTime), "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone });
+    const formattedStartTime = format(
+      new Date(startTime),
+      "yyyy-MM-dd'T'HH:mm:ssXXX",
+      { timeZone }
+    );
+    const formattedEndTime = format(
+      new Date(endTime),
+      "yyyy-MM-dd'T'HH:mm:ssXXX",
+      { timeZone }
+    );
 
     const formData = {
       evaluation_id: selectedPlantillaId,
@@ -121,7 +130,7 @@ const RegistroGE = () => {
     { id: 3, title: "Evaluación de Pares" },
   ];
 
-  if (isFetching|| isCreatingEvaluation) {
+  if (isFetching || isCreatingEvaluation) {
     return <Typography>Cargando...</Typography>;
   }
 
@@ -173,10 +182,16 @@ const RegistroGE = () => {
             label="Seleccionar Plantilla"
           >
             {plantillas.map((plantilla) => (
-              <MenuItem key={plantilla.id} value={plantilla.title}>
-                {plantilla.title}
+              <MenuItem
+                key={plantilla.id}
+                value={plantilla.title}
+                title={plantilla.title}
+              >
+                {plantilla.title.length > 50
+                  ? `${plantilla.title.substring(0, 50)}...`
+                  : plantilla.title}
               </MenuItem>
-            ))}
+            ))}{" "}
           </Select>
         </FormControl>
 
