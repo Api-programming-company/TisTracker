@@ -47,7 +47,7 @@ const PlanningSpreadSheet = () => {
     if(user.user_type === "E"){
       navigate("/")
     }
-  },[user])
+  },[navigate, user])
 
   const handleConfirm = () => {
     setOpen({ ...open, state: false });
