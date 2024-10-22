@@ -9,6 +9,7 @@ const InvitacionesGE = () => {
   useEffect(() => {
     if (isSuccess) {
       console.log("Pending Companies data:", data);
+      console.log(data?.companies);
     }
 
     if (isError) {
@@ -51,7 +52,7 @@ const InvitacionesGE = () => {
         )}
 
         {data?.companies.map((invitation) => (
-          <PendingInvitationCard key={invitation.pivot.id} request={invitation} />
+          <PendingInvitationCard key={invitation.company_user.id} request={invitation.company_user} />
         ))}
       </Box>
     </Container>

@@ -54,13 +54,13 @@ const ConformacionGE = () => {
 
   useEffect(() => {
     if (isUpdateCompanySuccess) {
-      setOpenConfirmModal(true)
+      setOpenConfirmModal(true);
       setSnackbarMessage("Formulario enviado correctamente");
       setSnackbarOpen(true);
       console.log(updateCompanyData);
     }
     if (isUpdateCompanyError) {
-      setSnackbarMessage("Error al enviar el formulario");
+      setSnackbarMessage(updateCompanyError.data?.message || "Error al enviar el formulario");
       setSnackbarOpen(true);
       console.log(updateCompanyError);
     }
@@ -74,10 +74,10 @@ const ConformacionGE = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const acceptedMembersCount = data.company.members.filter(
-      (member) => member.pivot.status === "A"
+      (member) => member.status === "A"
     ).length;
     const pendingMembersCount = data.company.members.filter(
-      (member) => member.pivot.status === "P"
+      (member) => member.status === "P"
     ).length;
 
     if (acceptedMembersCount < 3) {
@@ -121,7 +121,7 @@ const ConformacionGE = () => {
   }
 
   const acceptedMembersCount = data.company.members.filter(
-    (member) => member.pivot.status === "A"
+    (member) => member.status === "A"
   ).length;
 
   const handleConfirmAccept = () => {
@@ -172,7 +172,7 @@ const ConformacionGE = () => {
                     key={member.id}
                     secondaryAction={
                       <Typography variant="body2" sx={{ ml: 2 }}>
-                        {statusMap[member.pivot.status]}
+                        {statusMap[member.status]}
                       </Typography>
                     }
                     button
@@ -191,14 +191,14 @@ const ConformacionGE = () => {
                           mr: 2,
                         }}
                       >
-                        {member.first_name[0]}
-                        {member.last_name[0]}
+                        {member.user.first_name[0]}
+                        {member.user.last_name[0]}
                       </Avatar>
                     </ListItemIcon>
                     <ListItemText
-                      primary={`${member.first_name} ${member.last_name}`}
+                      primary={`${member.user.first_name} ${member.user.last_name}`}
                       secondary={
-                        <Typography variant="body2">{member.email}</Typography>
+                        <Typography variant="body2">{member.user.email}</Typography>
                       }
                     />
                   </ListItem>
@@ -214,7 +214,7 @@ const ConformacionGE = () => {
 
             <Typography
               component="p"
-              sx={{ color: "#8E9090", fontSize: "14px", mt: 2 }}
+              sx={{ color: "info.details", fontSize: "14px", mt: 2 }}
             >
               Nota: Solamente se enviará la solicitud de conformación de la
               grupo empresa, tu docente todavía debe aceptar a tu equipo de

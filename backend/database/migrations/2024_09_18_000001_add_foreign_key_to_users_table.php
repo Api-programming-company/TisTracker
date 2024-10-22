@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddUserTypeToUsersTable extends Migration
+class AddForeignKeyToUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddUserTypeToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->char('user_type', 1)->default('E')->after('email'); // Agregar campo user_type
+            $table->foreign('academic_period_id')->references('id')->on('academic_periods')->onDelete('set null');
         });
     }
 
@@ -26,7 +26,7 @@ class AddUserTypeToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('user_type'); // Eliminar campo user_type si se revierte la migración
+            $table->dropForeign(['academic_period_id']);
         });
     }
 }

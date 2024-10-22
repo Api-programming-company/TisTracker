@@ -20,7 +20,7 @@ const CompanyCard = ({ company }) => {
         cursor: "pointer", // Cambia el cursor a puntero
         transition: "background-color 0.3s, box-shadow 0.3s", // Transición suave para fondo y sombra
         "&:hover": {
-          backgroundColor: "#f0f0f0", // Cambia a un color de fondo activo al hacer hover
+          backgroundColor: "info.gray", // Cambia a un color de fondo activo al hacer hover
           boxShadow: 4, // Aumenta un poco la sombra
         },
       }}

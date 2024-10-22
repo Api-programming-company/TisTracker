@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCompanyUserTable extends Migration
+class CreateCompanyUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateCompanyUserTable extends Migration
      */
     public function up()
     {
-        Schema::create('company_user', function (Blueprint $table) {
+        Schema::create('company_users', function (Blueprint $table) {
             $table->id();
             $table->foreignId('company_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->char('status', 1); // 'A' para activo, 'I' para inactivo, 'P' pendiente
-            $table->char('permission', 1); // 'R' para lectura, 'W' para escritura
+            $table->char('status', 1)->comment('A: Active, I: Inactive, P: Pending');
+            $table->char('permission', 1)->comment('R: Read, W: Write');
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreateCompanyUserTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('company_user');
+        Schema::dropIfExists('company_users');
     }
 }

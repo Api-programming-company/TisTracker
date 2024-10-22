@@ -33,8 +33,8 @@ class AuthController extends Controller
                 'last_name' => 'required|string|max:255',
                 'email' => ['required', 'email', 'unique:users,email',  $this->getEmailValidationRule($request->user_type)],
                 'password' => ['required', 'string', 'min:8', 'confirmed', new ValidarPassword],
-                'user_type' => 'required|in:E,D', // Validar que sea 'E' o 'D'
-            ]);
+                'user_type' => 'required|in:E,D',
+            ], [], User::getFieldLabels());
 
             // Crear nuevo usuario
             $user = User::create([
@@ -93,13 +93,7 @@ class AuthController extends Controller
 
             // Retornar la información del usuario
             return response()->json([
-                'user' => [
-                    'first_name' => $user->first_name,
-                    'last_name' => $user->last_name,
-                    'email' => $user->email,
-                    'user_type' => $user->user_type === 'E' ? 'estudiante' : 'docente',
-                    'academic_period_id' => $user->academic_period_id,
-                ]
+                'user' => $user
             ], 200);
         } catch (ValidationException $e) {
             // Manejo de errores de validación

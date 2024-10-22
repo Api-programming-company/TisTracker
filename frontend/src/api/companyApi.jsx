@@ -27,17 +27,17 @@ const companyApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["company", "invitation"],
     }),
-    acceptCompanyById: builder.mutation({
-      query: (id) => ({
-        url: `companies/accept/${id}`,
-        method: "POST",
+    getCompanies: builder.query({
+      query: () => ({
+        url: "company",
+        method: "GET",
       }),
-      invalidatesTags: ["company", "invitation"],
+      providesTags: ["company", "invitation"],
     }),
     updateCompanyById: builder.mutation({
       query: ({ id, data }) => ({
         url: `company/${id}`,
-        method: "PUT", // O `PATCH` según lo necesites
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -47,14 +47,28 @@ const companyApi = apiSlice.injectEndpoints({
     }),
     updateCompanyPlanningById: builder.mutation({
       query: ({ id, data }) => ({
-        url: `plannings/${id}`, // Cambiado a /companyplanning
-        method: "PUT", // O `PATCH` según lo necesites
+        url: `plannings/${id}`,
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: data,
       }),
       invalidatesTags: ["company", "invitation"],
+    }),
+    getEvaluationByCompanyId: builder.query({
+      query: ({id, evaluation_type}) => ({
+        url: `evaluation-company/${id}/${evaluation_type}`,
+        method: "GET",
+      }),
+      providesTags: ["company", "evaluation"],
+    }),
+    getEvaluationByCompanyUserId: builder.query({
+      query: ({id}) => ({
+        url: `evaluation-company-user/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["company-user", "evaluation"],
     }),
   }),
 });
@@ -63,7 +77,9 @@ export const {
   useCreateCompanyMutation,
   useGetCompanyByIdQuery,
   useGetPedingCompaniesQuery,
-  useAcceptCompanyByIdMutation,
+  useGetCompaniesQuery,
   useUpdateCompanyByIdMutation,
   useUpdateCompanyPlanningByIdMutation,
+  useGetEvaluationByCompanyIdQuery,
+  useGetEvaluationByCompanyUserIdQuery
 } = companyApi;

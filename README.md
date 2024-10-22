@@ -101,6 +101,11 @@
    php artisan l5-swagger:generate
    ```
 
+10. **Crear recurso para el panel de administrador**
+   ```sh
+   php artisan make:filament-resource NombreDelRecurso
+   ```
+
 # Guía de Instalación para el Frontend
 
 1. **Instalar Node.js**

@@ -17,10 +17,15 @@ export const AppProvider = ({ children }) => {
   const [logoutUser, { isLoading: isLoggingOut }] = useLogoutUserMutation();
   const navigate = useNavigate();
   // Iniciamos el user con los datos del localstorage si existen
-  const [user, setUser] = useState(() => {
+  const [user, setUserState] = useState(() => {
     const savedUser = localStorage.getItem("user");
     return savedUser ? JSON.parse(savedUser) : null;
   });
+
+  const setUser = (user) => {
+    setUserState(user);
+    saveUserToLocalStorage(user);
+  };
 
   const removeUserFromLocalStorage = () => {
     localStorage.removeItem("user");
@@ -36,26 +41,25 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     if (data) {
       setUser(data.user);
-      saveUserToLocalStorage(data.user); // Guardar el usuario en el localStorage
       console.log("el usuario es: ", data);
     }
     if (isError) {
       console.log(error);
-      removeUserFromLocalStorage(); // Eliminar el usuario en caso de error
+      removeUserFromLocalStorage();
     }
   }, [data, isSuccess, isError]);
 
   const handleLogout = async () => {
     try {
-      await logoutUser().unwrap(); // Llama a la mutación de logout y espera a que se complete
+      await logoutUser().unwrap();
       setUser(null);
       removeUserFromLocalStorage();
-      navigate("/login"); // Redirige al usuario a la página de inicio de sesión
+      navigate("/login");
     } catch (error) {
       console.error("Error durante el cierre de sesión:", error);
-      // Manejo de errores si es necesario
     }
   };
+
   return (
     <AppContext.Provider
       value={{ user, setUser, handleLogout, checkUser }}

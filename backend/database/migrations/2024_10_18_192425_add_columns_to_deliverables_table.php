@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ModifyDeliverablesNullableFields extends Migration
+class AddColumnsToDeliverablesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,9 +14,10 @@ class ModifyDeliverablesNullableFields extends Migration
     public function up()
     {
         Schema::table('deliverables', function (Blueprint $table) {
-            // Modificar las columnas existentes para permitir valores nulos
-            $table->string('responsible')->nullable()->change();
-            $table->text('objective')->nullable()->change();
+            $table->integer('expected_result')->nullable();
+            $table->integer('actual_result')->nullable();
+            $table->text('observations')->nullable()->default('Sin observaciones');
+            $table->char('status', 1)->default('A')->comment('Status A (active), C (carry over)');
         });
     }
 
@@ -28,9 +29,7 @@ class ModifyDeliverablesNullableFields extends Migration
     public function down()
     {
         Schema::table('deliverables', function (Blueprint $table) {
-            // Revertir los cambios si es necesario (volver a no permitir null)
-            $table->string('responsible')->nullable(false)->change();
-            $table->text('objective')->nullable(false)->change();
+            $table->dropColumn(['expected_result', 'actual_result', 'observations', 'status']);
         });
     }
 }

@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { isNumeric, validarContraseña, validateEmail } from "../utils/validaciones";
+import { isNumeric, validarContraseña, validarEmailDocente } from "../utils/validaciones";
 import { useRegisterUserMutation } from "../api/userApi";
 import AppContext from "../context/AppContext";
 import { useContext } from "react";
@@ -110,10 +110,10 @@ const UserRegister = () => {
         message: "Los apellidos son obligatorios.",
       },
       email: {
-        condition: !email || !validateEmail(email),
+        condition: !email || !validarEmailDocente(email),
         message: !email
           ? "El correo electrónico es obligatorio."
-          : "Ingrese un correo electrónico válido.",
+          : "El correo de un docente debe tener el dominio @fcyt.umss.edu.bo",
       },
       password: {
         condition: !password,

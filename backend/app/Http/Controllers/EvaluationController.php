@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Evaluation;
+use App\Models\AcademicPeriodEvaluation;
 use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Validation\ValidationException;
@@ -20,7 +21,7 @@ class EvaluationController extends Controller
             $user = Auth::user();
 
             // Obtener todas las evaluaciones del usuario autenticado
-            $evaluations = $user->evaluations()->with('questions.answerOptions')->get();
+            $evaluations = $user->evaluations()->get();
 
             return response()->json($evaluations);
         } catch (Exception $e) {
@@ -39,32 +40,44 @@ class EvaluationController extends Controller
         try {
             $user = Auth::user();
 
+            // Validar que el usuario tenga el tipo de usuario 'D'
+            if ($user->user_type !== 'D') {
+                return response()->json(['message' => 'Solo un docente puede crear una plantilla de evaluación.'], 403);
+            }
+
             // Validación de los datos
-            $request->validate([
-                'title' => 'required|string|max:255',
+            $validatedData = $request->validate([
+                'title' => 'required|string|max:255|unique:evaluations,title,NULL,id,user_id,' . $user->id,
                 'description' => 'nullable|string',
                 'questions' => 'required|array',
                 'questions.*.question_text' => 'required|string|max:255',
                 'questions.*.answer_options' => 'required|array',
                 'questions.*.answer_options.*.option_text' => 'required|string|max:255',
-                'questions.*.answer_options.*.score' => 'required|integer|min:0|max:10',
+                'questions.*.answer_options.*.score' => 'required|integer|min:0',
+            ], [
+                'title.required' => __('validation.attributes.evaluation.title') . ' es requerido.',
+                'title.unique' => ' El ' . __('validation.attributes.evaluation.title') . ' ya está registrado en sus plantillas',
+                'title.string' => __('validation.attributes.evaluation.title') . ' debe ser una cadena.',
             ]);
 
+            foreach ($validatedData['questions'] as $question) {
+                if (count($question['answer_options']) > 10) {
+                    return response()->json(['message' => 'Cada pregunta debe tener como maximo 10 criterios.'], 422);
+                }
+            }
             // Crear la evaluación
             $evaluation = $user->evaluations()->create([
-                'title' => $request->title,
-                'description' => $request->description,
+                'title' => $validatedData['title'],
+                'description' => $validatedData['description'],
+                'user_id' => $user->id,
             ]);
 
             // Crear las preguntas y sus opciones de respuesta
-            foreach ($request->questions as $questionData) {
+            foreach ($validatedData['questions'] as $questionData) {
                 $question = $evaluation->questions()->create([
                     'question_text' => $questionData['question_text'],
                 ]);
-
-                foreach ($questionData['answer_options'] as $optionData) {
-                    $question->answerOptions()->create($optionData);
-                }
+                $question->answerOptions()->createMany($questionData['answer_options']);
             }
 
             return response()->json($evaluation->load('questions.answerOptions'), 201);
@@ -87,10 +100,12 @@ class EvaluationController extends Controller
     public function show($id)
     {
         try {
-            $user = Auth::user();
-
-            // Buscar la evaluación del usuario
-            $evaluation = $user->evaluations()->with('questions.answerOptions')->find($id);
+            // Buscar la evaluación en la tabla evaluations
+            $evaluation = Evaluation::with([
+                'questions.answerOptions' => function ($query) {
+                    $query->orderBy('score');
+                }
+            ])->find($id);
 
             if (!$evaluation) {
                 return response()->json(['message' => 'Evaluación no encontrada.'], 404);
@@ -114,15 +129,28 @@ class EvaluationController extends Controller
         try {
             $user = Auth::user();
 
+            $evaluation = Evaluation::findOrFail($id);
+            $isUsed = AcademicPeriodEvaluation::where('evaluation_id', $evaluation->id)->exists();
+
+            if ($isUsed) {
+                return response()->json([
+                    'message' => 'Esta evaluación no se puede modificar porque ya forma parte de un periodo académico.',
+                ], 403);
+            }
+
             // Validar la entrada
             $request->validate([
-                'title' => 'sometimes|required|string|max:255',
+                'title' => 'sometimes|required|string|max:255|unique:evaluations,title,' . $evaluation->id . ',id,user_id,' . $user->id,
                 'description' => 'nullable|string',
                 'questions' => 'sometimes|required|array',
                 'questions.*.question_text' => 'sometimes|required|string|max:255',
                 'questions.*.answer_options' => 'sometimes|required|array',
                 'questions.*.answer_options.*.option_text' => 'sometimes|required|string|max:255',
                 'questions.*.answer_options.*.score' => 'sometimes|required|integer|min:0|max:10',
+            ], [
+                'title.required' => __('validation.attributes.evaluation.title') . ' es requerido.',
+                'title.unique' => ' El ' . __('validation.attributes.evaluation.title') . ' ya está registrado en sus plantillas',
+                'title.string' => __('validation.attributes.evaluation.title') . ' debe ser una cadena.',
             ]);
 
             // Buscar la evaluación
@@ -137,11 +165,19 @@ class EvaluationController extends Controller
 
             // Actualizar preguntas y opciones de respuesta (si se proporcionaron)
             if ($request->has('questions')) {
+                // Eliminar preguntas que ya no están en la solicitud
+                $newQuestionIds = collect($request->questions)->pluck('id')->filter()->all();
+                $evaluation->questions()->whereNotIn('id', $newQuestionIds)->delete();
+
                 foreach ($request->questions as $questionData) {
                     $question = $evaluation->questions()->updateOrCreate(
                         ['id' => $questionData['id']],
                         ['question_text' => $questionData['question_text']]
                     );
+
+                    // Eliminar opciones de respuesta que ya no están en la solicitud
+                    $newOptionIds = collect($questionData['answer_options'])->pluck('id')->filter()->all();
+                    $question->answerOptions()->whereNotIn('id', $newOptionIds)->delete();
 
                     foreach ($questionData['answer_options'] as $optionData) {
                         $question->answerOptions()->updateOrCreate(

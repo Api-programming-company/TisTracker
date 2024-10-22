@@ -24,10 +24,50 @@ const evaluationApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["evaluation"],
     }),
+    getCompanyQuestionsById: builder.query({
+      query: (id) => ({
+        url: `evaluations/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["evaluation"],
+    }),
+    createEvaluationTemplate: builder.mutation({
+      query: (data) => ({
+        url: "evaluations",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: data,
+      }),
+      invalidatesTags: ["evaluation"],
+    }),
+    getAllEvaluationTemplates: builder.query({
+      query: () => ({
+        url: "evaluations",
+        method: "GET",
+      }),
+      providesTags: ["evaluation"],
+    }),
+    updateEvaluationTemplate: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `evaluations/${id}`,
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: data,
+      }),
+      invalidatesTags: ["evaluation"],
+    }),
   }),
 });
 
 export const {
   useCreateUserEvaluationMutation,
   useCreateCompanyEvaluationMutation,
+  useGetCompanyQuestionsByIdQuery,
+  useCreateEvaluationTemplateMutation,
+  useGetAllEvaluationTemplatesQuery,
+  useUpdateEvaluationTemplateMutation,
 } = evaluationApi;

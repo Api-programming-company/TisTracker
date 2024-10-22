@@ -1,7 +1,8 @@
 :root{
   --title-font-family: 'Poppins', sans-serif;
   --body-font-family: 'Poppins', sans-serif;
-  --green-100: #5CDC79;
+  --green-100: #dafae2;
+  --green-300: #198754;
   --neutral-black: #1F2223;
   --neutral-white: #FFFFFF;
   --neutral-800:#363939;
@@ -15,8 +16,10 @@
   --primary-500: #0B3F69;
   --primary-300: #2A628F;
   --primary-100: #6A98BC;
+  --red-100: #fff1f1;
   --red-300: #f48fb1;
   --red-500: #D32F2F;
+  
 }
 
 body {
@@ -83,6 +86,9 @@ p,a,li,button,input,textarea{
 .text-neutral-100 {
   color: var(--neutral-100);
 }
+.text-white{
+  color : var(--neutral-100);
+}
 
 /* Custom Styles */
 
@@ -95,6 +101,13 @@ p,a,li,button,input,textarea{
 }
 .text-red-300 {
   color: var(--red-300);
+}
+
+.text-success{
+  color : var(--green-300)
+}
+.text-primary{
+  color : var(--primary-500)
 }
 
 
@@ -136,6 +149,85 @@ p,a,li,button,input,textarea{
   display: flex;
   justify-content: flex-start;
   align-items: center;
+}
+
+.border-red{
+  border-color: var(--red-300) !important;
+}
+
+.ml-1 {
+  margin-left: 1rem;
+}
+
+.grid{
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr 1fr 4fr 1fr;
+  /* border-bottom: 1px solid var(--neutral-300); */
+}
+.grid:last-of-type{
+   border-bottom: 1px solid var(--neutral-300);
+}
+
+.grid-item{
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--neutral-300);
+  padding: 0.5rem;
+  border-bottom: transparent;
+}
+
+
+.grid.header{
+  background-color: var(--neutral-200);
+  /* border-color: var(--primary-500); */
+  /* color: white; */
+  font-weight: bold;
+}
+
+
+.bg-primary{
+  background-color: var(--primary-500);
+}
+
+.grid-input{
+  position: relative;
+  box-sizing: content-box;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--neutral-300);
+  width: 100%;
+}
+
+.grid-input:focus{
+  box-shadow: none;
+  outline: none;
+  border: 1px solid var(--primary-300);
+  box-shadow: var(--primary-300) 0 0 5px 1px;
+}
+
+.grid-input.area{
+  resize: vertical;
+}
+
+.grid-input[type="checkbox"]{
+  width: 2rem;
+  height: 2rem;
+}
+
+input[type="checkbox"]{
+  width: 1.5rem;
+  height: 1.5rem;  
+}
+
+
+
+.bg-red{
+  background-color: var(--red-100);
+}
+
+.bg-green{
+  background-color: var(--green-100);
 }
 
 @media screen and (max-width: 600px) {

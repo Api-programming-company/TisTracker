@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Validator;
 use Exception;
+use Symfony\Component\HttpFoundation\Response;
 
 class CompanyUserController extends Controller
 {
@@ -24,19 +25,27 @@ class CompanyUserController extends Controller
             $user = Auth::user();
 
             // Obtener las compañías asociadas al usuario con status 'P'
-            $companies = $user->companies()
-                ->where('company_user.status', 'P') // Filtra por status 'P' en la tabla pivote
-                ->withPivot(['id', '*']) // Incluye los campos adicionales del pivote
-                ->withCount([
-                    'members as members_count' => function ($query) {
-                        $query->where('status', 'A'); // Filtra solo los miembros activos
+            $companyUsers = CompanyUser::where('user_id', $user->id)
+                ->where('status', 'P') // Filtra por status 'P' en la tabla pivote
+                ->with([
+                    'company' => function ($query) {
+                        $query->withCount([
+                            'members as members_count' => function ($query) {
+                                $query->where('status', 'A'); // Filtra solo los miembros activos
+                            }
+                        ]);
                     }
                 ])
                 ->get();
 
             return response()->json([
                 'message' => 'Invitaciones obtenidas correctamente.',
-                'companies' => $companies,
+                'companies' => $companyUsers->map(function ($companyUser) {
+                    return [
+                        'company' => $companyUser->company,
+                        'company_user' => $companyUser
+                    ];
+                }),
             ], 200);
         } catch (Exception $e) {
             return response()->json([
@@ -91,7 +100,7 @@ class CompanyUserController extends Controller
 
             // Obtener el usuario a agregar
             $member = User::find($request->user_id);
-            
+
             // Verificar si el miembro ya está activo en otra grupo empresa
             $isActiveInAnotherCompany = CompanyUser::where('user_id', $request->user_id)
                 ->where('status', 'A')  // Estado 'A' para activo
@@ -135,10 +144,13 @@ class CompanyUserController extends Controller
             }
 
             // Asignar el usuario a la compañía
-            $company->members()->attach($request->user_id, [
+            $companyUser = new CompanyUser([
+                'user_id' => $request->user_id,
+                'company_id' => $request->company_id,
                 'status' => $request->status,
                 'permission' => $request->permission
             ]);
+            $companyUser->save();
 
             // Recargar la compañía con los miembros y sus pivotes
             $company->load('members');
@@ -174,7 +186,7 @@ class CompanyUserController extends Controller
         try {
             // Validar que el ID exista en la tabla company_user
             $validator = Validator::make(['id' => $id], [
-                'id' => 'required|integer|exists:company_user,id',
+                'id' => 'required|integer|exists:company_users,id',
             ]);
 
             // Si la validación falla, retornar un error 400 con los mensajes de validación
@@ -300,16 +312,29 @@ class CompanyUserController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            // Validar el ID del usuario a eliminar
-            $request->validate([
-                'user_id' => 'required|exists:users,id',
+            // Validar que el ID exista en la tabla company_user
+            $validator = Validator::make(['id' => $id], [
+                'id' => 'required|integer|exists:company_users,id',
             ]);
 
-            // Buscar la compañía
-            $company = Company::findOrFail($id); // Usa $id para buscar la compañía
+            // Si la validación falla, retornar un error 422 con los mensajes de validación
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Error de validación.',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
 
-            // Desvincular al usuario de la compañía
-            $company->members()->detach($request->user_id);
+            $companyUser = CompanyUser::findOrFail($id);
+
+            // Verificar si el estado es 'P'
+            if ($companyUser->status !== 'P') {
+                return response()->json([
+                    'message' => 'Solo se pueden eliminar invitaciones en estado pendiente.'
+                ], 403); // 403 Forbidden
+            }
+
+            $companyUser->delete();
 
             return response()->json(['message' => 'Miembro eliminado correctamente de la compañía.'], 200);
         } catch (ValidationException $e) {
@@ -360,6 +385,67 @@ class CompanyUserController extends Controller
 
             return response()->json([
                 'message' => 'Se ha producido un error inesperado.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getEvaluationByCompanyUserId($id)
+    {
+        try {
+            $validator = Validator::make(['id' => $id], [
+                'id' => 'required|integer|exists:company_users,id',
+            ]);
+
+            // Si la validación falla, retornar un error 400 con los mensajes de validación
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Error de validación.',
+                    'errors' => $validator->errors(),
+                    'id' => $id,
+                ], 422);
+            }
+
+            // Obtener el usuario autenticado
+            $user = Auth::user();
+
+            // Buscar el registro en la tabla pivote por su ID
+            $companyUser = CompanyUser::with('company.academicPeriod.creator')
+                ->where('id', $id)
+                ->first();
+
+            // Verificar si el registro en la tabla pivote existe
+            if (!$companyUser) {
+                return response()->json(['message' => 'No se encontró el registro especificado en company_user.'], 404);
+            }
+
+            // Obtener la compañía del companyUser
+            $company = $companyUser->company;
+
+            // Obtener la evaluación del periodo académico si existe
+            $academic_period_evaluation = $company->academicPeriod->evaluations()
+                ->where('evaluation_type', 'U')
+                ->with(['evaluation.questions.answerOptions'])
+                ->first();
+
+            if (!$academic_period_evaluation) {
+                return response()->json(['message' => 'El periodo académico no cuenta con la evaluación.'], 404);
+            }
+
+            // Validar que la fecha actual esté dentro del rango de fechas de la evaluación
+            $currentDate = now();
+            if (!$currentDate->between($academic_period_evaluation->start_date, $academic_period_evaluation->end_date)) {
+                return response()->json(['message' => 'El periodo académico no está dentro de la fecha de evaluación.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            return response()->json([
+                'message' => 'Evaluado y evaluación obtenidas correctamente.',
+                'evaluation' => $academic_period_evaluation->evaluation,
+                'evaluatee' => $companyUser->user,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Ocurrió un error al obtener la información de la compañía y la evaluación.',
                 'error' => $e->getMessage()
             ], 500);
         }

@@ -195,7 +195,11 @@ const AcceptDeclineCompany = () => {
 
         {/* Miembros */}
         <Box sx={{ mt: 2 }}>
-          <MemberAccordion members={companyData.company.members} />
+          <MemberAccordion
+            members={companyData.company.members.filter(
+              (member) => member.status === "A"
+            )}
+          />
         </Box>
       </Box>
 

@@ -109,10 +109,10 @@ const RegisterAcademicPeriod = () => {
     }
 
     createAcademicPeriod({
-      name,
+      name: name,
       start_date: startDate,
       end_date: endDate,
-      description,
+      description: description,
     });
   };
 

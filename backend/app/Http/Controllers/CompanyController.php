@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\AcademicPeriod;
 use App\Models\Planning;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
+use App\Models\CompanyUser;
+
 /**
  * @OA\Schema(
  *     schema="Company",
@@ -59,21 +62,20 @@ class CompanyController extends Controller
     public function store(Request $request)
     {
         try {
-            // Obtener el usuario autenticado
             $user = Auth::user();
 
-            // Verificar si el usuario ya tiene permisos de escritura en alguna compañía
-            $hasWritePermission = $user->companies()
-                ->wherePivot('permission', 'W')
-                ->exists();
-
-            if ($hasWritePermission) {
+            if ($user->companies()->wherePivot('permission', 'W')->exists()) {
                 return response()->json([
                     'message' => 'Ya eres el encargado de una empresa, no puedes crear otra'
-                ], 403); // 403 Forbidden
+                ], Response::HTTP_FORBIDDEN);
             }
 
-            // Validar los datos de entrada
+            if ($user->companies()->wherePivot('status', 'A')->exists()) {
+                return response()->json([
+                    'message' => 'Ya perteneces a una empresa'
+                ], Response::HTTP_FORBIDDEN);
+            }
+
             $validatedData = $request->validate([
                 'long_name' => 'required|string|max:32|unique:companies,long_name',
                 'short_name' => 'required|string|max:8|unique:companies,short_name',
@@ -83,10 +85,15 @@ class CompanyController extends Controller
                 'academic_period_id' => 'required|exists:academic_periods,id',
             ]);
 
-            // Obtener el periodo académico
             $academicPeriod = AcademicPeriod::findOrFail($validatedData['academic_period_id']);
+            $currentDate = now();
 
-            // Crear la compañía con estado inicial 'C' y sin planificación
+            if ($currentDate->lt($academicPeriod->start_date) || $currentDate->gt($academicPeriod->end_date)) {
+                return response()->json([
+                    'message' => 'No está dentro de las fechas de registro de empresas.',
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
             $company = Company::create([
                 'long_name' => $validatedData['long_name'],
                 'short_name' => $validatedData['short_name'],
@@ -94,29 +101,30 @@ class CompanyController extends Controller
                 'address' => $validatedData['address'],
                 'phone' => $validatedData['phone'],
                 'academic_period_id' => $academicPeriod->id,
-                'status' => 'C', // Establece el estado de la compañía como 'C'
+                'status' => 'C',
             ]);
 
-            // Registrar al usuario autenticado como miembro de la compañía con permiso 'W' (escritura)
-            $company->members()->attach($user->id, [
-                'status' => 'A',  // Estado 'A' para aceptado
-                'permission' => 'W'  // Permiso 'W' para escritura
+            $company->members()->create([
+                'user_id' => $user->id,
+                'status' => 'A',
+                'permission' => 'W'
             ]);
 
             return response()->json([
-                'message' => 'Compañía creada y usuario registrado como miembro con permisos de escritura.',
+                'message' => 'Compañía creada exitosamente.',
                 'company' => $company,
-            ], 201);
+                'user' => $user
+            ], Response::HTTP_CREATED);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Error de validación',
                 'errors' => $e->errors()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Se ha producido un error inesperado al crear la compañía.',
                 'error' => $e->getMessage(),
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -136,32 +144,45 @@ class CompanyController extends Controller
 
             // Verificar si el usuario tiene permiso
             if ($academicPeriod->creator->id !== $user->id && $user->academic_period_id !== $academicPeriod->id) {
-                return response()->json(['message' => 'No tienes permiso para ver las compañías de este periodo académico.'], 403);
+                return response()->json(['message' => 'No tienes permiso para ver las compañías de este periodo académico.'], Response::HTTP_FORBIDDEN);
             }
 
+            $currentDate = now();
+
             // Obtener las compañías activas asociadas al periodo académico
-            $companies = Company::withCount('members')
+            $companies = Company::with([
+                'planning.milestones' => function ($query) use ($currentDate) {
+                    $query->whereDate('start_date', '<=', $currentDate)
+                          ->whereDate('end_date', '>=', $currentDate);
+                }
+            ])
                 ->where('academic_period_id', $request->id)
-                ->where('status', 'A') // Solo compañías activas
+                ->where('status', 'A')
                 ->get();
+
+            $totalIntegrants = $companies->sum(function ($company) {
+                return $company->members->count();
+            });
 
             return response()->json([
                 'message' => 'Compañías obtenidas correctamente.',
-                'companies' => $companies
-            ], 200);
+                'companies' => $companies,
+                'total_integrants' => $totalIntegrants
+            ], Response::HTTP_OK);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Error de validación.',
                 'errors' => $e->errors(),
                 "request" => $request
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Ocurrió un error al obtener las compañías.',
                 'error' => $e->getMessage()
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
 
     public function show($id)
     {
@@ -175,7 +196,7 @@ class CompanyController extends Controller
                 return response()->json([
                     'message' => 'Error de validación.',
                     'errors' => $validator->errors(),
-                ], 422);
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
             // Obtener el usuario autenticado
             $user = Auth::user();
@@ -184,23 +205,23 @@ class CompanyController extends Controller
             $company = Company::with([
                 'planning.milestones.deliverables',
                 'academicPeriod.creator',
-                'members'
+                'members.user'
             ])->find($id);
 
             // Verificar si la compañía existe
             if (!$company) {
-                return response()->json(['message' => 'No se encontró la compañía especificada.'], 404);
+                return response()->json(['message' => 'No se encontró la compañía especificada.'], Response::HTTP_NOT_FOUND);
             }
 
             return response()->json([
                 'message' => 'Compañía obtenida correctamente.',
                 'company' => $company,
-            ], 200);
+            ], Response::HTTP_OK);
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Ocurrió un error al obtener la información de la compañía.',
                 'error' => $e->getMessage()
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -218,24 +239,28 @@ class CompanyController extends Controller
             // Verificar si el usuario es el creador del periodo académico
             $academicPeriod = AcademicPeriod::find($request->academic_period_id);
             if ($academicPeriod->creator->id !== $user->id) {
-                return response()->json(['message' => 'No tienes permiso para acceder a estas compañías.'], 403);
+                return response()->json(['message' => 'No tienes permiso para acceder a estas compañías.'], Response::HTTP_FORBIDDEN);
             }
 
             // Obtener las compañías pendientes
             $companies = Company::where('academic_period_id', $request->academic_period_id)
-                ->where('status', 'P') // Estado Pendiente
-                ->withCount('members')
+                ->where('status', 'P')
+                ->withCount([
+                    'members' => function ($query) {
+                        $query->where('status', 'A');
+                    }
+                ])
                 ->get();
 
             return response()->json([
                 'message' => 'Compañías pendientes obtenidas correctamente.',
                 'companies' => $companies
-            ], 200);
+            ], Response::HTTP_OK);
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Ocurrió un error al obtener las compañías pendientes.',
                 'error' => $e->getMessage()
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -247,7 +272,7 @@ class CompanyController extends Controller
 
             // Verificar si la compañía existe
             if (!$company) {
-                return response()->json(['message' => 'No se encontró la compañía especificada.'], 404);
+                return response()->json(['message' => 'No se encontró la compañía especificada.'], Response::HTTP_NOT_FOUND);
             }
 
             // Obtener el periodo académico asociado
@@ -256,7 +281,7 @@ class CompanyController extends Controller
             // Verificar si el usuario tiene permiso
             $user = auth()->user();
             if ($academicPeriod->creator->id !== $user->id) {
-                return response()->json(['message' => 'No tienes permiso para aceptar esta compañía.'], 403);
+                return response()->json(['message' => 'No tienes permiso para aceptar esta compañía.'], Response::HTTP_FORBIDDEN);
             }
 
             // Cambiar el estado de la compañía a 'Aceptada'
@@ -266,32 +291,61 @@ class CompanyController extends Controller
             return response()->json([
                 'message' => 'Compañía aceptada correctamente.',
                 'company' => $company
-            ], 200);
+            ], Response::HTTP_OK);
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Ocurrió un error al aceptar la compañía.',
                 'error' => $e->getMessage()
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
-    public function index()
+    public function index(Request $request)
     {
         try {
-            // Obtener todas las compañías
-            $companies = Company::all();
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            $academicPeriodId = $request->input('academic_period_id');
+            $status = $request->input('status');
 
-            // Devolver una respuesta con la lista de compañías
-            return response()->json([
-                'message' => 'Lista de compañías obtenida correctamente.',
-                'companies' => $companies
-            ], 200); // 200 OK
+            $query = Company::query();
+
+            // Filtrar por academic_period_id y status
+            $query->when($academicPeriodId, function ($q) use ($academicPeriodId) {
+                return $q->where('academic_period_id', $academicPeriodId);
+            });
+
+            $query->when($status, function ($q) use ($status) {
+                return $q->where('status', $status);
+            });
+
+            // Filtrar por el rango de fechas de los milestones
+            if ($startDate && $endDate) {
+                $query->whereHas('planning.milestones', function ($milestoneQuery) use ($startDate, $endDate) {
+                    $milestoneQuery->whereBetween('end_date', [$startDate, $endDate]);
+                });
+            }
+
+            // Obtener las compañías filtradas junto con la planificación, hitos y entregables
+            $companies = $query->with([
+                'planning.milestones' => function ($milestoneQuery) use ($startDate, $endDate) {
+                    if ($startDate && $endDate) {
+                        $milestoneQuery->whereBetween('end_date', [$startDate, $endDate]);
+                    }
+                    $milestoneQuery->with('deliverables');
+                }
+            ])->get();
+
+            return response()->json($companies->transform(function ($company) {
+                $milestone = $company->planning ? $company->planning->milestones->first() : null;
+                $company->delivery_day = $milestone ? $milestone->end_date : null;
+                return $company;
+            }));
         } catch (Exception $e) {
-            // Manejar otros errores
             return response()->json([
-                'message' => 'Ocurrió un error al obtener la lista de compañías.',
+                'message' => 'Ocurrió un error al obtener las compañías.',
                 'error' => $e->getMessage()
-            ], 500); // 500 Internal Server Error
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -302,7 +356,7 @@ class CompanyController extends Controller
             $company = Company::find($id);
 
             if (!$company) {
-                return response()->json(['message' => 'No se encontró la compañía especificada.'], 404);
+                return response()->json(['message' => 'No se encontró la compañía especificada.'], Response::HTTP_NOT_FOUND);
             }
 
             // Obtener el usuario autenticado
@@ -312,12 +366,15 @@ class CompanyController extends Controller
             $isAcademicPeriodCreator = $company->academicPeriod->creator->id === $user->id;
 
             // Verificar si el usuario tiene permiso de escritura ('W') en la compañía
-            $member = $company->members()->where('user_id', $user->id)->first();
+            $companyUser = CompanyUser::where('user_id', $user->id)
+                ->where('company_id', $company->id)
+                ->where('permission', 'W')
+                ->first();
 
-            if (!$isAcademicPeriodCreator && (!$member || $member->pivot->permission !== 'W')) {
+            if (!$isAcademicPeriodCreator && !$companyUser) {
                 return response()->json([
                     'message' => 'No tienes permisos para actualizar esta compañía.'
-                ], 403);
+                ], Response::HTTP_FORBIDDEN);
             }
 
             // Validar los datos entrantes
@@ -335,17 +392,27 @@ class CompanyController extends Controller
             // Si el estado de la compañía va a cambiar a "A", verificar las condiciones
             if ($request->status === 'A') {
                 // Contar los miembros de la compañía con estado 'A'
-                $acceptedMembersCount = $company->members()->wherePivot('status', 'A')->count();
+                $acceptedMembersCount = $company->members()->where('status', 'A')->count();
 
                 // Verificar que al menos 3 miembros tienen estado 'A'
                 if ($acceptedMembersCount < 3) {
                     return response()->json([
                         'message' => 'Debe haber al menos 3 miembros con estado "A" para aceptar la compañía.'
-                    ], 400); // Bad Request
+                    ], Response::HTTP_BAD_REQUEST);
                 }
 
                 // Eliminar miembros que no tienen estado 'A'
-                $company->members()->wherePivot('status', '!=', 'A')->detach();
+                $company->members()->where('status', '!=', 'A')->delete();
+            }
+
+            // Si el estado de la compañía va a cambiar a "P"
+            if ($request->status === 'P') {
+                // Verificar si la compañía ya está en estado "A"
+                if ($company->status === 'A') {
+                    return response()->json([
+                        'message' => 'La empresa ya fue aceptada, no puede volver a enviar el formulario.'
+                    ], Response::HTTP_BAD_REQUEST);
+                }
             }
 
             // Si el request tiene miembros
@@ -356,9 +423,10 @@ class CompanyController extends Controller
                     $existingMember = $company->members()->where('user_id', $memberId)->first();
                     if (!$existingMember) {
                         // Si el miembro no existe, añadirlo con permiso 'R' y estado 'P' (pendiente)
-                        $company->members()->attach($memberId, [
+                        $company->members()->create([
+                            'user_id' => $memberId,
                             'permission' => 'R',
-                            'status' => 'P' // Estado 'P' para pendiente
+                            'status' => 'P'
                         ]);
                     }
                 }
@@ -368,25 +436,28 @@ class CompanyController extends Controller
             $company->update($request->except('members'));
 
             // Obtener la lista actualizada de miembros con sus permisos y estado
-            $updatedMembers = $company->members()->get(['user_id', 'company_user.permission', 'company_user.status']);
+            // Obtener la lista actualizada de miembros con sus permisos y estado
+            $updatedMembers = $company->members()->get(['user_id', 'company_users.permission', 'company_users.status']);
+
 
             return response()->json([
                 'message' => 'Compañía actualizada correctamente.',
                 'company' => $company,
-                'members' => $updatedMembers // Incluir los miembros en la respuesta
-            ], 200);
+                'members' => $updatedMembers
+            ], Response::HTTP_OK);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Error de validación.',
                 'errors' => $e->errors()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Ocurrió un error al actualizar la compañía.',
                 'error' => $e->getMessage()
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
     public function destroy($id)
     {
         try {
@@ -397,7 +468,7 @@ class CompanyController extends Controller
             if (!$company) {
                 return response()->json([
                     'message' => 'No se encontró la compañía especificada.'
-                ], 404); // 404 Not Found
+                ], Response::HTTP_NOT_FOUND);
             }
 
             // Eliminar la compañía
@@ -406,14 +477,14 @@ class CompanyController extends Controller
             // Devolver una respuesta de éxito
             return response()->json([
                 'message' => 'Compañía eliminada correctamente.'
-            ], 200); // 200 OK
+            ], Response::HTTP_OK);
 
         } catch (Exception $e) {
             // Manejar otros errores
             return response()->json([
                 'message' => 'Ocurrió un error al eliminar la compañía.',
                 'error' => $e->getMessage()
-            ], 500); // 500 Internal Server Error
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -427,35 +498,96 @@ class CompanyController extends Controller
             // Obtener las compañías donde el usuario está como miembro con estado 'P' (Pendiente)
             $companies = Company::whereHas('members', function ($query) use ($user) {
                 $query->where('user_id', $user->id)
-                    ->where('status', 'P'); // Estado pendiente
+                    ->where('status', 'P');
             })
                 ->with([
                     'members' => function ($query) use ($user) {
                         // Incluir solo la información del usuario autenticado
                         $query->where('user_id', $user->id)
-                            ->withPivot('created_at') // Obtener la fecha de la invitación (asumiendo 'created_at')
-                            ->select('users.id as user_id', 'email');  // Renombrar 'id' para evitar ambigüedad
+                            ->withPivot('created_at')
+                            ->select('users.id as user_id', 'email');
                     }
                 ])
                 ->withCount('members')
                 ->get();
             $data = $companies->map(function ($company) use ($user) {
-                $member = $company->members->first(); // El miembro es el usuario autenticado
+                $member = $company->members->first();
                 return [
                     'company' => $company,
-                    'invitation_date' => $member->pivot->created_at, // Fecha de invitación
+                    'invitation_date' => $member->pivot->created_at,
                 ];
             });
             return response()->json([
                 'message' => 'Compañías pendientes obtenidas correctamente.',
                 'companies' => $data
-            ], 200); // 200 OK
+            ], Response::HTTP_OK);
         } catch (Exception $e) {
             // Manejar otros errores
             return response()->json([
                 'message' => 'Ocurrió un error al obtener las compañías pendientes.',
                 'error' => $e->getMessage()
-            ], 500); // 500 Internal Server Error
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function getEvaluationByCompanyId($id, $evaluation_type)
+    {
+        try {
+            $validator = Validator::make(['id' => $id, 'evaluation_type' => $evaluation_type], [
+                'id' => 'required|integer|exists:companies,id',
+                'evaluation_type' => 'required|string|in:A,C,U'
+            ]);
+
+            // Si la validación falla, retornar un error 400 con los mensajes de validación
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Error de validación.',
+                    'errors' => $validator->errors(),
+                    'id' => $id,
+                    'evaluation_type' => $evaluation_type
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            // Obtener el usuario autenticado
+            $user = Auth::user();
+
+            // Buscar la compañía por ID, incluyendo relaciones necesarias
+            $company = Company::with([
+                'academicPeriod.creator',
+            ])->find($id);
+
+            // Verificar si la compañía existe
+            if (!$company) {
+                return response()->json(['message' => 'No se encontró la compañía especificada.'], Response::HTTP_NOT_FOUND);
+            }
+
+            // Obtener la evaluación del periodo académico si existe
+            $academic_period_evaluation = $company->academicPeriod->evaluations()
+                ->where('evaluation_type', $evaluation_type)
+                ->with(['evaluation.questions.answerOptions'])
+                ->first();
+
+            if (!$academic_period_evaluation) {
+                return response()->json(['message' => 'El periodo académico no cuenta con la evaluación.'], Response::HTTP_NOT_FOUND);
+            }
+
+            // Validar que la fecha actual esté dentro del rango de fechas de la evaluación
+            $currentDate = now();
+            if (!$currentDate->between($academic_period_evaluation->start_date, $academic_period_evaluation->end_date)) {
+                return response()->json(['message' => 'El periodo académico no está dentro de la fecha de evaluación.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            return response()->json([
+                'message' => 'Compañía y evaluación obtenidas correctamente.',
+                'company' => $company,
+                'evaluation' => $academic_period_evaluation->evaluation,
+                'academic_period' => $company->academicPeriod
+            ], Response::HTTP_OK);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Ocurrió un error al obtener la información de la compañía y la evaluación.',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

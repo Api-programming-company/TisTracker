@@ -11,7 +11,7 @@ const invitationApi = apiSlice.injectEndpoints({
         },
         body: data,
       }),
-      invalidatesTags: ["invitation","company"],
+      invalidatesTags: ["invitation", "company"],
     }),
     updateInvitationById: builder.mutation({
       query: ({ id, data }) => ({
@@ -28,6 +28,13 @@ const invitationApi = apiSlice.injectEndpoints({
       query: (id) => `invitations/${id}`,
       providesTags: ["invitation", "company"],
     }),
+    deleteInvitationById: builder.mutation({
+      query: (id) => ({
+        url: `invitations/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["invitation", "company"],
+    }),
   }),
 });
 
@@ -35,4 +42,5 @@ export const {
   useUpdateInvitationByIdMutation,
   useInvitationDetailsByIdQuery,
   useCreateInvitationMutation,
+  useDeleteInvitationByIdMutation,
 } = invitationApi;

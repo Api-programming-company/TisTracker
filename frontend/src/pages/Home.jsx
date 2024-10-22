@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from "react";
 import AppContext from "../context/AppContext";
-import UserRegister from "./UserRegister";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
@@ -10,14 +9,10 @@ const Home = () => {
   useEffect(() => {
     if (user === null) {
       navigate("/login");
-    } else if (user.user_type === "docente") {
+    } else if (user.user_type === "D") {
       navigate("/academic-periods");
-    } else if (user.user_type === "estudiante") {
-      if (user.academic_period_id) {
-        navigate(`/academic-period/${user.academic_period_id}/companies`);
-      } else {
-        navigate("/enroll-to-ap");
-      }
+    } else if (user.user_type === "E") {
+      navigate("/student-home");
     }
   }, [user, navigate]);
 

@@ -77,7 +77,7 @@ const CompanyList = () => {
           Lista de Grupo Empresas
         </Typography>
         <Box>
-          {user?.user_type === "estudiante" && (
+          {user?.user_type === "E" && (
             <IconButton
               color="primary"
               aria-label="Agregar empresa"
@@ -95,7 +95,7 @@ const CompanyList = () => {
             </IconButton>
           )}
 
-          {user?.user_type === "docente" && (
+          {user?.user_type === "D" && (
             <IconButton
               color="primary"
               aria-label="Solicitudes pendientes"
@@ -117,7 +117,7 @@ const CompanyList = () => {
         display="flex"
         flexWrap="wrap"
         justifyContent="flex-start" // Mantener alineación de izquierda a derecha
-        sx={{ gap: 2 }} // Espacio entre tarjetas
+        sx={{ gap: 2, mb: 12 }} // Espacio entre tarjetas
       >
         {data?.companies?.length === 0 ? (
           <Typography variant="h6" color="textSecondary">

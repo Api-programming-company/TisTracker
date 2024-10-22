@@ -1,0 +1,232 @@
+{
+    "title": "Autoevaluación de Grupo Empresa",
+    "description": "Autoevaluación para empresas",
+    "questions": [
+      {
+        "question_text": "Me siento seguro utilizando las tecnologías y herramientas requeridas para mi trabajo.",
+        "answer_options": [
+          {
+            "option_text": "Totalmente en desacuerdo",
+            "score": "1"
+          },
+          {
+            "option_text": "En desacuerdo",
+            "score": "2"
+          },
+          {
+            "option_text": "Neutral",
+            "score": "3"
+          },
+          {
+            "option_text": "De acuerdo",
+            "score": "4"
+          },
+          {
+            "option_text": "Totalmente de acuerdo",
+            "score": "5"
+          }
+        ]
+      },
+      {
+        "question_text": "Tengo la capacidad de resolver problemas técnicos de manera eficiente.",
+        "answer_options": [
+          {
+            "option_text": "Totalmente en desacuerdo",
+            "score": "1"
+          },
+          {
+            "option_text": "En desacuerdo",
+            "score": "2"
+          },
+          {
+            "option_text": "Neutral",
+            "score": "3"
+          },
+          {
+            "option_text": "De acuerdo",
+            "score": "4"
+          },
+          {
+            "option_text": "Totalmente de acuerdo",
+            "score": "5"
+          }
+        ]
+      },
+      {
+        "question_text": "Estoy al tanto de las mejores prácticas y patrones de diseño en desarrollo de software.",
+        "answer_options": [
+          {
+            "option_text": "Totalmente en desacuerdo",
+            "score": "1"
+          },
+          {
+            "option_text": "Neutral",
+            "score": "2"
+          },
+          {
+            "option_text": "Totalmente de acuerdo",
+            "score": "3"
+          }
+        ]
+      },
+      {
+        "question_text": "Me comunico de manera clara y efectiva con los miembros de mi equipo.",
+        "answer_options": [
+          {
+            "option_text": "Totalmente en desacuerdo",
+            "score": "1"
+          },
+          {
+            "option_text": "En desacuerdo",
+            "score": "2"
+          },
+          {
+            "option_text": "De acuerdo",
+            "score": "3"
+          },
+          {
+            "option_text": "Totalmente de acuerdo",
+            "score": "4"
+          }
+        ]
+      },
+      {
+        "question_text": "Siento que puedo colaborar fácilmente con otros en tareas y proyectos.",
+        "answer_options": [
+          {
+            "option_text": "Totalmente en desacuerdo",
+            "score": "1"
+          },
+          {
+            "option_text": "En desacuerdo",
+            "score": "2"
+          },
+          {
+            "option_text": "Neutral",
+            "score": "3"
+          },
+          {
+            "option_text": "De acuerdo",
+            "score": "4"
+          },
+          {
+            "option_text": "Totalmente de acuerdo",
+            "score": "5"
+          }
+        ]
+      },
+      {
+        "question_text": "Recibo retroalimentación útil de mis compañeros y la utilizo para mejorar mi trabajo.",
+        "answer_options": [
+          {
+            "option_text": "Totalmente en desacuerdo",
+            "score": "1"
+          },
+          {
+            "option_text": "En desacuerdo",
+            "score": "2"
+          },
+          {
+            "option_text": "Neutral",
+            "score": "3"
+          },
+          {
+            "option_text": "De acuerdo",
+            "score": "4"
+          },
+          {
+            "option_text": "Totalmente de acuerdo",
+            "score": "5"
+          }
+        ]
+      },
+      {
+        "question_text": "Soy capaz de gestionar mi tiempo de manera efectiva para cumplir con los plazos.",
+        "answer_options": [
+          {
+            "option_text": "Totalmente en desacuerdo",
+            "score": "1"
+          },
+          {
+            "option_text": "Neutral",
+            "score": "2"
+          },
+          {
+            "option_text": "Totalmente de acuerdo",
+            "score": "3"
+          }
+        ]
+      },
+      {
+        "question_text": "Mi código cumple con los estándares de calidad establecidos por el equipo.",
+        "answer_options": [
+          {
+            "option_text": "Totalmente en desacuerdo",
+            "score": "1"
+          },
+          {
+            "option_text": "En desacuerdo",
+            "score": "2"
+          },
+          {
+            "option_text": "Neutral",
+            "score": "3"
+          },
+          {
+            "option_text": "De acuerdo",
+            "score": "4"
+          },
+          {
+            "option_text": "Totalmente de acuerdo",
+            "score": "5"
+          }
+        ]
+      },
+      {
+        "question_text": "Tomo en cuenta las recomendaciones de otros desarrolladores durante las revisiones de código.",
+        "answer_options": [
+          {
+            "option_text": "Totalmente en desacuerdo",
+            "score": "1"
+          },
+          {
+            "option_text": "En desacuerdo",
+            "score": "2"
+          },
+          {
+            "option_text": "Neutral",
+            "score": "3"
+          },
+          {
+            "option_text": "De acuerdo",
+            "score": "4"
+          },
+          {
+            "option_text": "Totalmente de acuerdo",
+            "score": "5"
+          }
+        ]
+      },
+      {
+        "question_text": "Estoy satisfecho con las herramientas de desarrollo y colaboración que utilizamos.",
+        "answer_options": [
+          {
+            "option_text": "Totalmente en desacuerdo",
+            "score": "1"
+          },
+          {
+            "option_text": "En desacuerdo",
+            "score": "2"
+          },
+          {
+            "option_text": "De acuerdo",
+            "score": "3"
+          },
+          {
+            "option_text": "Totalmente de acuerdo",
+            "score": "4"
+          }
+        ]
+      }
+    ]
+}

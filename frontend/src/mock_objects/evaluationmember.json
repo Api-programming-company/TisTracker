@@ -1,0 +1,247 @@
+{
+  
+  "title": "Evaluación a Integrantes de Grupo Empresa",
+  "description": "Evaluación para miembros de empresas",
+  "questions": [
+    {
+      "question_text": "Mi compañero(a) se comunicó de manera efectiva con el equipo a lo largo del proyecto.",
+      "answer_options": [
+        {
+          
+          "option_text": "Totalmente en desacuerdo",
+          "score": "1"
+        },
+        {
+          
+          "option_text": "En desacuerdo",
+          "score": "2"
+        },
+        {
+          
+          "option_text": "Neutral",
+          "score": "3"
+        },
+        {
+          
+          "option_text": "De acuerdo",
+          "score": "4"
+        },
+        {
+          
+          "option_text": "Totalmente de acuerdo",
+          "score": "5"
+        }
+      ]
+    },
+    {
+      "question_text": "Mi compañero(a) colaboró bien con otros miembros del equipo para alcanzar los objetivos del proyecto.",
+      "answer_options": [
+        {
+          
+          "option_text": "Totalmente en desacuerdo",
+          "score": "1"
+        },
+        {
+          
+          "option_text": "En desacuerdo",
+          "score": "2"
+        },
+        {
+          
+          "option_text": "Neutral",
+          "score": "3"
+        },
+        {
+          
+          "option_text": "De acuerdo",
+          "score": "4"
+        },
+        {
+          
+          "option_text": "Totalmente de acuerdo",
+          "score": "5"
+        }
+      ]
+    },
+    {
+      "question_text": "Mi compañero(a) asumió la responsabilidad de sus tareas y cumplió con sus compromisos.",
+      "answer_options": [
+        {
+          
+          "option_text": "Totalmente en desacuerdo",
+          "score": "1"
+        },
+        {
+          
+          "option_text": "En desacuerdo",
+          "score": "2"
+        },
+        {
+          
+          "option_text": "De acuerdo",
+          "score": "3"
+        },
+        {
+          
+          "option_text": "Totalmente de acuerdo",
+          "score": "4"
+        }
+      ]
+    },
+    {
+      "question_text": "Mi compañero(a) fue proactivo al abordar y resolver problemas que surgieron durante el proyecto.",
+      "answer_options": [
+        {
+          
+          "option_text": "En desacuerdo",
+          "score": "1"
+        },
+        {
+          
+          "option_text": "Neutral",
+          "score": "2"
+        },
+        {
+          
+          "option_text": "De acuerdo",
+          "score": "3"
+        }
+      ]
+    },
+    {
+      "question_text": "La contribución de mi compañero(a) fue valiosa para el éxito del proyecto.",
+      "answer_options": [
+        {
+          
+          "option_text": "Totalmente en desacuerdo",
+          "score": "1"
+        },
+        {
+          
+          "option_text": "En desacuerdo",
+          "score": "2"
+        },
+        {
+          
+          "option_text": "Neutral",
+          "score": "3"
+        },
+        {
+          
+          "option_text": "De acuerdo",
+          "score": "4"
+        },
+        {
+          
+          "option_text": "Totalmente de acuerdo",
+          "score": "5"
+        }
+      ]
+    },
+    {
+      "question_text": "Mi compañero(a) cumplió con los plazos establecidos para sus entregas.",
+      "answer_options": [
+        {
+          
+          "option_text": "Totalmente en desacuerdo",
+          "score": "1"
+        },
+        {
+          
+          "option_text": "En desacuerdo",
+          "score": "2"
+        },
+        {
+          
+          "option_text": "Neutral",
+          "score": "3"
+        },
+        {
+          
+          "option_text": "De acuerdo",
+          "score": "4"
+        },
+        {
+          
+          "option_text": "Totalmente de acuerdo",
+          "score": "5"
+        }
+      ]
+    },
+    {
+      "question_text": "Mi compañero(a) estuvo dispuesto a ayudar a otros miembros del equipo cuando fue necesario.",
+      "answer_options": [
+        {
+          
+          "option_text": "Totalmente en desacuerdo",
+          "score": "1"
+        },
+        {
+          
+          "option_text": "En desacuerdo",
+          "score": "2"
+        },
+        {
+          
+          "option_text": "De acuerdo",
+          "score": "3"
+        },
+        {
+          
+          "option_text": "Totalmente de acuerdo",
+          "score": "4"
+        }
+      ]
+    },
+    {
+      "question_text": "Mi compañero(a) fue receptivo a la retroalimentación y mostró disposición para mejorar.",
+      "answer_options": [
+        {
+          
+          "option_text": "Totalmente en desacuerdo",
+          "score": "1"
+        },
+        {
+          
+          "option_text": "En desacuerdo",
+          "score": "2"
+        },
+        {
+          
+          "option_text": "De acuerdo",
+          "score": "3"
+        },
+        {
+          
+          "option_text": "Totalmente de acuerdo",
+          "score": "4"
+        }
+      ]
+    },
+    {
+      "question_text": "La calidad del trabajo realizado por mi compañero(a) cumplió con los estándares que hemos establecido.",
+      "answer_options": [
+        {
+          
+          "option_text": "Totalmente en desacuerdo",
+          "score": "1"
+        },
+        {
+          
+          "option_text": "En desacuerdo",
+          "score": "2"
+        },
+        {
+          
+          "option_text": "De acuerdo",
+          "score": "3"
+        },
+        {
+          
+          "option_text": "Totalmente de acuerdo",
+          "score": "4"
+        }
+      ]
+    }
+  ]
+}

@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\Planning;
 use App\Models\Milestone;
 use App\Models\Deliverable;
+use App\Models\Company;
 use Illuminate\Validation\ValidationException;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class PlanningController extends Controller
 {
@@ -24,7 +26,6 @@ class PlanningController extends Controller
     }
 
     // Guardar una nueva planificación
-    // Guardar una nueva planificación
     public function store(Request $request)
     {
         try {
@@ -38,7 +39,7 @@ class PlanningController extends Controller
                 ], 422);
             }
 
-            // Validar los datos
+            // Validar los datos 
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'company_id' => 'required|exists:companies,id',
@@ -50,14 +51,29 @@ class PlanningController extends Controller
                 'milestones.*.deliverables' => 'required|array|min:1',
             ]);
 
-            // Verificar que la suma de billing_percentage no exceda 100
-            $totalBilling = array_sum(array_column($validated['milestones'], 'billing_percentage'));
+            // Obtener la compañía para la cual se está creando la planificación
+            $company = Company::findOrFail($validated['company_id']);
 
-            if ($totalBilling > 100) {
+            // Obtener el periodo académico asociado a la compañía
+            $academicPeriod = $company->academicPeriod;
+
+            // Validar que el periodo académico exista para la compañía
+            if (!$academicPeriod) {
                 return response()->json([
-                    'message' => 'La suma de los billing_percentage no puede ser mayor a 100%.',
-                    'errors' => ['billing_percentage' => 'El total es ' . $totalBilling . '%.']
+                    'message' => 'No se encontró un periodo académico asociado a la compañía.'
                 ], 422);
+            }
+
+            // Verificar que las fechas de los hitos estén dentro del rango del periodo académico
+            foreach ($validated['milestones'] as $milestone) {
+                if ($milestone['start_date'] < $academicPeriod->start_date || $milestone['end_date'] > $academicPeriod->end_date) {
+                    return response()->json([
+                        'message' => 'Las fechas de los hitos deben estar dentro del rango del periodo académico.',
+                        'errors' => [
+                            'milestones' => 'El hito ' . $milestone['name'] . ' tiene fechas fuera del periodo académico.'
+                        ]
+                    ], 422);
+                }
             }
 
             // Crear planificación
@@ -94,31 +110,20 @@ class PlanningController extends Controller
             $company = $planning->company;
             $member = $company->members()->where('user_id', $user->id)->first();
 
-            if (!$member) {
+            if (!$member && $user->user_type !== 'D') {
                 return response()->json([
                     'message' => 'No tienes permisos para acceder a esta planificación.',
                 ], 403);
             }
 
-            // Verificar que la suma de billing_percentage no exceda 100
-            $totalBilling = $planning->milestones->sum('billing_percentage');
-
-            if ($totalBilling > 100) {
-                return response()->json([
-                    'message' => 'La suma de los billing_percentage es mayor a 100%.',
-                    'errors' => ['billing_percentage' => 'El total es ' . $totalBilling . '%.']
-                ], 422);
-            }
-
             // Obtener el permiso del usuario autenticado desde la tabla pivote
-            $userPermission = $member->pivot->permission;
+            $userPermission = $member ? $member->permission : null;
 
             // Devolver la planificación con los permisos del usuario autenticado
             return response()->json([
                 'message' => 'Planificación obtenida correctamente.',
                 'planning' => $planning->load('milestones.deliverables'),
-                'user_permission' => $userPermission,
-                'total_billing_percentage' => $totalBilling,
+                'user_permission' => $userPermission
             ], 200);
         } catch (Exception $e) {
             return response()->json(['message' => 'Error al obtener la planificación', 'error' => $e->getMessage()], 500);
@@ -128,28 +133,54 @@ class PlanningController extends Controller
     // Actualizar una planificación
     public function update(Request $request, $id)
     {
+
         try {
             // Validar los datos de actualización
             $validatedData = $request->validate([
-                'name' => 'sometimes|required|string|max:255',
-                'company_id' => 'sometimes|required|exists:companies,id',
+                'name' => 'sometimes|string|max:255',
+                'company_id' => 'sometimes|exists:companies,id',
                 'milestones' => 'sometimes|array',
                 'milestones.*.id' => 'nullable|exists:milestones,id',
-                'milestones.*.name' => 'required_with:milestones|string|max:255',
-                'milestones.*.start_date' => 'required_with:milestones|date|before:milestones.*.end_date',
-                'milestones.*.end_date' => 'required_with:milestones|date|after:milestones.*.start_date',
-                'milestones.*.billing_percentage' => 'required_with:milestones|integer|min:0',
-                'milestones.*.deliverables' => 'required_with:milestones|array|min:1',
-                'milestones.*.deliverables.*.name' => 'required|string|max:255',
-                'milestones.*.deliverables.*.responsible' => 'required|string|max:255',
-                'milestones.*.deliverables.*.objective' => 'required|string',
+                'milestones.*.name' => 'sometimes|string|max:255',
+                'milestones.*.start_date' => 'sometimes|date|before:milestones.*.end_date',
+                'milestones.*.end_date' => 'sometimes|date|after:milestones.*.start_date',
+                // 'milestones.*.billing_percentage' => 'sometimes|required|integer|min:0',
+                'milestones.*.status' => 'sometimes|in:A,P',
+                'milestones.*.deliverables' => 'sometimes|array|min:1',
+                'milestones.*.deliverables.*.name' => 'sometimes|string|max:255',
+                //'milestones.*.deliverables.*.responsible' => 'sometimes|string|max:255',
+                //'milestones.*.deliverables.*.objective' => 'sometimes|string',
+                'milestones.*.deliverables.*.expected_result' => 'sometimes|nullable|integer|min:0',
+                'milestones.*.deliverables.*.actual_result' => 'sometimes|nullable|integer|min:0',
+                'milestones.*.deliverables.*.observations' => 'sometimes|nullable|string|max:255',
+                'milestones.*.deliverables.*.status' => 'sometimes|in:A,C',
             ]);
+
+            $user = Auth::user();
+
+            if ($user->user_type !== 'D') {
+                // Revisar si hay cambios en los campos restringidos
+                foreach ($validatedData['milestones'] as $milestoneData) {
+                    if (
+                        isset($milestoneData['status']) ||
+                        isset($milestoneData['deliverables']) && (
+                            isset($milestoneData['deliverables']['expected_result']) ||
+                            isset($milestoneData['deliverables']['actual_result']) ||
+                            isset($milestoneData['deliverables']['observations'])
+                        )
+                    ) {
+                        return response()->json([
+                            'message' => 'No tienes permisos para modificar los campos de estado, resultado esperado, resultado actual u observaciones.',
+                        ], 403);
+                    }
+                }
+            }
 
             // Buscar la planificación
             $planning = Planning::findOrFail($id);
             $planning->update($validatedData);
 
-            // Actualizar hitos y entregables
+            // Validar que la suma de porcentajes no exceda 100%
             if (isset($validatedData['milestones'])) {
                 $totalBilling = array_sum(array_column($validatedData['milestones'], 'billing_percentage'));
 
@@ -160,10 +191,14 @@ class PlanningController extends Controller
                     ], 422);
                 }
 
+                // Actualizar o crear hitos y sus entregables
                 foreach ($validatedData['milestones'] as $milestoneData) {
                     $milestone = Milestone::updateOrCreate(
                         ['id' => $milestoneData['id'] ?? null],
-                        array_merge($milestoneData, ['planning_id' => $planning->id])
+                        array_merge(
+                            $milestoneData,
+                            ['planning_id' => $planning->id, 'status' => $milestoneData['status'] ?? 'P']
+                        )
                     );
 
                     // Crear o actualizar entregables
@@ -185,6 +220,7 @@ class PlanningController extends Controller
             return response()->json(['message' => 'Error al actualizar la planificación', 'error' => $e->getMessage()], 500);
         }
     }
+
 
     // Eliminar una planificación
     public function destroy($id)

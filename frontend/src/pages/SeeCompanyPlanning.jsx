@@ -3,13 +3,13 @@ import SeeMilestone from "../components/planning/SeeMilestone";
 import "../styles/planning.css";
 import { useParams } from "react-router-dom";
 import { useGetPlanningByCompanyIdQuery } from "../api/planningApi";
-import { CircularProgress, Container, Alert } from "@mui/material";
+import { CircularProgress, Container, Alert, Typography, Box } from "@mui/material";
 
 const SeeCompanyPlanning = () => {
   const { id } = useParams();
   const { data, isSuccess, isFetching, isError, error } =
     useGetPlanningByCompanyIdQuery(id);
-
+  
   useEffect(() => {
     if (isSuccess) {
       console.log(data);
@@ -47,27 +47,28 @@ const SeeCompanyPlanning = () => {
         }}
       >
         <Alert severity="error">
-          Ocurrió un error al cargar la planificación:{" "}
-          {error?.data?.message || "Error desconocido"}
+          {error?.data?.message || "Ocurrio un error al cargar la planificación"}
         </Alert>
       </Container>
     );
   }
 
   return (
-    <div className="container" id="conpanyPlanning">
-      <div className="section-header">
-        <h1>Planificación de grupo empresa</h1>
-        <h4 className="text-neutral-500">Agile programming Innovators</h4>
-      </div>
-      <div className="planning-body">
-        <div className="milestones">
-          {data?.planning?.milestones.map((milestone) => (
-            <SeeMilestone key={milestone.id} milestone={milestone} />
-          ))}
-        </div>
-      </div>
-    </div>
+    <Container maxWidth="lg" id="companyPlanning">
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h4" component="h1">
+          Planificación de grupo empresa
+        </Typography>
+        <Typography variant="h6" color="textSecondary">
+          {`${data.planning.company.long_name} [${data.planning.company.short_name}]`}
+        </Typography>
+      </Box>
+      <Box>
+        {data?.planning?.milestones.map((milestone) => (
+          <SeeMilestone key={milestone.id} milestone={milestone} />
+        ))}
+      </Box>
+    </Container>
   );
 };
 

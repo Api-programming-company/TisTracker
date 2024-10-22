@@ -13,3 +13,9 @@
     gap: 1rem;
     align-items: start;
 }
+
+.date-item{
+    width: 17rem;
+    height: 7rem;
+    padding: 1rem 0;
+}

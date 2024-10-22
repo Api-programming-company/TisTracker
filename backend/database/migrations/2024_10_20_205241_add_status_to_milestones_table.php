@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddStatusToCompaniesTable extends Migration
+class AddStatusToMilestonesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddStatusToCompaniesTable extends Migration
      */
     public function up()
     {
-        Schema::table('companies', function (Blueprint $table) {
-            $table->char('status', 1)->default('P'); // 'P' para pendiente
+        Schema::table('milestones', function (Blueprint $table) {
+            $table->char('status', 1)->default('P')->comment('A = Accepted, P = Pending');
         });
     }
 
@@ -25,7 +25,7 @@ class AddStatusToCompaniesTable extends Migration
      */
     public function down()
     {
-        Schema::table('companies', function (Blueprint $table) {
+        Schema::table('milestones', function (Blueprint $table) {
             $table->dropColumn('status');
         });
     }
