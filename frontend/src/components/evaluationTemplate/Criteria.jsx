@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Parameter from "./Parameter";
 import EvaluateContext from "../../context/evaluateContext/EvaluateContext";
 import { DndContext, closestCenter } from "@dnd-kit/core";
@@ -53,6 +53,8 @@ const Criteria = ({ criteria, setShowError, showError }) => {
     return "";
   };
 
+  const handleCollapse = () => setToggle((prev) => !prev);
+
   const handleAddParameter = () => {
     setShowError(false);
     addParameter({ id: criteria.id });
@@ -71,6 +73,12 @@ const Criteria = ({ criteria, setShowError, showError }) => {
     const newOrder = arrayMove(criteria.answer_options, oldIndex, newIndex);
     handleParameterOrder({ criteria_id: criteria.id, newOrder: newOrder });
   };
+
+  useEffect(() => {
+    if (showError) {
+      setToggle(true);
+    }
+  }, [showError]);
 
   return (
     <Container>
@@ -99,7 +107,7 @@ const Criteria = ({ criteria, setShowError, showError }) => {
                   inputProps={{ maxLength: 255 }}
                   autoFocus
                 />
-                <IconButton button onClick={() => setToggle(!toggle)}>
+                <IconButton button onClick={handleCollapse}>
                   {toggle ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                 </IconButton>
               </Box>
