@@ -9,10 +9,6 @@ const CompanyCard2 = ({company}) => {
       navigate(`/vergrupoe/${company.id}`);
     };
 
-    useEffect(() => {
-        console.log(company,company.planning !== null);
-        
-    },[company])
     return (
       <Card
         onClick={handleClick}
@@ -65,7 +61,7 @@ const CompanyCard2 = ({company}) => {
             <b>Nombre corto:</b> {company.short_name}
           </Typography>
           <Typography variant="body2" noWrap>
-            <b>Número de integrantes:</b> {6} integrantes
+            <b>Número de integrantes:</b> {company.members.length} integrantes
           </Typography>
           <Typography variant="body2" noWrap>
             <b>Dia de entregable:</b> {company.planning && company.planning.milestones && company.planning.milestones[0] && new Date(company.planning.milestones[0].end_date).toLocaleDateString("es-AR", { year: "numeric", month: "2-digit", day: "2-digit" })}

@@ -160,9 +160,14 @@ class CompanyController extends Controller
                 ->where('status', 'A')
                 ->get();
 
+            $totalIntegrants = $companies->sum(function ($company) {
+                return $company->members->count();
+            });
+
             return response()->json([
                 'message' => 'Compañías obtenidas correctamente.',
-                'companies' => $companies
+                'companies' => $companies,
+                'total_integrants' => $totalIntegrants
             ], Response::HTTP_OK);
         } catch (ValidationException $e) {
             return response()->json([
