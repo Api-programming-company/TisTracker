@@ -88,7 +88,7 @@ const RegistroGE = () => {
     }
   }, [createData, createError, isCreated, isCreateError]);
 
-  const handleNavigate = async (e) => {
+  const handleOpenDialog = (e) => {
     e.preventDefault();
     if (
       !selectedEvaluation ||
@@ -103,11 +103,14 @@ const RegistroGE = () => {
       return;
     }
 
-    validateDates(startDate, endDate, startTime, endTime);
     if (!validateDates(startDate, endDate, startTime, endTime)) {
       return;
     }
 
+    setOpentoConfirm(true);
+  };
+
+  const handleNavigate = async (e) => {
     const evaluationMap = {
       Autoevaluación: "A",
       "Evaluación Cruzada": "C",
@@ -232,7 +235,7 @@ const RegistroGE = () => {
       >
         Crear Evaluación
       </Typography>
-      <form onSubmit={handleNavigate}>
+      <form>
         <FormControl fullWidth sx={{ mb: 3 }}>
           <InputLabel>Seleccionar tipo de evaluación</InputLabel>
           <Select
@@ -366,6 +369,7 @@ const RegistroGE = () => {
           type="submit"
           variant="contained"
           color="primary"
+          onClick={handleOpenDialog}
           sx={{ display: "block", mx: "auto", mt: 3, px: 12, py: 1 }}
         >
           Crear Evaluación
@@ -393,7 +397,10 @@ const RegistroGE = () => {
         setOpen={setOpentoConfirm}
         title={"Crear Evaluación"}
         content={"¿Estás seguro de crear esta evaluación?"}
-        onAccept={() => handleNavigate}
+        onAccept={() => {
+          handleNavigate();
+          setOpentoConfirm(false);
+        }}
         onCancel={() => setOpentoConfirm(false)}
       />
     </Box>
