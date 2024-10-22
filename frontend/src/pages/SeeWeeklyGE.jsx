@@ -9,6 +9,7 @@ import React, { useContext, useEffect } from "react";
 import { useGetCompaniesByAcademicPeriodQuery} from "../api/academicPeriodApi";
 import AppContext from "../context/AppContext";
 import { CompanyCard } from "../components";
+import CompanyCard2 from "../components/company/CompanyCard2";
 
 const SeeWeeklyGE = () => {
   const { id } = useParams();
@@ -107,10 +108,7 @@ const SeeWeeklyGE = () => {
             {day === 'undefined' ? 'Sin actividades' : `Día: ${day}`}
           </Typography>
           <Box
-            display="flex"
-            flexWrap="wrap"
-            justifyContent="flex-start"
-            sx={{ gap: 2, mb: 2 }}
+            
           >
             {companies.length === 0 ? (
               <Typography variant="h6" color="textSecondary">
@@ -127,7 +125,7 @@ const SeeWeeklyGE = () => {
                   }}
                   sx={{ minWidth: 0 }}
                 >
-                  <CompanyCard company={company} />
+                  <CompanyCard2 company={company} />
                 </Box>
               ))
             )}
