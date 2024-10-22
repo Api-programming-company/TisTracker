@@ -24,7 +24,9 @@ const EditEvaluationTemplate = () => {
     isFetching: companyQuestionsFetching,
     isError: isCompanyQuestionsError,
     error: companyQuestionsError,
-  } = useGetCompanyQuestionsByIdQuery(evaluation_id);
+  } = useGetCompanyQuestionsByIdQuery(evaluation_id, {
+    refetchOnMountOrArgChange: true,
+  });
   const [showError, setShowError] = useState(false);
   const [openCreateTemplate, setOpenCreateTemplate] = useState(false);
   const [openSnackBar, setOpenSnackBar] = useState(false);

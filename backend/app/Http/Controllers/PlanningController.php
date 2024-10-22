@@ -9,6 +9,7 @@ use App\Models\Deliverable;
 use App\Models\Company;
 use Illuminate\Validation\ValidationException;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class PlanningController extends Controller
 {
@@ -152,8 +153,28 @@ class PlanningController extends Controller
                 'milestones.*.deliverables.*.expected_result' => 'sometimes|nullable|integer|min:0',
                 'milestones.*.deliverables.*.actual_result' => 'sometimes|nullable|integer|min:0',
                 'milestones.*.deliverables.*.observations' => 'sometimes|nullable|string|max:255',
-                'milestones.*.deliverables.*.status' => 'sometimes|required|in:A,C', 
+                'milestones.*.deliverables.*.status' => 'sometimes|required|in:A,C',
             ]);
+
+            $user = Auth::user();
+
+            if ($user->user_type !== 'D') {
+                // Revisar si hay cambios en los campos restringidos
+                foreach ($validatedData['milestones'] as $milestoneData) {
+                    if (
+                        isset($milestoneData['status']) ||
+                        isset($milestoneData['deliverables']) && (
+                            isset($milestoneData['deliverables']['expected_result']) ||
+                            isset($milestoneData['deliverables']['actual_result']) ||
+                            isset($milestoneData['deliverables']['observations'])
+                        )
+                    ) {
+                        return response()->json([
+                            'message' => 'No tienes permisos para modificar los campos de estado, resultado esperado, resultado actual u observaciones.',
+                        ], 403);
+                    }
+                }
+            }
 
             // Buscar la planificación
             $planning = Planning::findOrFail($id);
