@@ -210,6 +210,7 @@ const EvaluationTemplate = () => {
             validateErrors();
             handleScore();
             setOpenCreateTemplate(true);
+            setShowError(false)
           }}
         >
           Crear Plantilla
