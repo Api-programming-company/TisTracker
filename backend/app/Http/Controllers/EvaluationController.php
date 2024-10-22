@@ -101,11 +101,7 @@ class EvaluationController extends Controller
     {
         try {
             // Buscar la evaluación en la tabla evaluations
-            $evaluation = Evaluation::with([
-                'questions.answerOptions' => function ($query) {
-                    $query->orderBy('score');
-                }
-            ])->find($id);
+            $evaluation = Evaluation::with('questions.answerOptions')->find($id);
 
             if (!$evaluation) {
                 return response()->json(['message' => 'Evaluación no encontrada.'], 404);
@@ -140,17 +136,13 @@ class EvaluationController extends Controller
 
             // Validar la entrada
             $request->validate([
-                'title' => 'sometimes|required|string|max:255|unique:evaluations,title,' . $evaluation->id . ',id,user_id,' . $user->id,
+                'title' => 'sometimes|required|string|max:255',
                 'description' => 'nullable|string',
                 'questions' => 'sometimes|required|array',
                 'questions.*.question_text' => 'sometimes|required|string|max:255',
                 'questions.*.answer_options' => 'sometimes|required|array',
                 'questions.*.answer_options.*.option_text' => 'sometimes|required|string|max:255',
                 'questions.*.answer_options.*.score' => 'sometimes|required|integer|min:0|max:10',
-            ], [
-                'title.required' => __('validation.attributes.evaluation.title') . ' es requerido.',
-                'title.unique' => ' El ' . __('validation.attributes.evaluation.title') . ' ya está registrado en sus plantillas',
-                'title.string' => __('validation.attributes.evaluation.title') . ' debe ser una cadena.',
             ]);
 
             // Buscar la evaluación

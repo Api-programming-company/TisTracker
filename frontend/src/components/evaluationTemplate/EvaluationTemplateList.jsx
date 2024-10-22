@@ -75,10 +75,8 @@ const EvaluationTemplateList = () => {
         >
           <ListItemText
             primary={
-              <Typography variant="h6" component="div" title={template.title}>
-                {template.title.length > 50
-                  ? `${template.title.substring(0, 50)}...`
-                  : template.title}
+              <Typography variant="h6" component="div">
+                {template.title}
               </Typography>
             }
             secondary={
