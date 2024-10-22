@@ -147,7 +147,7 @@ const Criteria = ({ criteria, setShowError, showError }) => {
           <Divider sx={{ width: "100%" }} />{" "}
           <Box sx={{ display: "flex", flexDirection: "row-reverse" }}>
             <Button
-              variant="contained"
+              variant="outlined"
               sx={{ marginX: 3, marginY: 1 }}
               onClick={handleDeleteCriteria}
             >
