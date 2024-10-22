@@ -55,8 +55,8 @@ const RegistroGE = () => {
             long_name: "El nombre largo ya está en uso.",
             short_name: "El nombre corto ya está en uso.",
             email: "El correo electrónico no es válido o ya está en uso.",
-            address: "La dirección ya está en uso.",
-            phone: "El teléfono ya está en uso.",
+            address: "La dirección no es válido.",
+            phone: "El teléfono no es válido.",
             members: "Los miembros no son válidos.",
           };
           newErrors[key] = customMessages[key] || messages[0];
@@ -164,7 +164,7 @@ const RegistroGE = () => {
           { label: "Nombre corto*", value: "short_name" },
           { label: "Correo electrónico*", value: "email" },
           { label: "Dirección*", value: "address" },
-          { label: "Teléfono*", value: "phone" },
+          { label: "Celular*", value: "phone" },
         ].map(({ label, value }) => (
           <Box sx={{ mb: 2 }} key={value}>
             <TextField
