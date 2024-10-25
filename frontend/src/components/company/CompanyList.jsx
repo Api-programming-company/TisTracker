@@ -4,10 +4,13 @@ import {
   Typography,
   IconButton,
   CircularProgress,
+  Divider,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 import PendingActionsIcon from "@mui/icons-material/PendingActions"; // Importar el icono para solicitudes pendientes
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import React, { useContext, useEffect } from "react";
 import { useGetCompaniesByAcademicPeriodQuery } from "../../api/academicPeriodApi";
 import AppContext from "../../context/AppContext";
@@ -39,8 +42,16 @@ const CompanyList = () => {
     navigate("/registroge");
   };
 
+  const handleEvaluations = () => {
+    navigate("/evaluations-home");
+  };
+
   const handlePendingRequests = () => {
     navigate(`/academic-period/${id}/pending`); // Navegar a solicitudes pendientes
+  };
+
+  const handleWeekly = () => {
+    navigate(`/academic-period/${id}/weekly_companies`);
   };
 
   if (isLoading) {
@@ -74,7 +85,7 @@ const CompanyList = () => {
     <Container maxWidth="lg" sx={{ mt: 12 }}>
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Typography variant="h4" gutterBottom>
-          Lista de Grupo Empresas
+          Lista de Grupo Empresass
         </Typography>
         <Box>
           {user?.user_type === "E" && (
@@ -96,23 +107,59 @@ const CompanyList = () => {
           )}
 
           {user?.user_type === "D" && (
-            <IconButton
-              color="primary"
-              aria-label="Solicitudes pendientes"
-              onClick={handlePendingRequests}
-              sx={{
-                backgroundColor: "primary.main",
-                color: "white",
-                "&:hover": {
-                  backgroundColor: "primary.dark",
-                },
-              }}
-            >
-              <PendingActionsIcon fontSize="large" />
-            </IconButton>
+            <Box>
+              <IconButton
+                color="primary"
+                aria-label="Solicitudes pendientes"
+                title="Solicitudes pendientes"
+                onClick={handlePendingRequests}
+                sx={{
+                  backgroundColor: "primary.main",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "primary.dark",
+                  },
+                  mr: 1,
+                }}
+              >
+                <PendingActionsIcon fontSize="large" />
+              </IconButton>
+              <IconButton
+                color="primary"
+                aria-label="Evaluaciones"
+                title="Evaluaciones"
+                onClick={handleEvaluations}
+                sx={{
+                  backgroundColor: "primary.main",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "primary.dark",
+                  },
+                  mr: 1,
+                }}
+              >
+                <AssignmentIcon fontSize="large" />
+              </IconButton>
+              <IconButton
+                color="primary"
+                aria-label="Revisión Semanal"
+                title="Revisión Semanal"
+                onClick={handleWeekly}
+                sx={{
+                  backgroundColor: "primary.main",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "primary.dark",
+                  },
+                }}
+              >
+                <AppRegistrationIcon fontSize="large" />
+              </IconButton>
+            </Box>
           )}
         </Box>
       </Box>
+      <Divider sx={{ width: "100%", mt: 1, mb: 4 }} />{" "}
       <Box
         display="flex"
         flexWrap="wrap"
