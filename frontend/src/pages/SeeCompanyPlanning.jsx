@@ -3,13 +3,19 @@ import SeeMilestone from "../components/planning/SeeMilestone";
 import "../styles/planning.css";
 import { useParams } from "react-router-dom";
 import { useGetPlanningByCompanyIdQuery } from "../api/planningApi";
-import { CircularProgress, Container, Alert, Typography, Box } from "@mui/material";
+import {
+  CircularProgress,
+  Container,
+  Alert,
+  Typography,
+  Box,
+} from "@mui/material";
 
 const SeeCompanyPlanning = () => {
   const { id } = useParams();
   const { data, isSuccess, isFetching, isError, error } =
     useGetPlanningByCompanyIdQuery(id);
-  
+
   useEffect(() => {
     if (isSuccess) {
       console.log(data);
@@ -47,14 +53,15 @@ const SeeCompanyPlanning = () => {
         }}
       >
         <Alert severity="error">
-          {error?.data?.message || "Ocurrio un error al cargar la planificación"}
+          {error?.data?.message ||
+            "Ocurrio un error al cargar la planificación"}
         </Alert>
       </Container>
     );
   }
 
   return (
-    <Container maxWidth="lg" id="companyPlanning">
+    <Container maxWidth="lg" id="companyPlanning" sx={{ mt: 12, mb: 12 }}>
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" component="h1">
           Planificación de grupo empresa
