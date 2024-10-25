@@ -24,7 +24,11 @@ const SeeMilestone = ({ milestone }) => {
   };
 
   return (
-    <div className="milestone-item" key={milestone.id}>
+    <div
+      className="milestone-item"
+      key={milestone.id}
+      style={{ marginBottom: "12px" }}
+    >
       <div
         className="list-header"
         button
