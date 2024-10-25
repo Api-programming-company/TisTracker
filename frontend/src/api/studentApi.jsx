@@ -12,3 +12,4 @@ const studentApi = apiSlice.injectEndpoints({
 });
 
 export const { useSearchStudentQuery, useLazySearchStudentQuery, useGetPendingCompaniesRequestQuery } = studentApi;
+export default studentApi;

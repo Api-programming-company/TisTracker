@@ -21,6 +21,8 @@ import { useLazySearchStudentQuery } from "../../api/studentApi";
 import AppContext from "../../context/AppContext";
 import StudentCard from "./StudentCard";
 import { useCreateInvitationMutation } from "../../api/invitationApi";
+import { useDispatch } from "react-redux";
+import studentApi from "../../api/studentApi"
 
 const StudentSearch = () => {
   const { id } = useParams();
@@ -33,6 +35,7 @@ const StudentSearch = () => {
   const [openNoStudentModal, setOpenNoStudentModal] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const dispatch = useDispatch();
 
   const [
     createInvitation,
@@ -42,6 +45,7 @@ const StudentSearch = () => {
       isLoading: isCreateInvitationLoading,
       isError: isCreateInvitationError,
       error: createInvitationError,
+      
     },
   ] = useCreateInvitationMutation();
 
@@ -84,14 +88,14 @@ const StudentSearch = () => {
     getInvitations,
   ]);
 
-  const [
+  let [
     searchStudent,
     { data, isFetching, isLoading, isError, isSuccess, error, isRefetching },
   ] = useLazySearchStudentQuery();
 
   useEffect(() => {
     console.log(isFetching, "fetching");
-    if (isSuccess) {
+    if (isSuccess && !isFetching) {
       setOpenModal(true);
       console.log("Estudiante encontrado:", data);
     }
@@ -135,15 +139,13 @@ const StudentSearch = () => {
 
   const handleCloseModal = () => {
     setOpenModal(false);
+    setEmail("");
   };
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
 
-  useEffect(() => {
-    console.log(invitations, "invitations");
-  }, [invitations]);
 
   useEffect(() => {
     if (isCreateInvitationSuccess) {

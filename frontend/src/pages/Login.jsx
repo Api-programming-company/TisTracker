@@ -54,6 +54,7 @@ const Login = () => {
       } else if (error?.status === 422 && error?.data?.errors) {
         setErrors(error.data.errors);
       } else {
+        console.log(error);
         setErrors({
           ...errors,
           general: "Se ha producido un error inesperado.",
