@@ -49,8 +49,10 @@ import VerPlantillas from "./pages/VerPlantillas";
 import CrearEvaluacion from "./pages/CrearEvaluacion";
 import EvaluationTemplateList from "./components/evaluationTemplate/EvaluationTemplateList";
 import PlantillasVisualizer from "./pages/PlantillasVisualizer";
+import EvaluationsHome from "./pages/EvaluationsHome";
 import SeeWeeklyGE from "./pages/SeeWeeklyGE";
 import EditEvaluationTemplate from "./pages/EditEvaluationTemplate";
+import InvitationsHome from "./pages/InvitationsHome";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -74,6 +76,7 @@ function App({ toggleTheme, isDarkMode }) {
               <Route path="/vergrupoe/:id" element={<VerGE />} />
               <Route path="/registroge" element={<RegistroGE />} />
               <Route path="/company-requests" element={<InvitacionesGE />} />
+              <Route path="/invitations-home" element={<InvitationsHome />} />
 
               <Route
                 path="/company/:id/plannification"
@@ -81,7 +84,7 @@ function App({ toggleTheme, isDarkMode }) {
               />
 
               <Route
-                path="/planning_spreadsheet/:id"    //Generar planillas de evaluación semanal
+                path="/planning_spreadsheet/:id" //Generar planillas de evaluación semanal
                 element={<PlanningSpreadSheet />}
               ></Route>
 
@@ -163,6 +166,7 @@ function App({ toggleTheme, isDarkMode }) {
             <Route path="/home" element={<Home />} />
             <Route path="/student-home" element={<StudentHome />} />
             <Route path="/teacher-home" element={<TeacherHome />} />
+            <Route path="evaluations-home" element={<EvaluationsHome />} />
 
             <Route path="/upload" element={<ImageUpload />} />
             <Route path="/example" element={<Example />} />

@@ -12,6 +12,8 @@ export { default as EditarListaGE } from "./EditarListaGE";
 export { default as Autoevaluation } from "./Autoevaluation";
 export { default as EvaluationGE } from "./EvaluationGE";
 export { default as EvaluationMemberGE } from "./EvaluationMemberGE";
+export { default as InvitationsHome } from "./InvitationsHome";
+export { default as EvaluationsHome } from "./EvaluationsHome";
 export { default as VerPlantillas } from "./VerPlantillas";
 export { default as PlantillasVisualizer } from "./PlantillasVisualizer";
 export { default as CrearEvaluacion } from "./CrearEvaluacion";
