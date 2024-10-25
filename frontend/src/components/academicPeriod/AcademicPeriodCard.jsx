@@ -24,7 +24,6 @@ const AcademicPeriodCard = ({ period, isEnroll = true }) => {
     navigate(`/academic-period/${period.id}/companies`);
   };
 
-
   const handleEdit = (event) => {
     event.stopPropagation();
     navigate(`/update-academic-period/${period.id}`);
@@ -109,7 +108,7 @@ const AcademicPeriodCard = ({ period, isEnroll = true }) => {
         )}
 
         {/* Icono de editar */}
-        <Tooltip title="Editar" arrow>
+        <Tooltip title="Ajustar Periodo académico" arrow>
           <IconButton
             onClick={handleEdit}
             sx={{
@@ -123,7 +122,7 @@ const AcademicPeriodCard = ({ period, isEnroll = true }) => {
           </IconButton>
         </Tooltip>
         {/* Icono de asignar evaluación */}
-        <Tooltip title="Asignar Evaluación" arrow>
+        {/* <Tooltip title="Asignar Evaluación" arrow>
           <IconButton
             onClick={handleAssign} // Define la función que manejará la asignación
             sx={{
@@ -135,7 +134,7 @@ const AcademicPeriodCard = ({ period, isEnroll = true }) => {
           >
             <AssignmentIcon color="primary" />
           </IconButton>
-        </Tooltip>
+        </Tooltip> */}
       </CardContent>
     </Card>
   );
