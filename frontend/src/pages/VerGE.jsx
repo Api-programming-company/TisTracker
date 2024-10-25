@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import {
   Box,
   CircularProgress,
@@ -12,9 +12,11 @@ import { useParams } from "react-router-dom";
 import CompanyDetails from "../components/company/CompanyDetails";
 import { useUpdateCompanyPlanningByIdMutation } from "../api/companyApi";
 import { useNavigate } from "react-router-dom";
+import AppContext from "../context/AppContext";
 
 const VerGE = () => {
   const { id } = useParams();
+  const { user } = useContext(AppContext);
   const navigate = useNavigate();
   const { data, error, isSuccess, isLoading, isError, isFetching } =
     useGetCompanyByIdQuery(id);
@@ -30,6 +32,42 @@ const VerGE = () => {
 
   const [formData, setFormData] = useState({});
   const [sendData, setSendData] = useState(false);
+
+  const verGEd = [
+    {
+      text: "Ver Planificación",
+      color: "info",
+      path: `/planning/${data?.company?.planning?.id}`,
+    },
+    {
+      text: "Seguimiento semanal",
+      color: "info",
+      path: `/planning_spreadsheet/${data?.company?.planning?.id}`,
+    },
+  ];
+
+  const verGEe = [
+    {
+      text: "Agregar Planificación",
+      color: "success",
+      path: `/company/${id}/plannification`,
+    },
+    {
+      text: "Ver Planificación",
+      color: "info",
+      path: `/planning/${data?.company?.planning?.id}`,
+    },
+    {
+      text: "Evaluar Empresa",
+      color: "error",
+      path: `/company-evaluation/${id}`,
+    },
+    {
+      text: "Autoevaluar empresa",
+      color: "error",
+      path: `/autoevaluation/${id}`,
+    },
+  ];
 
   useEffect(() => {
     if (isUpdateSuccess) {
@@ -67,7 +105,6 @@ const VerGE = () => {
   useEffect(() => {
     if (formData) {
       console.log(formData);
-      //
     }
   }, [formData]);
 
@@ -108,54 +145,38 @@ const VerGE = () => {
           width: "100%",
         }}
       >
-        {[
-          { text: "Invitar", color: "primary", path: `/company/${id}/invite` },
-          {
-            text: "Confirmar Conformación",
-            color: "secondary",
-            path: `/company/${id}/confirm`,
-          },
-          {
-            text: "Retirar Invitaciones",
-            color: "warning",
-            path: `/company/${id}/uninvite`,
-          },
-          {
-            text: "Agregar Planificación",
-            color: "success",
-            path: `/company/${id}/plannification`,
-          },
-          {
-            text: "Ver Planificación",
-            color: "info",
-            path: `/planning/${data?.company?.planning?.id}`,
-          },
-          {
-            text: "Seguimiento semanal",
-            color: "info",
-            path: `/planning_spreadsheet/${data?.company?.planning?.id}`,
-          },
-          {
-            text: "Evaluar Empresa",
-            color: "error",
-            path: `/company-evaluation/${id}`,
-          },
-          {
-            text: "Autoevaluar empresa",
-            color: "error",
-            path: `/autoevaluation/${id}`,
-          },
-        ].map((button, index) => (
-          <Button
-            key={index}
-            variant="contained"
-            color={button.color}
-            fullWidth={true} // Asegura que ocupe todo el ancho disponible en pantallas pequeñas
-            onClick={() => navigate(button.path)}
-          >
-            {button.text}
-          </Button>
-        ))}
+        {user?.user_type === "D" && (
+          <Box>
+            {verGEd.map((button, index) => (
+              <Button
+                key={index}
+                variant="contained"
+                color={button.color}
+                sx={{ mb: "12px" }}
+                fullWidth={true} // Asegura que ocupe todo el ancho disponible en pantallas pequeñas
+                onClick={() => navigate(button.path)}
+              >
+                {button.text}
+              </Button>
+            ))}
+          </Box>
+        )}
+        {user?.user_type === "E" && (
+          <Box>
+            {verGEe.map((button, index) => (
+              <Button
+                key={index}
+                variant="contained"
+                color={button.color}
+                sx={{ mb: "12px" }}
+                fullWidth={true} // Asegura que ocupe todo el ancho disponible en pantallas pequeñas
+                onClick={() => navigate(button.path)}
+              >
+                {button.text}
+              </Button>
+            ))}
+          </Box>
+        )}
       </Stack>
     </Box>
   );
