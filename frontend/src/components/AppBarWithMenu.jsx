@@ -60,7 +60,8 @@ function AppBarWithMenu({ isDarkMode, toggleDarkMode, userType }) {
       { label: "Registrarse como docente", path: "/registro-docente" },
     ],
     E: [
-      { label: "Invitaciones", path: "/company-requests" },
+      { label: "Home", path: "/student-home" },
+      { label: "Invitaciones", path: "/invitations-home" },
       { label: "Cerrar sesión", path: "/logout" },
     ],
     D: [
@@ -69,7 +70,7 @@ function AppBarWithMenu({ isDarkMode, toggleDarkMode, userType }) {
         label: "Crear plantilla de evaluación",
         path: "/evaluation-templates/create",
       },
-      { label: "Plantillas de evaluación", path: "/evaluation-templates" },
+      { label: "Ver plantillas de evaluación", path: "/evaluation-templates" },
       { label: "Cerrar sesión", path: "/logout" },
     ],
   };
