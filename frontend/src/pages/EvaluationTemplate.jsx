@@ -210,7 +210,7 @@ const EvaluationTemplate = () => {
             validateErrors();
             handleScore();
             setOpenCreateTemplate(true);
-            setShowError(false)
+            setShowError(false);
           }}
         >
           Crear Plantilla
@@ -227,7 +227,7 @@ const EvaluationTemplate = () => {
           open={openConfirm}
           setOpen={setOpenConfirm}
           title={"Confirmar"}
-          content={"Se registró su plantilla con exito"}
+          content={"Se registró su plantilla con éxito"}
           onAccept={() => navigate("/")}
           onCancel={() => navigate("/")}
           showButtonCancel={false}
