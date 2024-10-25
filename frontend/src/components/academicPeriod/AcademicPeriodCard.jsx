@@ -14,7 +14,6 @@ import { format } from "date-fns";
 import { useEnrollInAcademicPeriodMutation } from "../../api/academicPeriodApi";
 import AppContext from "../../context/AppContext";
 import { useNavigate } from "react-router-dom";
-import AssignmentIcon from "@mui/icons-material/Assignment";
 import { formatDate } from "../../utils/validaciones";
 
 const AcademicPeriodCard = ({ period, isEnroll = true }) => {
@@ -27,11 +26,6 @@ const AcademicPeriodCard = ({ period, isEnroll = true }) => {
   const handleEdit = (event) => {
     event.stopPropagation();
     navigate(`/update-academic-period/${period.id}`);
-  };
-
-  const handleAssign = (event) => {
-    event.stopPropagation();
-    navigate(`/crearevaluacion/${period.id}`);
   };
 
   const [enrollInAcademicPeriod, { isLoading, isSuccess, isError, error }] =
@@ -121,20 +115,6 @@ const AcademicPeriodCard = ({ period, isEnroll = true }) => {
             <EditIcon color="secondary" />
           </IconButton>
         </Tooltip>
-        {/* Icono de asignar evaluación */}
-        {/* <Tooltip title="Asignar Evaluación" arrow>
-          <IconButton
-            onClick={handleAssign} // Define la función que manejará la asignación
-            sx={{
-              mt: 2, // Espaciado superior para separar del contenido anterior
-              "&:hover": {
-                backgroundColor: "transparent", // Sin fondo al pasar el mouse
-              },
-            }}
-          >
-            <AssignmentIcon color="primary" />
-          </IconButton>
-        </Tooltip> */}
       </CardContent>
     </Card>
   );
