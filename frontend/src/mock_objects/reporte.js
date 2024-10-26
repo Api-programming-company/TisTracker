@@ -1,5 +1,5 @@
-const nombres = ["Kevin", "Maria", "Juan", "Ana", "Carlos", "Lucia", "Pedro", "Sofia", "Jorge", "Laura", "Diego", "Elena", "Luis", "Paula", "Miguel", "Raquel", "Oscar", "Carmen", "Sergio", "Marta"];
-const apellidos = ["Huayllas", "Gomez", "Martinez", "Lopez", "Fernandez", "Rodriguez", "Perez", "Garcia", "Sanchez", "Diaz", "Hernandez", "Ramirez", "Morales", "Castro", "Vargas", "Ortiz", "Gutierrez", "Reyes", "Mendoza", "Navarro"];
+const nombres = ["Kevin", "Maria", "Juan", "Ana", "Carlos", "Lucia", "Pedro", "Sofia", "Jorge", "Laura", "Diego", "Elena", "Luis", "Paula", "Miguel", "Raquel", "Oscar", "Carmen", "Sergio", "Marta", "Jhon", "Simon", "Dayeza", "Ricardo", "Erwin"];
+const apellidos = ["Huayllas", "Gomez", "Martinez", "Lopez", "Fernandez", "Rodriguez", "Perez", "Garcia", "Sanchez", "Diaz", "Hernandez", "Ramirez", "Morales", "Castro", "Vargas", "Ortiz", "Gutierrez", "Reyes", "Mendoza", "Navarro", "Abasto", "Merudia", "Perez", "Rojas"];
 
 const generateValues = () => {
     const data = Array.from({ length: 30 }, (_, index) => ({
