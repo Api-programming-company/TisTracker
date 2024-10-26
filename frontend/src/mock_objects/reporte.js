@@ -8,7 +8,8 @@ const generateValues = () => {
         apellidos: apellidos[Math.floor(Math.random() * apellidos.length)],
         autoevaluacion: Math.floor(Math.random() * 101), // Valor entre 0 y 100
         cruzada: Math.floor(Math.random() * 101),        // Valor entre 0 y 100
-        pares: Math.floor(Math.random() * 101)           // Valor entre 0 y 100
+        pares: Math.floor(Math.random() * 101),           // Valor entre 0 y 100
+        planificacion: Math.floor(Math.random() * 101)    // Valor entre 0 y 100
     }));
     return {data}
 }
