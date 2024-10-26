@@ -53,6 +53,7 @@ import EvaluationsHome from "./pages/EvaluationsHome";
 import SeeWeeklyGE from "./pages/SeeWeeklyGE";
 import EditEvaluationTemplate from "./pages/EditEvaluationTemplate";
 import InvitationsHome from "./pages/InvitationsHome";
+import StudentsReport from "./pages/StudentsReport";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -176,6 +177,12 @@ function App({ toggleTheme, isDarkMode }) {
               path="/update-academic-period/:id"
               element={<SetFinalDeliverablePeriod />}
             ></Route>
+
+            <Route
+            path="/academic-period/:id/reports/students"
+            element={<StudentsReport/>}>
+              
+            </Route>
 
             <Route path="/*" element={<NotFound />} />
           </Routes>
