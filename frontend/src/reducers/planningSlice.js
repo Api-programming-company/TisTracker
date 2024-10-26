@@ -31,7 +31,6 @@ export const planningSlice = createSlice({
         (milestone) => milestone.status === "P"
       );
     
-      console.log(tempMilestones);
       return { milestones: tempMilestones , 
         currentMilestone : currentMilestone === -1 ? 0 : currentMilestone, 
         pendingMilestone: currentMilestone === -1 ? 10000: currentMilestone 
@@ -111,7 +110,7 @@ export const planningSlice = createSlice({
               ...deliverable,
               id: nextMilestone.deliverables.length + i,
               status: "A",
-              name : deliverable.name + "(C.O.)",
+              name : deliverable.name,
               expected_result : 0,
               actual_result : 0,
               observations : "",

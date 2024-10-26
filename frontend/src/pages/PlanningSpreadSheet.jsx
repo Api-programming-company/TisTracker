@@ -56,6 +56,10 @@ const PlanningSpreadSheet = () => {
     }
   },[navigate, user])
 
+  useEffect(() => {
+    console.log(milestone);
+  },[milestone])
+
   const handleConfirm = () => {
     setOpen({ ...open, state: false });
     dispatch(confirmChanges());
@@ -108,7 +112,6 @@ const PlanningSpreadSheet = () => {
   };
 
   useEffect(() => {
-    console.log(status, "");
     window.onbeforeunload = (e) => {
       if (status === "E") {
         e.preventDefault();
