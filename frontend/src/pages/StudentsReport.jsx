@@ -17,7 +17,7 @@ const StudentsReport = () => {
             setFinalData(data.map((row) => {
                 const {autoevaluacion,pares,cruzada,planificacion} = row;
                 const totalEvaluations = Math.round((autoevaluacion + pares + cruzada) / 3)
-                const total = (totalEvaluations * 40/100) + (planificacion * 60/100)
+                const total = Math.round((totalEvaluations * 40/100) + (planificacion * 60/100))
                 return {...row, evaluaciones : totalEvaluations, total}
             }))
         }

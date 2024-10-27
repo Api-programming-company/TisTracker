@@ -1,0 +1,13 @@
+.custom-grid{
+    display: grid;
+}
+
+.custom-grid-item,.custom-grid-header{
+    border: 1px solid #eee;
+    padding: 0.5rem 0.3rem;
+    text-align: center;
+}
+
+.custom-grid-header{
+    font-weight: bold;
+}
