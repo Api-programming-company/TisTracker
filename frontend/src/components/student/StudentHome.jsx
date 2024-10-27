@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Container, Typography, Paper, Box, Divider } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AppContext from "../../context/AppContext";
+import { InvitationsHome } from "../../pages";
 
 const StudentHome = () => {
   const { user } = useContext(AppContext);
@@ -19,7 +20,7 @@ const StudentHome = () => {
         : "/registroge",
     },
     //{ label: "Empresas", path: `/academic-period/${user.academic_period_id}/companies/` },
-    { label: "Invitaciones", path: "/invitations-home" },
+    // { label: "Invitaciones", path: "/invitations-home" },
   ];
 
   console.log(user);
@@ -64,6 +65,7 @@ const StudentHome = () => {
             </Paper>
           </Box>
         )}
+        {user.academic_period_id? <InvitationsHome /> : null}
       </Box>
     </Container>
   );

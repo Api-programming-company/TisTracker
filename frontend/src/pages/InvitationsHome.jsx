@@ -26,15 +26,25 @@ const InvitationsHome = () => {
   const menuItems = [
     {
       label: "Invitar estudiantes a Grupo Empresa",
-      path: `/company/${user.company.company_id}/invite`,
+      path: `/company/${user.company?.company_id}/invite`,
     },
     {
-      label: "Confirmar la Conformación de mi Grupo Empresa",
-      path: `/company/${user.company.company_id}/confirm`,
+      label: "Confirmar integrantes de Grupo Empresa",
+      path: `/company/${user.company?.company_id}/confirm`,
     },
     {
       label: "Retirar Invitaciones a estudiantes invitados",
-      path: `/company/${user.company.company_id}/uninvite`,
+      path: `/company/${user.company?.company_id}/uninvite`,
+    },
+  ];
+  const menuItems2 = [
+    {
+      label: "Ver invitaciones",
+      path: `/company-requests`,
+    },
+    {
+      label: "Aceptar/Rechazar invitaciones",
+      path: `/`,
     },
   ];
 
@@ -70,24 +80,45 @@ const InvitationsHome = () => {
         flexWrap="wrap"
         gap={3}
       >
-        {menuItems.map((item, index) => (
-          <Box key={index} flexBasis={{ xs: "100%", md: "30%" }}>
-            <Paper
-              elevation={3}
-              style={{
-                cursor: "pointer",
-                paddingTop: "32px",
-                paddingBottom: "32px",
-                paddingLeft: "16px",
-                paddingRight: "16px",
-                textAlign: "center",
-              }}
-              onClick={() => handleNavigate(item.path)}
-            >
-              <Typography variant="h5">{item.label}</Typography>
-            </Paper>
-          </Box>
-        ))}
+        {user?.user_type === "E" &&
+          user?.company?.permission === "W" &&  // solo los que tienen privilegios
+          menuItems.map((item, index) => (
+            <Box key={index} flexBasis={{ xs: "100%", md: "30%" }}>
+              <Paper
+                elevation={3}
+                style={{
+                  cursor: "pointer",
+                  paddingTop: "32px",
+                  paddingBottom: "32px",
+                  paddingLeft: "16px",
+                  paddingRight: "16px",
+                  textAlign: "center",
+                }}
+                onClick={() => handleNavigate(item.path)}
+              >
+                <Typography variant="h5">{item.label}</Typography>
+              </Paper>
+            </Box>
+          ))}
+        {user?.user_type === "E" &&
+          menuItems2.map((item, index) => (
+            <Box key={index} flexBasis={{ xs: "100%", md: "30%" }}>
+              <Paper
+                elevation={3}
+                style={{
+                  cursor: "pointer",
+                  paddingTop: "32px",
+                  paddingBottom: "32px",
+                  paddingLeft: "16px",
+                  paddingRight: "16px",
+                  textAlign: "center",
+                }}
+                onClick={() => handleNavigate(item.path)}
+              >
+                <Typography variant="h5">{item.label}</Typography>
+              </Paper>
+            </Box>
+          ))}
       </Box>
     </Container>
   );
