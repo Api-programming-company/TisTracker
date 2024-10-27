@@ -3,38 +3,14 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid2';
 
 const GridComponent = ({values}) => {
-
+    const n_columns = Object.keys(values[0]).length
     
     return (
-        <Box sx={{ flexGrow: 1, p: 2 }}>
-          <Grid
-            container
-            sx={{
-              '--Grid-borderWidth': '1px',
-              borderTop: 'var(--Grid-borderWidth) solid',
-              borderLeft: 'var(--Grid-borderWidth) solid',
-              borderColor: 'divider',
-              '& > div': {
-                borderRight: 'var(--Grid-borderWidth) solid',
-                borderBottom: 'var(--Grid-borderWidth) solid',
-                borderColor: 'divider',
-              },
-            }}
-          >
-            {[...Array(6)].map((_, index) => (
-              <Grid
-                key={index}
-                minHeight={40}
-                size={{
-                  xs: 12,
-                  sm: 6,
-                  md: 4,
-                  lg: 3,
-                }}
-              />
-            ))}
-          </Grid>
-        </Box>
+        <div className="custom-grid">
+            {Object.keys(values[0]).map((header,index) => <div className='custom-grid-header' key={index}>{header}</div>)}
+            {values.map((row,i) => Object.values(row).map((item,j) => <div className='custom-grid-item' key={`${i}${j}`}>{item}</div>))}
+        </div>
+        
       );
     }
 

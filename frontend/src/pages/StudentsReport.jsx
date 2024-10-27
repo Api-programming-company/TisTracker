@@ -27,7 +27,7 @@ const StudentsReport = () => {
 
   return (
     <Box display="flex" justifyContent="center" alignItems="center" marginTop={20}>
-        <GridComponent></GridComponent>
+        {finalData.length && <GridComponent values={finalData}></GridComponent>}   
         <Button onClick={() => downloadCsv(finalData,"reporte_de_estudiantes")}>Descargar</Button>
     </Box>
   )
