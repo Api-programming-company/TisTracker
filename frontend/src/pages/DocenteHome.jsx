@@ -1,29 +1,36 @@
 import React, { useContext } from "react";
 import { Container, Typography, Paper, Box, Divider } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import AppContext from "../context/AppContext";
 
 const DocenteHome = () => {
   const { user } = useContext(AppContext);
   const navigate = useNavigate();
+  const location = useLocation();
+  const period = location.state?.period;
 
   const handleNavigate = (path) => {
     navigate(path);
   };
+
+  console.log("Usuario");
   console.log(user);
+  console.log("Periodo academico");
+  console.log(period);
+
   const menuItems = [
     {
       label: "Lista de Grupo Empresas",
-      path: `/academic-period/${user.id}/companies`,
+      path: `/academic-period/${period.id}/companies`,
     },
     {
       label: "Seguimiento Semanal",
-      path: `/academic-period/${user.id}/weekly_companies`,
+      path: `/academic-period/${period.id}/weekly_companies`,
     },
   ];
 
   const evaluationItems = [
-    { label: "Asignar una evaluación", path: `/crearevaluacion/${user.id}` },
+    { label: "Asignar una evaluación", path: `/crearevaluacion/${period.id}` },
     {
       label: "Crear plantilla de evaluación",
       path: "/evaluation-templates/create",
