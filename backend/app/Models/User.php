@@ -72,11 +72,19 @@ class User extends Authenticatable implements MustVerifyEmail
         return $companyUser;
     }
 
-    public function company()
+    public function companyForGrades()
     {
-        $companyUser = $this->companies()->wherePivot('permission', 'W')->first();
-        return $companyUser ? $companyUser : null;
+        return $this->hasOneThrough(
+            Company::class,
+            CompanyUser::class,
+            'user_id',        // Foreign key on CompanyUser table
+            'id',             // Foreign key on Company table
+            'id',             // Local key on User table
+            'company_id'      // Local key on CompanyUser table
+        )->whereIn('company_users.permission', ['W', 'R'])
+            ->where('company_users.status', 'A');
     }
+
 
     public function scoredCompanies()
     {
