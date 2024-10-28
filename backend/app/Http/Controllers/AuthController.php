@@ -31,7 +31,7 @@ class AuthController extends Controller
             $request->validate([
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
-                'email' => ['required', 'email', 'unique:users,email',  $this->getEmailValidationRule($request->user_type)],
+                'email' => ['required', 'email', 'unique:users,email', $this->getEmailValidationRule($request->user_type)],
                 'password' => ['required', 'string', 'min:8', 'confirmed', new ValidarPassword],
                 'user_type' => 'required|in:E,D',
             ], [], User::getFieldLabels());
@@ -227,4 +227,36 @@ class AuthController extends Controller
         }
     }
 
+    public function getGrades(Request $request)
+    {
+        try {
+            $academicPeriodId = $request->input('academic_period_id');
+            $limit = $request->input('limit', 10); // Default limit to 10 if not provided
+
+            // TODO optimizar
+            $query = User::query()
+                ->leftJoin('user_evaluations', 'users.id', '=', 'user_evaluations.evaluatee_company_user_id')
+                ->select('users.id', 'users.email', \DB::raw('COALESCE(AVG(user_evaluations.score), 0) as user_evaluations_score'))
+                ->groupBy('users.id', 'users.email') 
+                ->groupBy('users.id');
+
+            if ($academicPeriodId) {
+                $query->where('academic_period_id', $academicPeriodId);
+            }
+
+            // Obtener las calificaciones del estudiante con límite
+            $grades = $query->limit($limit)->get();
+
+            // Devolver las calificaciones
+            return response()->json([
+                'grades' => $grades
+            ], 200); // 200 OK
+        } catch (Exception $e) {
+            // Manejar otros errores
+            return response()->json([
+                'message' => 'Se ha producido un error inesperado',
+                'error' => $e->getMessage()
+            ], 500); // Error general
+        }
+    }
 }
