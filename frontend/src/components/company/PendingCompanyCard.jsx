@@ -5,7 +5,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../utils/validaciones";
 
-const PendingCompanyCard = ({ request }) => {
+const PendingCompanyCard = ({ request, showButton = true }) => {
   const navigate = useNavigate();
 
   return (
@@ -55,22 +55,23 @@ const PendingCompanyCard = ({ request }) => {
             La solicitud se realizó el {formatDate(request.created_at)}.
           </Typography>
         </Box>
-
-        <Button
-          onClick={() =>
-            navigate(`/request/${request.id}/pending`, { state: { request } })
-          }
-          variant="contained"
-          color="primary"
-          sx={{
-            mb: 2,
-            py: 1,
-            position: "relative",
-            width: "100%",
-          }}
-        >
-          Ver solicitud
-        </Button>
+        {showButton ? (
+          <Button
+            onClick={() =>
+              navigate(`/request/${request.id}/pending`, { state: { request } })
+            }
+            variant="contained"
+            color="primary"
+            sx={{
+              mb: 2,
+              py: 1,
+              position: "relative",
+              width: "100%",
+            }}
+          >
+            Ver solicitud
+          </Button>
+        ) : null}
       </Box>
     </Box>
   );

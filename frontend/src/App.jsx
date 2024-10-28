@@ -55,6 +55,7 @@ import InvitationsHome from "./pages/InvitationsHome";
 import StudentsReport from "./pages/StudentsReport";
 import SeeIntationsGE from "./pages/SeeIntationsGE";
 import DocenteHome from "./pages/DocenteHome";
+import SeeSolicitudesGE from "./pages/SeeSolicitudesGE";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -114,6 +115,10 @@ function App({ toggleTheme, isDarkMode }) {
               <Route
                 path="/academic-period/:id/pending"
                 element={<SolicitudesGE />}
+              />
+              <Route
+                path="/academic-period/:id/seepending"
+                element={<SeeSolicitudesGE />}
               />
               <Route
                 path="/request/:id/pending"

@@ -27,6 +27,14 @@ const DocenteHome = () => {
       label: "Seguimiento Semanal",
       path: `/academic-period/${period.id}/weekly_companies`,
     },
+    {
+      label: "Ver Solicitudes",
+      path: `/academic-period/${period.id}/seepending`,
+    },
+    {
+      label: "Aceptar/Rechazar Solicitudes",
+      path: `/academic-period/${period.id}/pending`,
+    },
   ];
 
   const evaluationItems = [
