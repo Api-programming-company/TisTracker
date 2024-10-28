@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\CompanyUserScore;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -85,24 +86,6 @@ class User extends Authenticatable implements MustVerifyEmail
             ->where('company_users.status', 'A');
     }
 
-
-    public function scoredCompanies()
-    {
-        return $this->belongsToMany(Company::class, 'company_user_score')
-            ->using(CompanyUserScore::class)
-            ->withPivot('score')
-            ->withTimestamps();
-    }
-
-    public function evaluationsGiven()
-    {
-        return $this->hasMany(UserEvaluation::class, 'evaluator_id');
-    }
-
-    public function evaluationsReceived()
-    {
-        return $this->hasMany(UserEvaluation::class, 'evaluatee_id');
-    }
     public static function getFieldLabels()
     {
         return [
