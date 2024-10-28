@@ -49,7 +49,6 @@ import VerPlantillas from "./pages/VerPlantillas";
 import CrearEvaluacion from "./pages/CrearEvaluacion";
 import EvaluationTemplateList from "./components/evaluationTemplate/EvaluationTemplateList";
 import PlantillasVisualizer from "./pages/PlantillasVisualizer";
-import EvaluationsHome from "./pages/EvaluationsHome";
 import SeeWeeklyGE from "./pages/SeeWeeklyGE";
 import EditEvaluationTemplate from "./pages/EditEvaluationTemplate";
 import InvitationsHome from "./pages/InvitationsHome";
@@ -178,7 +177,6 @@ function App({ toggleTheme, isDarkMode }) {
             <Route path="/home" element={<Home />} />
             <Route path="/student-home" element={<StudentHome />} />
             <Route path="/teacher-home" element={<TeacherHome />} />
-            <Route path="evaluations-home" element={<EvaluationsHome />} />
 
             <Route path="/upload" element={<ImageUpload />} />
             <Route path="/example" element={<Example />} />
