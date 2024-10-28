@@ -55,6 +55,7 @@ import EditEvaluationTemplate from "./pages/EditEvaluationTemplate";
 import InvitationsHome from "./pages/InvitationsHome";
 import StudentsReport from "./pages/StudentsReport";
 import SeeIntationsGE from "./pages/SeeIntationsGE";
+import DocenteHome from "./pages/DocenteHome";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -78,7 +79,10 @@ function App({ toggleTheme, isDarkMode }) {
               <Route path="/vergrupoe/:id" element={<VerGE />} />
               <Route path="/registroge" element={<RegistroGE />} />
               <Route path="/company-requests" element={<InvitacionesGE />} />
-              <Route path="/see-company-requests" element={<SeeIntationsGE />} />
+              <Route
+                path="/see-company-requests"
+                element={<SeeIntationsGE />}
+              />
               <Route path="/invitations-home" element={<InvitationsHome />} />
 
               <Route
@@ -119,6 +123,11 @@ function App({ toggleTheme, isDarkMode }) {
               <Route
                 path="/invitation/:id/pending"
                 element={<AcceptDeclineInvitation />}
+              />
+
+              <Route
+                path="/academic-periods/docente-home/:academic_period_id"
+                element={<DocenteHome />}
               />
 
               {/* evaluacion */}
@@ -181,10 +190,9 @@ function App({ toggleTheme, isDarkMode }) {
             ></Route>
 
             <Route
-            path="/academic-period/:id/reports/students"
-            element={<StudentsReport/>}>
-              
-            </Route>
+              path="/academic-period/:id/reports/students"
+              element={<StudentsReport />}
+            ></Route>
 
             <Route path="/*" element={<NotFound />} />
           </Routes>
