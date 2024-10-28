@@ -5,7 +5,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import PersonIcon from "@mui/icons-material/Person";
 import { formatDate } from "../../utils/validaciones";
 
-const PendingInvitationCard = ({ request }) => {
+const PendingInvitationCard = ({ request, showButton = true }) => {
   const navigate = useNavigate();
 
   return (
@@ -55,24 +55,25 @@ const PendingInvitationCard = ({ request }) => {
             La solicitud se realizó el {formatDate(request.created_at)}.
           </Typography>
         </Box>
-
-        <Button
-          onClick={() =>
-            navigate(`/invitation/${request.id}/pending`, {
-              state: { request },
-            })
-          }
-          variant="contained"
-          color="primary"
-          sx={{
-            mb: 2,
-            px: 12,
-            py: 1,
-            position: "relative",
-          }}
-        >
-          Ver invitación
-        </Button>
+        {showButton ? (
+          <Button
+            onClick={() =>
+              navigate(`/invitation/${request.id}/pending`, {
+                state: { request },
+              })
+            }
+            variant="contained"
+            color="primary"
+            sx={{
+              mb: 2,
+              px: 12,
+              py: 1,
+              position: "relative",
+            }}
+          >
+            Ver invitación
+          </Button>
+        ) : null}
       </Box>
     </Box>
   );

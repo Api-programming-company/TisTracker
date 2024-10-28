@@ -40,11 +40,11 @@ const InvitationsHome = () => {
   const menuItems2 = [
     {
       label: "Ver invitaciones",
-      path: `/company-requests`,
+      path: `/see-company-requests`,
     },
     {
       label: "Aceptar/Rechazar invitaciones",
-      path: `/`,
+      path: `/company-requests`,
     },
   ];
 

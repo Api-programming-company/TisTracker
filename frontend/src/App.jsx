@@ -54,6 +54,7 @@ import SeeWeeklyGE from "./pages/SeeWeeklyGE";
 import EditEvaluationTemplate from "./pages/EditEvaluationTemplate";
 import InvitationsHome from "./pages/InvitationsHome";
 import StudentsReport from "./pages/StudentsReport";
+import SeeIntationsGE from "./pages/SeeIntationsGE";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -77,6 +78,7 @@ function App({ toggleTheme, isDarkMode }) {
               <Route path="/vergrupoe/:id" element={<VerGE />} />
               <Route path="/registroge" element={<RegistroGE />} />
               <Route path="/company-requests" element={<InvitacionesGE />} />
+              <Route path="/see-company-requests" element={<SeeIntationsGE />} />
               <Route path="/invitations-home" element={<InvitationsHome />} />
 
               <Route
