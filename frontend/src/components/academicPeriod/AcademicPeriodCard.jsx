@@ -20,7 +20,7 @@ const AcademicPeriodCard = ({ period, isEnroll = true }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`docente-home/${period.id}`);
+    navigate(`docente-home/${period.id}`, { state: { period } });
   };
 
   const handleEdit = (event) => {
