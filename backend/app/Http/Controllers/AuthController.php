@@ -236,20 +236,47 @@ class AuthController extends Controller
             // TODO optimizar
             $query = User::query()
                 ->leftJoin('user_evaluations', 'users.id', '=', 'user_evaluations.evaluatee_company_user_id')
-                ->select('users.id', 'users.email', \DB::raw('COALESCE(AVG(user_evaluations.score), 0) as user_evaluations_score'))
-                ->groupBy('users.id', 'users.email') 
-                ->groupBy('users.id');
+                ->leftJoin('company_users', 'users.id', '=', 'company_users.user_id') // Join con company_users
+                ->leftJoin('companies', 'company_users.company_id', '=', 'companies.id') // Join con companies
+                ->select(
+                    'users.id',
+                    'users.email',
+                    'users.first_name',
+                    'users.last_name',
+                    \DB::raw('COALESCE(AVG(user_evaluations.score), 0) as pares'),
+                    'companies.id as company_id', // Obtener el ID de la compañía
+                    'companies.short_name as company_short_name' // Obtener el short_name de la compañía
+                )
+                ->groupBy('users.id', 'users.email', 'users.first_name', 'users.last_name', 'companies.id', 'companies.short_name'); // Agrupar también por company
 
-            if ($academicPeriodId) {
-                $query->where('academic_period_id', $academicPeriodId);
-            }
+                if ($academicPeriodId) {
+                    $query->where('users.academic_period_id', $academicPeriodId);
+                }
+
+            $query->where('company_users.status', 'A'); // Asegúrate de que 'A' sea el valor correcto
+
+
 
             // Obtener las calificaciones del estudiante con límite
             $grades = $query->limit($limit)->get();
 
+            // Transformar la respuesta para incluir nombre y apellidos, y el score como pares
+            $formattedGrades = $grades->map(function ($grade) {
+                return [
+                    'id' => $grade->id,
+                    'nombre' => $grade->first_name,
+                    'apellidos' => $grade->last_name,
+                    'pares' => $grade->pares,
+                    'company' => $grade->company_id ? [
+                        'id' => $grade->company_id,
+                        'short_name' => $grade->company_short_name
+                    ] : null
+                ];
+            });
+
             // Devolver las calificaciones
             return response()->json([
-                'grades' => $grades
+                'grades' => $formattedGrades
             ], 200); // 200 OK
         } catch (Exception $e) {
             // Manejar otros errores
