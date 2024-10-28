@@ -34,6 +34,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
+    public function companyUsers()
+    {
+        return $this->hasMany(CompanyUser::class);
+    }
+
     public function getFullNameAttribute()
     {
         return ucwords("{$this->first_name} {$this->last_name}");
