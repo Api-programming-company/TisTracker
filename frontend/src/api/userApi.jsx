@@ -47,6 +47,9 @@ const userApi = apiSlice.injectEndpoints({
     checkUser: builder.query({
       query: () => "user",
     }),
+    getGrades: builder.query({
+      query: ({academic_period_id, limit}) => `grades?${academic_period_id}&limit=${limit}`,
+    }),
   }),
 });
 
@@ -57,4 +60,5 @@ export const {
   useLazyCheckEmailQuery,
   useVerifyEmailMutation,
   useLazyCheckUserQuery,
+  useGetGradesQuery
 } = userApi;
