@@ -11,6 +11,8 @@ use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
 use App\Notifications\EvaluationAssigned;
 use Illuminate\Support\Facades\Notification;
+use App\Jobs\SendEvaluationNotification;
+
 class AcademicPeriodEvaluationController extends Controller
 {
     /**
@@ -83,7 +85,11 @@ class AcademicPeriodEvaluationController extends Controller
             $students = $academicPeriod->users()->where('user_type', 'E')->get();
 
             // Enviar la notificación a todos los estudiantes
-            Notification::send($students, new EvaluationAssigned($academicPeriodEvaluation->evaluation->name));
+            // Notification::send($students, new EvaluationAssigned($academicPeriodEvaluation->evaluation->name));
+
+            // Despachar el trabajo en la cola
+            SendEvaluationNotification::dispatch($students, $academicPeriodEvaluation->evaluation->name);
+
 
             return response()->json([
                 'message' => 'Evaluación del periodo académico creada exitosamente.',
