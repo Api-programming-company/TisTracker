@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
-
+use App\Notifications\EvaluationAssigned;
+use Illuminate\Support\Facades\Notification;
 class AcademicPeriodEvaluationController extends Controller
 {
     /**
@@ -49,7 +50,6 @@ class AcademicPeriodEvaluationController extends Controller
                 'evaluation_type' => 'required|string|in:A,C,U',
                 'start_date' => 'required|date_format:Y-m-d\TH:i:sP',
                 'end_date' => 'required|date_format:Y-m-d\TH:i:sP|after:start_date',
-                //'end_date' => 'required|date_format:Y-m-d\TH:i:sP',
             ]);
 
             // Obtener el periodo académico
@@ -75,6 +75,15 @@ class AcademicPeriodEvaluationController extends Controller
 
             // Crear una nueva evaluación de periodo académico
             $academicPeriodEvaluation = AcademicPeriodEvaluation::create($validatedData);
+
+            // Cargar la relación 'evaluation' después de crear la instancia
+            //$academicPeriodEvaluation->load('evaluation');
+
+            // Obtener los estudiantes asociados al periodo académico
+            $students = $academicPeriod->users()->where('user_type', 'E')->get();
+
+            // Enviar la notificación a todos los estudiantes
+            Notification::send($students, new EvaluationAssigned($academicPeriodEvaluation->evaluation->name));
 
             return response()->json([
                 'message' => 'Evaluación del periodo académico creada exitosamente.',
