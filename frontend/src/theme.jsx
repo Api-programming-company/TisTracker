@@ -19,7 +19,7 @@ const lightTheme = createTheme({
     info: {
       main: "#81d4fa", // Azul pastel
       details: "#8e9090", //Gris para textos de descripción
-      gray: "#f6f6f6", //Gris claro para cajas grises
+      gray: "#efefef", //Gris claro para cajas grises
     },
     success: {
       main: "#c5e1a5", // Verde claro pastel
@@ -50,7 +50,7 @@ const darkTheme = createTheme({
     info: {
       main: "#81d4fa", // Azul pastel
       details: "#8e9090",
-      gray: "#000000", // Transparente
+      gray: "#444444", // Transparente
     },
     success: {
       main: "#c5e1a5", // Verde claro pastel
