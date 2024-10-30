@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Button } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import { generateValues } from '../mock_objects/reporte'
 import GridComponent from '../components/GridComponent'
 import { downloadCsv } from '../utils/toCsv'
@@ -26,9 +26,10 @@ const StudentsReport = () => {
 
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" marginTop={20}>
+    <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" marginTop={20}  gap={5}>
+        <Typography variant="h4">Reporte de calificaciones de Estudiantes</Typography>
         {finalData.length && <GridComponent values={finalData}></GridComponent>}   
-        <Button onClick={() => downloadCsv(finalData,"reporte_de_estudiantes")}>Descargar</Button>
+        <Button  onClick={() => downloadCsv(finalData,"reporte_de_estudiantes")}>Descargar</Button>
     </Box>
   )
 }
