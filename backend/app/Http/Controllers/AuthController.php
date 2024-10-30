@@ -235,21 +235,42 @@ class AuthController extends Controller
 
             // TODO optimizar
             $query = User::query()
-                ->leftJoin('user_evaluations', 'users.id', '=', 'user_evaluations.evaluatee_company_user_id')
-                ->select('users.id', 'users.email', \DB::raw('COALESCE(AVG(user_evaluations.score), 0) as user_evaluations_score'))
-                ->groupBy('users.id', 'users.email') 
-                ->groupBy('users.id');
+                ->where('user_type', 'E') // Filtramos por user_type '
+                ->whereHas('companyUsers', function ($q) {
+                    $q->where('status', 'A'); // solo users que esten en una empresa
+                });
 
             if ($academicPeriodId) {
-                $query->where('academic_period_id', $academicPeriodId);
+                $query->where('users.academic_period_id', $academicPeriodId);
             }
+
+            $query->with('companyForGrades');
 
             // Obtener las calificaciones del estudiante con límite
             $grades = $query->limit($limit)->get();
 
+            // Transformar la respuesta para incluir nombre y apellidos, y el score como pares
+            $formattedGrades = $grades->map(function ($grade) {
+                $companyData = $grade->company;
+                $companyForGradesData = $grade->companyForGrades;
+
+                return [
+                    'id' => $grade->id,
+                    'nombre' => $grade->first_name,
+                    'apellidos' => $grade->last_name,
+                    'pares' => $companyData ? $companyData->user_evaluations_score : 0,
+                    'company' => $companyForGradesData ? [
+                        'id' => $companyForGradesData->id,
+                        'short_name' => $companyForGradesData->short_name,
+                        'auto_evaluation_score' => $companyForGradesData->auto_evaluation_score,
+                        'cross_evaluation_score' => $companyForGradesData->cross_evaluation_score
+                    ] : null
+                ];
+            });
+
             // Devolver las calificaciones
             return response()->json([
-                'grades' => $grades
+                'grades' => $formattedGrades
             ], 200); // 200 OK
         } catch (Exception $e) {
             // Manejar otros errores

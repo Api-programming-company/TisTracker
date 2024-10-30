@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\UserEvaluation;
 
 class CompanyUser extends Model
 {
@@ -12,6 +13,7 @@ class CompanyUser extends Model
         'status',
         'permission',
     ];
+    protected $appends = ['user_evaluations_score'];
 
     public function company()
     {
@@ -21,5 +23,21 @@ class CompanyUser extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function evaluationsGiven()
+    {
+        return $this->hasMany(UserEvaluation::class, 'evaluator_company_user_id');
+    }
+
+    public function evaluationsReceived()
+    {
+        return $this->hasMany(UserEvaluation::class, 'evaluatee_company_user_id');
+    }
+
+    public function getUserEvaluationsScoreAttribute()
+    {
+        return $this->evaluationsReceived()
+            ->avg('score') ?? 0; // Retorna el promedio o 0 si no hay scores
     }
 }
