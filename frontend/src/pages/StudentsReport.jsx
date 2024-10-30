@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Container, CircularProgress } from "@mui/material";
+import { Box, Button, Container, CircularProgress, Typography } from "@mui/material";
 import GridComponent from "../components/GridComponent";
 import { downloadCsv } from "../utils/toCsv";
 import { useGetGradesQuery } from "../api/userApi";
@@ -77,12 +77,18 @@ const StudentsReport = () => {
   return (
     <Box
       display="flex"
-      justifyContent="center"
-      alignItems="center"
-      marginTop={20}
-    >
+      flexDirection="column"
+      justifyContent="start"
+      alignItems="start"
+      padding="2rem 5rem"
+      gap="2rem"
+>
+        <Typography variant="h4">Reporte de calificaciones de estudiantes</Typography>
       {finalData.length && <GridComponent values={finalData}></GridComponent>}
-      <Button onClick={() => downloadCsv(finalData, "reporte_de_estudiantes")}>
+      <Button onClick={() => downloadCsv(finalData, "reporte_de_estudiantes")} sx={{
+        backgroundColor:"primary.main",
+        color: "white"
+      }}>
         Descargar
       </Button>
     </Box>
