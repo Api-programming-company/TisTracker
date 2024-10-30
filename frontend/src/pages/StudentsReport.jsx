@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Box, Button, Container, CircularProgress, Typography } from "@mui/material";
 import GridComponent from "../components/GridComponent";
 import { downloadCsv } from "../utils/toCsv";
 import { useGetGradesQuery } from "../api/userApi";
 import { useParams } from "react-router-dom";
-
+import generatePDF from 'react-to-pdf';
 const formatGradesData = (grades) => {
     return grades.map((grade) => {
       const autoevaluacion = grade.company.auto_evaluation_score;
@@ -34,7 +34,9 @@ const formatGradesData = (grades) => {
   };
 
 const StudentsReport = () => {
-  const { id } = useParams();
+
+    const targetRef = useRef();
+    const { id } = useParams();
   const {
     data: grades,
     error: gradesError,
@@ -82,15 +84,25 @@ const StudentsReport = () => {
       alignItems="start"
       padding="2rem 5rem"
       gap="2rem"
+      ref={targetRef}
 >
         <Typography variant="h4">Reporte de calificaciones de estudiantes</Typography>
       {finalData.length && <GridComponent values={finalData}></GridComponent>}
-      <Button onClick={() => downloadCsv(finalData, "reporte_de_estudiantes")} sx={{
-        backgroundColor:"primary.main",
-        color: "white"
-      }}>
-        Descargar
-      </Button>
+      <Box display="flex" gap="1rem">
+        <Button onClick={() => downloadCsv(finalData, "reporte_de_estudiantes")} sx={{
+            backgroundColor:"primary.main",
+            color: "white"
+        }}>
+            Descargar como csv
+        </Button>
+        <Button onClick={() => generatePDF(targetRef, {filename: 'page.pdf'})} sx={{
+            backgroundColor:"primary.main",
+            color: "white"
+        }}>
+            Descargar como pdf
+        </Button>
+      </Box>
+      
     </Box>
   );
 };

@@ -10,7 +10,7 @@ const downloadCsv = (data,name) => {
     console.log(csv);
 
     // Crear un Blob con los datos separados por comas en csv
-    const blob = new Blob([csv], {type: 'text/csv'});
+    const blob = new Blob([csv], {type: 'text/pdf'});
 
     // Crear una url para el Blob
     const url = URL.createObjectURL(blob);
