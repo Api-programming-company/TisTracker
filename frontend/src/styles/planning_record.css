@@ -19,3 +19,15 @@
     height: 7rem;
     padding: 1rem 0;
 }
+
+.planning-grid{
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(9,auto);
+    width: 100%;
+}
+
+.planning-grid-item{
+    border: 1px solid #ccc;
+    display: flex;
+}

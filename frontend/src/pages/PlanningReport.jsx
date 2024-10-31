@@ -1,5 +1,5 @@
 import { Box, Button, Typography,Container,Alert,CircularProgress } from '@mui/material'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { downloadCsv } from '../utils/toCsv';
 import generatePDF, { Resolution, Margin } from 'react-to-pdf';
 import { useGetPlanningByCompanyIdQuery } from '../api/planningApi';
@@ -9,20 +9,75 @@ import { getOptions } from '../utils/pdfOptions';
 const PlanningReport = () => {
 
     const {id} = useParams();
+    const [finalData, setFinalData] = useState([]);
     const { data, isSuccess, isFetching, isError, error } =
     useGetPlanningByCompanyIdQuery(id);
     const options = getOptions("reporte_de_evaluacion_semanal")
 
-    
-
+    const headers = ["Hito","Fecha de inicio", "Fecha de fin", "% de Cobro", "Entregables","Resultado Observado", "Resultado Esperado", "Observaciones","Estado"]
 
     const filename = "Reporte de evaluaciones semanales"
 
     const targetRef = useRef();
 
+
+    const generateGrid = () => {
+        let n_row = 2;// Constant to know in which row print the values
+
+        return data.planning.milestones.map((milestone) => {
+            const {name,start_date,end_date,billing_percentage,deliverables} = milestone
+            console.log("hito",n_row,n_row + deliverables.length);
+            return (
+                <>
+                    {Object.keys({name,start_date,end_date,billing_percentage}).map((value,index) => {
+                        return <div className="planning-grid-item" 
+                            key={index}
+                            style={{gridRow: `${n_row}/${n_row + deliverables.length}`,
+                            gridColumn:`${index + 1}/${index + 2}`}}
+                            >
+                                <Box width="100%" display="flex" alignItems="center" justifyContent="center">
+                                    <Typography fontSize={12}>{milestone[value]}</Typography>
+                                </Box>
+                            
+                        </div>
+                    })}
+                    {deliverables.map((deliverable, j) => {
+                        // Obtener las variables necesarias del deliverable
+                        const {name , actual_result,expected_result,observations,status } = deliverable
+                        // Aumentar la variable para saber en que fila acoumodar los hitos
+                        n_row++;
+                        
+                        return (
+                            <>
+                            {
+                                Object.keys({name, actual_result,expected_result,observations,status}).map((value,index) => {
+                                    return <div className='planning-grid-item' key={index}>
+                                            <Box width="100%" 
+                                            backgroundColor={status === "C" ? "error.main" : milestone.status === "A" && "success.main"} 
+                                            display="flex" alignItems="center" justifyContent="center" padding={0.5}>
+                                                <Typography fontSize={12} >
+                                                    {deliverable[value]}
+                                                </Typography>
+                                            </Box>
+                                        </div>
+                                })
+                            }
+                            </>
+                        );
+                    } )}
+                </>
+            )
+        })
+
+
+    }
+
      useEffect(() => {
-        console.log(data);
-     },[data])
+        if (isSuccess) {
+            // Poner en un formato para poder descargar un csv
+            setFinalData()
+        }
+     },[data, isSuccess])
 
 
     if (isFetching) {
@@ -72,6 +127,13 @@ const PlanningReport = () => {
     <Box display="flex" flexDirection="column" gap="1rem" ref={targetRef}>
         <Typography variant="h4">Reporte de planificacion</Typography>
         {/* {data.length && <GridComponent values={data}></GridComponent>} */}
+        <div className="planning-grid">
+            {headers.map((header) => <div className='planning-grid-item'>
+                <Box width="100%" sx={{backgroundColor: "info.gray"}} paddingX={2} paddingY={1}>
+                    <Typography textAlign="center" fontSize={13} fontWeight="bold">{header}</Typography>
+                </Box></div>)}
+            {generateGrid()}
+        </div>
     </Box>
         
       <Box display="flex" gap="1rem">
