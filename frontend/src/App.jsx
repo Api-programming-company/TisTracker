@@ -56,6 +56,7 @@ import StudentsReport from "./pages/StudentsReport";
 import SeeIntationsGE from "./pages/SeeIntationsGE";
 import DocenteHome from "./pages/DocenteHome";
 import SeeSolicitudesGE from "./pages/SeeSolicitudesGE";
+import PlanningReport from "./pages/PlanningReport";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -98,6 +99,7 @@ function App({ toggleTheme, isDarkMode }) {
               <Route path="/company/:id/invite" element={<StudentSearch />} />
               <Route path="/company/:id/confirm" element={<ConformacionGE />} />
               <Route path="/company/:id/uninvite" element={<EditarListaGE />} />
+              <Route path="/company/:id/planning_report" element={<PlanningReport/>}/>
               <Route
                 path="/academic-periods"
                 element={<AcademicPeriodList />}
