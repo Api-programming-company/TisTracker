@@ -54,9 +54,13 @@ const PlanningReport = () => {
                                     return <div className='planning-grid-item' key={index}>
                                             <Box width="100%" 
                                             backgroundColor={status === "C" ? "error.main" : milestone.status === "A" && "success.main"} 
-                                            display="flex" alignItems="center" justifyContent="center" padding={0.5}>
+                                            display="flex" alignItems="center" justifyContent="center"  paddingY={1.2}>
                                                 <Typography fontSize={12} >
-                                                    {deliverable[value]}
+                                                  {/* Verificar el estado del entregable */}
+
+                                                  {/* Verificar que el campo sea el de status */}
+                                                    {value!=="status" ? deliverable[value] 
+                                                    : deliverable[value] === "C" ? "C": milestone.status === "P" ? "P" : "V"}
                                                 </Typography>
                                             </Box>
                                         </div>
