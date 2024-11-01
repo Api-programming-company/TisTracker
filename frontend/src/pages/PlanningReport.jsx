@@ -10,6 +10,7 @@ const PlanningReport = () => {
 
     const {id} = useParams();
     const [finalData, setFinalData] = useState([]);
+    const [csvData,setCsvData] = useState([]);
     const { data, isSuccess, isFetching, isError, error } =
     useGetPlanningByCompanyIdQuery(id);
     const options = getOptions("reporte_de_evaluacion_semanal")
@@ -28,7 +29,6 @@ const PlanningReport = () => {
 
         return finalData.map((milestone) => {
             const {name,start_date,end_date,billing_percentage,deliverables} = milestone
-            console.log("hito",n_row,n_row + deliverables.length);
             return (
                 <>
                     {Object.keys({name,start_date,end_date,billing_percentage}).map((value,index) => {
@@ -85,10 +85,21 @@ const PlanningReport = () => {
             return new Date(a.start_date) - new Date(b.start_date)
           });
           setFinalData(newMilestonesSorted)
-            // Poner en un formato para poder descargar un csv
-            // const milestones = data?.planning?.milestones.sort((a,b) => new Date(a.start_date) - new Date(b.start_date))
-            // setFinalData(milestones)
             
+          //Poner los datos en un formato descargable con csv
+
+
+         
+          setCsvData(() => headers.join(",") + "\n" + newMilestonesSorted.map((milestone) => {
+            const  {name,start_date,end_date,billing_percentage,deliverables,status} = milestone;
+            const milestone_string = Object.values({name,start_date,end_date,billing_percentage}).join(",");
+            return (deliverables.map(deliverable => {
+              const {name,actual_result,expected_result,observations,status} = deliverable;
+              const newStatus = status === "C" ? "C" : milestone.status === "P" ? "P" : "V";
+              return milestone_string + ","+  Object.values({name,actual_result,expected_result,observations,newStatus}).join(",")
+            })).join("\n")
+          }).join("\n"))
+
         }
      },[data, isSuccess,headers,finalData])
 
@@ -150,7 +161,7 @@ const PlanningReport = () => {
     </Box>
         
       <Box display="flex" gap="1rem">
-        <Button onClick={() => downloadCsv(data, filename)} sx={{
+        <Button onClick={() => downloadCsv(csvData, filename)} sx={{
             backgroundColor:"primary.main",
             color: "white"
         }}>

@@ -6,7 +6,7 @@ const transformToCSV = (data) => {
     return [headers.join(','), rows].join('\n');
 }
 const downloadCsv = (data,name) => {
-    const csv = transformToCSV(data);
+    const csv = Array.isArray(data) && data.length ? transformToCSV(data) : data;
     console.log(csv);
 
     // Crear un Blob con los datos separados por comas en csv
