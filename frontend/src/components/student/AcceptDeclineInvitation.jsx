@@ -167,7 +167,7 @@ const AcceptDeclineInvitation = () => {
             <Typography variant="body1">{data.company.address}</Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 4 }}>
-            <Typography variant="h6">Teléfono</Typography>
+            <Typography variant="h6">Celular</Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 8 }}>
             <Typography variant="body1">{data.company.phone}</Typography>
