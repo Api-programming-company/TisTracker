@@ -31,9 +31,6 @@ const userApi = apiSlice.injectEndpoints({
         },
       }),
     }),
-    checkEmail: builder.query({
-      query: (email) => `user/check-email?email=${encodeURIComponent(email)}`,
-    }),
     verifyEmail: builder.mutation({
       query: (token) => ({
         url: "user/verify-email",
@@ -57,7 +54,6 @@ export const {
   useRegisterUserMutation,
   useLoginUserMutation,
   useLogoutUserMutation,
-  useLazyCheckEmailQuery,
   useVerifyEmailMutation,
   useLazyCheckUserQuery,
   useGetGradesQuery

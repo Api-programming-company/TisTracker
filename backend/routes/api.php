@@ -22,7 +22,6 @@ Route::post('/webhook', [WebhookController::class, 'handle']);
 // Autenticación y usuario
 Route::prefix('user')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
-    Route::get('check-email', [AuthController::class, 'checkEmail']);
     Route::post('login', [AuthController::class, 'login']);
     Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
 
