@@ -57,6 +57,7 @@ import SeeIntationsGE from "./pages/SeeIntationsGE";
 import DocenteHome from "./pages/DocenteHome";
 import SeeSolicitudesGE from "./pages/SeeSolicitudesGE";
 import PlanningReport from "./pages/PlanningReport";
+import CompanyReport from "./pages/CompanyReport";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -197,6 +198,10 @@ function App({ toggleTheme, isDarkMode }) {
             <Route
               path="/academic-period/:id/reports/students"
               element={<StudentsReport />}
+            ></Route>
+            <Route
+              path="/academic-period/:id/reports/companies"
+              element={<CompanyReport />}
             ></Route>
 
             <Route path="/*" element={<NotFound />} />
