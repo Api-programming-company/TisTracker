@@ -24,7 +24,7 @@ const DocenteHome = () => {
       path: `/academic-period/${period.id}/companies`,
     },
     {
-      label: "Seguimiento Semanal",
+      label: "Ver Grupo Empresa para Seguimiento Semanal",
       path: `/academic-period/${period.id}/weekly_companies`,
     },
     {
@@ -34,6 +34,14 @@ const DocenteHome = () => {
     {
       label: "Aceptar/Rechazar Solicitudes",
       path: `/academic-period/${period.id}/pending`,
+    },
+    {
+      label: "Ver calificaciones de GE",
+      path: `/academic-period/${period.id}/reports/companies`,
+    },
+    {
+      label: "Ver calificaciones de estudiantes",
+      path: `/academic-period/${period.id}/reports/students`,
     },
   ];
 
