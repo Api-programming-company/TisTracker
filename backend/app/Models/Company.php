@@ -21,6 +21,8 @@ class Company extends Model
         'status',
     ];
 
+    protected $appends = ['cross_evaluation_score', 'auto_evaluation_score'];
+
     public function academicPeriod()
     {
         return $this->belongsTo(AcademicPeriod::class);
@@ -46,4 +48,32 @@ class Company extends Model
     {
         return $this->hasMany(CompanyUserEvaluation::class);
     }
+
+    public function getAutoEvaluationScoreAttribute()
+    {
+        $companyUserIds  = $this->members()->pluck('id');
+
+        $memberScores = CompanyUserEvaluation::whereIn('company_user_id', $companyUserIds)
+            ->where('company_id', $this->id)
+            ->pluck('score');
+
+        $averageScore = $memberScores->isNotEmpty() ? $memberScores->avg() : 0;
+
+        return $averageScore;
+    }
+
+    public function getCrossEvaluationScoreAttribute()
+    {
+        $companyUserIds = $this->members()->pluck('id');
+
+        $nonMemberScores = CompanyUserEvaluation::whereNotIn('company_user_id', $companyUserIds)
+            ->where('company_id', $this->id)
+            ->pluck('score');
+
+        $averageScore = $nonMemberScores->isNotEmpty() ? $nonMemberScores->avg() : 0;
+
+        return $averageScore;
+    }
+
+    
 }

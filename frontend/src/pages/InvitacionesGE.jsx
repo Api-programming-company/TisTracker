@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Container, Typography, Box, CircularProgress } from "@mui/material";
 import { useGetPendingCompaniesRequestQuery } from "../api/studentApi";
 import PendingInvitationCard from "../components/student/PendingInvitationCard";
+import AppContext from "../context/AppContext";
 
 const InvitacionesGE = () => {
+  const { user } = useContext(AppContext);
   const { data, error, isSuccess, isFetching, isError } =
     useGetPendingCompaniesRequestQuery();
   useEffect(() => {
@@ -45,15 +47,22 @@ const InvitacionesGE = () => {
           Invitaciones de Grupo Empresas
         </Typography>
 
-        {data?.companies.length === 0 && (
+        {user?.company?.id ? (
+          <Typography variant="h6" align="center" color="textSecondary">
+            Ya perteneces a una grupo empresa.
+          </Typography>
+        ) : data?.companies.length === 0 ? (
           <Typography variant="h6" align="center" color="textSecondary">
             No tienes invitaciones pendientes.
           </Typography>
+        ) : (
+          data?.companies.map((invitation) => (
+            <PendingInvitationCard
+              key={invitation.company_user.id}
+              request={invitation.company_user}
+            />
+          ))
         )}
-
-        {data?.companies.map((invitation) => (
-          <PendingInvitationCard key={invitation.company_user.id} request={invitation.company_user} />
-        ))}
       </Box>
     </Container>
   );

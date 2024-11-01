@@ -87,4 +87,5 @@ Route::middleware('auth')->group(function () {
     Route::apiResource('user-evaluations', UserEvaluationController::class);
     Route::apiResource('company-user-evaluation', CompanyUserEvaluationControllers::class);
     Route::apiResource('academic-period-evaluations', AcademicPeriodEvaluationController::class);
+    Route::get('grades', [AuthController::class, 'getGrades']);
 });

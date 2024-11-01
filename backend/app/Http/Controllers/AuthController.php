@@ -31,7 +31,7 @@ class AuthController extends Controller
             $request->validate([
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
-                'email' => ['required', 'email', 'unique:users,email',  $this->getEmailValidationRule($request->user_type)],
+                'email' => ['required', 'email', 'unique:users,email', $this->getEmailValidationRule($request->user_type)],
                 'password' => ['required', 'string', 'min:8', 'confirmed', new ValidarPassword],
                 'user_type' => 'required|in:E,D',
             ], [], User::getFieldLabels());
@@ -227,4 +227,57 @@ class AuthController extends Controller
         }
     }
 
+    public function getGrades(Request $request)
+    {
+        try {
+            $academicPeriodId = $request->input('academic_period_id');
+            $limit = $request->input('limit', 10); // Default limit to 10 if not provided
+
+            // TODO optimizar
+            $query = User::query()
+                ->where('user_type', 'E') // Filtramos por user_type '
+                ->whereHas('companyUsers', function ($q) {
+                    $q->where('status', 'A'); // solo users que esten en una empresa
+                });
+
+            if ($academicPeriodId) {
+                $query->where('users.academic_period_id', $academicPeriodId);
+            }
+
+            $query->with('companyForGrades');
+
+            // Obtener las calificaciones del estudiante con límite
+            $grades = $query->limit($limit)->get();
+
+            // Transformar la respuesta para incluir nombre y apellidos, y el score como pares
+            $formattedGrades = $grades->map(function ($grade) {
+                $companyData = $grade->company;
+                $companyForGradesData = $grade->companyForGrades;
+
+                return [
+                    'id' => $grade->id,
+                    'nombre' => $grade->first_name,
+                    'apellidos' => $grade->last_name,
+                    'pares' => $companyData ? $companyData->user_evaluations_score : 0,
+                    'company' => $companyForGradesData ? [
+                        'id' => $companyForGradesData->id,
+                        'short_name' => $companyForGradesData->short_name,
+                        'auto_evaluation_score' => $companyForGradesData->auto_evaluation_score,
+                        'cross_evaluation_score' => $companyForGradesData->cross_evaluation_score
+                    ] : null
+                ];
+            });
+
+            // Devolver las calificaciones
+            return response()->json([
+                'grades' => $formattedGrades
+            ], 200); // 200 OK
+        } catch (Exception $e) {
+            // Manejar otros errores
+            return response()->json([
+                'message' => 'Se ha producido un error inesperado',
+                'error' => $e->getMessage()
+            ], 500); // Error general
+        }
+    }
 }

@@ -49,12 +49,14 @@ import VerPlantillas from "./pages/VerPlantillas";
 import CrearEvaluacion from "./pages/CrearEvaluacion";
 import EvaluationTemplateList from "./components/evaluationTemplate/EvaluationTemplateList";
 import PlantillasVisualizer from "./pages/PlantillasVisualizer";
-import EvaluationsHome from "./pages/EvaluationsHome";
 import SeeWeeklyGE from "./pages/SeeWeeklyGE";
 import EditEvaluationTemplate from "./pages/EditEvaluationTemplate";
 import InvitationsHome from "./pages/InvitationsHome";
 import StudentsReport from "./pages/StudentsReport";
 import SeeIntationsGE from "./pages/SeeIntationsGE";
+import DocenteHome from "./pages/DocenteHome";
+import SeeSolicitudesGE from "./pages/SeeSolicitudesGE";
+import PlanningReport from "./pages/PlanningReport";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -78,7 +80,10 @@ function App({ toggleTheme, isDarkMode }) {
               <Route path="/vergrupoe/:id" element={<VerGE />} />
               <Route path="/registroge" element={<RegistroGE />} />
               <Route path="/company-requests" element={<InvitacionesGE />} />
-              <Route path="/see-company-requests" element={<SeeIntationsGE />} />
+              <Route
+                path="/see-company-requests"
+                element={<SeeIntationsGE />}
+              />
               <Route path="/invitations-home" element={<InvitationsHome />} />
 
               <Route
@@ -94,6 +99,7 @@ function App({ toggleTheme, isDarkMode }) {
               <Route path="/company/:id/invite" element={<StudentSearch />} />
               <Route path="/company/:id/confirm" element={<ConformacionGE />} />
               <Route path="/company/:id/uninvite" element={<EditarListaGE />} />
+              <Route path="/company/:id/planning_report" element={<PlanningReport/>}/>
               <Route
                 path="/academic-periods"
                 element={<AcademicPeriodList />}
@@ -113,12 +119,21 @@ function App({ toggleTheme, isDarkMode }) {
                 element={<SolicitudesGE />}
               />
               <Route
+                path="/academic-period/:id/seepending"
+                element={<SeeSolicitudesGE />}
+              />
+              <Route
                 path="/request/:id/pending"
                 element={<AcceptDeclineCompany />}
               />
               <Route
                 path="/invitation/:id/pending"
                 element={<AcceptDeclineInvitation />}
+              />
+
+              <Route
+                path="/academic-periods/docente-home/:academic_period_id"
+                element={<DocenteHome />}
               />
 
               {/* evaluacion */}
@@ -169,7 +184,6 @@ function App({ toggleTheme, isDarkMode }) {
             <Route path="/home" element={<Home />} />
             <Route path="/student-home" element={<StudentHome />} />
             <Route path="/teacher-home" element={<TeacherHome />} />
-            <Route path="evaluations-home" element={<EvaluationsHome />} />
 
             <Route path="/upload" element={<ImageUpload />} />
             <Route path="/example" element={<Example />} />
@@ -181,10 +195,9 @@ function App({ toggleTheme, isDarkMode }) {
             ></Route>
 
             <Route
-            path="/academic-period/:id/reports/students"
-            element={<StudentsReport/>}>
-              
-            </Route>
+              path="/academic-period/:id/reports/students"
+              element={<StudentsReport />}
+            ></Route>
 
             <Route path="/*" element={<NotFound />} />
           </Routes>

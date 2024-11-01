@@ -147,7 +147,7 @@ const EnrollToAcademicPeriod = () => {
           mb: { xs: 2, md: 4 },
         }}
       >
-        Inscribirse a grupo TIS
+        Registrarse a un grupo TIS
       </Typography>
 
       {/* Selector de docentes */}

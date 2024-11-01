@@ -61,7 +61,7 @@ const StudentHome = () => {
               style={{ padding: "16px", cursor: "pointer" }}
               onClick={() => handleNavigate("/enroll-to-ap")}
             >
-              <Typography variant="h5">Enroll to Academic Period</Typography>
+              <Typography variant="h5">Registrarse a un grupo</Typography>
             </Paper>
           </Box>
         )}

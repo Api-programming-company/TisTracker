@@ -56,7 +56,7 @@ const RegistroGE = () => {
             short_name: "El nombre corto ya está en uso.",
             email: "El correo electrónico no es válido o ya está en uso.",
             address: "La dirección no es válido.",
-            phone: "El teléfono no es válido.",
+            phone: "El celular no es válido.",
             members: "Los miembros no son válidos.",
           };
           newErrors[key] = customMessages[key] || messages[0];

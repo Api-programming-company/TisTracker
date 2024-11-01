@@ -30,7 +30,7 @@ const EditarListaGE = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const [updateInvitation, { data, error, isSuccess, isError, isLoading }] =
-  useDeleteInvitationByIdMutation();
+    useDeleteInvitationByIdMutation();
 
   useEffect(() => {
     if (isSuccess) {
@@ -123,59 +123,65 @@ const EditarListaGE = () => {
                 Lista de Invitaciones a Retirar:
               </Typography>
               <List>
-                {selectedItems.map((member) => (
-                  <ListItem
-                    key={member.id}
-                    secondaryAction={
-                      <IconButton
-                        edge="end"
-                        aria-label="delete"
-                        onClick={() => {
-                          setItemIdToRemove(member.id);
-                          setOpenA(true);
-                        }}
-                      >
-                        <Delete />
-                      </IconButton>
-                    }
-                    sx={{
-                      backgroundColor: "info.gray",
-                      mb: 0.5,
-                    }}
-                  >
-                    <ListItemIcon>
-                      <Avatar
-                        sx={{
-                          bgcolor: "primary.main",
-                          color: "white",
-                          width: 56,
-                          height: 56,
-                          mr: 2,
-                        }}
-                      >
-                        {member.user.first_name[0]}
-                        {member.user.last_name[0]}
-                      </Avatar>
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={`${member.user.first_name} ${member.user.last_name}`}
-                      secondary={
-                        <Box>
-                          <Typography variant="body2">
-                            {member.user.email}
-                          </Typography>
-                          <Typography variant="body2">
-                            Invitación realizada en:{" "}
-                            {format(
-                              parseISO(member.created_at),
-                              "dd/MM/yyyy HH:mm:ss"
-                            )}
-                          </Typography>
-                        </Box>
-                      }
-                    />
+                {selectedItems.length === 0 ? (
+                  <ListItem>
+                    <ListItemText primary="No hay invitaciones a retirar." />
                   </ListItem>
-                ))}
+                ) : (
+                  selectedItems.map((member) => (
+                    <ListItem
+                      key={member.id}
+                      secondaryAction={
+                        <IconButton
+                          edge="end"
+                          aria-label="delete"
+                          onClick={() => {
+                            setItemIdToRemove(member.id);
+                            setOpenA(true);
+                          }}
+                        >
+                          <Delete />
+                        </IconButton>
+                      }
+                      sx={{
+                        backgroundColor: "info.gray",
+                        mb: 0.5,
+                      }}
+                    >
+                      <ListItemIcon>
+                        <Avatar
+                          sx={{
+                            bgcolor: "primary.main",
+                            color: "white",
+                            width: 56,
+                            height: 56,
+                            mr: 2,
+                          }}
+                        >
+                          {member.user.first_name[0]}
+                          {member.user.last_name[0]}
+                        </Avatar>
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={`${member.user.first_name} ${member.user.last_name}`}
+                        secondary={
+                          <Box>
+                            <Typography variant="body2">
+                              {member.user.email}
+                            </Typography>
+                            <Typography variant="body2">
+                              Invitación realizada en:{" "}
+                              {format(
+                                parseISO(member.created_at),
+                                "dd/MM/yyyy HH:mm:ss"
+                              )}
+                            </Typography>
+                          </Box>
+                        }
+                      />
+                    </ListItem>
+                  ))
+                )}
               </List>
               <DialogMod
                 open={openA}

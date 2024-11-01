@@ -261,7 +261,7 @@ const StudentSearch = () => {
         <DialogTitle>Estudiante encontrado</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            ¿Estás seguro de que deseas agregar a {data?.student?.email} a la
+            ¿Estás seguro de que deseas invitar a {data?.student?.email} a la
             empresa?
           </DialogContentText>
         </DialogContent>
