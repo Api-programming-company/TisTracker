@@ -6,31 +6,34 @@ import ReportTemplate from "../components/ReportTemplate";
 
 
 const formatGradesData = (grades) => {
-    return grades.map((grade) => {
-      const autoevaluacion = grade.company.auto_evaluation_score;
-      const cruzada = grade.company.cross_evaluation_score;
-      const pares = grade.pares;                         
-      const planificacion = grade.company.planning_evaluation_score || Math.floor(Math.random() * 101);
+    return grades
+      .map((grade) => {
+        const autoevaluacion = grade.company.auto_evaluation_score;
+        const cruzada = grade.company.cross_evaluation_score;
+        const pares = grade.pares;
+        const planificacion = grade.company.planning_evaluation_score || Math.floor(Math.random() * 101);
 
-      const totalEvaluations = Math.round(
-        (autoevaluacion + pares + cruzada) / 3
-      );
-      const total = Math.round(
-        (totalEvaluations * 40) / 100 + (planificacion * 60) / 100
-      );
-  
-      return {
-        id: grade.id,
-        nombre: grade.nombre,
-        apellidos: grade.apellidos,
-        autoevaluacion,
-        cruzada,
-        pares,
-        planificacion,
-        evaluaciones: totalEvaluations,
-        total,
-      };
-    });
+        const totalEvaluations = Math.round(
+          (autoevaluacion + pares + cruzada) / 3
+        );
+        const total = Math.round(
+          (totalEvaluations * 40) / 100 + (planificacion * 60) / 100
+        );
+
+        return {
+          id: grade.id,
+          apellidos: grade.apellidos,
+          nombre: grade.nombre,
+          ge: grade.company.short_name,
+          autoevaluacion,
+          cruzada,
+          pares,
+          planificacion,
+          evaluaciones: totalEvaluations,
+          total,
+        };
+      })
+      .sort((a, b) => a.apellidos.localeCompare(b.apellidos) || a.nombre.localeCompare(b.nombre));
   };
 
 const StudentsReport = () => {
