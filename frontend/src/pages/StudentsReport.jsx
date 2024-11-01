@@ -1,10 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Box, Button, Container, CircularProgress, Typography } from "@mui/material";
-import GridComponent from "../components/GridComponent";
-import { downloadCsv } from "../utils/toCsv";
+import { Container, CircularProgress } from "@mui/material";
 import { useGetGradesQuery } from "../api/userApi";
 import { useParams } from "react-router-dom";
-import generatePDF, { Resolution, Margin } from 'react-to-pdf';
 import ReportTemplate from "../components/ReportTemplate";
 
 
@@ -38,7 +35,6 @@ const formatGradesData = (grades) => {
 
 const StudentsReport = () => {
 
-    const targetRef = useRef();
     const { id } = useParams();
   const {
     data: grades,
