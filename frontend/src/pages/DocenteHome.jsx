@@ -24,7 +24,7 @@ const DocenteHome = () => {
       path: `/academic-period/${period.id}/companies`,
     },
     {
-      label: "Seguimiento Semanal",
+      label: "Ver Grupo Empresa para Seguimiento Semanal",
       path: `/academic-period/${period.id}/weekly_companies`,
     },
     {
