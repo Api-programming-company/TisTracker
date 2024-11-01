@@ -52,7 +52,7 @@ const SeeIntationsGE = () => {
           </Typography>
         ) : data?.companies.length === 0 ? (
           <Typography variant="h6" align="center" color="textSecondary">
-            No tienes invitaciones pendientes.
+            No tienes invitaciones.
           </Typography>
         ) : (
           data?.companies.map((invitation) => (
