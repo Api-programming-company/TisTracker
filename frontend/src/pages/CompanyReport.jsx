@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, CircularProgress } from "@mui/material";
 import { useGetGradesQuery } from "../api/userApi";
 import { useParams } from "react-router-dom";

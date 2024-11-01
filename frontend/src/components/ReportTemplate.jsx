@@ -2,7 +2,7 @@ import React, {useRef} from 'react'
 import { Box,Button,Typography } from '@mui/material'
 import GridComponent from './GridComponent'
 import { downloadCsv } from '../utils/toCsv'
-import generatePDF, { Resolution, Margin } from 'react-to-pdf';
+import generatePDF from 'react-to-pdf';
 import { getOptions } from '../utils/pdfOptions';
 
 

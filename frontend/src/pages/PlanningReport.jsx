@@ -1,7 +1,7 @@
 import { Box, Button, Typography,Container,Alert,CircularProgress } from '@mui/material'
 import React, { useEffect, useRef, useState } from 'react'
 import { downloadCsv } from '../utils/toCsv';
-import generatePDF, { Resolution, Margin } from 'react-to-pdf';
+import generatePDF from 'react-to-pdf';
 import { useGetPlanningByCompanyIdQuery } from '../api/planningApi';
 import { useParams } from 'react-router-dom';
 import { getOptions } from '../utils/pdfOptions';
@@ -92,7 +92,7 @@ const PlanningReport = () => {
 
          
           setCsvData(() => headers.join(",") + "\n" + newMilestonesSorted.map((milestone) => {
-            const  {name,start_date,end_date,billing_percentage,deliverables,status} = milestone;
+            const  {name,start_date,end_date,billing_percentage,deliverables} = milestone;
             const milestone_string = Object.values({name,start_date,end_date,billing_percentage}).join(",");
             return (deliverables.map(deliverable => {
               const {name,actual_result,expected_result,observations,status} = deliverable;
@@ -150,7 +150,7 @@ const PlanningReport = () => {
       gap="2rem"
 >
     <Box display="flex" flexDirection="column" gap="1rem" ref={targetRef}>
-        <Typography variant="h4">Reporte de planificacion</Typography>
+        <Typography variant="h4">Reporte de evaluaciones semanales</Typography>
         <Box display="flex" gap={3}>
           <Box display="flex" alignItems="center" gap={0.5}><Typography fontWeight="bold">Nombre Largo:</Typography><Typography>{data.planning.company.long_name}</Typography></Box>
           <Box display="flex" alignItems="center" gap={0.5}><Typography fontWeight="bold">Nombre Corto:</Typography><Typography>{data.planning.company.short_name}</Typography></Box>
