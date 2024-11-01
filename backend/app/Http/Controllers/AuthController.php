@@ -262,6 +262,7 @@ class AuthController extends Controller
                     'company' => $companyForGradesData ? [
                         'id' => $companyForGradesData->id,
                         'short_name' => $companyForGradesData->short_name,
+                        'long_name' => $companyForGradesData->long_name,
                         'auto_evaluation_score' => $companyForGradesData->auto_evaluation_score,
                         'cross_evaluation_score' => $companyForGradesData->cross_evaluation_score
                     ] : null

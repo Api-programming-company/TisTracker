@@ -42,7 +42,7 @@ const StudentsReport = () => {
     isFetching: isGradesFetching,
     isSuccess: isGradesSucess,
     isError: isGradesError,
-  } = useGetGradesQuery({academic_period_id:id, limit:5});
+  } = useGetGradesQuery({academic_period_id:id, limit:10});
 
   useEffect(() => {
     if (isGradesSucess) {
