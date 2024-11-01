@@ -35,6 +35,14 @@ const DocenteHome = () => {
       label: "Aceptar/Rechazar Solicitudes",
       path: `/academic-period/${period.id}/pending`,
     },
+    {
+      label: "Ver calificaciones de GE",
+      path: `/academic-period/${period.id}/reports/companies`,
+    },
+    {
+      label: "Ver calificaciones de estudiantes",
+      path: `/academic-period/${period.id}/reports/students`,
+    },
   ];
 
   const evaluationItems = [
