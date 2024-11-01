@@ -23,7 +23,6 @@ const formatGradesData = (grades) => {
         );
 
         uniqueGrades.set(companyId, {
-          id: companyId,
           nombre_largo: grade.company.long_name,
           nombre_corto: grade.company.short_name,
           autoevaluacion,
@@ -35,7 +34,8 @@ const formatGradesData = (grades) => {
       }
     });
 
-    return Array.from(uniqueGrades.values()).sort((a, b) => a.nombre_corto.localeCompare(b.nombre_largo));
+    return Array.from(uniqueGrades.values()).sort((a, b) => a.nombre_corto.localeCompare(b.nombre_largo))
+    .map((grade, index) =>{ return {n: index + 1, ...grade}});
   };
 
 const CompanyReport = () => {

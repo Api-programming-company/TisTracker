@@ -21,7 +21,6 @@ const formatGradesData = (grades) => {
         );
 
         return {
-          id: grade.id,
           apellidos: grade.apellidos,
           nombre: grade.nombre,
           ge: grade.company.short_name,
@@ -33,7 +32,8 @@ const formatGradesData = (grades) => {
           total,
         };
       })
-      .sort((a, b) => a.apellidos.localeCompare(b.apellidos) || a.nombre.localeCompare(b.nombre));
+      .sort((a, b) => a.apellidos.localeCompare(b.apellidos) || a.nombre.localeCompare(b.nombre))
+      .map((grade, index) => ({n: index + 1, ...grade,  }));
   };
 
 const StudentsReport = () => {
@@ -45,7 +45,7 @@ const StudentsReport = () => {
     isFetching: isGradesFetching,
     isSuccess: isGradesSucess,
     isError: isGradesError,
-  } = useGetGradesQuery({academic_period_id:id, limit:10});
+  } = useGetGradesQuery({academic_period_id:id, limit:15});
 
   useEffect(() => {
     if (isGradesSucess) {
