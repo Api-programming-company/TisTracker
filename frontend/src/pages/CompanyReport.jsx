@@ -35,7 +35,7 @@ const formatGradesData = (grades) => {
       }
     });
 
-    return Array.from(uniqueGrades.values());
+    return Array.from(uniqueGrades.values()).sort((a, b) => a.nombre_corto.localeCompare(b.nombre_largo));
   };
 
 const CompanyReport = () => {
