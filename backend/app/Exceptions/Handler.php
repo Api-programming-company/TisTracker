@@ -4,8 +4,10 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
+
 use Throwable;
 use Exception;
 
@@ -41,25 +43,39 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
 
-        $this->renderable(function (ValidationException $e, $request) {
+    /**
+     * Render an exception into an HTTP response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Throwable  $exception
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof AuthorizationException) {
             return response()->json([
-                'message' => 'Error de validación',
-                'errors' => $e->errors(),
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-        });
+                'message' => 'No tiene permisos para realizar esta acción.'
+            ], Response::HTTP_FORBIDDEN);
+        }
 
-        $this->renderable(function (NotFoundHttpException $e, $request) {
+        if ($exception instanceof ValidationException) {
+            return response()->json([
+                'message' => 'Error de validación.',
+                'errors' => $exception->errors(),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if ($exception instanceof NotFoundHttpException) {
             return response()->json([
                 'message' => 'Recurso no encontrado.'
             ], Response::HTTP_NOT_FOUND);
-        });
+        }
 
-        $this->renderable(function (Exception $e, $request) {
-            return response()->json([
-                'message' => 'Se ha producido un error inesperado',
-                'error' => $e->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        });
+        return response()->json([
+            'message' => 'Se ha producido un error inesperado.',
+            'error' => $exception->getMessage()
+        ], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 }
