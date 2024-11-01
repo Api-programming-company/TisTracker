@@ -59,6 +59,10 @@ const StudentsReport = () => {
   //booleano para ver si los datos estan listos para mostrarse
   const [finalData, setFinalData] = useState([]);
 
+  useEffect(() => {
+    console.log(grades);
+  },[grades])
+
   if (isGradesFetching) {
     return (
       <Container

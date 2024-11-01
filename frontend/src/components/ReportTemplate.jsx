@@ -16,6 +16,7 @@ const ReportTemplate = ({data,title,filename}) => {
 
   return (
     <Box
+    width="100%"
       display="flex"
       flexDirection="column"
       justifyContent="start"
@@ -23,7 +24,7 @@ const ReportTemplate = ({data,title,filename}) => {
       padding="2rem 5rem"
       gap="2rem"
 >
-    <Box display="flex" flexDirection="column" gap="1rem" ref={targetRef}>
+    <Box width="100%" display="flex" flexDirection="column" gap="1rem" ref={targetRef}>
         <Typography variant="h4">{title}</Typography>
         {data.length && <GridComponent values={data}></GridComponent>}
     </Box>
