@@ -14,6 +14,7 @@ const PlanningReport = () => {
     useGetPlanningByCompanyIdQuery(id);
     const options = getOptions("reporte_de_evaluacion_semanal")
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const headers = ["Hito","Fecha de inicio", "Fecha de fin", "% de Cobro", "Entregables","Resultado Observado", "Resultado Esperado", "Observaciones","Estado"]
 
     const filename = "Reporte de evaluaciones semanales"
@@ -22,9 +23,10 @@ const PlanningReport = () => {
 
 
     const generateGrid = () => {
+      if(finalData.length){
         let n_row = 2;// Constant to know in which row print the values
 
-        return data.planning.milestones.map((milestone) => {
+        return finalData.map((milestone) => {
             const {name,start_date,end_date,billing_percentage,deliverables} = milestone
             console.log("hito",n_row,n_row + deliverables.length);
             return (
@@ -72,16 +74,23 @@ const PlanningReport = () => {
                 </>
             )
         })
-
-
+      }
     }
 
      useEffect(() => {
-        if (isSuccess) {
+        if (isSuccess && !finalData.length) {
+          let newMilestones = data.planning.milestones;
+          let newMilestonesSorted = [...newMilestones];
+          newMilestonesSorted.sort((a, b) => {
+            return new Date(a.start_date) - new Date(b.start_date)
+          });
+          setFinalData(newMilestonesSorted)
             // Poner en un formato para poder descargar un csv
-            setFinalData()
+            // const milestones = data?.planning?.milestones.sort((a,b) => new Date(a.start_date) - new Date(b.start_date))
+            // setFinalData(milestones)
+            
         }
-     },[data, isSuccess])
+     },[data, isSuccess,headers,finalData])
 
 
     if (isFetching) {
