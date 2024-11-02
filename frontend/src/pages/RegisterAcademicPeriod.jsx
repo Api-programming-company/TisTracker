@@ -47,7 +47,7 @@ const RegisterAcademicPeriod = () => {
         setNameError(true);
         setErrors((prevErrors) => ({
           ...prevErrors,
-          name: "El nombre ya esta en uso",
+          name: error.data?.errors?.name,
         }));
       }
       console.log(error);
