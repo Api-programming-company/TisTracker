@@ -13,6 +13,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useCreateAcademicPeriodMutation } from "../api/academicPeriodApi";
 import { useNavigate } from "react-router-dom";
 import { differenceInDays } from "date-fns";
+import { formatDate } from "../utils/validaciones";
 
 const RegisterAcademicPeriod = () => {
   const MAX_DESCRIPTION_LENGTH = 255;
@@ -110,8 +111,8 @@ const RegisterAcademicPeriod = () => {
 
     createAcademicPeriod({
       name: name,
-      start_date: startDate,
-      end_date: endDate,
+      start_date: formatDate(startDate),
+      end_date: formatDate(endDate),
       description: description,
     });
   };
