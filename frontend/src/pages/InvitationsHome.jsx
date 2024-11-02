@@ -49,29 +49,11 @@ const InvitationsHome = () => {
   ];
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 12 }}>
+    <Container maxWidth="lg">
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Typography variant="h4" gutterBottom>
           Invitaciones
         </Typography>
-        {user?.user_type === "E" && (
-          <IconButton
-            color="primary"
-            aria-label="Ver Invitaciones"
-            title="Ver Invitaciones"
-            onClick={handleInvitations}
-            sx={{
-              backgroundColor: "primary.main",
-              color: "white",
-              "&:hover": {
-                backgroundColor: "primary.dark",
-              },
-              mr: 1,
-            }}
-          >
-            <PendingActionsIcon fontSize="large" />
-          </IconButton>
-        )}
       </Box>
       <Divider sx={{ width: "100%", mt: 1, mb: 4 }} />{" "}
       <Box
@@ -81,7 +63,7 @@ const InvitationsHome = () => {
         gap={3}
       >
         {user?.user_type === "E" &&
-          user?.company?.permission === "W" &&  // solo los que tienen privilegios
+          user?.company?.permission === "W" && // solo los que tienen privilegios
           menuItems.map((item, index) => (
             <Box key={index} flexBasis={{ xs: "100%", md: "30%" }}>
               <Paper
