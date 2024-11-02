@@ -1,4 +1,12 @@
-import { Box, Button, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Typography,
+} from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import PersonIcon from "@mui/icons-material/Person";
 import React from "react";
@@ -9,53 +17,42 @@ const PendingCompanyCard = ({ request, showButton = true }) => {
   const navigate = useNavigate();
 
   return (
-    <Box
+    <Card
       sx={{
-        backgroundColor: "info.gray",
-        borderRadius: "15px",
-        padding: 2,
-        mb: 5,
+        mb: 2,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        height: "100%",
+        transition: "background-color 0.3s, box-shadow 0.3s", // Transición suave para fondo y sombra
+        "&:hover": {
+          backgroundColor: "info.gray", // Cambia a un color de fondo activo al hacer hover
+          boxShadow: 4, // Aumenta un poco la sombra
+        },
       }}
     >
-      <Box
-        sx={{
-          display: { xs: "block", sm: "flex" },
-          flexDirection: "column",
-          mb: 1,
-          mt: 3,
-          mr: { xs: 0, sm: 3 },
-          ml: { xs: 0, sm: 3 },
-        }}
-      >
-        <Box sx={{ flex: 1, mr: 2, mb: 3 }}>
-          <Typography
-            component="h1"
-            align="center"
-            sx={{ fontSize: "40px", lineHeight: "1" }}
-          >
-            {request.long_name}
-          </Typography>
-          <Typography component="h2" align="center" sx={{ fontSize: "26px" }}>
-            {request.short_name}
-          </Typography>
-
-          <Typography
-            component="p"
-            sx={{ color: "info.details", fontSize: "14px" }}
-          >
-            <PersonIcon />
-            Cuenta con {request.members_count} integrantes.
-          </Typography>
-
-          <Typography
-            component="p"
-            sx={{ color: "info.details", fontSize: "14px" }}
-          >
-            <CalendarMonthIcon />
-            La solicitud se realizó el {formatDate(request.created_at)}.
-          </Typography>
-        </Box>
-        {showButton ? (
+      <CardHeader
+        title={request.long_name}
+        subheader={request.short_name}
+      />
+      <CardContent>
+        <Typography
+          component="p"
+          sx={{ color: "info.details", fontSize: "14px" }}
+        >
+          <PersonIcon />
+          Cuenta con {request.members_count} integrantes.
+        </Typography>
+        <Typography
+          component="p"
+          sx={{ color: "info.details", fontSize: "14px" }}
+        >
+          <CalendarMonthIcon />
+          La solicitud se realizó el {formatDate(request.created_at)}.
+        </Typography>
+      </CardContent>
+      {showButton && (
+        <CardActions>
           <Button
             onClick={() =>
               navigate(`/request/${request.id}/pending`, { state: { request } })
@@ -63,7 +60,7 @@ const PendingCompanyCard = ({ request, showButton = true }) => {
             variant="contained"
             color="primary"
             sx={{
-              mb: 2,
+              mb: 1,
               py: 1,
               position: "relative",
               width: "100%",
@@ -71,9 +68,9 @@ const PendingCompanyCard = ({ request, showButton = true }) => {
           >
             Ver solicitud
           </Button>
-        ) : null}
-      </Box>
-    </Box>
+        </CardActions>
+      )}
+    </Card>
   );
 };
 
