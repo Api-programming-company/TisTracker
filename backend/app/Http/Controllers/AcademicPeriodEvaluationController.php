@@ -58,11 +58,11 @@ class AcademicPeriodEvaluationController extends Controller
             $academicPeriod = AcademicPeriod::findOrFail($validatedData['academic_period_id']);
             
             // Convertir las fechas a UTC
-            $validatedData['start_date'] = Carbon::parse($validatedData['start_date'])->setTimezone('UTC');
-            $validatedData['end_date'] = Carbon::parse($validatedData['end_date'])->setTimezone('UTC');
+            $startDate = Carbon::parse($validatedData['start_date'])->setTimezone('UTC');
+            $endDate = Carbon::parse($validatedData['end_date'])->setTimezone('UTC');
 
             // Validar que las fechas estén dentro del periodo académico
-            if ($validatedData['start_date'] < $academicPeriod->start_date || $validatedData['end_date'] > $academicPeriod->end_date) {
+            if ($startDate < $academicPeriod->start_date || $endDate > $academicPeriod->end_date) {
                 return response()->json(['message' => 'Las fechas de la evaluación deben estar dentro del periodo académico.'], 422);
             }   
 
@@ -76,20 +76,30 @@ class AcademicPeriodEvaluationController extends Controller
             }
 
             // Crear una nueva evaluación de periodo académico
-            $academicPeriodEvaluation = AcademicPeriodEvaluation::create($validatedData);
+            $academicPeriodEvaluation = AcademicPeriodEvaluation::create(array_merge($validatedData, [
+                'start_date' => $startDate,
+                'end_date' => $endDate
+            ]));
 
-            // Cargar la relación 'evaluation' después de crear la instancia
-            //$academicPeriodEvaluation->load('evaluation');
+            // Mapear el tipo de evaluación a un nombre legible
+            $evaluationTypes = [
+                'A' => 'Autoevaluación',
+                'C' => 'Evaluación Cruzada',
+                'U' => 'Evaluación de Pares',
+            ];
+            $evaluationTypeReadable = $evaluationTypes[$validatedData['evaluation_type']];
 
             // Obtener los estudiantes asociados al periodo académico
             $students = $academicPeriod->users()->where('user_type', 'E')->get();
 
-            // Enviar la notificación a todos los estudiantes
-            // Notification::send($students, new EvaluationAssigned($academicPeriodEvaluation->evaluation->name));
-
-            // Despachar el trabajo en la cola
-            SendEvaluationNotification::dispatch($students, $academicPeriodEvaluation->evaluation->name);
-
+            // Despachar el trabajo en la cola con el tipo de evaluación legible
+            SendEvaluationNotification::dispatch(
+                $students,
+                $academicPeriodEvaluation->evaluation->name,
+                $evaluationTypeReadable,
+                $startDate->format('d/m/Y H:i'),
+                $endDate->format('d/m/Y H:i')
+            );
 
             return response()->json([
                 'message' => 'Evaluación del periodo académico creada exitosamente.',
@@ -102,6 +112,8 @@ class AcademicPeriodEvaluationController extends Controller
             return response()->json(['message' => 'Error al crear la evaluación del periodo académico.', 'error' => $e->getMessage()], 500);
         }
     }
+
+    
 
     /**
      * Display the specified resource.
