@@ -106,6 +106,11 @@
    php artisan make:filament-resource NombreDelRecurso
    ```
 
+11. **Ejecutar la cola de php**
+   ```sh
+   php artisan queue:work
+   ```
+
 # Guía de Instalación para el Frontend
 
 1. **Instalar Node.js**
