@@ -65,11 +65,15 @@ class AcademicPeriodController extends Controller
                 ], 422);
             }
 
+            // Convertir las fechas a UTC
+            $startDateUtc = $startDate->setTimezone('UTC');
+            $endDateUtc = $endDate->setTimezone('UTC');
+
             // Crear el periodo académico
             $academicPeriod = AcademicPeriod::create([
                 'name' => $request->name,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
+                'start_date' => $startDateUtc,
+                'end_date' => $endDateUtc,
                 'description' => $request->description,
                 'user_id' => $user->id,
             ]);

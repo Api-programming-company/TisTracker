@@ -20,8 +20,14 @@ export const validateEmail = (email) => {
 };
 
 export const formatDate = (dateString) => {
+  // Crear un nuevo objeto Date a partir de la cadena de fecha
   const date = new Date(dateString);
-  return date.toLocaleDateString(undefined, { // Sin especificar locale, usa la configuración regional del navegador
+
+  // Convertir la fecha a la zona horaria local
+  const localDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));
+
+  // Formatear la fecha en el formato deseado
+  return localDate.toLocaleDateString(undefined, {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
