@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -69,7 +70,13 @@ class Handler extends ExceptionHandler
 
         if ($exception instanceof NotFoundHttpException) {
             return response()->json([
-                'message' => 'Recurso no encontrado.'
+                'message' => 'El recurso solicitado no se ha encontrado'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        if ($exception instanceof ModelNotFoundException) {
+            return response()->json([
+                'message' => 'El recurso solicitado no se ha encontrado.'
             ], Response::HTTP_NOT_FOUND);
         }
 
