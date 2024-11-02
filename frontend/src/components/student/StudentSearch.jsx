@@ -22,7 +22,7 @@ import AppContext from "../../context/AppContext";
 import StudentCard from "./StudentCard";
 import { useCreateInvitationMutation } from "../../api/invitationApi";
 import { useDispatch } from "react-redux";
-import studentApi from "../../api/studentApi"
+import studentApi from "../../api/studentApi";
 
 const StudentSearch = () => {
   const { id } = useParams();
@@ -45,7 +45,6 @@ const StudentSearch = () => {
       isLoading: isCreateInvitationLoading,
       isError: isCreateInvitationError,
       error: createInvitationError,
-      
     },
   ] = useCreateInvitationMutation();
 
@@ -146,7 +145,6 @@ const StudentSearch = () => {
     setSnackbarOpen(false);
   };
 
-
   useEffect(() => {
     if (isCreateInvitationSuccess) {
       console.log("Invitación creada exitosamente:", createInvitationData);
@@ -198,6 +196,9 @@ const StudentSearch = () => {
 
   return (
     <Box sx={{ mt: 12, padding: 2 }}>
+      <Typography variant="h4" gutterBottom>
+        Invitar estudiantes a Grupo Empresa
+      </Typography>
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <TextField
           label="Buscar estudiante por correo"
@@ -233,9 +234,11 @@ const StudentSearch = () => {
         <Typography variant="body1">
           <StudentCard
             key={user.id}
-            student={companyData.company.members.find(
-              (member) => member.permission === "W"
-            ).user}
+            student={
+              companyData.company.members.find(
+                (member) => member.permission === "W"
+              ).user
+            }
           />
         </Typography>
       </Box>
