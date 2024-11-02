@@ -1,13 +1,10 @@
 import React, { useContext } from "react";
 import {
-  Container,
   Typography,
   Paper,
   Box,
   Divider,
-  IconButton,
 } from "@mui/material";
-import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import { useNavigate } from "react-router-dom";
 import AppContext from "../context/AppContext";
 
@@ -17,10 +14,6 @@ const InvitationsHome = () => {
 
   const handleNavigate = (path) => {
     navigate(path);
-  };
-
-  const handleInvitations = () => {
-    navigate("/company-requests");
   };
 
   const menuItems = [
@@ -49,12 +42,10 @@ const InvitationsHome = () => {
   ];
 
   return (
-    <Container maxWidth="lg">
-      <Box display="flex" alignItems="center" justifyContent="space-between">
-        <Typography variant="h4" gutterBottom>
-          Invitaciones
-        </Typography>
-      </Box>
+    <Box sx={{mb:2}}>
+      <Typography variant="h4" gutterBottom>
+        Invitaciones
+      </Typography>
       <Divider sx={{ width: "100%", mt: 1, mb: 4 }} />{" "}
       <Box
         display="flex"
@@ -102,7 +93,7 @@ const InvitationsHome = () => {
             </Box>
           ))}
       </Box>
-    </Container>
+    </Box>
   );
 };
 

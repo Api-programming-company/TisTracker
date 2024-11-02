@@ -22,9 +22,7 @@ const StudentHome = () => {
     //{ label: "Empresas", path: `/academic-period/${user.academic_period_id}/companies/` },
     // { label: "Invitaciones", path: "/invitations-home" },
   ];
-
-  console.log(user);
-
+  
   return (
     <Container maxWidth="lg" sx={{ mt: 12 }}>
       <Box>
