@@ -15,7 +15,7 @@ use App\Rules\ValidarPassword;
 use Illuminate\Validation\ValidationException;
 use Exception;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Log;
 class AuthController extends Controller
 {
     /**
@@ -232,8 +232,9 @@ class AuthController extends Controller
         try {
             $academicPeriodId = $request->input('academic_period_id');
             $limit = $request->input('limit', 10); // Default limit to 10 if not provided
-
             // TODO optimizar
+
+            // dd('testing',$academicPeriodId,2,$limit);
             $query = User::query()
                 ->where('user_type', 'E') // Filtramos por user_type '
                 ->whereHas('companyUsers', function ($q) {
@@ -247,7 +248,7 @@ class AuthController extends Controller
             $query->with('companyForGrades');
 
             // Obtener las calificaciones del estudiante con límite
-            $grades = $query->limit($limit)->get();
+            $grades = $query->get();
 
             // Transformar la respuesta para incluir nombre y apellidos, y el score como pares
             $formattedGrades = $grades->map(function ($grade) {

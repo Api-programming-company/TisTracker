@@ -46,11 +46,11 @@ const CompanyReport = () => {
       isFetching: isGradesFetching,
       isSuccess: isGradesSucess,
       isError: isGradesError,
-    } = useGetGradesQuery({academic_period_id:id, limit:10});
+    } = useGetGradesQuery({academic_period_id:id, limit:7});
   
     useEffect(() => {
       if (isGradesSucess) {
-        console.log(grades);
+        console.log(grades,id);
         const formattedData = formatGradesData(grades.grades); // Formatear los datos
         setFinalData(formattedData); // Establecer los datos formateados
         console.log(formattedData);
@@ -58,7 +58,7 @@ const CompanyReport = () => {
       if (isGradesError) {
         console.error(gradesError);
       }
-    }, [grades, gradesError, isGradesSucess, isGradesError]);
+    }, [grades, gradesError, isGradesSucess, isGradesError, id]);
   
     //booleano para ver si los datos estan listos para mostrarse
     const [finalData, setFinalData] = useState([]);

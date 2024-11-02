@@ -40,7 +40,6 @@ export const planningSlice = createSlice({
 
     changeDeliverable: (state, action) => {
       const { milestone_id, id, field, value } = action.payload;
-      console.log(field,value);
       const currentState = current(state);
       const { milestones: currentMilestones } = currentState;
       const milestoneIndex = currentMilestones.findIndex(
@@ -58,6 +57,7 @@ export const planningSlice = createSlice({
       if (field === "actual_result" && numberValue > numberHopeResult) {
         return { ...currentState };
       }
+      // if(field === "expected_result" && )
 
       return {
         ...currentState,
