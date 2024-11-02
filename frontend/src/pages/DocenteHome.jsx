@@ -55,7 +55,7 @@ const DocenteHome = () => {
       label: "Crear plantilla de evaluación",
       path: "/evaluation-templates/create",
     },
-    { label: "Ver plantillas de evaluación", path: "/evaluation-templates" },
+    { label: "Plantillas de evaluación", path: "/evaluation-templates" },
   ];
 
   return (
