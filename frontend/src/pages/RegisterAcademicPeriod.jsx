@@ -7,6 +7,7 @@ import {
   Box,
   FormControl,
   CircularProgress,
+  Snackbar,
 } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -24,6 +25,9 @@ const RegisterAcademicPeriod = () => {
   const [description, setDescription] = useState("");
   const [errors, setErrors] = useState({});
   const [nameError, setNameError] = useState(false);
+  const [openSnackBar, setOpenSnackBar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [dateError, setDateError] = useState(false);
 
   const [createAcademicPeriod, { data, error, isLoading, isError, isSuccess }] =
     useCreateAcademicPeriodMutation();
@@ -35,6 +39,9 @@ const RegisterAcademicPeriod = () => {
       navigate("/academic-periods");
     }
     if (isError) {
+      setSnackbarMessage(error.data?.message);
+      setOpenSnackBar(true);
+      setDateError(true);
       if (error.data?.errors?.name) {
         //setErrors(error.data.errors || {});
         setNameError(true);
@@ -68,6 +75,7 @@ const RegisterAcademicPeriod = () => {
   };
 
   const handleStartDateChange = (newValue) => {
+    setDateError(false);
     setStartDate(newValue);
     setErrors((prevErrors) => ({
       ...prevErrors,
@@ -76,6 +84,7 @@ const RegisterAcademicPeriod = () => {
   };
 
   const handleEndDateChange = (newValue) => {
+    setDateError(false);
     setEndDate(newValue);
     setErrors((prevErrors) => ({
       ...prevErrors,
@@ -106,6 +115,7 @@ const RegisterAcademicPeriod = () => {
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      console.log(errors);
       return;
     }
 
@@ -177,8 +187,10 @@ const RegisterAcademicPeriod = () => {
                   onChange={handleStartDateChange}
                   slotProps={{
                     textField: {
-                      error: !!errors.startDate,
-                      helperText: errors.startDate || "DD/MM/AAAA",
+                      error: !!error?.data?.errors?.start_date && dateError,
+                      helperText: dateError
+                        ? error?.data?.errors?.start_date
+                        : "DD/MM/AAAA", // errors.startDate
                     },
                   }}
                   format="dd/MM/yyyy"
@@ -190,8 +202,10 @@ const RegisterAcademicPeriod = () => {
                   onChange={handleEndDateChange}
                   slotProps={{
                     textField: {
-                      error: !!errors.endDate,
-                      helperText: errors.endDate || "DD/MM/AAAA",
+                      error: !!error?.data?.errors?.end_date && dateError,
+                      helperText: dateError
+                        ? error?.data?.errors?.end_date
+                        : "DD/MM/AAAA",
                     },
                   }}
                   format="dd/MM/yyyy"
@@ -213,6 +227,13 @@ const RegisterAcademicPeriod = () => {
             {isLoading ? <CircularProgress size={24} /> : "Registrar Período"}
           </Button>
         </form>
+        <Snackbar
+          open={openSnackBar}
+          autoHideDuration={8000}
+          onClose={() => setOpenSnackBar(false)}
+          message={snackbarMessage}
+          // action={action}
+        />
       </Box>
     </Container>
   );
