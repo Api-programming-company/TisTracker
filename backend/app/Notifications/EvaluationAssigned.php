@@ -36,16 +36,20 @@ class EvaluationAssigned extends Notification
         ];
     }
 
+    public function via($notifiable)
+    {
+        return ['mail'];
+    }
+
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->greeting('¡Buenas!')
-                    ->subject('Nueva evaluación asignada')
-                    ->line("Has recibido una nueva evaluación: {$this->evaluationName}")
-                    ->line("Tipo de evaluación: {$this->evaluationType}")
-                    ->line("Fecha de inicio: {$this->startDate['date']}Hora de inicio: {$this->startDate['time']}")
-                    ->line("Fecha de fin: {$this->endDate['date']} Hora de fin: {$this->endDate['time']}")
-                    ->line('¡Buena suerte!');
+            ->greeting('¡Buenas!')
+            ->subject('Nueva evaluación asignada')
+            ->line("Has recibido una nueva evaluación: {$this->evaluationName}")
+            ->line("Tipo de evaluación: {$this->evaluationType}")
+            ->line("Fecha de inicio: {$this->startDate['date']}Hora de inicio: {$this->startDate['time']}")
+            ->line("Fecha de fin: {$this->endDate['date']} Hora de fin: {$this->endDate['time']}")
+            ->line('¡Buena suerte!');
     }
-
 }

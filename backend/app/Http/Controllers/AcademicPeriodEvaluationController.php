@@ -90,15 +90,15 @@ class AcademicPeriodEvaluationController extends Controller
             $evaluationTypeReadable = $evaluationTypes[$validatedData['evaluation_type']];
 
             // Obtener los estudiantes asociados al periodo académico
-            $students = $academicPeriod->users()->where('user_type', 'E')->get();
+            $students = $academicPeriod->users()->where('user_type', 'E')->orderBy('id', 'desc')->limit(value: 5)->get();
 
             // Despachar el trabajo en la cola con el tipo de evaluación legible
             SendEvaluationNotification::dispatch(
                 $students,
                 $academicPeriodEvaluation->evaluation->name,
                 $evaluationTypeReadable,
-                $startDate->format('d/m/Y H:i'),
-                $endDate->format('d/m/Y H:i')
+                $startDate,
+                $endDate
             );
 
             return response()->json([
