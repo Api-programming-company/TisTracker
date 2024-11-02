@@ -56,9 +56,6 @@ const PlanningSpreadSheet = () => {
     }
   },[navigate, user])
 
-  useEffect(() => {
-    console.log(milestone);
-  },[milestone])
 
   const handleConfirm = () => {
     setOpen({ ...open, state: false });

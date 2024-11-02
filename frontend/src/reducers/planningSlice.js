@@ -49,6 +49,8 @@ export const planningSlice = createSlice({
         milestoneIndex
       ].deliverables.findIndex((deliverable) => deliverable.id === id);
 
+      const newDeliverable = {...currentMilestones[milestoneIndex].deliverables[deliverableIndex]};
+
       const numberValue = Number(value);
       const numberHopeResult = Number(
         currentMilestones[milestoneIndex].deliverables[deliverableIndex]
@@ -57,7 +59,14 @@ export const planningSlice = createSlice({
       if (field === "actual_result" && numberValue > numberHopeResult) {
         return { ...currentState };
       }
-      // if(field === "expected_result" && )
+
+      if (field === "expected_result" && numberValue < newDeliverable.actual_result) {
+        newDeliverable.actual_result = value;
+      }
+
+
+      newDeliverable[field] = value;
+
 
       return {
         ...currentState,
@@ -71,10 +80,7 @@ export const planningSlice = createSlice({
                 deliverableIndex
               ),
               {
-                ...currentMilestones[milestoneIndex].deliverables[
-                  deliverableIndex
-                ],
-                [field]: value,
+                ...newDeliverable
               },
               ...currentMilestones[milestoneIndex].deliverables.slice(
                 deliverableIndex + 1
