@@ -17,15 +17,30 @@ class SendEvaluationNotification implements ShouldQueue
 
     protected $students;
     protected $evaluationName;
+    protected $evaluationType;
+    protected $startDate;
+    protected $endDate;
 
-    public function __construct($students, $evaluationName)
+    public function __construct($students, $evaluationName, $evaluationType, $startDate, $endDate)
     {
         $this->students = $students;
         $this->evaluationName = $evaluationName;
+        $this->evaluationType = $evaluationType;
+        $this->startDate = $startDate;
+        $this->endDate = $endDate;
     }
 
     public function handle()
     {
-        Notification::send($this->students, new EvaluationAssigned($this->evaluationName));
+        $formattedStartDate = $this->startDate->format('d/m/Y H:i');
+        $formattedEndDate = $this->endDate->format('d/m/Y H:i');
+
+        Notification::send($this->students, new EvaluationAssigned(
+            $this->evaluationName,
+            $this->evaluationType,
+            $formattedStartDate,
+            $formattedEndDate
+        ));
     }
 }
+
