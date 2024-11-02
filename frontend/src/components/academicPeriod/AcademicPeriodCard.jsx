@@ -14,7 +14,7 @@ import { format } from "date-fns";
 import { useEnrollInAcademicPeriodMutation } from "../../api/academicPeriodApi";
 import AppContext from "../../context/AppContext";
 import { useNavigate } from "react-router-dom";
-import { formatDate } from "../../utils/validaciones";
+import { formatDate, formatDate2 } from "../../utils/validaciones";
 
 const AcademicPeriodCard = ({ period, isEnroll = true }) => {
   const navigate = useNavigate();
@@ -68,10 +68,10 @@ const AcademicPeriodCard = ({ period, isEnroll = true }) => {
       <CardHeader title={period.name} sx={{ textAlign: "center" }} />
       <CardContent>
         <Typography variant="body2" noWrap>
-          Fecha de Inicio: {formatDate(period.start_date)}
+          Fecha de Inicio: {formatDate2(period.start_date)}
         </Typography>
         <Typography variant="body2" noWrap>
-          Fecha de Fin: {formatDate(period.end_date)}
+          Fecha de Fin: {formatDate2(period.end_date)}
         </Typography>
 
         {period.description && (

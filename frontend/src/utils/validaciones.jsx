@@ -27,6 +27,11 @@ export const formatDate = (dateString) => {
     day: '2-digit',
   });
 };
+export const formatDate2 = (dateString) => {
+  const date = dateString.split("-");
+  const strDate = date[2]+"/"+date[1]+"/"+date[0]
+  return strDate // ta feo jaja
+};
 
 export const formatDateTime = (dateString) => {
   const date = new Date(dateString);
