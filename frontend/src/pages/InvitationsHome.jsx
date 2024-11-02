@@ -1,10 +1,5 @@
 import React, { useContext } from "react";
-import {
-  Typography,
-  Paper,
-  Box,
-  Divider,
-} from "@mui/material";
+import { Typography, Paper, Box, Divider } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AppContext from "../context/AppContext";
 
@@ -32,7 +27,7 @@ const InvitationsHome = () => {
   ];
   const menuItems2 = [
     {
-      label: "Ver invitaciones",
+      label: "Ver invitaciones de Grupo Empresas",
       path: `/see-company-requests`,
     },
     {
@@ -42,16 +37,17 @@ const InvitationsHome = () => {
   ];
 
   return (
-    <Box sx={{mb:2}}>
+    <Box sx={{ mb: 3 }}>
       <Typography variant="h4" gutterBottom>
         Invitaciones
       </Typography>
       <Divider sx={{ width: "100%", mt: 1, mb: 4 }} />{" "}
       <Box
         display="flex"
-        justifyContent="space-between"
+        // justifyContent="space-between"
         flexWrap="wrap"
         gap={3}
+        mb={3}
       >
         {user?.user_type === "E" &&
           user?.company?.permission === "W" && // solo los que tienen privilegios
@@ -73,7 +69,7 @@ const InvitationsHome = () => {
               </Paper>
             </Box>
           ))}
-        {user?.user_type === "E" &&
+          {user?.user_type === "E" &&
           menuItems2.map((item, index) => (
             <Box key={index} flexBasis={{ xs: "100%", md: "30%" }}>
               <Paper
