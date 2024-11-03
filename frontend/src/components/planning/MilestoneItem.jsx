@@ -5,10 +5,12 @@ import PlanningItem from "./PlanningItem";
 import { setCurrentMilestone } from "../../reducers/planningSlice";
 import { getMilestonesList,getCurrentMilestoneIndex,getPendingMilestoneIndex } from "../../reducers/planningSlice";
 import { useSelector } from "react-redux";
-import { FormControl,InputLabel,Select,MenuItem } from "@mui/material";
+import { FormControl,InputLabel,Select,MenuItem,Box } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { getStatus } from "../../reducers/planningSlice";
 import DialogMod from "../DialogMod"
+
+const headers = ["N","Entregable","Resultado Esperado", "Resultado Observado","Observaciones", "Carry Over"]
 const MilestoneItem = ({ milestone }) => {
 
   const list = useSelector(getMilestonesList)
@@ -112,14 +114,8 @@ const MilestoneItem = ({ milestone }) => {
 
         <div className="deliverables-list">
           <h4 className="text-neutral-700">Entregables:</h4>
-          <div className="grid header">
-            <div className="grid-item">N</div>
-            <div className="grid-item">Entregable</div>
-            <div className="grid-item">Resultado Esperado</div>
-            <div className="grid-item ">Resultado Observado</div>
-            <div className="grid-item">Observaciones</div>
-            <div className="grid-item">Carry Over</div>
-          </div>
+          <div className="grid">
+            {headers.map((header,index) => <Box key={index} className="grid-item" sx={{backgroundColor: "info.gray"}}>{header}</Box>)}
           {milestone.deliverables?.length > 0 ? (
             milestone.deliverables.map((deliverable, index) => (
               <PlanningItem
@@ -132,6 +128,7 @@ const MilestoneItem = ({ milestone }) => {
           ) : (
             <p className="text-neutral-500">No hay entregables asignados</p>
           )}
+          </div>
         </div>
       </LocalizationProvider>
       <DialogMod
