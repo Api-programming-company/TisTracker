@@ -28,7 +28,7 @@ const DocenteHome = () => {
       path: `/academic-period/${period.id}/weekly_companies`,
     },
     {
-      label: "Ver Solicitudes",
+      label: "Ver Solicitudes de creación de Grupo Empresas",
       path: `/academic-period/${period.id}/seepending`,
     },
     {
@@ -84,6 +84,7 @@ const DocenteHome = () => {
                 paddingLeft: "16px",
                 paddingRight: "16px",
                 textAlign: "center",
+                height: "100%"
               }}
               onClick={() => handleNavigate(item.path)}
             >
