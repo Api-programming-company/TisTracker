@@ -55,13 +55,13 @@ const ConformacionGE = () => {
   useEffect(() => {
     if (isUpdateCompanySuccess) {
       setOpenConfirmModal(true);
-      setSnackbarMessage("Formulario enviado correctamente");
+      setSnackbarMessage("Solicitud enviada correctamente.");
       setSnackbarOpen(true);
       console.log(updateCompanyData);
     }
     if (isUpdateCompanyError) {
       setSnackbarMessage(
-        updateCompanyError.data?.message || "Error al enviar el formulario"
+        updateCompanyError.data?.message || "Error al enviar la solicitud."
       );
       setSnackbarOpen(true);
       console.log(updateCompanyError);
@@ -248,7 +248,7 @@ const ConformacionGE = () => {
               open={openConfirmModal}
               setOpen={setOpenConfirmModal}
               title={"Confirmación"}
-              content={"Formulario enviado correctamente."}
+              content={"Solicitud enviada correctamente."}
               onAccept={handleConfirmAccept}
               onCancel={handleConfirmAccept}
               showButtonCancel={false}
