@@ -89,8 +89,17 @@ class AcademicPeriodEvaluationController extends Controller
             ];
             $evaluationTypeReadable = $evaluationTypes[$validatedData['evaluation_type']];
 
-            // Obtener los estudiantes asociados al periodo académico
-            $students = $academicPeriod->users()->where('user_type', 'E')->orderBy('id', 'desc')->limit(value: 5)->get();
+            // Obtener los estudiantes asociados al periodo académico y con compañía en estado "A"
+            $students = $academicPeriod->users()
+                ->where('user_type', 'E')
+                ->whereHas('companies', function ($query) {
+                    $query->where('status', 'A');
+                })
+                ->orderBy('id', 'desc')
+                //->limit(1) para no enviar a todos notficacion
+                ->get();
+            // Obtener el nombre del docente
+            $teacherName = $academicPeriod->creator ? $academicPeriod->creator->full_name : 'Docente';
 
             // Despachar el trabajo en la cola con el tipo de evaluación legible
             SendEvaluationNotification::dispatch(
@@ -98,7 +107,8 @@ class AcademicPeriodEvaluationController extends Controller
                 $academicPeriodEvaluation->evaluation->name,
                 $evaluationTypeReadable,
                 $startDate,
-                $endDate
+                $endDate,
+                $teacherName
             );
 
             return response()->json([
