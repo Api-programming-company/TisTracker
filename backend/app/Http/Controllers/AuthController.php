@@ -156,8 +156,10 @@ class AuthController extends Controller
 
         $query->with('companyForGrades');
 
+    
         // Obtener las calificaciones del estudiante con límite
         $grades = $query->limit($limit)->get();
+
 
         // Transformar la respuesta para incluir nombre y apellidos, y el score como pares
         $formattedGrades = $grades->map(function ($grade) {
@@ -178,6 +180,7 @@ class AuthController extends Controller
                 ] : null
             ];
         });
+
 
         // Devolver las calificaciones
         return response()->json([

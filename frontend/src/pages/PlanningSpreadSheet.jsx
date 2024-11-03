@@ -186,7 +186,7 @@ const PlanningSpreadSheet = () => {
             sx={{
               backgroundColor:
                 pendingMilestoneIndex !== milestone_index || updateLoading
-                  ? "#eee"
+                  ? "info.gray"
                   : "primary.main",
               color: "white",
               border: "white",
