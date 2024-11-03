@@ -24,7 +24,7 @@ const DocenteHome = () => {
       path: `/academic-period/${period.id}/companies`,
     },
     {
-      label: "Seguimiento Semanal",
+      label: "Ver Grupo Empresas para Seguimiento Semanal",
       path: `/academic-period/${period.id}/weekly_companies`,
     },
     {
@@ -35,6 +35,18 @@ const DocenteHome = () => {
       label: "Aceptar/Rechazar Solicitudes",
       path: `/academic-period/${period.id}/pending`,
     },
+    {
+      label: "Ver calificaciones de Grupo Empresa",
+      path: `/academic-period/${period.id}/reports/companies`,
+    },
+    {
+      label: "Ver calificaciones de estudiantes",
+      path: `/academic-period/${period.id}/reports/students`,
+    },
+    {
+      label: "Ver reporte de evaluaciones semanales",
+      path: `/academic-period/${period.id}/companies4reports`,
+    },
   ];
 
   const evaluationItems = [
@@ -43,7 +55,7 @@ const DocenteHome = () => {
       label: "Crear plantilla de evaluación",
       path: "/evaluation-templates/create",
     },
-    { label: "Ver plantillas de evaluación", path: "/evaluation-templates" },
+    { label: "Plantillas de evaluación", path: "/evaluation-templates" },
   ];
 
   return (

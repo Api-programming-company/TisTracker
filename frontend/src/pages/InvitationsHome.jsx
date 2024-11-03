@@ -1,13 +1,5 @@
 import React, { useContext } from "react";
-import {
-  Container,
-  Typography,
-  Paper,
-  Box,
-  Divider,
-  IconButton,
-} from "@mui/material";
-import PendingActionsIcon from "@mui/icons-material/PendingActions";
+import { Typography, Paper, Box, Divider } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AppContext from "../context/AppContext";
 
@@ -17,10 +9,6 @@ const InvitationsHome = () => {
 
   const handleNavigate = (path) => {
     navigate(path);
-  };
-
-  const handleInvitations = () => {
-    navigate("/company-requests");
   };
 
   const menuItems = [
@@ -39,7 +27,7 @@ const InvitationsHome = () => {
   ];
   const menuItems2 = [
     {
-      label: "Ver invitaciones",
+      label: "Ver invitaciones de Grupo Empresas",
       path: `/see-company-requests`,
     },
     {
@@ -49,39 +37,20 @@ const InvitationsHome = () => {
   ];
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 12 }}>
-      <Box display="flex" alignItems="center" justifyContent="space-between">
-        <Typography variant="h4" gutterBottom>
-          Invitaciones
-        </Typography>
-        {user?.user_type === "E" && (
-          <IconButton
-            color="primary"
-            aria-label="Ver Invitaciones"
-            title="Ver Invitaciones"
-            onClick={handleInvitations}
-            sx={{
-              backgroundColor: "primary.main",
-              color: "white",
-              "&:hover": {
-                backgroundColor: "primary.dark",
-              },
-              mr: 1,
-            }}
-          >
-            <PendingActionsIcon fontSize="large" />
-          </IconButton>
-        )}
-      </Box>
+    <Box sx={{ mb: 3 }}>
+      <Typography variant="h4" gutterBottom>
+        Invitaciones
+      </Typography>
       <Divider sx={{ width: "100%", mt: 1, mb: 4 }} />{" "}
       <Box
         display="flex"
-        justifyContent="space-between"
+        // justifyContent="space-between"
         flexWrap="wrap"
         gap={3}
+        mb={3}
       >
         {user?.user_type === "E" &&
-          user?.company?.permission === "W" &&  // solo los que tienen privilegios
+          user?.company?.permission === "W" && // solo los que tienen privilegios
           menuItems.map((item, index) => (
             <Box key={index} flexBasis={{ xs: "100%", md: "30%" }}>
               <Paper
@@ -100,7 +69,7 @@ const InvitationsHome = () => {
               </Paper>
             </Box>
           ))}
-        {user?.user_type === "E" &&
+          {user?.user_type === "E" &&
           menuItems2.map((item, index) => (
             <Box key={index} flexBasis={{ xs: "100%", md: "30%" }}>
               <Paper
@@ -120,7 +89,7 @@ const InvitationsHome = () => {
             </Box>
           ))}
       </Box>
-    </Container>
+    </Box>
   );
 };
 

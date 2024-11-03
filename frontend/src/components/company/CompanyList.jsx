@@ -77,46 +77,6 @@ const CompanyList = () => {
         <Typography variant="h4" gutterBottom>
           Lista de Grupo Empresas
         </Typography>
-        <Box>
-          {user?.user_type === "E" && (
-            <IconButton
-              color="primary"
-              aria-label="Agregar empresa"
-              onClick={handleAddCompany}
-              sx={{
-                backgroundColor: "primary.main",
-                color: "white",
-                "&:hover": {
-                  backgroundColor: "primary.dark",
-                },
-                mr: 1,
-              }}
-            >
-              <AddIcon fontSize="large" />
-            </IconButton>
-          )}
-
-          {user?.user_type === "D" && (
-            <Box>
-              <IconButton
-                color="primary"
-                aria-label="Solicitudes pendientes"
-                title="Solicitudes pendientes"
-                onClick={handlePendingRequests}
-                sx={{
-                  backgroundColor: "primary.main",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "primary.dark",
-                  },
-                  mr: 1,
-                }}
-              >
-                <PendingActionsIcon fontSize="large" />
-              </IconButton>
-            </Box>
-          )}
-        </Box>
       </Box>
       <Divider sx={{ width: "100%", mt: 1, mb: 4 }} />{" "}
       <Box

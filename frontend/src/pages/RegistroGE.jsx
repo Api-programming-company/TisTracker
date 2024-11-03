@@ -109,8 +109,8 @@ const RegistroGE = () => {
           phone.length > 8 ||
           phone.length < 7,
         message: !phone
-          ? "El teléfono es obligatorio."
-          : "El teléfono debe contener 7 u 8 dígitos.",
+          ? "El celular es obligatorio."
+          : "El celular debe contener 8 dígitos.",
       },
     };
 

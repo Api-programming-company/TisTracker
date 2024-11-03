@@ -22,9 +22,7 @@ const StudentHome = () => {
     //{ label: "Empresas", path: `/academic-period/${user.academic_period_id}/companies/` },
     // { label: "Invitaciones", path: "/invitations-home" },
   ];
-
-  console.log(user);
-
+  
   return (
     <Container maxWidth="lg" sx={{ mt: 12 }}>
       <Box>
@@ -35,25 +33,28 @@ const StudentHome = () => {
       <Divider sx={{ width: "100%", mb: 4 }} />{" "}
       <Box display="flex" justifyContent="start" flexWrap="wrap" gap={3}>
         {user.academic_period_id ? (
-          menuItems.map((item, index) => (
-            <Box key={index} flexBasis={{ xs: "100%", md: "30%" }}>
-              <Paper
-                elevation={3}
-                style={{
-                  padding: "16px",
-                  cursor: "pointer",
-                  paddingTop: "32px",
-                  paddingBottom: "32px",
-                  paddingLeft: "16px",
-                  paddingRight: "16px",
-                  textAlign: "center",
-                }}
-                onClick={() => handleNavigate(item.path)}
-              >
-                <Typography variant="h5">{item.label}</Typography>
-              </Paper>
-            </Box>
-          ))
+          <>
+            {menuItems.map((item, index) => (
+              <Box key={index} flexBasis={{ xs: "100%", md: "30%" }}>
+                <Paper
+                  elevation={3}
+                  style={{
+                    padding: "16px",
+                    cursor: "pointer",
+                    paddingTop: "32px",
+                    paddingBottom: "32px",
+                    paddingLeft: "16px",
+                    paddingRight: "16px",
+                    textAlign: "center",
+                  }}
+                  onClick={() => handleNavigate(item.path)}
+                >
+                  <Typography variant="h5">{item.label}</Typography>
+                </Paper>
+              </Box>
+            ))}
+            <InvitationsHome />
+          </>
         ) : (
           <Box flexBasis={{ xs: "100%", md: "30%" }}>
             <Paper
@@ -65,7 +66,6 @@ const StudentHome = () => {
             </Paper>
           </Box>
         )}
-        {user.academic_period_id? <InvitationsHome /> : null}
       </Box>
     </Container>
   );

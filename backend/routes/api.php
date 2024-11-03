@@ -81,7 +81,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Evaluaciones
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth')->group(function () {
     Route::apiResource('evaluations', EvaluationController::class);
     Route::apiResource('user-evaluations', UserEvaluationController::class);
     Route::apiResource('company-user-evaluation', CompanyUserEvaluationControllers::class);

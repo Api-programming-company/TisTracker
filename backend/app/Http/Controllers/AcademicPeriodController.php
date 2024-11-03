@@ -24,11 +24,16 @@ class AcademicPeriodController extends Controller
     {
         $user = Auth::user();
 
+        $startDate = new \Carbon\Carbon($request->start_date);
+        $endDate = new \Carbon\Carbon($request->end_date);
+
+        $startDateUtc = $startDate->setTimezone('UTC');
+        $endDateUtc = $endDate->setTimezone('UTC');
         // Crear el periodo académico
         $academicPeriod = AcademicPeriod::create([
             'name' => $request->name,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
+            'start_date' => $startDateUtc,
+            'end_date' => $endDateUtc,
             'description' => $request->description,
             'user_id' => $user->id,
         ]);

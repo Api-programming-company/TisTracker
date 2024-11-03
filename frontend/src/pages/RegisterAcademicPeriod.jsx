@@ -7,12 +7,14 @@ import {
   Box,
   FormControl,
   CircularProgress,
+  Snackbar,
 } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useCreateAcademicPeriodMutation } from "../api/academicPeriodApi";
 import { useNavigate } from "react-router-dom";
 import { differenceInDays } from "date-fns";
+import { formatDate } from "../utils/validaciones";
 
 const RegisterAcademicPeriod = () => {
   const MAX_DESCRIPTION_LENGTH = 255;
@@ -23,6 +25,9 @@ const RegisterAcademicPeriod = () => {
   const [description, setDescription] = useState("");
   const [errors, setErrors] = useState({});
   const [nameError, setNameError] = useState(false);
+  const [openSnackBar, setOpenSnackBar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [dateError, setDateError] = useState(false);
 
   const [createAcademicPeriod, { data, error, isLoading, isError, isSuccess }] =
     useCreateAcademicPeriodMutation();
@@ -34,12 +39,15 @@ const RegisterAcademicPeriod = () => {
       navigate("/academic-periods");
     }
     if (isError) {
+      setSnackbarMessage(error.data?.message);
+      setOpenSnackBar(true);
+      setDateError(true);
       if (error.data?.errors?.name) {
         //setErrors(error.data.errors || {});
         setNameError(true);
         setErrors((prevErrors) => ({
           ...prevErrors,
-          name: "El nombre ya esta en uso",
+          name: error.data?.errors?.name,
         }));
       }
       console.log(error);
@@ -67,6 +75,7 @@ const RegisterAcademicPeriod = () => {
   };
 
   const handleStartDateChange = (newValue) => {
+    setDateError(false);
     setStartDate(newValue);
     setErrors((prevErrors) => ({
       ...prevErrors,
@@ -75,6 +84,7 @@ const RegisterAcademicPeriod = () => {
   };
 
   const handleEndDateChange = (newValue) => {
+    setDateError(false);
     setEndDate(newValue);
     setErrors((prevErrors) => ({
       ...prevErrors,
@@ -104,14 +114,17 @@ const RegisterAcademicPeriod = () => {
     }
 
     if (Object.keys(newErrors).length > 0) {
+      setSnackbarMessage("Llena el formulario correctamente");
+      setOpenSnackBar(true);
       setErrors(newErrors);
+      console.log(errors);
       return;
     }
 
     createAcademicPeriod({
       name: name,
-      start_date: startDate,
-      end_date: endDate,
+      start_date: formatDate(startDate),
+      end_date: formatDate(endDate),
       description: description,
     });
   };
@@ -176,8 +189,12 @@ const RegisterAcademicPeriod = () => {
                   onChange={handleStartDateChange}
                   slotProps={{
                     textField: {
-                      error: !!errors.startDate,
-                      helperText: errors.startDate || "DD/MM/AAAA",
+                      error:
+                        (!!error?.data?.errors?.start_date && dateError) ||
+                        errors.startDate,
+                      helperText: dateError || errors.startDate
+                        ? error?.data?.errors?.start_date || errors.startDate
+                        : "DD/MM/AAAA", // errors.startDate
                     },
                   }}
                   format="dd/MM/yyyy"
@@ -189,8 +206,10 @@ const RegisterAcademicPeriod = () => {
                   onChange={handleEndDateChange}
                   slotProps={{
                     textField: {
-                      error: !!errors.endDate,
-                      helperText: errors.endDate || "DD/MM/AAAA",
+                      error: (!!error?.data?.errors?.end_date && dateError)||errors.endDate,
+                      helperText: dateError || errors.endDate
+                        ? error?.data?.errors?.end_date || errors.endDate
+                        : "DD/MM/AAAA",
                     },
                   }}
                   format="dd/MM/yyyy"
@@ -212,6 +231,13 @@ const RegisterAcademicPeriod = () => {
             {isLoading ? <CircularProgress size={24} /> : "Registrar Período"}
           </Button>
         </form>
+        <Snackbar
+          open={openSnackBar}
+          autoHideDuration={8000}
+          onClose={() => setOpenSnackBar(false)}
+          message={snackbarMessage}
+          // action={action}
+        />
       </Box>
     </Container>
   );

@@ -211,7 +211,7 @@ const EnrollToAcademicPeriod = () => {
         open={openSuccessDialog}
         setOpen={setOpenSuccessDialog}
         title={"Inscripción Exitosa"}
-        content={"Te has inscrito exitosamente en el período académico."}
+        content={"Te has inscrito exitosamente en el grupo TIS."}
         onAccept={handleCloseSuccessDialog}
         onCancel={handleCloseSuccessDialog}
         showButtonCancel={false}

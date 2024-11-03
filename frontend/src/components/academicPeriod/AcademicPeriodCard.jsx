@@ -14,7 +14,7 @@ import { format } from "date-fns";
 import { useEnrollInAcademicPeriodMutation } from "../../api/academicPeriodApi";
 import AppContext from "../../context/AppContext";
 import { useNavigate } from "react-router-dom";
-import { formatDate } from "../../utils/validaciones";
+import { formatDate, formatDate2 } from "../../utils/validaciones";
 
 const AcademicPeriodCard = ({ period, isEnroll = true }) => {
   const navigate = useNavigate();

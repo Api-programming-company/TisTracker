@@ -45,7 +45,7 @@ const userApi = apiSlice.injectEndpoints({
       query: () => "user",
     }),
     getGrades: builder.query({
-      query: ({academic_period_id, limit}) => `grades?${academic_period_id}&limit=${limit}`,
+      query: ({academic_period_id, limit}) => `grades?academic_period_id=${academic_period_id}&limit=${limit}`,
     }),
   }),
 });

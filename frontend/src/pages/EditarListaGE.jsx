@@ -107,7 +107,7 @@ const EditarListaGE = () => {
           gutterBottom
           sx={{ textAlign: "center" }}
         >
-          Invitaciones Pendientes
+          Retirar Invitaciones
         </Typography>
 
         <FormControl fullWidth sx={{ mb: 1 }}>
@@ -120,7 +120,7 @@ const EditarListaGE = () => {
           >
             <FormControl fullWidth>
               <Typography variant="subtitle1">
-                Lista de Invitaciones a Retirar:
+                Estudiantes que aún no han aceptado la invitación:
               </Typography>
               <List>
                 {selectedItems.length === 0 ? (
