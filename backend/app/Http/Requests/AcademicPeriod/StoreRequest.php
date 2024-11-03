@@ -5,7 +5,6 @@ namespace App\Http\Requests\AcademicPeriod;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use Illuminate\Validation\ValidationException;
 
 class StoreRequest extends FormRequest
 {
@@ -29,28 +28,42 @@ class StoreRequest extends FormRequest
         return [
             'name' => 'required|string|max:255|unique:academic_periods',
             'start_date' => 'required|date|after_or_equal:today',
-            'end_date' => 'required|date|after:start_date',
+            'end_date' => [
+                'required',
+                'date',
+                'after:start_date',
+                function ($attribute, $value, $fail) {
+                    $startDate = request('start_date');
+                    $endDate = Carbon::parse($value);
+                    $maxEndDate = Carbon::parse($startDate)->addMonths(6);
+                    if ($endDate->greaterThan($maxEndDate)) {
+                        $fail('El periodo académico no puede durar más de 6 meses.');
+                    }
+                },
+            ],
             'description' => 'nullable|string',
         ];
     }
 
     /**
-     * Configure the validator instance.
+     * Get the error messages for the defined validation rules.
      *
-     * @param  \Illuminate\Validation\Validator  $validator
-     * @return void
+     * @return array
      */
-    protected function prepareForValidation()
+    public function messages()
     {
-        $startDate = new Carbon($this->start_date);
-        $endDate = new Carbon($this->end_date);
-        $maxEndDate = $startDate->copy()->addMonths(6);
-
-        // Agregar validación personalizada para limitar la duración a 6 meses
-        if ($endDate->gt($maxEndDate)) {
-            throw ValidationException::withMessages([
-                'end_date' => 'El periodo académico no puede durar más de 6 meses.',
-            ]);
-        }
+        return [
+            'name.required' => 'El nombre del periodo académico es obligatorio.',
+            'name.string' => 'El nombre del periodo académico debe ser una cadena de texto.',
+            'name.max' => 'El nombre del periodo académico no puede exceder los 255 caracteres.',
+            'name.unique' => 'Ya existe un periodo académico con este nombre.',
+            'start_date.required' => 'La fecha de inicio es obligatoria.',
+            'start_date.date' => 'La fecha de inicio debe ser una fecha válida.',
+            'start_date.after_or_equal' => 'La fecha de inicio debe ser hoy o posterior a hoy.',
+            'end_date.required' => 'La fecha de finalización es obligatoria.',
+            'end_date.date' => 'La fecha de finalización debe ser una fecha válida.',
+            'end_date.after' => 'La fecha de finalización debe ser posterior a la fecha de inicio.',
+            'description.string' => 'La descripción debe ser una cadena de texto.',
+        ];
     }
 }
