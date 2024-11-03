@@ -2,8 +2,15 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
+
 use Throwable;
+use Exception;
 
 class Handler extends ExceptionHandler
 {
@@ -37,5 +44,45 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    /**
+     * Render an exception into an HTTP response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Throwable  $exception
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof AuthorizationException) {
+            return response()->json([
+                'message' => 'No tiene permisos para realizar esta acción.'
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        if ($exception instanceof ValidationException) {
+            return response()->json([
+                'message' => 'Error de validación.',
+                'errors' => $exception->errors(),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if ($exception instanceof NotFoundHttpException) {
+            return response()->json([
+                'message' => 'El recurso solicitado no se ha encontrado'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        if ($exception instanceof ModelNotFoundException) {
+            return response()->json([
+                'message' => 'El recurso solicitado no se ha encontrado.'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        return response()->json([
+            'message' => 'Se ha producido un error inesperado.',
+            'error' => $exception->getMessage()
+        ], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 }
