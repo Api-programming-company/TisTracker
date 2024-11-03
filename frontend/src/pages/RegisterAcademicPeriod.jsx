@@ -114,6 +114,8 @@ const RegisterAcademicPeriod = () => {
     }
 
     if (Object.keys(newErrors).length > 0) {
+      setSnackbarMessage("Llena el formulario correctamente");
+      setOpenSnackBar(true);
       setErrors(newErrors);
       console.log(errors);
       return;
@@ -187,9 +189,11 @@ const RegisterAcademicPeriod = () => {
                   onChange={handleStartDateChange}
                   slotProps={{
                     textField: {
-                      error: !!error?.data?.errors?.start_date && dateError,
-                      helperText: dateError
-                        ? error?.data?.errors?.start_date
+                      error:
+                        (!!error?.data?.errors?.start_date && dateError) ||
+                        errors.startDate,
+                      helperText: dateError || errors.startDate
+                        ? error?.data?.errors?.start_date || errors.startDate
                         : "DD/MM/AAAA", // errors.startDate
                     },
                   }}
@@ -202,9 +206,9 @@ const RegisterAcademicPeriod = () => {
                   onChange={handleEndDateChange}
                   slotProps={{
                     textField: {
-                      error: !!error?.data?.errors?.end_date && dateError,
-                      helperText: dateError
-                        ? error?.data?.errors?.end_date
+                      error: (!!error?.data?.errors?.end_date && dateError)||errors.endDate,
+                      helperText: dateError || errors.endDate
+                        ? error?.data?.errors?.end_date || errors.endDate
                         : "DD/MM/AAAA",
                     },
                   }}
