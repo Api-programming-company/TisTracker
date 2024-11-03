@@ -181,7 +181,7 @@ const AcceptDeclineCompany = () => {
           { label: "Nombre corto", value: companyData.company.short_name },
           { label: "Correo electrónico", value: companyData.company.email },
           { label: "Dirección", value: companyData.company.address },
-          { label: "Teléfono", value: companyData.company.phone },
+          { label: "Celular", value: companyData.company.phone },
           {
             label: "Fecha de solicitud",
             value: formatDate(companyData.company.updated_at),
