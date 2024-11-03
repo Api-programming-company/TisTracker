@@ -237,7 +237,7 @@ const AcceptDeclineCompany = () => {
           open={openA}
           setOpen={setOpenA}
           title={"Aceptar"}
-          content={"¿Estás seguro que deseas aceptar esta invitación?"}
+          content={"¿Estás seguro que deseas aceptar esta solicitud?"}
           onAccept={handleAccept}
         />
 
@@ -255,7 +255,7 @@ const AcceptDeclineCompany = () => {
           open={openR}
           setOpen={setOpenR}
           title={"Rechazar"}
-          content={"¿Estás seguro que deseas rechazar esta invitación?"}
+          content={"¿Estás seguro que deseas rechazar esta solicitud?"}
           onAccept={handleDecline}
         />
 
