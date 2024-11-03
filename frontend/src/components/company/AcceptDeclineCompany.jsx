@@ -20,7 +20,7 @@ import {
   useUpdateCompanyByIdMutation,
   useGetCompanyByIdQuery,
 } from "../../api/companyApi";
-import { formatDate } from "../../utils/validaciones";
+import { formatDate, formatDateTime } from "../../utils/validaciones";
 
 const AcceptDeclineCompany = () => {
   const { id } = useParams();

@@ -27,11 +27,10 @@ class AcademicPeriodController extends Controller
     {
         $user = Auth::user();
 
-        $startDate = new Carbon($request->start_date);
-        $endDate = new Carbon($request->end_date);
+        // Convierte las fechas de entrada a UTC
+        $startDateUtc = Carbon::parse($request->start_date)->timezone('UTC');
+        $endDateUtc = Carbon::parse($request->end_date)->timezone('UTC');
 
-        $startDateUtc = $startDate->setTimezone('UTC');
-        $endDateUtc = $endDate->setTimezone('UTC');
         // Crear el periodo académico
         $academicPeriod = AcademicPeriod::create([
             'name' => $request->name,

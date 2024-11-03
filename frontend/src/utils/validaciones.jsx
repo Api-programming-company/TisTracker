@@ -22,36 +22,33 @@ export const validateEmail = (email) => {
 export const formatDate = (dateString) => {
   // Crear un nuevo objeto Date a partir de la cadena de fecha
   const date = new Date(dateString);
-
-  // Convertir la fecha a la zona horaria local
-  const localDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));
-
   // Formatear la fecha en el formato deseado
-  return localDate.toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
+  return date.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
   });
 };
 export const formatDate2 = (dateString) => {
   const date = dateString.split("-");
-  const strDate = date[2]+"/"+date[1]+"/"+date[0]
-  return strDate // ta feo jaja
+  const strDate = date[2] + "/" + date[1] + "/" + date[0];
+  return strDate; // ta feo jaja
 };
 
 export const formatDateTime = (dateString) => {
   const date = new Date(dateString);
-  return date.toLocaleString(undefined, { // Sin especificar locale, usa la configuración regional del navegador
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false, 
+  return date.toLocaleString(undefined, {
+    // Sin especificar locale, usa la configuración regional del navegador
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
   });
 };
 
 export const isNumeric = (cadena) => {
   return !isNaN(cadena) && !isNaN(parseFloat(cadena));
-}
+};
