@@ -2,9 +2,21 @@ import React, { useEffect, useState } from "react";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { Button, TextField, Snackbar, Alert } from "@mui/material";
+import {
+  Button,
+  TextField,
+  Snackbar,
+  Alert,
+  Box,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+} from "@mui/material";
 import "../styles/set_final_period.css";
-import DialogMod from "../components/DialogMod";
+
 import {
   useGetAcademicPeriodByIdQuery,
   useUpdateAcademicPeriodByIdMutation,
@@ -28,6 +40,7 @@ const SetFinalDeliverablePeriod = () => {
       setEndDate(new Date(periodData.academic_period.end_date));
     }
     if (isPeriodError) {
+      console.log(periodError);
     }
   }, [isPeriodSuccess, isPeriodError, periodError, periodData]);
 
@@ -40,8 +53,6 @@ const SetFinalDeliverablePeriod = () => {
       error: updateError,
     },
   ] = useUpdateAcademicPeriodByIdMutation();
-
- 
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -84,9 +95,12 @@ const SetFinalDeliverablePeriod = () => {
       });
     } else {
       //sucess
-      console.log(id,{ start_date: startDate, end_date: endDate });
-      updateAcademicPeriodById({id,start_date: startDate, end_date: endDate });
-      
+      console.log(id, { start_date: startDate, end_date: endDate });
+      updateAcademicPeriodById({
+        id,
+        start_date: startDate,
+        end_date: endDate,
+      });
     }
     setOpen(false);
   };
@@ -94,22 +108,29 @@ const SetFinalDeliverablePeriod = () => {
   useEffect(() => {
     if (isUpdateSuccess) {
       setSnackbarSeverity("success");
-      setSnackbarMessage("Planificación actualizada correctamente");
+      setSnackbarMessage("Periodo académico actualizado correctamente");
       setSnackbarOpen(true);
+      setErrors({});
     }
     if (isUpdateError) {
-      setSnackbarSeverity("error");
-      setSnackbarMessage(updateError?.data?.message || "Error desconocido");
-      setSnackbarOpen(true);
+      if (updateError?.status === 422) {
+        setErrors(updateError.data.errors);
+      } else {
+        setErrors({});
+        console.log(updateError);
+        setSnackbarSeverity("error");
+        setSnackbarMessage(updateError?.data?.message || "Error desconocido");
+        setSnackbarOpen(true);
+      }
     }
-  },[isUpdateError, isUpdateSuccess, updateError?.data?.message])
+  }, [isUpdateError, isUpdateSuccess, updateError]);
 
   const findError = (name) => {
     const error = errors[name];
     return error;
   };
 
-  if ( isPeriodFetching) {
+  if (isPeriodFetching || isUpdating) {
     return (
       <Container
         maxWidth="sm"
@@ -145,86 +166,103 @@ const SetFinalDeliverablePeriod = () => {
   }
 
   return (
-    <div className="container">
-      <div className="section-header">
-        <h1>Ajustar periodo de entrega final</h1>
-      </div>
-      <div className="container-body">
+    <Box className="container" sx={{ p: 3 }}>
+      <Box className="section-header" sx={{ mb: 3 }}>
+        <Typography variant="h4">Ajustar periodo académico</Typography>
+      </Box>
+      <Box className="container-body">
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <div className="dates-input-container">
-            <div className="date-item">
+          <Box
+            className="dates-input-container"
+            sx={{ display: "flex", gap: 2, mb: 2 }}
+          >
+            <Box
+              className="date-item"
+              
+            >
               <DatePicker
                 label="Fecha de inicio"
                 value={startDate}
                 onChange={handleStartDateChange}
-                renderInput={(params) => <TextField {...params} />}
+                slotProps={{
+                  textField: {
+                    error: Boolean(errors.start_date),
+                    helperText: errors.start_date
+                  },
+                }}
               />
-              {findError("start_date") && (
-                <p className="text-red-300 text-sm">
-                  {findError("start_date")}
-                </p>
-              )}
-            </div>
+            </Box>
 
-            <div className="date-item">
+            <Box className="date-item">
               <DatePicker
                 label="Fecha de fin"
                 value={endDate}
                 onChange={handleEndDateChange}
-                renderInput={(params) => <TextField {...params} />}
+                slotProps={{
+                  textField: {
+                    error: Boolean(errors.end_date),
+                    helperText: errors.end_date
+                  },
+                }}
               />
-              {findError("end_date") && (
-                <p className="text-red-300 text-sm">{findError("end_date")}</p>
-              )}
-            </div>
-          </div>
+            </Box>
+          </Box>
         </LocalizationProvider>
-        <div className="flex-start">
+
+        <Box className="flex-start" sx={{ display: "flex", gap: 1 }}>
           <Button
             disabled={isUpdating}
             variant="contained"
             color="primary"
             sx={{
               mt: 2,
-              backgroundColor: "primary.dark",
-              "&:hover": {
-                backgroundColor: "primary.main",
-                color: "primary.contrastText",
-              },
+              backgroundColor: "primary",
             }}
-            type="submit"
             onClick={() => setOpen(true)}
           >
             Guardar
           </Button>
-          <DialogMod
+          <Dialog
             open={open}
-            setOpen={setOpen}
-            title={"Ajustar Periodo de Entrega Final"}
-            content={"¿Está seguro de realizar esta acción?"}
-            onAccept={() => {
-              onSubmit();
-              // deleteMilestone(milestone.id)
-            }}
-            onCancel={() => setOpen(false)}
-          />
-        </div>
-      </div>
+            onClose={() => setOpen(false)}
+            aria-labelledby="dialog-title"
+            aria-describedby="dialog-description"
+          >
+            <DialogTitle id="dialog-title">
+              Ajustar Periodo de Entrega Final
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="dialog-description">
+                ¿Está seguro de realizar esta acción?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setOpen(false)} color="secondary">
+                Cancelar
+              </Button>
+              <Button
+                onClick={() => {
+                  onSubmit();
+                  setOpen(false);
+                }}
+                color="primary"
+                autoFocus
+              >
+                Aceptar
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </Box>
+      </Box>
+
       <Snackbar
         open={snackbarOpen}
-        autoHideDuration={6000}
+        autoHideDuration={10000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity={snackbarSeverity}
-          sx={{ width: "100%" }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
-    </div>
+        message={snackbarMessage}
+        severity={snackbarSeverity}
+      />
+    </Box>
   );
 };
 

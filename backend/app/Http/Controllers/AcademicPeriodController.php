@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\AcademicPeriod;
 use App\Models\Milestone;
 use Illuminate\Http\Request;
@@ -9,7 +10,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Http\Requests\AcademicPeriod\IndexRequest;
 use App\Http\Requests\AcademicPeriod\StoreRequest;
+use App\Http\Requests\AcademicPeriod\UpdateRequest;
 use Symfony\Component\HttpFoundation\Response;
+use Carbon\Carbon;
 
 class AcademicPeriodController extends Controller
 {
@@ -24,8 +27,8 @@ class AcademicPeriodController extends Controller
     {
         $user = Auth::user();
 
-        $startDate = new \Carbon\Carbon($request->start_date);
-        $endDate = new \Carbon\Carbon($request->end_date);
+        $startDate = new Carbon($request->start_date);
+        $endDate = new Carbon($request->end_date);
 
         $startDateUtc = $startDate->setTimezone('UTC');
         $endDateUtc = $endDate->setTimezone('UTC');
@@ -98,14 +101,9 @@ class AcademicPeriodController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
         $user = Auth::user();
-
-        // Verificar si el usuario tiene permiso para actualizar el periodo académico
-        if ($user->user_type !== 'D') {
-            return response()->json(['message' => 'Unauthorized'], Response::HTTP_FORBIDDEN);
-        }
 
         // Buscar el periodo académico
         $academicPeriod = AcademicPeriod::findOrFail($id);
@@ -113,26 +111,6 @@ class AcademicPeriodController extends Controller
         // Verificar si el usuario es el creador del periodo académico
         if ($academicPeriod->user_id !== $user->id) {
             return response()->json(['message' => 'No tienes permiso para actualizar este periodo académico'], Response::HTTP_FORBIDDEN);
-        }
-
-        // Obtener fechas límite
-        $threeMonthsAgo = now()->subMonths(3);
-        $threeMonthsFromNow = now()->addMonths(3);
-
-        $request->validate([
-            'start_date' => 'required|date|before:end_date|after_or_equal:' . $threeMonthsAgo->toDateString() . '|before_or_equal:' . $threeMonthsFromNow->toDateString(),
-            'end_date' => 'required|date|after:start_date',
-        ]);
-
-        // Verificar que el periodo no dure más de 6 meses
-        $startDate = new \Carbon\Carbon($request->start_date);
-        $endDate = new \Carbon\Carbon($request->end_date);
-        $maxEndDate = $startDate->copy()->addMonths(6);
-
-        if ($endDate->gt($maxEndDate)) {
-            return response()->json([
-                'message' => 'El periodo académico no puede durar más de 6 meses.'
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         // Obtener las compañías asociadas al periodo académico
@@ -162,9 +140,7 @@ class AcademicPeriodController extends Controller
             'message' => 'La fecha ha sido ajustada con éxito',
             'academic_period' => $academicPeriod
         ], Response::HTTP_OK);
-
     }
-
 
     public function show($id)
     {
@@ -173,7 +149,7 @@ class AcademicPeriodController extends Controller
 
         // Verificar si el usuario es un docente
         if ($user->user_type !== 'D') {
-            return response()->json(['message' => 'Unauthorized'], Response::HTTP_FORBIDDEN);
+            return response()->json(['message' => 'No tiene permiso para ver este periodo academico'], Response::HTTP_FORBIDDEN);
         }
 
         // Buscar el periodo académico por su ID
@@ -181,7 +157,7 @@ class AcademicPeriodController extends Controller
 
         // Verificar si el periodo académico pertenece al docente autenticado
         if ($academicPeriod->user_id !== $user->id) {
-            return response()->json(['message' => 'Unauthorized'], Response::HTTP_FORBIDDEN);
+            return response()->json(['message' => 'No tiene permiso para ver este periodo academico'], Response::HTTP_FORBIDDEN);
         }
 
         // Retornar el periodo académico encontrado con un mensaje de éxito
