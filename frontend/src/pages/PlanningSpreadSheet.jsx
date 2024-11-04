@@ -185,14 +185,14 @@ const PlanningSpreadSheet = () => {
             variant="outlined"
             sx={{
               backgroundColor:
-                pendingMilestoneIndex !== milestone_index || updateLoading
+                pendingMilestoneIndex !== milestone_index || updateLoading || status !== "E"
                   ? "info.gray"
                   : "primary.main",
               color: "white",
               border: "white",
             }}
             disabled={
-              pendingMilestoneIndex !== milestone_index || updateLoading
+              pendingMilestoneIndex !== milestone_index || updateLoading || status !== "E"
             }
             onClick={() =>
               setOpen({
