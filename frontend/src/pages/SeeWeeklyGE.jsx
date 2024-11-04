@@ -3,6 +3,7 @@ import {
   Box,
   Typography,
   CircularProgress,
+  Divider
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useContext, useEffect } from "react";
@@ -112,6 +113,7 @@ const SeeWeeklyGE = () => {
           <Typography variant="h5" gutterBottom>
             {day === 'undefined' ? 'Sin actividades' : `Día: ${day}`}
           </Typography>
+          <Divider sx={{ borderColor:"gray", borderWidth:"1", marginBottom:"1rem" }} />
           <Box
             
           >
