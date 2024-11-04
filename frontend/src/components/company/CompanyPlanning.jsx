@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography, List, Button, Snackbar, Alert } from "@mui/material";
+import { Box, Typography, Button, Snackbar, Alert } from "@mui/material";
 import Milestone from "./Milestone";
-import { useUpdateCompanyPlanningByIdMutation } from "../../api/companyApi";
 import DialogMod from "../DialogMod";
-import { CiCirclePlus } from "react-icons/ci";
 import { useParams, useNavigate } from "react-router-dom";
 import { useRegisterPlanningMutation } from "../../api/planningApi";
 import { usePlanningContext } from "../../context/PlanningContext";
@@ -18,9 +16,7 @@ const CompanyPlanning = () => {
 
   const {
     milestones,
-    setMilestones,
     addMilestone,
-    changeMilestones,
     checkErrors,
   } = usePlanningContext();
   const navigate = useNavigate();
@@ -30,6 +26,13 @@ const CompanyPlanning = () => {
 
   const handleConfirm = () => {
     const form = { name: "planning", company_id: id, milestones: milestones };
+    if(!milestones.length){
+      setSnackbarMessage("Debes tener al menos un hito para confirmar la planificación");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+      setOpen(false)
+      return;
+    }
     if (!checkErrors()) {
       const sumBillingPercentage = milestones.reduce(
         (acc, curr) => acc + parseFloat(curr.billing_percentage),
