@@ -190,6 +190,7 @@ const SetFinalDeliverablePeriod = () => {
                     helperText: errors.start_date
                   },
                 }}
+                format="dd/MM/yyyy"
               />
             </Box>
 
@@ -204,6 +205,7 @@ const SetFinalDeliverablePeriod = () => {
                     helperText: errors.end_date
                   },
                 }}
+                format="dd/MM/yyyy"
               />
             </Box>
           </Box>
