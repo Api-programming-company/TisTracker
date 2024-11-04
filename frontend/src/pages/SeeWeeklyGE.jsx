@@ -8,13 +8,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import React, { useContext, useEffect } from "react";
 import { useGetCompaniesByAcademicPeriodQuery} from "../api/academicPeriodApi";
 import AppContext from "../context/AppContext";
-import { CompanyCard } from "../components";
 import CompanyCard2 from "../components/company/CompanyCard2";
 
 const SeeWeeklyGE = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user, checkUser } = useContext(AppContext);
+  const {  user,checkUser } = useContext(AppContext);
   const { data, error, isLoading, isError, isSuccess } =
     useGetCompaniesByAcademicPeriodQuery(id, {
       refetchOnMountOrArgChange: true,
@@ -102,7 +101,7 @@ const SeeWeeklyGE = () => {
     }, {});
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 12 }}>
+    <Container maxWidth="lg" sx={{ mt: 12}} >
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Typography variant="h3" gutterBottom>
           Lista de Grupo Empresas
@@ -124,14 +123,26 @@ const SeeWeeklyGE = () => {
               companies.map((company) => (
                 <Box
                   key={company.id}
-                  flexBasis={{
-                    xs: "100%",
-                    sm: "48%",
-                    md: "30%",
+                  display="grid"
+                  gridTemplateColumns={{
+                    xs: "repeat(1, 1fr)",
+                    sm: "repeat(2, 1fr)",
+                    md: "repeat(3, 1fr)"
                   }}
-                  sx={{ minWidth: 0 }}
+                  justifyContent="space-between"
+                  gap="1rem"
                 >
-                  <CompanyCard2 company={company} />
+                  {companies.slice(0, 3).map((company) => (
+                    <Box
+                      key={company.id}
+                      marginBottom="1rem"
+                      sx={{
+                        backgroundColor: "info.gray"
+                      }}
+                    >
+                      <CompanyCard2 company={company} />
+                    </Box>
+                  ))}
                 </Box>
               ))
             )}
