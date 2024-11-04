@@ -23,19 +23,19 @@ const formatGradesData = (grades) => {
         );
 
         uniqueGrades.set(companyId, {
-          nombre_largo: grade.company.long_name,
-          nombre_corto: grade.company.short_name,
-          autoevaluacion,
-          cruzada,
-          planificacion,
-          evaluaciones: totalEvaluations,
-          total,
+          "Nombre Largo": grade.company.long_name,
+          "Nombre Corto": grade.company.short_name,
+          Autoevaluación : autoevaluacion,
+          Cruzada : cruzada,
+          Planificación: planificacion,
+          Evaluaciones: totalEvaluations,
+          Total : total,
         });
       }
     });
 
-    return Array.from(uniqueGrades.values()).sort((a, b) => a.nombre_corto.localeCompare(b.nombre_largo))
-    .map((grade, index) =>{ return {n: index + 1, ...grade}});
+    return Array.from(uniqueGrades.values()).sort((a, b) => a["Nombre Corto"].localeCompare(b["Nombre Corto"]))
+    .map((grade, index) =>{ return {Número: index + 1, ...grade}});
   };
 
 const CompanyReport = () => {
@@ -46,7 +46,7 @@ const CompanyReport = () => {
       isFetching: isGradesFetching,
       isSuccess: isGradesSucess,
       isError: isGradesError,
-    } = useGetGradesQuery({academic_period_id:id, limit:7});
+    } = useGetGradesQuery({academic_period_id:id, limit:15});
   
     useEffect(() => {
       if (isGradesSucess) {
