@@ -568,7 +568,7 @@ class CompanyController extends Controller
                 ->first();
 
             if (!$academic_period_evaluation) {
-                return response()->json(['message' => 'El periodo académico no cuenta con la evaluación.'], Response::HTTP_NOT_FOUND);
+                return response()->json(['message' => 'Tu docente aún no ha habilitado este tipo de evaluación para tu gestión TIS.'], Response::HTTP_NOT_FOUND);
             }
 
             // Validar que la fecha actual esté dentro del rango de fechas de la evaluación

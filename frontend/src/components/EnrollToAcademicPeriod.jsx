@@ -201,7 +201,7 @@ const EnrollToAcademicPeriod = () => {
         setOpen={setOpenDialog}
         title={"Confirmar Inscripción"}
         content={
-          "¿Estás seguro que deseas inscribirte en el período académico seleccionado?"
+          "¿Estás seguro que deseas inscribirte en el grupo TIS seleccionado?"
         }
         onAccept={handleInscribirse}
       />

@@ -173,7 +173,7 @@ const AcceptDeclineInvitation = () => {
             <Typography variant="body1">{data.company.phone}</Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 4 }}>
-            <Typography variant="h6">Fecha de solicitud</Typography>
+            <Typography variant="h6">Fecha de invitación</Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 8 }}>
             <Typography variant="body1">
