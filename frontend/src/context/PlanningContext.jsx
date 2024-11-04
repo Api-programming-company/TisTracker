@@ -1,18 +1,22 @@
 // MilestonesContext.js
 import { is } from 'date-fns/locale';
-import { createContext, useState,useContext } from 'react';
+import { createContext, useState,useContext, useEffect } from 'react';
 import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 const PlanningContext = createContext();
 
 const PlanningProvider = ({ children }) => {
   const [milestones, setMilestones] = useState([]);
-  const [tisGroup, setTisGroup] = useState({
-    id: 0,
-    name: 'TisTest',
-    start_date: new Date('2024-08-12T00:00:00.000Z'),
-    end_date: new Date('2024-12-03T00:00:00.000Z'),
-  }); 
+  const [tisGroup, setTisGroup] = useState({}); 
+
+  useEffect(() => {
+    const cachedTisGroup = JSON.parse(localStorage.getItem('tisGroup'));
+    if (cachedTisGroup && !Object.values(tisGroup).length) {
+      setTisGroup(cachedTisGroup);
+    }
+    console.log(tisGroup,"Tis Group");
+  },[tisGroup])
 
   const addMilestone = () => {
     setMilestones([...milestones, { id: Date.now(), 
@@ -72,7 +76,7 @@ const PlanningProvider = ({ children }) => {
       if (index > 0) {
         const prevMilestone = milestones[index - 1];
         if (milestone.start_date <= prevMilestone.end_date) {
-          errors.push({ errorArea: "start_date", message: `La fecha de inicio debe ser mayor que la fecha de fin del hito anterior (${format(prevMilestone.end_date, 'dd/MM/yyyy')})` });
+          errors.push({ errorArea: "start_date", message: `La fecha de inicio debe ser mayor que la fecha de fin del hito anterior` });
         }
       }
       
@@ -82,6 +86,14 @@ const PlanningProvider = ({ children }) => {
         if (milestone.end_date <= milestone.start_date) errors.push({ errorArea: "end_date", message: "La fecha de fin debe ser mayor que la fecha de inicio" });
         if (milestone.end_date > tisGroup.end_date) errors.push({ errorArea: "end_date", message: "La fecha de fin debe ser menor o igual que la fecha de fin del grupo TIS (" 
         + format(tisGroup.end_date, 'dd/MM/yyyy') + ")" });
+        const endDay = format(milestone.end_date, 'i');
+        if (index > 0) {
+          const prevMilestone = milestones[index - 1];
+          if (endDay !== format(prevMilestone.end_date, 'i')) {
+            const endDayName = format(prevMilestone.end_date, 'EEEE', { locale: es });
+            errors.push({ errorArea: "end_date", message: `La fecha de fin debe ser el mismo dia que la fecha de fin del hito anterior (${endDayName})` });
+          }
+        }
       }
       if (!milestone.billing_percentage){
         errors.push({ errorArea: "billing_percentage", message: "El porcentaje de facturacion es requerido" });
@@ -98,8 +110,8 @@ const PlanningProvider = ({ children }) => {
         }
         milestone.deliverables.forEach((deliverable) => {
           if (!deliverable.name) errors.push({ errorArea: "deliverables", message: "El nombre de cada entregable es requerido" });
-          else if (deliverable.name.length < 4 || deliverable.name.length > 32) {
-            errors.push({ errorArea: "deliverables", message: "El nombre de cada entregable debe tener entre 4 y 32 caracteres" });
+          else if (deliverable.name.length < 4 || deliverable.name.length > 64) {
+            errors.push({ errorArea: "deliverables", message: "El nombre de cada entregable debe tener entre 4 y 64 caracteres" });
           }
         });
       }
@@ -150,7 +162,8 @@ const PlanningProvider = ({ children }) => {
                                       changeDeliverable,
                                       deleteDeliverable,
                                       changeMilestones,
-                                      checkErrors
+                                      checkErrors,
+                                      setTisGroup
                                       }}>
       {children}
     </PlanningContext.Provider>

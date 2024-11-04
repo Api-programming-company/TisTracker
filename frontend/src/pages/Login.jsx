@@ -17,6 +17,7 @@ import { useLoginUserMutation } from "../api/userApi";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { validateEmail } from "../utils/validaciones";
 import AppContext from "../context/AppContext";
+import { usePlanningContext } from "../context/PlanningContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -25,6 +26,7 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [anchorEl, setAnchorEl] = useState(null);
   const { setUser } = useContext(AppContext);
+  const {setTisGroup} = usePlanningContext();
   const navigate = useNavigate();
 
   const [loginUser, { data, error, isLoading, isSuccess, isError }] =
@@ -42,6 +44,10 @@ const Login = () => {
     if (isSuccess) {
       console.log("logeado supuestamente", data);
       if (data.user) {
+        const {academic_period} = data.user;
+        const {id,name,end_date,start_date} = academic_period
+        localStorage.setItem("tisGroup", JSON.stringify({id,name,end_date,start_date}))
+        setTisGroup({id,name,end_date,start_date})
         setUser(data.user);
         navigate("/");
       }

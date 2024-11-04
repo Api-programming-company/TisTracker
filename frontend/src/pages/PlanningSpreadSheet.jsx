@@ -27,7 +27,7 @@ const PlanningSpreadSheet = () => {
   const dispatch = useDispatch();
   const milestone = useSelector(selectCurrentMilestone);
   const status = useSelector(getStatus);
-  const { user, checkUser } = useContext(AppContext);
+  const { user } = useContext(AppContext);
   const pendingMilestoneIndex = useSelector(getPendingMilestoneIndex);
   const { data, isSuccess, isFetching, isError, error } =
     useGetPlanningByCompanyIdQuery(id);
@@ -130,7 +130,7 @@ const PlanningSpreadSheet = () => {
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
     }
-  }, [isSuccess, error, isError, updatedSuccessfully, updateIsError]);
+  }, [isSuccess, error, isError, updatedSuccessfully, updateIsError, dispatch, updateError]);
 
   if (isFetching) {
     return (

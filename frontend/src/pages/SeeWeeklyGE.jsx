@@ -14,7 +14,7 @@ import CompanyCard2 from "../components/company/CompanyCard2";
 const SeeWeeklyGE = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const {  user,checkUser } = useContext(AppContext);
+  const {  checkUser } = useContext(AppContext);
   const { data, error, isLoading, isError, isSuccess } =
     useGetCompaniesByAcademicPeriodQuery(id, {
       refetchOnMountOrArgChange: true,
