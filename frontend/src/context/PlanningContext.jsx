@@ -70,7 +70,7 @@ const PlanningProvider = ({ children }) => {
       if (milestoneNames.length !== new Set(milestoneNames).size) errors.push({ errorArea: "name", message: "Los nombres de los hitos deben ser unicos" });
       
       if (!milestone.start_date) errors.push({ errorArea: "start_date", message: "La fecha de inicio es requerida" });
-      if (milestone.start_date < tisGroup.start_date) errors.push({ errorArea: "start_date", message: "La fecha de inicio debe ser mayor o igual que la fecha de inicio del grupo TIS ("
+      if (milestone.start_date && milestone.start_date < tisGroup.start_date) errors.push({ errorArea: "start_date", message: "La fecha de inicio debe ser mayor o igual que la fecha de inicio del grupo TIS ("
       + format(tisGroup.start_date, 'dd/MM/yyyy') + ")" });
       
       if (index > 0) {

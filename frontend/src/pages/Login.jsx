@@ -45,9 +45,14 @@ const Login = () => {
       console.log("logeado supuestamente", data);
       if (data.user) {
         const {academic_period} = data.user;
-        const {id,name,end_date,start_date} = academic_period
-        localStorage.setItem("tisGroup", JSON.stringify({id,name,end_date,start_date}))
-        setTisGroup({id,name,end_date,start_date})
+
+        if(academic_period){
+          const {id,name,end_date,start_date} = academic_period
+          localStorage.setItem("tisGroup", JSON.stringify({id,name,end_date,start_date}))
+          setTisGroup({id,name,end_date,start_date})
+
+        } 
+        
         setUser(data.user);
         navigate("/");
       }
