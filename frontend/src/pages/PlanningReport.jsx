@@ -5,6 +5,8 @@ import generatePDF from 'react-to-pdf';
 import { useGetPlanningByCompanyIdQuery } from '../api/planningApi';
 import { useParams } from 'react-router-dom';
 import { getOptions } from '../utils/pdfOptions';
+import { FaCalendarTimes } from "react-icons/fa";
+
 
 const PlanningReport = () => {
 
@@ -103,6 +105,34 @@ const PlanningReport = () => {
 
         }
      },[data, isSuccess,headers,finalData])
+
+     if(id === "undefined"){
+      return(
+        <Container
+        maxWidth="sm"
+            sx={{
+              display: "flex",
+              flexDirection:"column",
+              gap: "2rem",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "80vh",
+            }}>
+          <FaCalendarTimes size={75} />
+          <Box textAlign="center">
+            <Typography variant='h4' textAlign="center"> Planificación no encontrada</Typography>
+
+            <Typography variant='h6' color='gray' textAlign="center" > Esta grupo empresa aun no tiene una planificación</Typography>
+
+          </Box>
+          
+          <Button sx={{
+            backgroundColor:"primary.main",
+            color:"white"
+          }} onClick={() => window.history.back()}>Volver</Button>
+        </Container>
+      )
+     }
 
 
     if (isFetching) {
