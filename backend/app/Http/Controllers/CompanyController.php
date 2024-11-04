@@ -145,13 +145,14 @@ class CompanyController extends Controller
             }
 
             // Obtener las compañías activas asociadas al periodo académico
-            $companies = Company::where('academic_period_id', $request->id)
+            $companies = Company::with(['planning.milestones', 'members'])
+                ->where('academic_period_id', $request->id)
                 ->where('status', 'A')
                 ->get();
 
             return response()->json([
                 'message' => 'Compañías obtenidas correctamente.',
-                'companies' => $companies
+                'companies' => $companies,
             ], Response::HTTP_OK);
         } catch (ValidationException $e) {
             return response()->json([
