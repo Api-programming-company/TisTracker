@@ -76,7 +76,13 @@ const SeeWeeklyGE = () => {
     return acc;
   }, { undefined: [] });
 
-  const daysOrder = ['domingo', 'lunes', 'martes', 'miércoles','jueves', 'viernes', 'sábado'];
+  const today = new Date().toLocaleString('default', { weekday: 'long' });
+  const daysOrder = [];
+  let day = today;
+  for (let i = 0; i < 7; i++) {
+    daysOrder.push(day);
+    day = new Intl.DateTimeFormat('es-ES', { weekday: 'long' }).format(new Date(Date.now() + i * 24 * 60 * 60 * 1000));
+  }
   const sortedGroupedCompanies = Object.keys(groupedCompanies)
     .sort((a, b) => {
       if (a === 'undefined') {
