@@ -43,7 +43,7 @@ const Test = () => {
   };
 
   const handleNavigate = (id) => {
-    navigate(`/vergrupoe/${id}`);
+    navigate(`/company/${id}`);
   };
 
   return (

@@ -16,13 +16,11 @@ const StudentHome = () => {
     {
       label: user.company ? "Mi Grupo Empresa" : "Crear Grupo Empresa",
       path: user.company
-        ? `/vergrupoe/${user.company.company_id}`
+        ? `/company/${user.company.company_id}`
         : "/registroge",
     },
-    //{ label: "Empresas", path: `/academic-period/${user.academic_period_id}/companies/` },
-    // { label: "Invitaciones", path: "/invitations-home" },
   ];
-  
+
   return (
     <Container maxWidth="lg" sx={{ mt: 12 }}>
       <Box>
