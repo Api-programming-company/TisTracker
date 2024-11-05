@@ -27,7 +27,19 @@ class StoreRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255|unique:academic_periods',
-            'start_date' => 'required|date|after_or_equal:today',
+            'start_date' => [
+                'required',
+                'date',
+                function ($attribute, $value, $fail) {
+                    // Parsear la fecha de inicio enviada por el cliente
+                    $startDate = Carbon::parse($value)->startOfDay();;
+                    // Obtener la fecha actual en la zona horaria del cliente
+                    $now = Carbon::now($startDate->getTimezone())->startOfDay();;
+                    if ($startDate->isBefore($now)) {
+                        $fail('La fecha de inicio no puede ser anterior a la fecha actual.'. $now . $value);
+                    }
+                },
+            ],
             'end_date' => [
                 'required',
                 'date',

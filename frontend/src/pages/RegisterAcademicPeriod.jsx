@@ -15,6 +15,7 @@ import { useCreateAcademicPeriodMutation } from "../api/academicPeriodApi";
 import { useNavigate } from "react-router-dom";
 import { differenceInDays } from "date-fns";
 import { formatDate, formatDateTime } from "../utils/validaciones";
+import moment from "moment-timezone";
 
 const RegisterAcademicPeriod = () => {
   const MAX_DESCRIPTION_LENGTH = 255;
@@ -121,30 +122,28 @@ const RegisterAcademicPeriod = () => {
       return;
     }
 
-    const now = new Date();
-    // Combina la fecha de inicio seleccionada con la hora actual
-    const startDateObj = new Date(startDate);
-    startDateObj.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
+    const clientTimezone = moment.tz.guess();
+    console.log("Zona horaria del cliente:", clientTimezone);
 
-    // Convierte a formato ISO (UTC 0)
-    const formattedStartDate = startDateObj.toISOString();
-    const formattedEndDate = new Date(endDate).toISOString();
+    const startDateInClientTZ = moment
+      .utc(startDate)
+      .tz(clientTimezone)
+      .format();
+    const endDateInClientTZ = moment.utc(endDate).tz(clientTimezone).format();
 
     console.log("Registrando periodo académico...", {
       name: name,
-      start_date: formattedStartDate,
-      end_date: formattedEndDate,
-      description: description,
-    }
-    );
-    
-    createAcademicPeriod({
-      name: name,
-      start_date: formattedStartDate,
-      end_date: formattedEndDate,
+      start_date: startDateInClientTZ,
+      end_date: endDateInClientTZ,
       description: description,
     });
-    
+
+    createAcademicPeriod({
+      name: name,
+      start_date: startDateInClientTZ,
+      end_date: endDateInClientTZ,
+      description: description,
+    });
   };
 
   return (
@@ -210,9 +209,10 @@ const RegisterAcademicPeriod = () => {
                       error:
                         (!!error?.data?.errors?.start_date && dateError) ||
                         errors.startDate,
-                      helperText: dateError || errors.startDate
-                        ? error?.data?.errors?.start_date || errors.startDate
-                        : "DD/MM/AAAA", // errors.startDate
+                      helperText:
+                        dateError || errors.startDate
+                          ? error?.data?.errors?.start_date || errors.startDate
+                          : "DD/MM/AAAA", // errors.startDate
                     },
                   }}
                   format="dd/MM/yyyy"
@@ -224,10 +224,13 @@ const RegisterAcademicPeriod = () => {
                   onChange={handleEndDateChange}
                   slotProps={{
                     textField: {
-                      error: (!!error?.data?.errors?.end_date && dateError)||errors.endDate,
-                      helperText: dateError || errors.endDate
-                        ? error?.data?.errors?.end_date || errors.endDate
-                        : "DD/MM/AAAA",
+                      error:
+                        (!!error?.data?.errors?.end_date && dateError) ||
+                        errors.endDate,
+                      helperText:
+                        dateError || errors.endDate
+                          ? error?.data?.errors?.end_date || errors.endDate
+                          : "DD/MM/AAAA",
                     },
                   }}
                   format="dd/MM/yyyy"
