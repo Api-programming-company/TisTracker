@@ -160,13 +160,15 @@ p,a,li,button,input,textarea{
 }
 
 .grid{
+  position: relative;
+  width: 100%;
   display: grid;
   grid-template-columns: 1fr 3fr 1fr 1fr 4fr 1fr;
-  /* border-bottom: 1px solid var(--neutral-300); */
+  border-bottom: 1px solid var(--neutral-300); 
 }
-.grid:last-of-type{
+/* .grid:last-of-type{
    border-bottom: 1px solid var(--neutral-300);
-}
+} */
 
 .grid-item{
   position: relative;

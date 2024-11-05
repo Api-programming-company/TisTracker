@@ -24,11 +24,11 @@ const DocenteHome = () => {
       path: `/academic-period/${period.id}/companies`,
     },
     {
-      label: "Ver Grupo Empresa para Seguimiento Semanal",
+      label: "Ver Grupo Empresas para Seguimiento Semanal",
       path: `/academic-period/${period.id}/weekly_companies`,
     },
     {
-      label: "Ver Solicitudes",
+      label: "Ver Solicitudes de creación de Grupo Empresas",
       path: `/academic-period/${period.id}/seepending`,
     },
     {
@@ -36,12 +36,16 @@ const DocenteHome = () => {
       path: `/academic-period/${period.id}/pending`,
     },
     {
-      label: "Ver calificaciones de GE",
+      label: "Ver calificaciones de Grupo Empresa",
       path: `/academic-period/${period.id}/reports/companies`,
     },
     {
       label: "Ver calificaciones de estudiantes",
       path: `/academic-period/${period.id}/reports/students`,
+    },
+    {
+      label: "Ver reporte de evaluaciones semanales",
+      path: `/academic-period/${period.id}/companies4reports`,
     },
   ];
 
@@ -51,7 +55,7 @@ const DocenteHome = () => {
       label: "Crear plantilla de evaluación",
       path: "/evaluation-templates/create",
     },
-    { label: "Ver plantillas de evaluación", path: "/evaluation-templates" },
+    { label: "Plantillas de evaluación", path: "/evaluation-templates" },
   ];
 
   return (
@@ -80,6 +84,7 @@ const DocenteHome = () => {
                 paddingLeft: "16px",
                 paddingRight: "16px",
                 textAlign: "center",
+                height: "100%"
               }}
               onClick={() => handleNavigate(item.path)}
             >

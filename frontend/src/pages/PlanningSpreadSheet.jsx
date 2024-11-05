@@ -27,7 +27,7 @@ const PlanningSpreadSheet = () => {
   const dispatch = useDispatch();
   const milestone = useSelector(selectCurrentMilestone);
   const status = useSelector(getStatus);
-  const { user, checkUser } = useContext(AppContext);
+  const { user } = useContext(AppContext);
   const pendingMilestoneIndex = useSelector(getPendingMilestoneIndex);
   const { data, isSuccess, isFetching, isError, error } =
     useGetPlanningByCompanyIdQuery(id);
@@ -56,9 +56,6 @@ const PlanningSpreadSheet = () => {
     }
   },[navigate, user])
 
-  useEffect(() => {
-    console.log(milestone);
-  },[milestone])
 
   const handleConfirm = () => {
     setOpen({ ...open, state: false });
@@ -133,7 +130,7 @@ const PlanningSpreadSheet = () => {
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
     }
-  }, [isSuccess, error, isError, updatedSuccessfully, updateIsError]);
+  }, [isSuccess, error, isError, updatedSuccessfully, updateIsError, dispatch, updateError]);
 
   if (isFetching) {
     return (
@@ -188,14 +185,14 @@ const PlanningSpreadSheet = () => {
             variant="outlined"
             sx={{
               backgroundColor:
-                pendingMilestoneIndex !== milestone_index || updateLoading
-                  ? "#eee"
+                pendingMilestoneIndex !== milestone_index || updateLoading || status !== "E"
+                  ? "info.gray"
                   : "primary.main",
               color: "white",
               border: "white",
             }}
             disabled={
-              pendingMilestoneIndex !== milestone_index || updateLoading
+              pendingMilestoneIndex !== milestone_index || updateLoading || status !== "E"
             }
             onClick={() =>
               setOpen({

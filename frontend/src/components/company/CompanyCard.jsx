@@ -6,7 +6,7 @@ const CompanyCard = ({ company }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/vergrupoe/${company.id}`);
+    navigate(`/company/${company.id}`);
   };
   return (
     <Card

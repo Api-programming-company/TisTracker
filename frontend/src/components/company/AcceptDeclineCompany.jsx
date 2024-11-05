@@ -20,11 +20,12 @@ import {
   useUpdateCompanyByIdMutation,
   useGetCompanyByIdQuery,
 } from "../../api/companyApi";
-import { formatDate } from "../../utils/validaciones";
+import { formatDate, formatDateTime } from "../../utils/validaciones";
 
 const AcceptDeclineCompany = () => {
   const { id } = useParams();
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState("");
   const {
     data: companyData,
     error: companyError,
@@ -57,11 +58,22 @@ const AcceptDeclineCompany = () => {
   useEffect(() => {
     if (isUpdateSuccess) {
       console.log("Company data:", updateData);
-      setSnackbar({
-        open: true,
-        message: "Solicitud actualizada exitosamente",
-        severity: "success",
-      });
+      if (updateData?.company?.status === "A") {
+        setConfirmMessage("Solicitud ha sido aceptada exitosamente");
+        setSnackbar({
+          open: true,
+          message: "Solicitud ha sido aceptada exitosamente",
+          severity: "success",
+        });
+      }
+      if (updateData?.company?.status === "R") {
+        setConfirmMessage("Solicitud ha sido rechazada exitosamente");
+        setSnackbar({
+          open: true,
+          message: "Solicitud ha sido rechazada exitosamente",
+          severity: "success",
+        });
+      }
       setOpenConfirm(true);
     }
 
@@ -169,7 +181,7 @@ const AcceptDeclineCompany = () => {
           { label: "Nombre corto", value: companyData.company.short_name },
           { label: "Correo electrónico", value: companyData.company.email },
           { label: "Dirección", value: companyData.company.address },
-          { label: "Teléfono", value: companyData.company.phone },
+          { label: "Celular", value: companyData.company.phone },
           {
             label: "Fecha de solicitud",
             value: formatDate(companyData.company.updated_at),
@@ -225,7 +237,7 @@ const AcceptDeclineCompany = () => {
           open={openA}
           setOpen={setOpenA}
           title={"Aceptar"}
-          content={"¿Estás seguro que deseas aceptar esta invitación?"}
+          content={"¿Estás seguro que deseas aceptar esta solicitud?"}
           onAccept={handleAccept}
         />
 
@@ -243,7 +255,7 @@ const AcceptDeclineCompany = () => {
           open={openR}
           setOpen={setOpenR}
           title={"Rechazar"}
-          content={"¿Estás seguro que deseas rechazar esta invitación?"}
+          content={"¿Estás seguro que deseas rechazar esta solicitud?"}
           onAccept={handleDecline}
         />
 
@@ -252,7 +264,8 @@ const AcceptDeclineCompany = () => {
           <DialogTitle>{"Actualización exitosa"}</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Su acción fue registrada exitosamente.
+              {/* Su acción fue registrada exitosamente. */}
+              {confirmMessage}
             </DialogContentText>
           </DialogContent>
           <DialogActions>

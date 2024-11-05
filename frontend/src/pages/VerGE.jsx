@@ -6,6 +6,10 @@ import {
   Divider,
   Button,
   Stack,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
 } from "@mui/material";
 import { useGetCompanyByIdQuery } from "../api/companyApi";
 import { useParams } from "react-router-dom";
@@ -17,7 +21,11 @@ import AppContext from "../context/AppContext";
 const VerGE = () => {
   const { id } = useParams();
   const { user } = useContext(AppContext);
+  const [openModal, setOpenModal] = useState(false);
+  const [formData, setFormData] = useState({});
+  const [sendData, setSendData] = useState(false);
   const navigate = useNavigate();
+
   const { data, error, isSuccess, isLoading, isError, isFetching } =
     useGetCompanyByIdQuery(id);
   const [
@@ -30,19 +38,22 @@ const VerGE = () => {
     },
   ] = useUpdateCompanyPlanningByIdMutation();
 
-  const [formData, setFormData] = useState({});
-  const [sendData, setSendData] = useState(false);
-
   const verGEd = [
     {
       text: "Ver Planificación",
       color: "info",
-      path: `/planning/${data?.company?.planning?.id}`,
+      onClick: () =>
+        data?.company?.planning
+          ? navigate(`/planning/${data.company.planning.id}`)
+          : setOpenModal(true),
     },
     {
       text: "Seguimiento semanal",
       color: "info",
-      path: `/planning_spreadsheet/${data?.company?.planning?.id}`,
+      onClick: () =>
+        data?.company?.planning
+          ? navigate(`/planning_spreadsheet/${data.company.planning.id}`)
+          : setOpenModal(true),
     },
   ];
 
@@ -55,7 +66,10 @@ const VerGE = () => {
     {
       text: "Ver Planificación",
       color: "info",
-      path: `/planning/${data?.company?.planning?.id}`,
+      onClick: () =>
+        data?.company?.planning
+          ? navigate(`/planning/${data.company.planning.id}`)
+          : setOpenModal(true),
     },
     {
       text: "Evaluar Empresa",
@@ -102,12 +116,6 @@ const VerGE = () => {
     }
   }, [data, isSuccess, isError, error]);
 
-  useEffect(() => {
-    if (formData) {
-      console.log(formData);
-    }
-  }, [formData]);
-
   if (isLoading || isFetching) {
     return (
       <Container
@@ -133,6 +141,20 @@ const VerGE = () => {
     <Box sx={{ maxWidth: 900, margin: "auto", padding: 2, mb: 15 }}>
       <CompanyDetails company={formData.company} />
       <Divider sx={{ my: 4 }} />
+
+      {/* Modal para mostrar si no hay planificación */}
+      <Dialog open={openModal} onClose={() => setOpenModal(false)}>
+        <DialogTitle>Planificación no encontrada</DialogTitle>
+        <DialogContent>
+          La empresa no tiene una planificación asignada.
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenModal(false)} color="primary">
+            Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       {/* Botones de navegación */}
       <Stack
         direction={{ xs: "column", sm: "row" }}
@@ -154,7 +176,7 @@ const VerGE = () => {
                 color={button.color}
                 sx={{ mb: "12px" }}
                 fullWidth={true} // Asegura que ocupe todo el ancho disponible en pantallas pequeñas
-                onClick={() => navigate(button.path)}
+                onClick={button.onClick || (() => navigate(button.path))}
               >
                 {button.text}
               </Button>
@@ -170,7 +192,7 @@ const VerGE = () => {
                 color={button.color}
                 sx={{ mb: "12px" }}
                 fullWidth={true} // Asegura que ocupe todo el ancho disponible en pantallas pequeñas
-                onClick={() => navigate(button.path)}
+                onClick={button.onClick || (() => navigate(button.path))}
               >
                 {button.text}
               </Button>

@@ -3,18 +3,18 @@ import {
   Box,
   Typography,
   CircularProgress,
+  Divider
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useContext, useEffect } from "react";
 import { useGetCompaniesByAcademicPeriodQuery} from "../api/academicPeriodApi";
 import AppContext from "../context/AppContext";
-import { CompanyCard } from "../components";
 import CompanyCard2 from "../components/company/CompanyCard2";
 
 const SeeWeeklyGE = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user, checkUser } = useContext(AppContext);
+  const {  checkUser } = useContext(AppContext);
   const { data, error, isLoading, isError, isSuccess } =
     useGetCompaniesByAcademicPeriodQuery(id, {
       refetchOnMountOrArgChange: true,
@@ -76,7 +76,13 @@ const SeeWeeklyGE = () => {
     return acc;
   }, { undefined: [] });
 
-  const daysOrder = ['domingo', 'lunes', 'martes', 'miércoles','jueves', 'viernes', 'sábado'];
+  const today = new Date().toLocaleString('default', { weekday: 'long' });
+  const daysOrder = [];
+  let day = today;
+  for (let i = 0; i < 7; i++) {
+    daysOrder.push(day);
+    day = new Intl.DateTimeFormat('es-ES', { weekday: 'long' }).format(new Date(Date.now() + i * 24 * 60 * 60 * 1000));
+  }
   const sortedGroupedCompanies = Object.keys(groupedCompanies)
     .sort((a, b) => {
       if (a === 'undefined') {
@@ -96,7 +102,7 @@ const SeeWeeklyGE = () => {
     }, {});
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 12 }}>
+    <Container maxWidth="lg" sx={{ mt: 12}} >
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Typography variant="h3" gutterBottom>
           Lista de Grupo Empresas
@@ -107,6 +113,7 @@ const SeeWeeklyGE = () => {
           <Typography variant="h5" gutterBottom>
             {day === 'undefined' ? 'Sin actividades' : `Día: ${day}`}
           </Typography>
+          <Divider sx={{ borderColor:"gray", borderWidth:"1", marginBottom:"1rem" }} />
           <Box
             
           >
@@ -118,14 +125,26 @@ const SeeWeeklyGE = () => {
               companies.map((company) => (
                 <Box
                   key={company.id}
-                  flexBasis={{
-                    xs: "100%",
-                    sm: "48%",
-                    md: "30%",
+                  display="grid"
+                  gridTemplateColumns={{
+                    xs: "repeat(1, 1fr)",
+                    sm: "repeat(2, 1fr)",
+                    md: "repeat(3, 1fr)"
                   }}
-                  sx={{ minWidth: 0 }}
+                  justifyContent="space-between"
+                  gap="1rem"
                 >
-                  <CompanyCard2 company={company} />
+                  {companies.slice(0, 3).map((company) => (
+                    <Box
+                      key={company.id}
+                      marginBottom="1rem"
+                      sx={{
+                        backgroundColor: "info.gray"
+                      }}
+                    >
+                      <CompanyCard2 company={company} />
+                    </Box>
+                  ))}
                 </Box>
               ))
             )}

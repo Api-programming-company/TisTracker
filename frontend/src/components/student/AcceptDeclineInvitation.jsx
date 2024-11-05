@@ -12,12 +12,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import DialogMod from "../DialogMod";
 import { useUpdateInvitationByIdMutation } from "../../api/invitationApi";
 import { formatDate } from "../../utils/validaciones";
-import { useget } from "../../api/companyApi";
 import { useInvitationDetailsByIdQuery } from "../../api/invitationApi";
 
 const AcceptDeclineInvitation = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  // console.log(user)
 
   const { data, error, isError, isSuccess, isLoading, isFetching } =
     useInvitationDetailsByIdQuery(id);
@@ -45,12 +45,13 @@ const AcceptDeclineInvitation = () => {
   useEffect(() => {
     if (isInvitationSuccess) {
       console.log(invitationData);
+      setConfirmMessage(invitationData?.message);
+      setOpenConfirm(true);
       setSnackbar({
         open: true,
         message: invitationData?.message,
         severity: "sucess",
       });
-      navigate("/");
     }
     if (isInvitationError) {
       console.log(invitationError);
@@ -64,6 +65,8 @@ const AcceptDeclineInvitation = () => {
   // para dialogs
   const [openA, setOpenA] = useState(false);
   const [openR, setOpenR] = useState(false);
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState("");
   // para snackbar
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -173,7 +176,7 @@ const AcceptDeclineInvitation = () => {
             <Typography variant="body1">{data.company.phone}</Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 4 }}>
-            <Typography variant="h6">Fecha de solicitud</Typography>
+            <Typography variant="h6">Fecha de invitación</Typography>
           </Grid2>
           <Grid2 size={{ xs: 12, md: 8 }}>
             <Typography variant="body1">
@@ -222,6 +225,15 @@ const AcceptDeclineInvitation = () => {
           title={"Rechazar"}
           content={"¿Estás seguro que deseas rechazar esta invitación?"}
           onAccept={handleDecline}
+        />
+        <DialogMod
+          open={openConfirm}
+          setOpen={setOpenConfirm}
+          title={"Confirmación"}
+          content={confirmMessage}
+          onAccept={() => navigate("/")}
+          onCancel={() => navigate("/")}
+          showButtonCancel={false}
         />
         {/* Snackbar */}
         <Snackbar

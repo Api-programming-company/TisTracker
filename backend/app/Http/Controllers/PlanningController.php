@@ -10,6 +10,7 @@ use App\Models\Company;
 use Illuminate\Validation\ValidationException;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Response;
 
 class PlanningController extends Controller
 {
@@ -99,35 +100,34 @@ class PlanningController extends Controller
     // Mostrar una planificación específica
     public function show($id)
     {
-        try {
-            // Buscar la planificación con hitos y entregables
-            $planning = Planning::with('milestones.deliverables', 'company')->findOrFail($id);
-
-            // Obtener el usuario autenticado
-            $user = auth()->user();
-
-            // Verificar si el usuario es miembro de la compañía relacionada con la planificación
-            $company = $planning->company;
-            $member = $company->members()->where('user_id', $user->id)->first();
-
-            if (!$member && $user->user_type !== 'D') {
-                return response()->json([
-                    'message' => 'No tienes permisos para acceder a esta planificación.',
-                ], 403);
-            }
-
-            // Obtener el permiso del usuario autenticado desde la tabla pivote
-            $userPermission = $member ? $member->permission : null;
-
-            // Devolver la planificación con los permisos del usuario autenticado
-            return response()->json([
-                'message' => 'Planificación obtenida correctamente.',
-                'planning' => $planning->load('milestones.deliverables'),
-                'user_permission' => $userPermission
-            ], 200);
-        } catch (Exception $e) {
-            return response()->json(['message' => 'Error al obtener la planificación', 'error' => $e->getMessage()], 500);
+        if (!is_numeric($id)) {
+            abort(404);
         }
+        // Buscar la planificación con hitos y entregables
+        $planning = Planning::with('milestones.deliverables', 'company')->findOrFail($id);
+
+        // Obtener el usuario autenticado
+        $user = auth()->user();
+
+        // Verificar si el usuario es miembro de la compañía relacionada con la planificación
+        $company = $planning->company;
+        $member = $company->members()->where('user_id', $user->id)->first();
+
+        if (!$member && $user->user_type !== 'D') {
+            return response()->json([
+                'message' => 'No tienes permisos para acceder a esta planificación.',
+            ], 403);
+        }
+
+        // Obtener el permiso del usuario autenticado desde la tabla pivote
+        $userPermission = $member ? $member->permission : null;
+
+        // Devolver la planificación con los permisos del usuario autenticado
+        return response()->json([
+            'message' => 'Planificación obtenida correctamente.',
+            'planning' => $planning->load('milestones.deliverables'),
+            'user_permission' => $userPermission
+        ], 200);
     }
 
     // Actualizar una planificación

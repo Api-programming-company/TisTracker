@@ -11,6 +11,7 @@ import {
   Container,
   IconButton,
   Tooltip,
+  Box,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 
@@ -58,48 +59,60 @@ const EvaluationTemplateList = () => {
   }
 
   return (
-    <List sx={{ width: "100%", maxWidth: 600, margin: "0 auto", mt: 12 }}>
-      {data.map((template) => (
-        <ListItem
-          key={template.id}
-          sx={{
-            mb: 2,
-            border: "1px solid #ccc",
-            borderRadius: "8px",
-            padding: "16px",
-            cursor: "pointer",
-            "&:hover": {
-              backgroundColor: "info.gray",
-            },
-          }}
-        >
-          <ListItemText
-            primary={
-              <Typography variant="h6" component="div" title={template.title}>
-                {template.title.length > 50
-                  ? `${template.title.substring(0, 50)}...`
-                  : template.title}
-              </Typography>
-            }
-            secondary={
-              <Typography variant="body2" color="textSecondary">
-                {template.description}
-              </Typography>
-            }
-            onClick={() => handleItemClick(template.id)}
-          />
-          <Tooltip title="Edit Template">
-            <IconButton
-              edge="end"
-              aria-label="editar"
-              onClick={() => handleEditClick(template.id)}
-            >
-              <EditIcon />
-            </IconButton>
-          </Tooltip>
-        </ListItem>
-      ))}
-    </List>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+        alignItems: "center",
+      }}
+    >
+      <Typography variant="h4" mt={3} gutterBottom>
+        Plantillas de evaluación
+      </Typography>
+      <List sx={{ width: "100%", maxWidth: 600, margin: "0 auto" }}>
+        {data.map((template) => (
+          <ListItem
+            key={template.id}
+            sx={{
+              mb: 2,
+              border: "1px solid #ccc",
+              borderRadius: "8px",
+              padding: "16px",
+              cursor: "pointer",
+              "&:hover": {
+                backgroundColor: "info.gray",
+              },
+            }}
+          >
+            <ListItemText
+              primary={
+                <Typography variant="h6" component="div" title={template.title}>
+                  {template.title.length > 50
+                    ? `${template.title.substring(0, 50)}...`
+                    : template.title}
+                </Typography>
+              }
+              secondary={
+                <Typography variant="body2" color="textSecondary">
+                  {template.description}
+                </Typography>
+              }
+              onClick={() => handleItemClick(template.id)}
+            />
+            <Tooltip title="Edit Template">
+              <IconButton
+                edge="end"
+                aria-label="editar"
+                onClick={() => handleEditClick(template.id)}
+              >
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
   );
 };
 

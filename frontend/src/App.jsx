@@ -58,6 +58,7 @@ import DocenteHome from "./pages/DocenteHome";
 import SeeSolicitudesGE from "./pages/SeeSolicitudesGE";
 import PlanningReport from "./pages/PlanningReport";
 import CompanyReport from "./pages/CompanyReport";
+import WeeklyEvalReportList from "./components/WeeklyEvalReportList";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -78,7 +79,7 @@ function App({ toggleTheme, isDarkMode }) {
                 path="/enroll-to-ap"
                 element={<EnrollToAcademicPeriod />}
               />
-              <Route path="/vergrupoe/:id" element={<VerGE />} />
+              <Route path="/company/:id" element={<VerGE />} />
               <Route path="/registroge" element={<RegistroGE />} />
               <Route path="/company-requests" element={<InvitacionesGE />} />
               <Route
@@ -110,6 +111,10 @@ function App({ toggleTheme, isDarkMode }) {
               <Route
                 path="/academic-period/:id/companies"
                 element={<CompanyList />}
+              />
+              <Route
+                path="/academic-period/:id/companies4reports"
+                element={<WeeklyEvalReportList />}
               />
               <Route
                 path="/academic-period/:id/weekly_companies"

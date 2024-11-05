@@ -131,15 +131,12 @@ class CompanyController extends Controller
     public function getCompaniesByAcademicPeriod(Request $request)
     {
         try {
-            // Validar el ID del periodo académico
             $request->validate([
                 'id' => 'required|integer|exists:academic_periods,id',
             ]);
 
-            // Obtener el usuario autenticado
             $user = auth()->user();
 
-            // Buscar el periodo académico
             $academicPeriod = AcademicPeriod::find($request->id);
 
             // Verificar si el usuario tiene permiso
@@ -147,27 +144,15 @@ class CompanyController extends Controller
                 return response()->json(['message' => 'No tienes permiso para ver las compañías de este periodo académico.'], Response::HTTP_FORBIDDEN);
             }
 
-            $currentDate = now();
-
             // Obtener las compañías activas asociadas al periodo académico
-            $companies = Company::with([
-                'planning.milestones' => function ($query) use ($currentDate) {
-                    $query->whereDate('start_date', '<=', $currentDate)
-                          ->whereDate('end_date', '>=', $currentDate);
-                }
-            ])
+            $companies = Company::with(['planning.milestones', 'members'])
                 ->where('academic_period_id', $request->id)
                 ->where('status', 'A')
                 ->get();
 
-            $totalIntegrants = $companies->sum(function ($company) {
-                return $company->members->count();
-            });
-
             return response()->json([
                 'message' => 'Compañías obtenidas correctamente.',
                 'companies' => $companies,
-                'total_integrants' => $totalIntegrants
             ], Response::HTTP_OK);
         } catch (ValidationException $e) {
             return response()->json([
@@ -568,7 +553,7 @@ class CompanyController extends Controller
                 ->first();
 
             if (!$academic_period_evaluation) {
-                return response()->json(['message' => 'El periodo académico no cuenta con la evaluación.'], Response::HTTP_NOT_FOUND);
+                return response()->json(['message' => 'Tu docente aún no ha habilitado este tipo de evaluación para tu gestión TIS.'], Response::HTTP_NOT_FOUND);
             }
 
             // Validar que la fecha actual esté dentro del rango de fechas de la evaluación

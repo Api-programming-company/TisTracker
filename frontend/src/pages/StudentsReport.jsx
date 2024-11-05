@@ -21,19 +21,19 @@ const formatGradesData = (grades) => {
         );
 
         return {
-          apellidos: grade.apellidos,
-          nombre: grade.nombre,
-          ge: grade.company.short_name,
-          autoevaluacion,
-          cruzada,
-          pares,
-          planificacion,
-          evaluaciones: totalEvaluations,
-          total,
+          Apellidos: grade.apellidos,
+          Nombre: grade.nombre,
+          "Grupo Empresa": grade.company.short_name,
+          Autoevaluación : autoevaluacion,
+          Cruzada : cruzada,
+          Pares : pares,
+          Planificación: planificacion,
+          Evaluaciones: totalEvaluations,
+          Total : total,
         };
       })
-      .sort((a, b) => a.apellidos.localeCompare(b.apellidos) || a.nombre.localeCompare(b.nombre))
-      .map((grade, index) => ({n: index + 1, ...grade,  }));
+      .sort((a, b) => a.Apellidos.localeCompare(b.Apellidos) || a.Nombre.localeCompare(b.Nombre))
+      .map((grade, index) => ({Número: index + 1, ...grade,  }));
   };
 
 const StudentsReport = () => {
@@ -62,9 +62,6 @@ const StudentsReport = () => {
   //booleano para ver si los datos estan listos para mostrarse
   const [finalData, setFinalData] = useState([]);
 
-  useEffect(() => {
-    console.log(grades);
-  },[grades])
 
   if (isGradesFetching) {
     return (

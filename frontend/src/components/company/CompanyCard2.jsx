@@ -5,14 +5,15 @@ import { useNavigate } from "react-router-dom";
 const CompanyCard2 = ({ company }) => {
   const navigate = useNavigate();
 
-  const handleClick = () => {
-    navigate(`/planning_spreadsheet/${company.planning.id}`);
-  };
+  // const handleClick = () => {
+  //   navigate(`/planning_spreadsheet/${company.planning.id}`);
+  // };
 
   return (
     <Card
-      onClick={handleClick}
+      // onClick={handleClick}
       sx={{
+        paddingX:"1rem",
         mb: 2,
         display: "flex",
         flexDirection: "column",

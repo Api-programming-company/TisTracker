@@ -11,7 +11,7 @@ const lightTheme = createTheme({
       main: "#ffab91", // Coral pastel
     },
     error: {
-      main: "#f3cccc", // Rosa pastel
+      main: "#f48fb1", // Rosa pastel
     },
     warning: {
       main: "#ffe082", // Amarillo pastel

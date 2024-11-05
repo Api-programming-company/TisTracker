@@ -31,9 +31,6 @@ const userApi = apiSlice.injectEndpoints({
         },
       }),
     }),
-    checkEmail: builder.query({
-      query: (email) => `user/check-email?email=${encodeURIComponent(email)}`,
-    }),
     verifyEmail: builder.mutation({
       query: (token) => ({
         url: "user/verify-email",
@@ -48,7 +45,7 @@ const userApi = apiSlice.injectEndpoints({
       query: () => "user",
     }),
     getGrades: builder.query({
-      query: ({academic_period_id, limit}) => `grades?${academic_period_id}&limit=${limit}`,
+      query: ({academic_period_id, limit}) => `grades?academic_period_id=${academic_period_id}&limit=${limit}`,
     }),
   }),
 });
@@ -57,7 +54,6 @@ export const {
   useRegisterUserMutation,
   useLoginUserMutation,
   useLogoutUserMutation,
-  useLazyCheckEmailQuery,
   useVerifyEmailMutation,
   useLazyCheckUserQuery,
   useGetGradesQuery
