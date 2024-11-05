@@ -11,7 +11,7 @@ const formatGradesData = (grades) => {
         const autoevaluacion = grade.company.auto_evaluation_score;
         const cruzada = grade.company.cross_evaluation_score;
         const pares = grade.pares;
-        const planificacion = grade.company.planning_score || Math.floor(Math.random() * 101);
+        const planificacion = grade.company.planning_score;
 
         const totalEvaluations = Math.round(
           (autoevaluacion + pares + cruzada) / 3
