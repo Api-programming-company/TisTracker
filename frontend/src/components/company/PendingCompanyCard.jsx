@@ -11,7 +11,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import PersonIcon from "@mui/icons-material/Person";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { formatDate } from "../../utils/validaciones";
+import { formatDate2 } from "../../utils/validaciones";
 
 const PendingCompanyCard = ({ request, showButton = true }) => {
   const navigate = useNavigate();
@@ -48,7 +48,7 @@ const PendingCompanyCard = ({ request, showButton = true }) => {
           sx={{ color: "info.details", fontSize: "14px" }}
         >
           <CalendarMonthIcon />
-          La solicitud se realizó el {formatDate(request.created_at)}.
+          La solicitud se realizó el {formatDate2(request.created_at)}.
         </Typography>
       </CardContent>
       {showButton && (

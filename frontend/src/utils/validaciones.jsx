@@ -30,9 +30,12 @@ export const formatDate = (dateString) => {
 };
 
 export const formatDate2 = (dateString) => {
-  const date = dateString.split("-");
-  const strDate = date[2] + "/" + date[1] + "/" + date[0];
-  return strDate; // ta feo jaja
+  const date = new Date(dateString);
+  return date.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
 };
 
 export const formatDateTime = (dateString) => {

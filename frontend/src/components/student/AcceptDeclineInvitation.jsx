@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import DialogMod from "../DialogMod";
 import { useUpdateInvitationByIdMutation } from "../../api/invitationApi";
-import { formatDate } from "../../utils/validaciones";
+import { formatDate2 } from "../../utils/validaciones";
 import { useInvitationDetailsByIdQuery } from "../../api/invitationApi";
 
 const AcceptDeclineInvitation = () => {
@@ -180,7 +180,7 @@ const AcceptDeclineInvitation = () => {
           </Grid2>
           <Grid2 size={{ xs: 12, md: 8 }}>
             <Typography variant="body1">
-              {formatDate(data.request_date)}
+              {formatDate2(data.request_date)}
             </Typography>
           </Grid2>
         </Grid2>
