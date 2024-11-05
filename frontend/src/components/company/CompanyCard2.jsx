@@ -71,10 +71,12 @@ const CompanyCard2 = ({ company }) => {
           {company.planning &&
             company.planning.milestones &&
             new Date(
-              company.planning.milestones.find(
-                (milestone) =>
-                  new Date(milestone.end_date).getTime() >= new Date().getTime()
-              ).end_date
+              Date.parse(
+                company.planning.milestones.find(
+                  (milestone) =>
+                    new Date(milestone.end_date).getTime() >= new Date().getTime()
+                ).end_date
+              ) + 1000 * 60 * 60 * 24
             ).toLocaleDateString("es-AR", {
               year: "numeric",
               month: "2-digit",
