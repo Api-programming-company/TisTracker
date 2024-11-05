@@ -4,7 +4,7 @@ const invitationApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     createInvitation: builder.mutation({
       query: (data) => ({
-        url: `invitations/`,
+        url: `invitations`,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
