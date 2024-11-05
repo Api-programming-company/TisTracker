@@ -65,12 +65,13 @@ const SeeWeeklyGE = () => {
       acc.undefined.push(company);
     } else {
       const upcomingMilestone = company.planning.milestones.find((milestone) => {
-        return new Date(milestone.end_date) >= new Date();
+        return new Date(milestone.end_date) >= new Date(Date.now() - 1000 * 60 * 60 * 24);
       });
 
       if (upcomingMilestone) {
         const endDate = new Date(upcomingMilestone.end_date);
-        const weekDay = endDate.toLocaleString('default', { weekday: 'long' });
+        const endDatePlusOneDay = new Date(endDate.getTime() + 1000 * 60 * 60 * 24);
+        const weekDay = endDatePlusOneDay.toLocaleString('default', { weekday: 'long' });
         if (!acc[weekDay]) {
           acc[weekDay] = [];
         }
@@ -81,12 +82,14 @@ const SeeWeeklyGE = () => {
   }, { undefined: [] });
 
 
-  const today = new Date().toLocaleString('default', { weekday: 'long' });
   const daysOrder = [];
-  let day = today;
+  const today = new Date();
+  
   for (let i = 0; i < 7; i++) {
-    daysOrder.push(day);
-    day = new Intl.DateTimeFormat('es-ES', { weekday: 'long' }).format(new Date(Date.now() + i * 24 * 60 * 60 * 1000));
+    const day = new Intl.DateTimeFormat('es-ES', { weekday: 'long' }).format(
+      new Date(today.getTime() + i * 24 * 60 * 60 * 1000)
+    );
+    daysOrder.push(day); // capitaliza el primer carácter
   }
   const sortedGroupedCompanies = Object.keys(groupedCompanies)
     .sort((a, b) => {
