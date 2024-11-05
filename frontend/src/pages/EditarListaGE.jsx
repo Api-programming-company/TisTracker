@@ -34,9 +34,6 @@ const EditarListaGE = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      console.log(data);
-      console.log(itemIdToRemove);
-
       setSelectedItems((prevItems) =>
         prevItems.filter((member) => member.id !== itemIdToRemove)
       );
@@ -45,12 +42,12 @@ const EditarListaGE = () => {
       setItemIdToRemove(null);
     }
     if (isError) {
-      console.log(error);
       setSnackbarMessage(error.data?.message);
       setSnackbarOpen(true);
       setItemIdToRemove(null);
     }
-  }, [isSuccess, isError, data, error, itemIdToRemove]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess, isError, error]);
 
   const {
     data: companyData,
