@@ -3,11 +3,14 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const CompanyCard2 = ({ company }) => {
-  const navigate = useNavigate();
 
   // const handleClick = () => {
   //   navigate(`/planning_spreadsheet/${company.planning.id}`);
   // };
+
+  useEffect(() => {
+    console.log(company);
+  },[company])
 
   return (
     <Card
@@ -38,7 +41,7 @@ const CompanyCard2 = ({ company }) => {
           mr: 2,
         }}
       >
-        {company.planning !== null &&
+        {company.planning && company.planning.milestones &&
           (company.planning.milestones[0] &&
           new Date(company.planning.milestones[0].end_date).getTime() -
             new Date().getTime() <=
@@ -64,7 +67,7 @@ const CompanyCard2 = ({ company }) => {
           <b>Nombre corto:</b> {company.short_name}
         </Typography>
         <Typography variant="body2" noWrap>
-          <b>Número de integrantes:</b> {company.members.length} integrantes
+          <b>Número de integrantes:</b> {company.members && company.members.length} integrantes
         </Typography>
         <Typography variant="body2" noWrap>
           <b>Dia de entregable:</b>{" "}

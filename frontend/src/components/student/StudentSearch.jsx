@@ -36,6 +36,9 @@ const StudentSearch = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const dispatch = useDispatch();
+  const [newInvitation, setNewInvitation] = useState(null)
+  const [shouldRefetch, setShouldRefetch] = useState(false);
+
 
   const [
     createInvitation,
@@ -54,7 +57,8 @@ const StudentSearch = () => {
     isLoading: isCompanyLoading,
     isError: isCompanyError,
     error: companyError,
-  } = useGetCompanyByIdQuery(id, { refetchOnMountOrArgChange: true });
+    refetch: refetchCompany,
+  } = useGetCompanyByIdQuery(id);
 
   const getInvitations = useCallback(() => {
     return companyData?.company?.members?.filter(
@@ -64,7 +68,7 @@ const StudentSearch = () => {
 
   useEffect(() => {
     if (isCompanySuccess) {
-      console.log("company data:", companyData?.company?.members);
+      console.log("company data: (Fetching)" , companyData?.company?.members);
       setInvitations(
         companyData?.company?.members?.filter((member) => member.status === "P")
       );
@@ -85,6 +89,7 @@ const StudentSearch = () => {
     companyData,
     companyError,
     getInvitations,
+    
   ]);
 
   let [
@@ -97,6 +102,9 @@ const StudentSearch = () => {
     if (isSuccess && !isFetching) {
       setOpenModal(true);
       console.log("Estudiante encontrado:", data);
+      setNewInvitation({
+
+      })
     }
 
     if (isError) {
@@ -120,19 +128,14 @@ const StudentSearch = () => {
   };
 
   const handleAddStudent = () => {
-    console.log("data", {
+    const invitation = {
       company_id: id,
       user_id: data.student.id,
       status: "P",
       permission: "R",
-    });
-    createInvitation({
-      company_id: id,
-      user_id: data.student.id,
-      status: "P",
-      permission: "R",
-    });
-
+    };
+    createInvitation(invitation);
+    setNewInvitation(invitation);
     setOpenModal(false);
   };
 
@@ -148,18 +151,13 @@ const StudentSearch = () => {
   useEffect(() => {
     if (isCreateInvitationSuccess) {
       console.log("Invitación creada exitosamente:", createInvitationData);
-
-      const tempInvitations = companyData?.company?.members?.filter(
-        (member) => member.status === "P"
-      );
-      setInvitations(tempInvitations);
-      setMembers(
-        companyData?.company?.members.filter((member) => member.status === "A")
-      );
       setSnackbarMessage("Invitación creada exitosamente");
       setSnackbarOpen(true);
+  
+      // Cambia el estado para forzar el refetch
+      setShouldRefetch(true);
     }
-
+  
     if (isCreateInvitationError) {
       console.error(
         "Error al crear la invitación:",
@@ -170,13 +168,18 @@ const StudentSearch = () => {
       );
       setSnackbarOpen(true);
     }
-  }, [
-    isCreateInvitationSuccess,
-    isCreateInvitationError,
-    createInvitationData,
-    createInvitationError,
-    companyData?.company?.members,
-  ]);
+  }, [isCreateInvitationSuccess, isCreateInvitationError, createInvitationData, createInvitationError]);
+  
+  useEffect(() => {
+    if (shouldRefetch) {
+      console.log("Ejecutando refetch...");
+      refetchCompany();
+      setShouldRefetch(false); // Resetea el estado para evitar múltiples llamados
+    }
+  }, [shouldRefetch, refetchCompany]);
+  useEffect(() => {
+    console.log(invitations,"invitations");
+  },[invitations])
 
   if (isCreateInvitationLoading || isCompanyLoading) {
     return (
