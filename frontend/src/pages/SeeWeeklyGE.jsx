@@ -70,7 +70,8 @@ const SeeWeeklyGE = () => {
 
       if (upcomingMilestone) {
         const endDate = new Date(upcomingMilestone.end_date);
-        const weekDay = endDate.toLocaleString('default', { weekday: 'long' });
+        const endDatePlusOneDay = new Date(endDate.getTime() + 1000 * 60 * 60 * 24);
+        const weekDay = endDatePlusOneDay.toLocaleString('default', { weekday: 'long' });
         if (!acc[weekDay]) {
           acc[weekDay] = [];
         }
@@ -86,7 +87,7 @@ const SeeWeeklyGE = () => {
   let day = today;
   for (let i = 0; i < 7; i++) {
     daysOrder.push(day);
-    day = new Intl.DateTimeFormat('es-ES', { weekday: 'long' }).format(new Date(Date.now() + i * 24 * 60 * 60 * 1000));
+    day = new Intl.DateTimeFormat('es-ES', { weekday: 'long' }).format(new Date(Date.now() + i  * 24 * 60 * 60 * 1000));
   }
   const sortedGroupedCompanies = Object.keys(groupedCompanies)
     .sort((a, b) => {
