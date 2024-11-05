@@ -21,7 +21,7 @@ class Company extends Model
         'status',
     ];
 
-    protected $appends = ['cross_evaluation_score', 'auto_evaluation_score'];
+    protected $appends = ['planning_score', 'cross_evaluation_score', 'auto_evaluation_score'];
 
     public function academicPeriod()
     {
@@ -51,7 +51,7 @@ class Company extends Model
 
     public function getAutoEvaluationScoreAttribute()
     {
-        $companyUserIds  = $this->members()->pluck('id');
+        $companyUserIds = $this->members()->pluck('id');
 
         $memberScores = CompanyUserEvaluation::whereIn('company_user_id', $companyUserIds)
             ->where('company_id', $this->id)
@@ -75,5 +75,24 @@ class Company extends Model
         return $averageScore;
     }
 
-    
+    public function getPlanningScoreAttribute()
+    {
+        // Obtenemos el planning asociado a la empresa
+        $planning = $this->planning;
+        if (!$planning) {
+            return 0; // Si no hay planning, devolvemos 0
+        }
+        // Obtenemos los milestones del planning
+        $milestones = $planning->milestones;
+        $totalBillingPercentage = 0;
+        foreach ($milestones as $milestone) {
+            // Verificamos que todos los deliverables tengan estado 'A'
+            $allDeliverablesApproved = $milestone->deliverables()->where('status', '!=', 'A')->doesntExist();
+
+            if ($allDeliverablesApproved) {
+                $totalBillingPercentage += $milestone->billing_percentage;
+            }
+        }
+        return $totalBillingPercentage;
+    }
 }

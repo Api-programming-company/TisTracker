@@ -156,7 +156,7 @@ class AuthController extends Controller
 
         $query->with('companyForGrades');
 
-    
+
         // Obtener las calificaciones del estudiante con límite
         $grades = $query->limit($limit)->get();
 
@@ -176,7 +176,8 @@ class AuthController extends Controller
                     'short_name' => $companyForGradesData->short_name,
                     'long_name' => $companyForGradesData->long_name,
                     'auto_evaluation_score' => $companyForGradesData->auto_evaluation_score,
-                    'cross_evaluation_score' => $companyForGradesData->cross_evaluation_score
+                    'cross_evaluation_score' => $companyForGradesData->cross_evaluation_score,
+                    'planning_score' => $companyForGradesData->planning_score
                 ] : null
             ];
         });
