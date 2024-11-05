@@ -20,15 +20,15 @@ export const validateEmail = (email) => {
 };
 
 export const formatDate = (dateString) => {
-  // Crear un nuevo objeto Date a partir de la cadena de fecha
-  const date = new Date(dateString);
-  // Formatear la fecha en el formato deseado
+  const utcDateString = dateString + "Z"; // Agregamos "Z" para indicar que es UTC
+  const date = new Date(utcDateString);
   return date.toLocaleDateString(undefined, {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
   });
 };
+
 export const formatDate2 = (dateString) => {
   const date = dateString.split("-");
   const strDate = date[2] + "/" + date[1] + "/" + date[0];
@@ -36,9 +36,9 @@ export const formatDate2 = (dateString) => {
 };
 
 export const formatDateTime = (dateString) => {
-  const date = new Date(dateString);
+  const utcDateString = dateString + "Z"; // Agregamos "Z" para indicar que es UTC
+  const date = new Date(utcDateString);
   return date.toLocaleString(undefined, {
-    // Sin especificar locale, usa la configuración regional del navegador
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
