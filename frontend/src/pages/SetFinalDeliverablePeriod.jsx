@@ -16,13 +16,13 @@ import {
   DialogContentText,
 } from "@mui/material";
 import "../styles/set_final_period.css";
-
 import {
   useGetAcademicPeriodByIdQuery,
   useUpdateAcademicPeriodByIdMutation,
 } from "../api/academicPeriodApi";
 import { useParams } from "react-router-dom";
 import { CircularProgress, Container } from "@mui/material";
+import moment from "moment-timezone";
 
 const SetFinalDeliverablePeriod = () => {
   const { id } = useParams();
@@ -95,11 +95,24 @@ const SetFinalDeliverablePeriod = () => {
       });
     } else {
       //sucess
-      console.log(id, { start_date: startDate, end_date: endDate });
+
+      const clientTimezone = moment.tz.guess();
+      console.log("Zona horaria del cliente:", clientTimezone);
+
+      const startDateInClientTZ = moment
+        .utc(startDate)
+        .tz(clientTimezone)
+        .format();
+      const endDateInClientTZ = moment.utc(endDate).tz(clientTimezone).format();
+
+      console.log(id, {
+        start_date: startDateInClientTZ,
+        end_date: endDateInClientTZ,
+      });
       updateAcademicPeriodById({
         id,
-        start_date: startDate,
-        end_date: endDate,
+        start_date: startDateInClientTZ,
+        end_date: endDateInClientTZ,
       });
     }
     setOpen(false);
@@ -176,10 +189,7 @@ const SetFinalDeliverablePeriod = () => {
             className="dates-input-container"
             sx={{ display: "flex", gap: 2, mb: 2 }}
           >
-            <Box
-              className="date-item"
-              
-            >
+            <Box className="date-item">
               <DatePicker
                 label="Fecha de inicio"
                 value={startDate}
@@ -187,7 +197,7 @@ const SetFinalDeliverablePeriod = () => {
                 slotProps={{
                   textField: {
                     error: Boolean(errors.start_date),
-                    helperText: errors.start_date
+                    helperText: errors.start_date,
                   },
                 }}
                 format="dd/MM/yyyy"
@@ -202,7 +212,7 @@ const SetFinalDeliverablePeriod = () => {
                 slotProps={{
                   textField: {
                     error: Boolean(errors.end_date),
-                    helperText: errors.end_date
+                    helperText: errors.end_date,
                   },
                 }}
                 format="dd/MM/yyyy"

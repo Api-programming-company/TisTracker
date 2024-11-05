@@ -282,8 +282,8 @@ class CompanyUserController extends Controller
 
             // Determinar el mensaje basado en el nuevo estado
             $message = $request->status === 'A'
-                ? 'Solicitud aceptada correctamente.'
-                : 'Solicitud rechazada correctamente.';
+                ? 'Invitación aceptada correctamente.'
+                : 'Invitación rechazada correctamente.';
 
             return response()->json([
                 'message' => $message,

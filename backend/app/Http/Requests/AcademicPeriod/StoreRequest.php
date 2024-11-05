@@ -36,7 +36,7 @@ class StoreRequest extends FormRequest
                     // Obtener la fecha actual en la zona horaria del cliente
                     $now = Carbon::now($startDate->getTimezone())->startOfDay();;
                     if ($startDate->isBefore($now)) {
-                        $fail('La fecha de inicio no puede ser anterior a la fecha actual.'. $now . $value);
+                        $fail('La fecha de inicio no puede ser anterior a la fecha actual.');
                     }
                 },
             ],
