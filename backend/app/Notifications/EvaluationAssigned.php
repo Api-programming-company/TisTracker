@@ -18,16 +18,26 @@ class EvaluationAssigned extends Notification
     public $teacherName;
     public $studentName;
 
-    public function __construct($evaluationName, $evaluationType, $startDate, $endDate, $teacherName, $studentName)
+    public function __construct($evaluationName, $evaluationType, $startDate, $endDate, $teacherName)
     {
         $this->evaluationName = $evaluationName;
         $this->evaluationType = $evaluationType;
         $this->teacherName = $teacherName;
-        $this->studentName = $studentName;
 
         // Convertir fechas a formato Carbon si no lo son y formatearlas
         $startDate = $startDate instanceof Carbon ? $startDate : Carbon::parse($startDate);
         $endDate = $endDate instanceof Carbon ? $endDate : Carbon::parse($endDate);
+
+        if ($startDate->tz() !== 'UTC') {
+            $startDate->setTimezone('UTC');
+        }
+    
+        if ($endDate->tz() !== 'UTC') {
+            $endDate->setTimezone('UTC');
+        }
+        // Convertir a la zona horaria UTC-4
+        $startDate->setTimezone('America/La_Paz');
+        $endDate->setTimezone('America/La_Paz');
 
         $this->startDate = [
             'date' => $startDate->format('d/m/Y'),
@@ -49,7 +59,7 @@ class EvaluationAssigned extends Notification
     {
         return (new MailMessage)
             ->subject("Notificación de Evaluación Asignada: {$this->evaluationType}")
-            ->greeting("Estimado/a {$this->studentName}:")
+            ->greeting("Estimado/a estudiante:")
             ->line("Le informamos que el/la docente {$this->teacherName} le ha asignado una evaluación de tipo {$this->evaluationType}. A continuación, encontrará los detalles específicos:")
             ->line("**Periodo de la Evaluación:**")
             ->line("Desde: {$this->startDate['date']}, a las {$this->startDate['time']}")
@@ -57,7 +67,7 @@ class EvaluationAssigned extends Notification
             ->line("Le recordamos que la evaluación estará disponible únicamente durante este periodo. Le sugerimos planificar su tiempo para completarla antes de la fecha y hora de finalización.")
             ->line("Si tiene alguna consulta o necesita asistencia, no dude en comunicarse con su docente.")
             ->line("¡Le deseamos mucho éxito!")
-            ->salutation('Atentamente,');
+            ->salutation('Atentamente, TisTracker');
     }
 }
 
