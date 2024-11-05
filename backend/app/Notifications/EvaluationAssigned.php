@@ -15,16 +15,30 @@ class EvaluationAssigned extends Notification
     public $evaluationType;
     public $startDate;
     public $endDate;
+    public $teacherName;
+    public $studentName;
 
-    public function __construct($evaluationName, $evaluationType, $startDate, $endDate)
+    public function __construct($evaluationName, $evaluationType, $startDate, $endDate, $teacherName)
     {
         $this->evaluationName = $evaluationName;
         $this->evaluationType = $evaluationType;
+        $this->teacherName = $teacherName;
 
+        // Convertir fechas a formato Carbon si no lo son y formatearlas
         $startDate = $startDate instanceof Carbon ? $startDate : Carbon::parse($startDate);
         $endDate = $endDate instanceof Carbon ? $endDate : Carbon::parse($endDate);
 
-        // Formatear fecha y hora por separado
+        if ($startDate->tz() !== 'UTC') {
+            $startDate->setTimezone('UTC');
+        }
+    
+        if ($endDate->tz() !== 'UTC') {
+            $endDate->setTimezone('UTC');
+        }
+        // Convertir a la zona horaria UTC-4
+        $startDate->setTimezone('America/La_Paz');
+        $endDate->setTimezone('America/La_Paz');
+
         $this->startDate = [
             'date' => $startDate->format('d/m/Y'),
             'time' => $startDate->format('H:i')
@@ -36,16 +50,25 @@ class EvaluationAssigned extends Notification
         ];
     }
 
+    public function via($notifiable)
+    {
+        return ['mail'];
+    }
+
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->greeting('¡Buenas!')
-                    ->subject('Nueva evaluación asignada')
-                    ->line("Has recibido una nueva evaluación: {$this->evaluationName}")
-                    ->line("Tipo de evaluación: {$this->evaluationType}")
-                    ->line("Fecha de inicio: {$this->startDate['date']}Hora de inicio: {$this->startDate['time']}")
-                    ->line("Fecha de fin: {$this->endDate['date']} Hora de fin: {$this->endDate['time']}")
-                    ->line('¡Buena suerte!');
+            ->subject("Notificación de Evaluación Asignada: {$this->evaluationType}")
+            ->greeting("Estimado/a estudiante:")
+            ->line("Le informamos que el/la docente {$this->teacherName} le ha asignado una evaluación de tipo {$this->evaluationType}. A continuación, encontrará los detalles específicos:")
+            ->line("**Periodo de la Evaluación:**")
+            ->line("Desde: {$this->startDate['date']}, a las {$this->startDate['time']}")
+            ->line("Hasta: {$this->endDate['date']}, a las {$this->endDate['time']}")
+            ->line("Le recordamos que la evaluación estará disponible únicamente durante este periodo. Le sugerimos planificar su tiempo para completarla antes de la fecha y hora de finalización.")
+            ->line("Si tiene alguna consulta o necesita asistencia, no dude en comunicarse con su docente.")
+            ->line("¡Le deseamos mucho éxito!")
+            ->salutation('Atentamente, TisTracker');
     }
-
 }
+
+
