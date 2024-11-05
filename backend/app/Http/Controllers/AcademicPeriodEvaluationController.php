@@ -56,7 +56,7 @@ class AcademicPeriodEvaluationController extends Controller
 
             // Obtener el periodo académico
             $academicPeriod = AcademicPeriod::findOrFail($validatedData['academic_period_id']);
-            
+
             // Convertir las fechas a UTC
             $startDate = Carbon::parse($validatedData['start_date'])->setTimezone('UTC');
             $endDate = Carbon::parse($validatedData['end_date'])->setTimezone('UTC');
@@ -64,7 +64,7 @@ class AcademicPeriodEvaluationController extends Controller
             // Validar que las fechas estén dentro del periodo académico
             if ($startDate < $academicPeriod->start_date || $endDate > $academicPeriod->end_date) {
                 return response()->json(['message' => 'Las fechas de la evaluación deben estar dentro del periodo académico.'], 422);
-            }   
+            }
 
             // Verificar si ya existe una evaluación del mismo tipo en el mismo periodo académico
             $existingEvaluation = AcademicPeriodEvaluation::where('academic_period_id', $validatedData['academic_period_id'])
@@ -89,16 +89,26 @@ class AcademicPeriodEvaluationController extends Controller
             ];
             $evaluationTypeReadable = $evaluationTypes[$validatedData['evaluation_type']];
 
-            // Obtener los estudiantes asociados al periodo académico
-            $students = $academicPeriod->users()->where('user_type', 'E')->get();
+            // Obtener los estudiantes asociados al periodo académico y con compañía en estado "A"
+            $students = $academicPeriod->users()
+                ->where('user_type', 'E')
+                ->whereHas('companies', function ($query) {
+                    $query->where('companies.status', 'A');
+                })
+                ->orderBy('id', 'desc')
+                ->get();
+
+            // Obtener el nombre del docente
+            $teacherName = $academicPeriod->creator ? $academicPeriod->creator->full_name : 'Docente';
 
             // Despachar el trabajo en la cola con el tipo de evaluación legible
             SendEvaluationNotification::dispatch(
                 $students,
                 $academicPeriodEvaluation->evaluation->name,
                 $evaluationTypeReadable,
-                $startDate->format('d/m/Y H:i'),
-                $endDate->format('d/m/Y H:i')
+                $startDate,
+                $endDate,
+                $teacherName
             );
 
             return response()->json([
@@ -113,7 +123,7 @@ class AcademicPeriodEvaluationController extends Controller
         }
     }
 
-    
+
 
     /**
      * Display the specified resource.

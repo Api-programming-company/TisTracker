@@ -121,12 +121,30 @@ const RegisterAcademicPeriod = () => {
       return;
     }
 
+    const now = new Date();
+    // Combina la fecha de inicio seleccionada con la hora actual
+    const startDateObj = new Date(startDate);
+    startDateObj.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
+
+    // Convierte a formato ISO (UTC 0)
+    const formattedStartDate = startDateObj.toISOString();
+    const formattedEndDate = new Date(endDate).toISOString();
+
+    console.log("Registrando periodo académico...", {
+      name: name,
+      start_date: formattedStartDate,
+      end_date: formattedEndDate,
+      description: description,
+    }
+    );
+    
     createAcademicPeriod({
       name: name,
-      start_date: formatDateTime(startDate),
-      end_date: formatDateTime(endDate),
+      start_date: formattedStartDate,
+      end_date: formattedEndDate,
       description: description,
     });
+    
   };
 
   return (
