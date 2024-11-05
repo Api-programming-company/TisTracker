@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader, Typography } from "@mui/material";
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 const CompanyCard2 = ({ company }) => {
 
@@ -8,9 +7,7 @@ const CompanyCard2 = ({ company }) => {
   //   navigate(`/planning_spreadsheet/${company.planning.id}`);
   // };
 
-  useEffect(() => {
-    console.log(company);
-  },[company])
+
 
   return (
     <Card
@@ -73,9 +70,11 @@ const CompanyCard2 = ({ company }) => {
           <b>Dia de entregable:</b>{" "}
           {company.planning &&
             company.planning.milestones &&
-            company.planning.milestones[0] &&
             new Date(
-              company.planning.milestones[0].end_date
+              company.planning.milestones.find(
+                (milestone) =>
+                  new Date(milestone.end_date).getTime() >= new Date().getTime()
+              ).end_date
             ).toLocaleDateString("es-AR", {
               year: "numeric",
               month: "2-digit",

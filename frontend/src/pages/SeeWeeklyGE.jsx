@@ -16,13 +16,11 @@ const SeeWeeklyGE = () => {
   const navigate = useNavigate();
   const {  checkUser } = useContext(AppContext);
   const { data, error, isLoading, isError, isSuccess } =
-    useGetCompaniesByAcademicPeriodQuery(id, {
-      refetchOnMountOrArgChange: true,
-    });
+    useGetCompaniesByAcademicPeriodQuery(id);
 
   useEffect(() => {
     if (isSuccess) {
-      console.log(data);
+      console.log(data,"");
     }
     if (isError) {
       console.log(error);
@@ -60,21 +58,28 @@ const SeeWeeklyGE = () => {
     );
   }
 
+
   const groupedCompanies = data?.companies?.reduce((acc, company) => {
+
     if (!company.planning || !company.planning.milestones) {
       acc.undefined.push(company);
     } else {
-      company.planning.milestones.forEach((milestone) => {
-        const endDate = new Date(milestone.end_date);
+      const upcomingMilestone = company.planning.milestones.find((milestone) => {
+        return new Date(milestone.end_date) >= new Date();
+      });
+
+      if (upcomingMilestone) {
+        const endDate = new Date(upcomingMilestone.end_date);
         const weekDay = endDate.toLocaleString('default', { weekday: 'long' });
         if (!acc[weekDay]) {
           acc[weekDay] = [];
         }
         acc[weekDay].push(company);
-      });
+      }
     }
     return acc;
   }, { undefined: [] });
+
 
   const today = new Date().toLocaleString('default', { weekday: 'long' });
   const daysOrder = [];
@@ -111,7 +116,7 @@ const SeeWeeklyGE = () => {
       {Object.entries(sortedGroupedCompanies).map(([day, companies]) => (
         <Box key={day} sx={{ mb: 4 }}>
           <Typography variant="h5" gutterBottom>
-            {day === 'undefined' ? 'Sin actividades' : `Día: ${day}`}
+            {day === 'undefined' ? 'Sin planificación' : `Día: ${day}`}
           </Typography>
           <Divider sx={{ borderColor:"gray", borderWidth:"1", marginBottom:"1rem" }} />
           <Box
@@ -122,9 +127,7 @@ const SeeWeeklyGE = () => {
                 No hay empresas para este grupo.
               </Typography>
             ) : (
-              companies.map((company) => (
                 <Box
-                  key={company.id}
                   display="grid"
                   gridTemplateColumns={{
                     xs: "repeat(1, 1fr)",
@@ -134,7 +137,7 @@ const SeeWeeklyGE = () => {
                   justifyContent="space-between"
                   gap="1rem"
                 >
-                  {companies.slice(0, 3).map((company) => (
+                  {companies.map((company) => (
                     <Box
                       key={company.id}
                       marginBottom="1rem"
@@ -146,7 +149,6 @@ const SeeWeeklyGE = () => {
                     </Box>
                   ))}
                 </Box>
-              ))
             )}
           </Box>
         </Box>
