@@ -23,6 +23,7 @@ import DialogMod from "../components/DialogMod";
 import { useParams } from "react-router-dom";
 import { useCreateAcademicPeriodEvaluationMutation } from "../api/academicPeriodEvaluationsApi";
 import { format } from "date-fns";
+import moment from "moment-timezone";
 
 const RegistroGE = () => {
   const navigate = useNavigate();
@@ -132,6 +133,15 @@ const RegistroGE = () => {
       { timeZone }
     );
 
+    const clientTimezone = moment.tz.guess();
+    console.log("Zona horaria del cliente:", clientTimezone);
+
+    const startDateInClientTZ = moment
+      .utc(startDate)
+      .tz(clientTimezone)
+      .format();
+    const endDateInClientTZ = moment.utc(endDate).tz(clientTimezone).format();
+
     const formData = {
       evaluation_id: selectedPlantillaId,
       academic_period_id: academic_period_id,
@@ -146,24 +156,6 @@ const RegistroGE = () => {
     console.log(endDate);
 
     createAcademicPeriodEvaluation(formData);
-  };
-
-  const formatDate = (date, hour) => {
-    if (!date || !hour) return;
-
-    console.log(date, hour);
-    const formattedDate = new Date(
-      Date.UTC(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate(),
-        hour.getHours(),
-        hour.getMinutes(),
-        hour.getSeconds()
-      )
-    );
-
-    return formattedDate.toISOString();
   };
 
   const validateDates = (startDate, endDate, startTime, endTime) => {
