@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Models\AcademicPeriodEvaluation;
 use App\Notifications\EvaluationAssigned;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -20,27 +19,28 @@ class SendEvaluationNotification implements ShouldQueue
     protected $evaluationType;
     protected $startDate;
     protected $endDate;
+    protected $teacherName;
 
-    public function __construct($students, $evaluationName, $evaluationType, $startDate, $endDate)
+    public function __construct($students, $evaluationName, $evaluationType, $startDate, $endDate, $teacherName)
     {
         $this->students = $students;
         $this->evaluationName = $evaluationName;
         $this->evaluationType = $evaluationType;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
+        $this->teacherName = $teacherName;
     }
 
     public function handle()
     {
-        $formattedStartDate = $this->startDate->format('d/m/Y H:i');
-        $formattedEndDate = $this->endDate->format('d/m/Y H:i');
-
         Notification::send($this->students, new EvaluationAssigned(
             $this->evaluationName,
             $this->evaluationType,
-            $formattedStartDate,
-            $formattedEndDate
+            $this->startDate,
+            $this->endDate,
+            $this->teacherName
         ));
     }
 }
+
 

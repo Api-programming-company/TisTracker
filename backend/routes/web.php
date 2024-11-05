@@ -25,15 +25,27 @@ Route::get('/home', function() {
 
 
 Route::get('/preview-notification', function () {
+    // Datos de prueba
+    $evaluationName = 'Evaluación de Prueba';
+    $evaluationType = 'Autoevaluación';
+    $startDate = now()->format('Y-m-d H:i:s');
+    $endDate = now()->addDays(7)->format('Y-m-d H:i:s');
+    $teacherName = 'Docente Ejemplo';
+    $studentName = 'Estudiante Ejemplo';
+
+    // Crear la instancia de notificación con los parámetros requeridos
     $notification = new EvaluationAssigned(
-        'Evaluación de Prueba',
-        'Autoevaluación',
-        now()->format('d/m/Y H:i'),
-        now()->addDays(7)->format('d/m/Y H:i')
+        $evaluationName,
+        $evaluationType,
+        $startDate,
+        $endDate,
+        $teacherName,
+        $studentName
     );
 
-    // Usuario ficticio
+    // Usuario ficticio para previsualización
     $notifiable = App\Models\User::first();
 
-    return $notification->toMail($notifiable)->render();
+    // Retorna la notificación como vista para previsualización
+    return $notification->toMail($notifiable);
 });
