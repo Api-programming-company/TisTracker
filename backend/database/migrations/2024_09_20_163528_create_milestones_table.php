@@ -15,11 +15,12 @@ class CreateMilestonesTable extends Migration
     {
         Schema::create('milestones', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); // Nombre del hito
-            $table->date('start_date'); // Fecha de inicio
-            $table->date('end_date'); // Fecha de fin
-            $table->decimal('billing_percentage', 5, 2); // Porcentaje de cobro
-            $table->unsignedBigInteger('planning_id'); // Relación con la tabla Planning
+            $table->string('name');
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->decimal('billing_percentage', 5, 2);
+            $table->unsignedBigInteger('planning_id'); 
+            $table->char('status', 1)->default('P')->comment('A = Accepted, P = Pending');
             $table->timestamps();
 
             // Foreign key constraint

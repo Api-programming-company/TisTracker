@@ -18,8 +18,8 @@ class CreateAcademicPeriodEvaluationsTable extends Migration
             $table->foreignId('evaluation_id')->constrained()->onDelete('cascade');
             $table->foreignId('academic_period_id')->constrained()->onDelete('cascade');
             $table->enum('evaluation_type', ['A', 'C', 'U'])->comment('A: Autoevaluation, C: Company evaluation, U: User evaluation');
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->dateTime('start_date');
+            $table->dateTime('end_date');
             $table->timestamps();
         });
     }
