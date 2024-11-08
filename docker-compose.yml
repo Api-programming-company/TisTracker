@@ -7,11 +7,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "80:80"
-    volumes:
-      - ./backend/:/var/www/html
     networks:
       - tis-network
-
 networks:
   tis-network:
     driver: bridge
