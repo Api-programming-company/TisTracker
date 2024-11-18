@@ -4,7 +4,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{
     AuthController,
-    WebhookController,
     AcademicPeriodController,
     CompanyController,
     PlanningController,
@@ -15,9 +14,6 @@ use App\Http\Controllers\{
     AcademicPeriodEvaluationController
 };
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
-
-// Webhook
-Route::post('/webhook', [WebhookController::class, 'handle']);
 
 // Autenticación y usuario
 Route::prefix('user')->group(function () {
