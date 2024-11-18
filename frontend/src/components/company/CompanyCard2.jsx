@@ -1,12 +1,14 @@
 import { Card, CardContent, CardHeader, Typography } from "@mui/material";
 import { current } from "@reduxjs/toolkit";
 import React, { useEffect,useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CompanyCard2 = ({ company }) => {
+  const navigate = useNavigate();
 
-  // const handleClick = () => {
-  //   navigate(`/planning_spreadsheet/${company.planning.id}`);
-  // };
+  const handleClick = () => {
+    navigate(`/planning_spreadsheet/${company.planning.id}`);
+  };
   const [currentMilestone,setCurrentMilestone] = useState(-1);
   const [currentMiltestoneDate,setCurrentMilestoneDate] = useState("");
 
@@ -22,7 +24,7 @@ const CompanyCard2 = ({ company }) => {
 
   return (
     <Card
-      // onClick={handleClick}
+      onClick={handleClick}
       sx={{
         paddingX:"1rem",
         mb: 2,
