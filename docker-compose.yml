@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   backend:
     build:
@@ -9,6 +7,21 @@ services:
       - "80:80"
     networks:
       - tis-network
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: tistracker_db
+      POSTGRES_USER: tistracker
+      POSTGRES_PASSWORD: FKplu4jIG4ivj6k
+      POSTGRES_PORT: 5432
+    ports:
+      - "5432:5432"
+    networks:
+      - tis-network
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 networks:
   tis-network:
     driver: bridge
+volumes:
+  pgdata:
