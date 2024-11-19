@@ -118,7 +118,7 @@ const StudentSearch = () => {
   const MAX_STUDENTS = 6;
 
   const handleSearch = () => {
-    searchStudent(email);
+    searchStudent(email.trim());
   };
 
   const handleKeyDown = (event) => {
@@ -247,7 +247,7 @@ const StudentSearch = () => {
       </Box>
 
       <Box sx={{ marginTop: 4 }}>
-        <Typography variant="h6">Integrantes</Typography>
+        <Typography variant="h6">Invitaciones Aceptadas</Typography>
         {members
           .filter((member) => member.permission === "R")
           .map((member) => (
@@ -255,7 +255,7 @@ const StudentSearch = () => {
           ))}
       </Box>
       <Box sx={{ marginTop: 4 }}>
-        <Typography variant="h6">Invitaciones</Typography>
+        <Typography variant="h6">Invitaciones Pendientes</Typography>
         {invitations
           .filter((member) => member.permission === "R")
           .map((member) => (
@@ -267,7 +267,7 @@ const StudentSearch = () => {
         <DialogTitle>Estudiante encontrado</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            ¿Estás seguro de que deseas invitar a {data?.student?.email} a la
+            ¿Estás seguro de que deseas invitar a <b>{data?.student?.first_name + " " + data?.student?.last_name}</b> a la
             empresa?
           </DialogContentText>
         </DialogContent>
