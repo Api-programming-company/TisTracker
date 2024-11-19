@@ -23,6 +23,7 @@ import StudentCard from "./StudentCard";
 import { useCreateInvitationMutation } from "../../api/invitationApi";
 import { useDispatch } from "react-redux";
 import studentApi from "../../api/studentApi";
+import BackBtn from "../navigation/BackBtn";
 
 const StudentSearch = () => {
   const { id } = useParams();
@@ -198,120 +199,126 @@ const StudentSearch = () => {
   }
 
   return (
-    <Box sx={{ mt: 12, padding: 2 }}>
-      <Typography variant="h4" gutterBottom>
-        Invitar estudiantes a Grupo Empresa
-      </Typography>
-      <Box sx={{ display: "flex", alignItems: "center" }}>
-        <TextField
-          label="Buscar estudiante por correo"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          onKeyDown={handleKeyDown}
-          variant="outlined"
-          sx={{ flexGrow: 1 }}
-          disabled={isFetching || isLoading}
-        />
-        <IconButton
-          color="primary"
-          aria-label="Buscar estudiante"
-          onClick={handleSearch}
-          sx={{ marginLeft: 2 }}
-        >
-          {isLoading || isFetching ? (
-            <CircularProgress size={24} />
-          ) : (
-            <SearchIcon />
+    <Box className="section-container">
+      <BackBtn/>
+      <Container maxWidth="md">
+        <Box sx={{  padding: 2 }}>
+          <Typography variant="h4" gutterBottom>
+            Invitar estudiantes a Grupo Empresa
+          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <TextField
+              label="Buscar estudiante por correo"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={handleKeyDown}
+              variant="outlined"
+              sx={{ flexGrow: 1 }}
+              disabled={isFetching || isLoading}
+            />
+            <IconButton
+              color="primary"
+              aria-label="Buscar estudiante"
+              onClick={handleSearch}
+              sx={{ marginLeft: 2 }}
+            >
+              {isLoading || isFetching ? (
+                <CircularProgress size={24} />
+              ) : (
+                <SearchIcon />
+              )}
+            </IconButton>
+          </Box>
+
+          {invitations.length + members.length >= MAX_STUDENTS && (
+            <Typography variant="body1" color="red" sx={{ marginTop: 2 }}>
+              Has alcanzado el límite de {MAX_STUDENTS + 1} integrantes.
+            </Typography>
           )}
-        </IconButton>
-      </Box>
 
-      {invitations.length + members.length >= MAX_STUDENTS && (
-        <Typography variant="body1" color="red" sx={{ marginTop: 2 }}>
-          Has alcanzado el límite de {MAX_STUDENTS + 1} integrantes.
-        </Typography>
-      )}
+          <Box sx={{ marginTop: 4 }}>
+            <Typography variant="h6">Encargado</Typography>
+            <Typography variant="body1">
+              <StudentCard
+                key={user.id}
+                student={
+                  companyData.company.members.find(
+                    (member) => member.permission === "W"
+                  ).user
+                }
+              />
+            </Typography>
+          </Box>
 
-      <Box sx={{ marginTop: 4 }}>
-        <Typography variant="h6">Encargado</Typography>
-        <Typography variant="body1">
-          <StudentCard
-            key={user.id}
-            student={
-              companyData.company.members.find(
-                (member) => member.permission === "W"
-              ).user
-            }
-          />
-        </Typography>
-      </Box>
+          <Box sx={{ marginTop: 4 }}>
+            <Typography variant="h6">Invitaciones Aceptadas</Typography>
+            {members
+              .filter((member) => member.permission === "R")
+              .map((member) => (
+                <StudentCard key={member.id} student={member.user} />
+              ))}
+          </Box>
+          <Box sx={{ marginTop: 4 }}>
+            <Typography variant="h6">Invitaciones Pendientes</Typography>
+            {invitations
+              .filter((member) => member.permission === "R")
+              .map((member) => (
+                <StudentCard key={member.id} student={member.user} />
+              ))}
+          </Box>
 
-      <Box sx={{ marginTop: 4 }}>
-        <Typography variant="h6">Invitaciones Aceptadas</Typography>
-        {members
-          .filter((member) => member.permission === "R")
-          .map((member) => (
-            <StudentCard key={member.id} student={member.user} />
-          ))}
-      </Box>
-      <Box sx={{ marginTop: 4 }}>
-        <Typography variant="h6">Invitaciones Pendientes</Typography>
-        {invitations
-          .filter((member) => member.permission === "R")
-          .map((member) => (
-            <StudentCard key={member.id} student={member.user} />
-          ))}
-      </Box>
+          <Dialog open={openModal} onClose={() => setOpenModal(false)}>
+            <DialogTitle>Estudiante encontrado</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                ¿Estás seguro de que deseas invitar a <b>{data?.student?.first_name + " " + data?.student?.last_name}</b> a la
+                empresa?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseModal} color="primary">
+                Cancelar
+              </Button>
+              <Button onClick={handleAddStudent} color="primary">
+                Confirmar
+              </Button>
+            </DialogActions>
+          </Dialog>
 
-      <Dialog open={openModal} onClose={() => setOpenModal(false)}>
-        <DialogTitle>Estudiante encontrado</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            ¿Estás seguro de que deseas invitar a <b>{data?.student?.first_name + " " + data?.student?.last_name}</b> a la
-            empresa?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseModal} color="primary">
-            Cancelar
-          </Button>
-          <Button onClick={handleAddStudent} color="primary">
-            Confirmar
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog
-        open={openNoStudentModal}
-        onClose={() => setOpenNoStudentModal(false)}
-      >
-        <DialogTitle>Estudiante no encontrado</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {error?.data?.message ||
-              "Ocurrio un error al buscar el estudiante."}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => {
-              setOpenNoStudentModal(false);
-              setEmail("");
-            }}
-            color="primary"
+          <Dialog
+            open={openNoStudentModal}
+            onClose={() => setOpenNoStudentModal(false)}
           >
-            Cerrar
-          </Button>
-        </DialogActions>
-      </Dialog>
+            <DialogTitle>Estudiante no encontrado</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                {error?.data?.message ||
+                  "Ocurrio un error al buscar el estudiante."}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={() => {
+                  setOpenNoStudentModal(false);
+                  setEmail("");
+                }}
+                color="primary"
+              >
+                Cerrar
+              </Button>
+            </DialogActions>
+          </Dialog>
 
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-        message={snackbarMessage}
-      />
+          <Snackbar
+            open={snackbarOpen}
+            autoHideDuration={6000}
+            onClose={handleSnackbarClose}
+            message={snackbarMessage}
+          />
+        </Box>
+      </Container>
     </Box>
+    
   );
 };
 

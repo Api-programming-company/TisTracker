@@ -143,7 +143,7 @@ const ConformacionGE = () => {
             gutterBottom
             sx={{ textAlign: "center", mb: 3 }}
           >
-            Confirmar integrantes de <br /> Grupo Empresa
+            Enviar solicitud de creación de <br /> Grupo Empresa
           </Typography>
           {data.company.status === "C" ? (
             <form onSubmit={handleSubmit}>
@@ -157,7 +157,7 @@ const ConformacionGE = () => {
                     }}
                   >
                     <Typography>
-                      Estudiantes invitados a la grupo empresa:
+                      Estudiantes de la grupo empresa:
                     </Typography>
                     <Typography
                       sx={{
