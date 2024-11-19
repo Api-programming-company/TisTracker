@@ -260,7 +260,7 @@ const ConformacionGE = () => {
             </form>
           ) : data.company.status === "P" ? (
             <Typography>
-              Ya enviaste la confirmación de integrantes, espera a que tu docente
+              Ya enviaste la solicitud de creación de grupo empresa, espera a que tu docente
               acepte o rechace la solicitud.
             </Typography>
           ) : data.company.status === "A" ? (
