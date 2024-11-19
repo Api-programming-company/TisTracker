@@ -232,6 +232,32 @@ input[type="checkbox"]{
   background-color: var(--green-100);
 }
 
+.section-container{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.back-btn-container{
+  padding-top: 1rem;
+  padding-left: 1rem;
+}
+
+.back-btn{
+  cursor: pointer;
+
+}
+
+.back-btn:hover{
+  opacity: 0.8;
+}
+
+.back-btn:active{
+  opacity: 0.6;
+  transform: scale(0.9);
+}
+
 @media screen and (max-width: 600px) {
   .container {
     padding : 3rem 1rem;
