@@ -111,7 +111,7 @@ const AcceptDeclineCompany = () => {
     setOpenR(false);
     updateCompany({
       id: companyData.company.id,
-      data: { status: "R" },
+      data: { status: "C" },
     });
   };
 

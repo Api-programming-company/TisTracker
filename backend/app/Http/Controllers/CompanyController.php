@@ -369,7 +369,7 @@ class CompanyController extends Controller
                 'email' => "sometimes|required|email|unique:companies,email,{$id}",
                 'address' => 'sometimes|required|string|max:255',
                 'phone' => 'sometimes|required|int|max:99999999|min:10000000|unique:companies,phone',
-                'status' => 'sometimes|required|in:A,R,P',
+                'status' => 'sometimes|required|in:A,C,P',
                 'members' => 'sometimes|required|array',
                 'members.*' => 'exists:users,id'
             ]);
