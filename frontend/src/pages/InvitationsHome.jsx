@@ -17,7 +17,7 @@ const InvitationsHome = () => {
       path: `/company/${user.company?.company_id}/invite`,
     },
     {
-      label: "Confirmar integrantes de Grupo Empresa",
+      label: "Enviar Solicitud de Creación de Grupo Empresa",
       path: `/company/${user.company?.company_id}/confirm`,
     },
     {

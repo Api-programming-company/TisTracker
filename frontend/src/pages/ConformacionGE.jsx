@@ -245,7 +245,7 @@ const ConformacionGE = () => {
                 {isLoading || isUpdateCompanyLoading ? (
                   <CircularProgress size={24} color="inherit" />
                 ) : (
-                  "CONFIRMAR INTEGRANTES"
+                  "Enviar Solicitud"
                 )}
               </Button>
               <DialogMod
