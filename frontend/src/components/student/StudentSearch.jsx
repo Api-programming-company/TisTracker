@@ -71,7 +71,7 @@ const StudentSearch = () => {
     if (isCompanySuccess) {
       console.log("company data: (Fetching)" , companyData?.company?.members);
       setInvitations(
-        companyData?.company?.members?.filter((member) => member.status === "P" && (member.user.company.company_id === id || member.user.company.company_id === null))
+        companyData?.company?.members?.filter((member) => member.status === "P" && (member.user.company === null || member.user.company?.company_id === id))
       );
       setMembers(
         companyData?.company?.members.filter((member) => member.status === "A")
