@@ -63,15 +63,15 @@ const StudentSearch = () => {
 
   const getInvitations = useCallback(() => {
     return companyData?.company?.members?.filter(
-      (member) => member.status === "P"
+      (member) => member.status === "P" && (member.user.company.company_id === id || member.user.company.company_id === null)
     );
-  }, [companyData?.company?.members]);
+  }, [companyData?.company?.members, id]);
 
   useEffect(() => {
     if (isCompanySuccess) {
       console.log("company data: (Fetching)" , companyData?.company?.members);
       setInvitations(
-        companyData?.company?.members?.filter((member) => member.status === "P")
+        companyData?.company?.members?.filter((member) => member.status === "P" && (member.user.company.company_id === id || member.user.company.company_id === null))
       );
       setMembers(
         companyData?.company?.members.filter((member) => member.status === "A")
@@ -84,14 +84,7 @@ const StudentSearch = () => {
       setSnackbarMessage("Error al obtener la compañía");
       setSnackbarOpen(true);
     }
-  }, [
-    isCompanySuccess,
-    isCompanyError,
-    companyData,
-    companyError,
-    getInvitations,
-    
-  ]);
+  }, [isCompanySuccess, isCompanyError, companyData, companyError, getInvitations, id]);
 
   let [
     searchStudent,
