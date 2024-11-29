@@ -450,4 +450,39 @@ class CompanyUserController extends Controller
             ], 500);
         }
     }
+
+    public function leaveCompany($companyId)
+    {
+        $authUser = Auth::user();
+        $companyUser = CompanyUser::where('company_id', $companyId)
+            ->where('user_id', $authUser->id)
+            ->first();
+
+        if (!$companyUser) {
+            return response()->json(['error' => 'No estás asociado a esta compañía'], 404);
+        }
+
+        if ($companyUser->permission === 'R') {
+            // Eliminar la relación de la tabla pivot
+            $companyUser->delete();
+            return response()->json(['message' => 'Has salido del grupo exitosamente']);
+        }
+
+        if ($companyUser->permission === 'W') {
+            $otherMembers = CompanyUser::where('company_id', $companyId)
+                ->where('user_id', '!=', $authUser->id)
+                ->count();
+
+            if ($otherMembers > 0) {
+                return response()->json(['error' => 'No puedes salir porque aún hay otros integrantes en la compañía'], 403);
+            }
+
+            // Eliminar todos los miembros y la compañía
+            CompanyUser::where('company_id', $companyId)->delete();
+            Company::find($companyId)->delete();
+
+            return response()->json(['message' => 'Has salido del grupo y la compañía ha sido eliminada']);
+        }
+    }
+
 }
