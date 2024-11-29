@@ -146,18 +146,8 @@ class AcademicPeriodController extends Controller
         // Obtener el usuario autenticado
         $user = Auth::user();
 
-        // Verificar si el usuario es un docente
-        if ($user->user_type !== 'D') {
-            return response()->json(['message' => 'No tiene permiso para ver este periodo academico'], Response::HTTP_FORBIDDEN);
-        }
-
         // Buscar el periodo académico por su ID
-        $academicPeriod = AcademicPeriod::findOrFail($id);
-
-        // Verificar si el periodo académico pertenece al docente autenticado
-        if ($academicPeriod->user_id !== $user->id) {
-            return response()->json(['message' => 'No tiene permiso para ver este periodo academico'], Response::HTTP_FORBIDDEN);
-        }
+        $academicPeriod = AcademicPeriod::with('creator')->findOrFail($id);
 
         // Retornar el periodo académico encontrado con un mensaje de éxito
         return response()->json([
