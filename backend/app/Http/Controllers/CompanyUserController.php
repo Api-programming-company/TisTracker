@@ -485,4 +485,32 @@ class CompanyUserController extends Controller
         }
     }
 
+    public function removeMember(Request $request, $companyId, $userId)
+    {
+        $authUser = Auth::user();
+        $leader = CompanyUser::where('company_id', $companyId)
+            ->where('user_id', $authUser->id)
+            ->first();
+
+        if (!$leader || $leader->permission !== 'W') {
+            return response()->json(['error' => 'No tienes permisos para realizar esta acción'], 403);
+        }
+
+        $member = CompanyUser::where('company_id', $companyId)
+            ->where('user_id', $userId)
+            ->first();
+
+        if (!$member) {
+            return response()->json(['error' => 'El usuario no pertenece a esta compañía'], 404);
+        }
+
+        if ($member->permission === 'W') {
+            return response()->json(['error' => 'No puedes eliminar al líder de la compañía'], 403);
+        }
+
+        // Eliminar la relación de la tabla pivot
+        $member->delete();
+
+        return response()->json(['message' => 'El miembro ha sido eliminado del grupo']);
+    }
 }
