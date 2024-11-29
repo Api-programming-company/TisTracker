@@ -143,13 +143,8 @@ class AcademicPeriodController extends Controller
 
     public function show($id)
     {
-        // Obtener el usuario autenticado
-        $user = Auth::user();
-
-        // Buscar el periodo académico por su ID
         $academicPeriod = AcademicPeriod::with('creator')->findOrFail($id);
 
-        // Retornar el periodo académico encontrado con un mensaje de éxito
         return response()->json([
             'message' => 'Periodo académico obtenido con éxito',
             'academic_period' => $academicPeriod
