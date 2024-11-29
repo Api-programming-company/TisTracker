@@ -17,7 +17,7 @@ import { useGetAcademicPeriodByIdQuery } from "../../api/academicPeriodApi";
 const AcademicPeriodAbout = () => {
 	const { user } = useContext(AppContext);
 	const { data, error, isFetching, isSuccess, isError } =
-		useGetAcademicPeriodByIdQuery(user.academic_period_id);
+		useGetAcademicPeriodByIdQuery(user?.academic_period_id);
 	useEffect(() => {
 		if (isSuccess) {
 			console.log(data);
@@ -39,19 +39,19 @@ const AcademicPeriodAbout = () => {
 	const APInfo = [
 		{
 			key: "Descripcion",
-			value: data.academic_period?.description,
+			value: data?.academic_period?.description,
 		},
 		{
 			key: "Docente",
-			value: data.academic_period?.creator?.full_name,
+			value: data?.academic_period?.creator?.full_name,
 		},
 		{
 			key: "Fecha de inicio",
-			value: formatDate2(data.academic_period?.start_date),
+			value: formatDate2(data?.academic_period?.start_date),
 		},
 		{
 			key: "Fecha de finalización",
-			value: formatDate2(data.academic_period?.end_date),
+			value: formatDate2(data?.academic_period?.end_date),
 		},
 	];
 
@@ -62,7 +62,14 @@ const AcademicPeriodAbout = () => {
 
 	if (isFetching) {
 		return (
-			<Container>
+			<Container
+				sx={{
+					width: "100%",
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "center",
+				}}
+			>
 				<CircularProgress />
 			</Container>
 		);
@@ -76,8 +83,8 @@ const AcademicPeriodAbout = () => {
 			<Divider sx={{ width: "100%", mt: 1, mb: 2 }} />
 
 			<Typography>
-				Estas en el periodo académico{" "}
-				<strong> {user.academic_period?.name} </strong>, cuenta con la
+				Estas en el periodo académico
+				<strong> {user.academic_period?.name}</strong>, cuenta con la
 				siguiente información:
 			</Typography>
 			<Container>
