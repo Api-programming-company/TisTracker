@@ -450,4 +450,67 @@ class CompanyUserController extends Controller
             ], 500);
         }
     }
+
+    public function leaveCompany($companyId)
+    {
+        $authUser = Auth::user();
+        $companyUser = CompanyUser::where('company_id', $companyId)
+            ->where('user_id', $authUser->id)
+            ->first();
+
+        if (!$companyUser) {
+            return response()->json(['error' => 'No estás asociado a esta compañía'], 404);
+        }
+
+        if ($companyUser->permission === 'R') {
+            // Eliminar la relación de la tabla pivot
+            $companyUser->delete();
+            return response()->json(['message' => 'Has salido del grupo exitosamente']);
+        }
+
+        if ($companyUser->permission === 'W') {
+            $otherMembers = CompanyUser::where('company_id', $companyId)
+                ->where('user_id', '!=', $authUser->id)
+                ->count();
+
+            if ($otherMembers > 0) {
+                return response()->json(['error' => 'No puedes salir porque aún hay otros integrantes en la compañía'], 403);
+            }
+
+            // Eliminar todos los miembros y la compañía
+            CompanyUser::where('company_id', $companyId)->delete();
+            Company::find($companyId)->delete();
+
+            return response()->json(['message' => 'Has salido del grupo y la compañía ha sido eliminada']);
+        }
+    }
+
+    public function removeMember(Request $request, $companyId, $userId)
+    {
+        $authUser = Auth::user();
+        $leader = CompanyUser::where('company_id', $companyId)
+            ->where('user_id', $authUser->id)
+            ->first();
+
+        if (!$leader || $leader->permission !== 'W') {
+            return response()->json(['error' => 'No tienes permisos para realizar esta acción'], 403);
+        }
+
+        $member = CompanyUser::where('company_id', $companyId)
+            ->where('user_id', $userId)
+            ->first();
+
+        if (!$member) {
+            return response()->json(['error' => 'El usuario no pertenece a esta compañía'], 404);
+        }
+
+        if ($member->permission === 'W') {
+            return response()->json(['error' => 'No puedes eliminar al líder de la compañía'], 403);
+        }
+
+        // Eliminar la relación de la tabla pivot
+        $member->delete();
+
+        return response()->json(['message' => 'El miembro ha sido eliminado del grupo']);
+    }
 }

@@ -62,6 +62,8 @@ Route::middleware('auth')->group(function () {
     Route::apiResource('company', CompanyController::class);
     Route::apiResource('invitations', CompanyUserController::class);
     Route::get('/student/company/{academicPeriodId}', [CompanyUserController::class, 'getStudentCompanyByAcademicPeriod']);
+    Route::post('companies/{companyId}/leave', [CompanyUserController::class, 'leaveCompany']);
+    Route::delete('companies/{companyId}/members/{userId}', [CompanyUserController::class, 'removeMember']);
 
     //buscador por correo solo estudiante
     Route::get('student/search/{email}', [AuthController::class, 'searchStudentByEmail']);
