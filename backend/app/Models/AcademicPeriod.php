@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model; 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AcademicPeriod extends Model
@@ -16,6 +16,10 @@ class AcademicPeriod extends Model
         'end_date',
         'description',
         'user_id',
+        'company_creation_start_date', 
+        'company_creation_end_date',   
+        'planning_start_date',         
+        'planning_end_date',           
     ];
 
     public function users()
