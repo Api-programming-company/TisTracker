@@ -6,6 +6,7 @@ import {
     Divider,
     Button,
     Stack,
+    Snackbar,
     Dialog,
     DialogActions,
     DialogContent,
@@ -24,8 +25,14 @@ const VerGE = () => {
     const { id } = useParams();
     const { user, setUser } = useContext(AppContext);
     const [openModal, setOpenModal] = useState(false);
+    const [openLeaveModal, setOpenLeaveModal] = useState(false);
     const [formData, setFormData] = useState({});
     const [sendData, setSendData] = useState(false);
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: "",
+        severity: "success",
+    });
     const navigate = useNavigate();
     const [
         leaveCompany,
@@ -46,6 +53,11 @@ const VerGE = () => {
         }
         if (isLeaveError) {
             console.log(leaveError);
+            setSnackbar({
+                open: true,
+                message: leaveError.data.error,
+                severity: "error",
+            });
         }
     }, [leaveData, isLeaveSuccess, isLeaveError, leaveError]);
 
@@ -110,8 +122,7 @@ const VerGE = () => {
             text: "Abandonar empresa",
             color: "warning",
             onClick: () => {
-                console.log("Abandonar empresa", id);
-                leaveCompany({ companyId: id });
+                setOpenLeaveModal(true);
             },
         },
     ];
@@ -202,6 +213,36 @@ const VerGE = () => {
                 </DialogActions>
             </Dialog>
 
+            {/* Modal para salir de la empresa */}
+            <Dialog
+                open={openLeaveModal}
+                onClose={() => setOpenLeaveModal(false)}
+            >
+                <DialogTitle>Confirmación de salida</DialogTitle>
+                <DialogContent>
+                    ¿Estás seguro de que deseas abandonar la empresa? Esta
+                    acción no se puede deshacer.
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        onClick={() => setOpenLeaveModal(false)}
+                        color="secondary"
+                    >
+                        Cancelar
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            console.log("Abandonar empresa", id);
+                            leaveCompany({ companyId: id });
+                            setOpenLeaveModal(false);
+                        }}
+                        color="primary"
+                    >
+                        Confirmar
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
             {/* Botones de navegación */}
             <Stack
                 direction={{ xs: "column", sm: "row" }}
@@ -253,6 +294,18 @@ const VerGE = () => {
                     </Box>
                 )}
             </Stack>
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={10000}
+                onClose={() =>
+                    setSnackbar({
+                        ...snackbar,
+                        open: false,
+                    })
+                }
+                message={snackbar.message}
+                severity={snackbar.severity}
+            />
         </Box>
     );
 };
