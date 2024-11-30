@@ -6,6 +6,7 @@ import {
     Divider,
     Button,
     Stack,
+    Snackbar,
     Dialog,
     DialogActions,
     DialogContent,
@@ -18,14 +19,47 @@ import CompanyDetails from "../components/company/CompanyDetails";
 import { useUpdateCompanyPlanningByIdMutation } from "../api/companyApi";
 import { useNavigate } from "react-router-dom";
 import AppContext from "../context/AppContext";
+import { useLeaveCompanyMutation } from "../api/companyApi";
 
 const VerGE = () => {
     const { id } = useParams();
-    const { user } = useContext(AppContext);
+    const { user, setUser } = useContext(AppContext);
     const [openModal, setOpenModal] = useState(false);
+    const [openLeaveModal, setOpenLeaveModal] = useState(false);
     const [formData, setFormData] = useState({});
     const [sendData, setSendData] = useState(false);
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: "",
+        severity: "success",
+    });
     const navigate = useNavigate();
+    const [
+        leaveCompany,
+        {
+            data: leaveData,
+            isSuccess: isLeaveSuccess,
+            isError: isLeaveError,
+            error: leaveError,
+            isLoading: isLeaveLoading,
+        },
+    ] = useLeaveCompanyMutation();
+
+    useEffect(() => {
+        if (isLeaveSuccess) {
+            console.log(leaveData);
+            navigate("/");
+            setUser(leaveData.user);
+        }
+        if (isLeaveError) {
+            console.log(leaveError);
+            setSnackbar({
+                open: true,
+                message: leaveError.data.error,
+                severity: "error",
+            });
+        }
+    }, [leaveData, isLeaveSuccess, isLeaveError, leaveError]);
 
     const { data, error, isSuccess, isLoading, isError, isFetching } =
         useGetCompanyByIdQuery(id);
@@ -84,6 +118,13 @@ const VerGE = () => {
             color: "error",
             path: `/autoevaluation/${id}`,
         },
+        {
+            text: "Abandonar empresa",
+            color: "warning",
+            onClick: () => {
+                setOpenLeaveModal(true);
+            },
+        },
     ];
 
     useEffect(() => {
@@ -119,7 +160,7 @@ const VerGE = () => {
         }
     }, [data, isSuccess, isError, error]);
 
-    if (isLoading || isFetching) {
+    if (isLoading || isFetching || isLeaveLoading) {
         return (
             <Container
                 maxWidth="sm"
@@ -156,7 +197,7 @@ const VerGE = () => {
 
     return (
         <Box sx={{ maxWidth: 900, margin: "auto", padding: 2, mb: 15 }}>
-            <CompanyDetails company={formData.company} />
+            <CompanyDetails company={formData.company} setFormData={setFormData}/>
             <Divider sx={{ my: 4 }} />
 
             {/* Modal para mostrar si no hay planificación */}
@@ -168,6 +209,36 @@ const VerGE = () => {
                 <DialogActions>
                     <Button onClick={() => setOpenModal(false)} color="primary">
                         Cerrar
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Modal para salir de la empresa */}
+            <Dialog
+                open={openLeaveModal}
+                onClose={() => setOpenLeaveModal(false)}
+            >
+                <DialogTitle>Confirmación de salida</DialogTitle>
+                <DialogContent>
+                    ¿Estás seguro de que deseas abandonar la empresa? Esta
+                    acción no se puede deshacer.
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        onClick={() => setOpenLeaveModal(false)}
+                        color="secondary"
+                    >
+                        Cancelar
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            console.log("Abandonar empresa", id);
+                            leaveCompany({ companyId: id });
+                            setOpenLeaveModal(false);
+                        }}
+                        color="primary"
+                    >
+                        Confirmar
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -223,6 +294,18 @@ const VerGE = () => {
                     </Box>
                 )}
             </Stack>
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={10000}
+                onClose={() =>
+                    setSnackbar({
+                        ...snackbar,
+                        open: false,
+                    })
+                }
+                message={snackbar.message}
+                severity={snackbar.severity}
+            />
         </Box>
     );
 };
