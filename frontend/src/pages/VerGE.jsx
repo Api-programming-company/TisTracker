@@ -197,7 +197,7 @@ const VerGE = () => {
 
     return (
         <Box sx={{ maxWidth: 900, margin: "auto", padding: 2, mb: 15 }}>
-            <CompanyDetails company={formData.company} />
+            <CompanyDetails company={formData.company} setFormData={setFormData}/>
             <Divider sx={{ my: 4 }} />
 
             {/* Modal para mostrar si no hay planificación */}
