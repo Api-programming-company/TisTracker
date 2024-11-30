@@ -27,6 +27,15 @@ class AcademicPeriodController extends Controller
     {
         $user = Auth::user();
 
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'company_creation_start_date' => 'required|date|after_or_equal:start_date|before:company_creation_end_date',
+            'company_creation_end_date' => 'required|date|after:company_creation_start_date|before_or_equal:end_date',
+            'planning_start_date' => 'required|date|after_or_equal:company_creation_end_date|before:planning_end_date',
+            'planning_end_date' => 'required|date|after:planning_start_date|before_or_equal:end_date',
+            'description' => 'nullable|string',
+        ]);
+
         // Convierte las fechas de entrada a UTC
         $startDateUtc = Carbon::parse($request->start_date)->timezone('UTC');
         $endDateUtc = Carbon::parse($request->end_date)->timezone('UTC');
@@ -36,6 +45,10 @@ class AcademicPeriodController extends Controller
             'name' => $request->name,
             'start_date' => $startDateUtc,
             'end_date' => $endDateUtc,
+            'company_creation_start_date' => Carbon::parse($validated['company_creation_start_date'])->timezone('UTC'),
+            'company_creation_end_date' => Carbon::parse($validated['company_creation_end_date'])->timezone('UTC'),
+            'planning_start_date' => Carbon::parse($request->planning_start_date)->timezone('UTC'),
+            'planning_end_date' => Carbon::parse($request->planning_end_date)->timezone('UTC'),
             'description' => $request->description,
             'user_id' => $user->id,
         ]);
@@ -112,10 +125,17 @@ class AcademicPeriodController extends Controller
             return response()->json(['message' => 'No tienes permiso para actualizar este periodo académico'], Response::HTTP_FORBIDDEN);
         }
 
-        // Obtener las compañías asociadas al periodo académico
+        $validated = $request->validate([
+            'start_date' => 'sometimes|date|before:end_date',
+            'end_date' => 'sometimes|date|after:start_date',
+            'company_creation_start_date' => 'sometimes|date|after_or_equal:start_date|before:company_creation_end_date',
+            'company_creation_end_date' => 'sometimes|date|after:company_creation_start_date|before:planning_start_date',
+            'planning_start_date' => 'sometimes|date|after_or_equal:company_creation_end_date|before:planning_end_date',
+            'planning_end_date' => 'sometimes|date|after:planning_start_date|before_or_equal:end_date',
+        ]);
+
         $companies = $academicPeriod->companies()->pluck('id');
 
-        // Verificar si existen hitos activos para las compañías asociadas al periodo académico
         $activeMilestones = Milestone::whereHas('planning', function ($query) use ($companies) {
             $query->whereIn('company_id', $companies);
         })
@@ -124,22 +144,24 @@ class AcademicPeriodController extends Controller
             ->exists();
 
         if ($activeMilestones) {
-            return response()->json([
-                'message' => 'No puedes actualizar las fechas porque ya existen hitos activos en este periodo.'
-            ], Response::HTTP_BAD_REQUEST);
+            return response()->json(['message' => 'No puedes actualizar las fechas porque ya existen hitos activos.'], Response::HTTP_BAD_REQUEST);
         }
 
-        // Actualizar fechas de inicio y fin del periodo académico
-        $academicPeriod->start_date = $request->start_date;
-        $academicPeriod->end_date = $request->end_date;
-        $academicPeriod->save();
+        $academicPeriod->update([
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'company_creation_start_date' => $request->company_creation_start_date,
+            'company_creation_end_date' => $request->company_creation_end_date,
+            'planning_start_date' => $request->planning_start_date,
+            'planning_end_date' => $request->planning_end_date,
+        ]);
 
-        // Mensaje de retroalimentación
         return response()->json([
-            'message' => 'La fecha ha sido ajustada con éxito',
+            'message' => 'Periodo académico actualizado con éxito',
             'academic_period' => $academicPeriod
         ], Response::HTTP_OK);
     }
+
 
     public function show($id)
     {
