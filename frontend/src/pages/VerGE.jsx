@@ -18,14 +18,36 @@ import CompanyDetails from "../components/company/CompanyDetails";
 import { useUpdateCompanyPlanningByIdMutation } from "../api/companyApi";
 import { useNavigate } from "react-router-dom";
 import AppContext from "../context/AppContext";
+import { useLeaveCompanyMutation } from "../api/companyApi";
 
 const VerGE = () => {
     const { id } = useParams();
-    const { user } = useContext(AppContext);
+    const { user, setUser } = useContext(AppContext);
     const [openModal, setOpenModal] = useState(false);
     const [formData, setFormData] = useState({});
     const [sendData, setSendData] = useState(false);
     const navigate = useNavigate();
+    const [
+        leaveCompany,
+        {
+            data: leaveData,
+            isSuccess: isLeaveSuccess,
+            isError: isLeaveError,
+            error: leaveError,
+            isLoading: isLeaveLoading,
+        },
+    ] = useLeaveCompanyMutation();
+
+    useEffect(() => {
+        if (isLeaveSuccess) {
+            console.log(leaveData);
+            navigate("/");
+            setUser(leaveData.user);
+        }
+        if (isLeaveError) {
+            console.log(leaveError);
+        }
+    }, [leaveData, isLeaveSuccess, isLeaveError, leaveError]);
 
     const { data, error, isSuccess, isLoading, isError, isFetching } =
         useGetCompanyByIdQuery(id);
@@ -84,6 +106,14 @@ const VerGE = () => {
             color: "error",
             path: `/autoevaluation/${id}`,
         },
+        {
+            text: "Abandonar empresa",
+            color: "warning",
+            onClick: () => {
+                console.log("Abandonar empresa", id);
+                leaveCompany({ companyId: id });
+            },
+        },
     ];
 
     useEffect(() => {
@@ -119,7 +149,7 @@ const VerGE = () => {
         }
     }, [data, isSuccess, isError, error]);
 
-    if (isLoading || isFetching) {
+    if (isLoading || isFetching || isLeaveLoading) {
         return (
             <Container
                 maxWidth="sm"
