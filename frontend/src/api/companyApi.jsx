@@ -13,6 +13,15 @@ const companyApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["company", "invitation"],
     }),
+    leaveCompany: builder.mutation({
+      query: ({companyId}) => ({
+        url: `companies/${companyId}/leave`,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }),
+    }),
     getCompanyById: builder.query({
       query: (id) => ({
         url: `company/${id}`,
@@ -81,5 +90,6 @@ export const {
   useUpdateCompanyByIdMutation,
   useUpdateCompanyPlanningByIdMutation,
   useGetEvaluationByCompanyIdQuery,
-  useGetEvaluationByCompanyUserIdQuery
+  useGetEvaluationByCompanyUserIdQuery,
+  useLeaveCompanyMutation,
 } = companyApi;

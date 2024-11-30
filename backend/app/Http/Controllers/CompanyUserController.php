@@ -465,7 +465,7 @@ class CompanyUserController extends Controller
         if ($companyUser->permission === 'R') {
             // Eliminar la relación de la tabla pivot
             $companyUser->delete();
-            return response()->json(['message' => 'Has salido del grupo exitosamente']);
+            return response()->json(['message' => 'Has salido del grupo exitosamente', 'user' => $companyUser->user]);
         }
 
         if ($companyUser->permission === 'W') {
@@ -481,7 +481,7 @@ class CompanyUserController extends Controller
             CompanyUser::where('company_id', $companyId)->delete();
             Company::find($companyId)->delete();
 
-            return response()->json(['message' => 'Has salido del grupo y la compañía ha sido eliminada']);
+            return response()->json(['message' => 'Has salido del grupo y la compañía ha sido eliminada', 'user' => $companyUser->user]);
         }
     }
 
