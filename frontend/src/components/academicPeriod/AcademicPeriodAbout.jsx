@@ -18,6 +18,7 @@ import { useLeaveAcademicPeriodMutation } from "../../api/userApi";
 const AcademicPeriodAbout = () => {
     const navigate = useNavigate();
     const { user, setUser } = useContext(AppContext);
+    console.log(user)
     const [openDialog, setOpenDialog] = useState(false);
     const [openConfirm, setOpenCofirm] = useState(false);
     const [confirmMessage, setConfirmMessage] = useState("");
@@ -93,10 +94,13 @@ const AcademicPeriodAbout = () => {
         return (
             <Container
                 sx={{
+                    position: 'absolute',
                     width: "100%",
+                    height: "100%",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
+                    backgroundColor: "rgba(255, 255, 255, 0.9)",
                 }}
             >
                 <CircularProgress />
