@@ -90,12 +90,8 @@ const SetFinalDeliverablePeriod = () => {
         end_date: endDate ? undefined : "La fecha de fin es requerida",
       });
     } else if (endDate <= startDate) {
-      setErrors({ 
-        end_date: "La fecha de fin debe ser mayor que la fecha de inicio",
-      });
-    } else if (formatDate2(startDate) < formatDate2(new Date())) {
       setErrors({
-        start_date: "La fecha de inicio no puede ser menor a la fecha actual",
+        end_date: "La fecha de fin debe ser mayor que la fecha de inicio",
       });
     } else {
       //sucess
