@@ -27,34 +27,34 @@ class AcademicPeriodController extends Controller
     {
         $user = Auth::user();
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'company_creation_start_date' => 'required|date|after_or_equal:start_date|before:company_creation_end_date',
-            'company_creation_end_date' => 'required|date|after:company_creation_start_date|before_or_equal:end_date',
-            'planning_start_date' => 'required|date|after_or_equal:company_creation_end_date|before:planning_end_date',
-            'planning_end_date' => 'required|date|after:planning_start_date|before_or_equal:end_date',
-            'description' => 'nullable|string',
-        ]);
+        // Obtener los datos validados desde el FormRequest
+        $validated = $request->validated();
 
-        // Convierte las fechas de entrada a UTC
-        $startDateUtc = Carbon::parse($request->start_date)->timezone('UTC');
-        $endDateUtc = Carbon::parse($request->end_date)->timezone('UTC');
+        // Convertir las fechas a UTC
+        $startDateUtc = Carbon::parse($validated['start_date'])->timezone('UTC');
+        $endDateUtc = Carbon::parse($validated['end_date'])->timezone('UTC');
+        $companyCreationStartUtc = Carbon::parse($validated['company_creation_start_date'])->timezone('UTC');
+        $companyCreationEndUtc = Carbon::parse($validated['company_creation_end_date'])->timezone('UTC');
+        $planningStartUtc = Carbon::parse($validated['planning_start_date'])->timezone('UTC');
+        $planningEndUtc = Carbon::parse($validated['planning_end_date'])->timezone('UTC');
 
         // Crear el periodo académico
         $academicPeriod = AcademicPeriod::create([
-            'name' => $request->name,
+            'name' => $validated['name'],
             'start_date' => $startDateUtc,
             'end_date' => $endDateUtc,
-            'company_creation_start_date' => Carbon::parse($validated['company_creation_start_date'])->timezone('UTC'),
-            'company_creation_end_date' => Carbon::parse($validated['company_creation_end_date'])->timezone('UTC'),
-            'planning_start_date' => Carbon::parse($request->planning_start_date)->timezone('UTC'),
-            'planning_end_date' => Carbon::parse($request->planning_end_date)->timezone('UTC'),
-            'description' => $request->description,
+            'company_creation_start_date' => $companyCreationStartUtc,
+            'company_creation_end_date' => $companyCreationEndUtc,
+            'planning_start_date' => $planningStartUtc,
+            'planning_end_date' => $planningEndUtc,
+            'description' => $validated['description'],
             'user_id' => $user->id,
         ]);
 
-        // Devolver respuesta de éxito
-        return response()->json($academicPeriod, Response::HTTP_CREATED);
+        return response()->json([
+            'message' => 'Periodo académico creado con éxito.',
+            'academic_period' => $academicPeriod,
+        ], Response::HTTP_CREATED);
     }
 
     public function getAllGroupedByTeacher()
@@ -125,40 +125,35 @@ class AcademicPeriodController extends Controller
             return response()->json(['message' => 'No tienes permiso para actualizar este periodo académico'], Response::HTTP_FORBIDDEN);
         }
 
-        $validated = $request->validate([
-            'start_date' => 'sometimes|date|before:end_date',
-            'end_date' => 'sometimes|date|after:start_date',
-            'company_creation_start_date' => 'sometimes|date|after_or_equal:start_date|before:company_creation_end_date',
-            'company_creation_end_date' => 'sometimes|date|after:company_creation_start_date|before:planning_start_date',
-            'planning_start_date' => 'sometimes|date|after_or_equal:company_creation_end_date|before:planning_end_date',
-            'planning_end_date' => 'sometimes|date|after:planning_start_date|before_or_equal:end_date',
-        ]);
-
-        $companies = $academicPeriod->companies()->pluck('id');
-
-        $activeMilestones = Milestone::whereHas('planning', function ($query) use ($companies) {
-            $query->whereIn('company_id', $companies);
+        // Verificar si hay hitos activos asociados al periodo académico
+        $activeMilestones = Milestone::whereHas('planning', function ($query) use ($academicPeriod) {
+            $query->whereIn('company_id', $academicPeriod->companies()->pluck('id'));
         })
-            ->whereDate('start_date', '<=', now())
-            ->whereDate('end_date', '>=', now())
-            ->exists();
+        ->whereDate('start_date', '<=', now())
+        ->whereDate('end_date', '>=', now())
+        ->exists();
 
         if ($activeMilestones) {
             return response()->json(['message' => 'No puedes actualizar las fechas porque ya existen hitos activos.'], Response::HTTP_BAD_REQUEST);
         }
 
-        $academicPeriod->update([
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'company_creation_start_date' => $request->company_creation_start_date,
-            'company_creation_end_date' => $request->company_creation_end_date,
-            'planning_start_date' => $request->planning_start_date,
-            'planning_end_date' => $request->planning_end_date,
-        ]);
+        // Obtener los datos validados desde el FormRequest
+        $validated = $request->validated();
+
+        // Actualizar los campos dinámicamente usando la función `only` para evitar código repetitivo
+        $academicPeriod->update(array_filter([
+            'start_date' => isset($validated['start_date']) ? Carbon::parse($validated['start_date'])->timezone('UTC') : null,
+            'end_date' => isset($validated['end_date']) ? Carbon::parse($validated['end_date'])->timezone('UTC') : null,
+            'company_creation_start_date' => isset($validated['company_creation_start_date']) ? Carbon::parse($validated['company_creation_start_date'])->timezone('UTC') : null,
+            'company_creation_end_date' => isset($validated['company_creation_end_date']) ? Carbon::parse($validated['company_creation_end_date'])->timezone('UTC') : null,
+            'planning_start_date' => isset($validated['planning_start_date']) ? Carbon::parse($validated['planning_start_date'])->timezone('UTC') : null,
+            'planning_end_date' => isset($validated['planning_end_date']) ? Carbon::parse($validated['planning_end_date'])->timezone('UTC') : null,
+            'description' => $validated['description'] ?? null,
+        ]));
 
         return response()->json([
-            'message' => 'Periodo académico actualizado con éxito',
-            'academic_period' => $academicPeriod
+            'message' => 'Periodo académico actualizado con éxito.',
+            'academic_period' => $academicPeriod->refresh(),
         ], Response::HTTP_OK);
     }
 
