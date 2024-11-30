@@ -23,6 +23,7 @@ import {
 import { useParams } from "react-router-dom";
 import { CircularProgress, Container } from "@mui/material";
 import moment from "moment-timezone";
+import { formatDate2 } from "../utils/validaciones";
 
 const SetFinalDeliverablePeriod = () => {
   const { id } = useParams();
@@ -88,10 +89,13 @@ const SetFinalDeliverablePeriod = () => {
         start_date: startDate ? undefined : "La fecha de inicio es requerida",
         end_date: endDate ? undefined : "La fecha de fin es requerida",
       });
-    } else if (endDate < startDate) {
+    } else if (endDate <= startDate) {
+      setErrors({ 
+        end_date: "La fecha de fin debe ser mayor que la fecha de inicio",
+      });
+    } else if (formatDate2(startDate) < formatDate2(new Date())) {
       setErrors({
-        end_date:
-          "La fecha de fin debe ser mayor o igual que la fecha de inicio",
+        start_date: "La fecha de inicio no puede ser menor a la fecha actual",
       });
     } else {
       //sucess

@@ -89,19 +89,25 @@ const AcademicPeriodList = () => {
         justifyContent="flex-start" // Mantener alineación de izquierda a derecha
         sx={{ gap: 2 }} // Espacio entre tarjetas
       >
-        {periods.map((period) => (
-          <Box
-            key={period.id}
-            flexBasis={{
-              xs: "100%", // 1 item
-              sm: "48%", // 2 items
-              md: "30%", // 3 items
-            }}
-            sx={{ minWidth: 0 }}
-          >
-            <AcademicPeriodCard period={period} isEnroll={false} />
-          </Box>
-        ))}
+        {periods?.length === 0 ? (
+          <Typography>
+            No tiene periodos académicos creados.
+          </Typography>
+        ) : (
+          periods.map((period) => (
+            <Box
+              key={period.id}
+              flexBasis={{
+                xs: "100%", // 1 item
+                sm: "48%", // 2 items
+                md: "30%", // 3 items
+              }}
+              sx={{ minWidth: 0 }}
+            >
+              <AcademicPeriodCard period={period} isEnroll={false} />
+            </Box>
+          ))
+        )}
       </Box>
     </Container>
   );
