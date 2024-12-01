@@ -13,7 +13,7 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useCreateAcademicPeriodMutation } from "../api/academicPeriodApi";
 import { useNavigate } from "react-router-dom";
-import { differenceInDays, set } from "date-fns";
+import { differenceInDays } from "date-fns";
 import moment from "moment-timezone";
 
 const RegisterAcademicPeriod = () => {
@@ -60,7 +60,7 @@ const RegisterAcademicPeriod = () => {
                 }));
             }
         }
-    }, [isSuccess, isError, error, data]);
+    }, [isSuccess, isError, error, data, navigate]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -80,6 +80,12 @@ const RegisterAcademicPeriod = () => {
         setForm((prevForm) => ({
             ...prevForm,
             [name]: date,
+            ...(name === "start_date" || name === "end_date" ? {
+                company_creation_start_date: null,
+                company_creation_end_date: null,
+                planning_start_date: null,
+                planning_end_date: null,
+            } : {}),
         }));
         setErrors((prevErrors) => ({
             ...prevErrors,
