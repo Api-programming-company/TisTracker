@@ -96,9 +96,17 @@ const RegisterAcademicPeriod = () => {
         if (!form.start_date)
             newErrors.start_date = "Este campo es obligatorio.";
         if (!form.end_date) newErrors.end_date = "Este campo es obligatorio.";
+        if (!form.company_creation_end_date)
+            newErrors.company_creation_end_date = "Este campo es obligatorio.";
+        if (!form.company_creation_start_date)
+            newErrors.company_creation_start_date =
+                "Este campo es obligatorio.";
+        if (!form.planning_end_date)
+            newErrors.planning_end_date = "Este campo es obligatorio.";
+        if (!form.planning_start_date)
+            newErrors.planning_start_date = "Este campo es obligatorio.";
         if (form.description.length > MAX_DESCRIPTION_LENGTH)
             newErrors.description = `La descripción no puede exceder ${MAX_DESCRIPTION_LENGTH} caracteres.`;
-
         // Validación de fechas
         if (form.start_date && form.end_date) {
             if (form.start_date > form.end_date) {
@@ -233,6 +241,7 @@ const RegisterAcademicPeriod = () => {
                                     onChange={(date) =>
                                         handleDateChange("start_date", date)
                                     }
+                                    disablePast={true}
                                     slotProps={{
                                         textField: {
                                             error: errors.start_date,
@@ -280,6 +289,13 @@ const RegisterAcademicPeriod = () => {
                                             date
                                         )
                                     }
+                                    disabled={
+                                        !form.start_date ||
+                                        !form.end_date ||
+                                        isLoading
+                                    }
+                                    maxDate={form.end_date}
+                                    minDate={form.start_date}
                                     slotProps={{
                                         textField: {
                                             error: errors.company_creation_start_date,
@@ -290,7 +306,6 @@ const RegisterAcademicPeriod = () => {
                                         },
                                     }}
                                     format="dd/MM/yyyy"
-                                    disabled={isLoading}
                                 />
                                 <DatePicker
                                     label="Fecha Fin Empresas"
@@ -301,6 +316,13 @@ const RegisterAcademicPeriod = () => {
                                             date
                                         )
                                     }
+                                    disabled={
+                                        !form.start_date ||
+                                        !form.end_date ||
+                                        isLoading
+                                    }
+                                    maxDate={form.end_date}
+                                    minDate={form.start_date}
                                     slotProps={{
                                         textField: {
                                             error: errors.company_creation_end_date,
@@ -311,7 +333,6 @@ const RegisterAcademicPeriod = () => {
                                         },
                                     }}
                                     format="dd/MM/yyyy"
-                                    disabled={isLoading}
                                 />
                             </Box>
 
@@ -342,7 +363,13 @@ const RegisterAcademicPeriod = () => {
                                         },
                                     }}
                                     format="dd/MM/yyyy"
-                                    disabled={isLoading}
+                                    disabled={
+                                        !form.start_date ||
+                                        !form.end_date ||
+                                        isLoading
+                                    }
+                                    maxDate={form.end_date}
+                                    minDate={form.start_date}
                                 />
                                 <DatePicker
                                     label="Fecha Fin Planificación"
@@ -362,7 +389,13 @@ const RegisterAcademicPeriod = () => {
                                         },
                                     }}
                                     format="dd/MM/yyyy"
-                                    disabled={isLoading}
+                                    disabled={
+                                        !form.start_date ||
+                                        !form.end_date ||
+                                        isLoading
+                                    }
+                                    maxDate={form.end_date}
+                                    minDate={form.start_date}
                                 />
                             </Box>
                         </LocalizationProvider>
