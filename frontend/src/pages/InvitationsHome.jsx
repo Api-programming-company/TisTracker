@@ -17,7 +17,7 @@ const InvitationsHome = () => {
       path: `/company/${user.company?.company_id}/invite`,
     },
     {
-      label: "Confirmar integrantes de Grupo Empresa",
+      label: "Enviar Solicitud de Creación de Grupo Empresa",
       path: `/company/${user.company?.company_id}/confirm`,
     },
     {
@@ -37,7 +37,7 @@ const InvitationsHome = () => {
   ];
 
   return (
-    <Box sx={{ mb: 3 }}>
+    <Box sx={{ mb: 1 }}>
       <Typography variant="h4" gutterBottom>
         Invitaciones
       </Typography>

@@ -41,6 +41,15 @@ const userApi = apiSlice.injectEndpoints({
         body: { token },
       }),
     }),
+    leaveAcademicPeriod: builder.mutation({
+      query: () => ({
+        url: "user/leave-academic-period",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        }
+      }),
+    }),
     checkUser: builder.query({
       query: () => "user",
     }),
@@ -56,5 +65,6 @@ export const {
   useLogoutUserMutation,
   useVerifyEmailMutation,
   useLazyCheckUserQuery,
-  useGetGradesQuery
+  useGetGradesQuery,
+  useLeaveAcademicPeriodMutation,
 } = userApi;

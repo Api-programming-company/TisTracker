@@ -65,13 +65,14 @@ class PlanningController extends Controller
                 ], 422);
             }
 
-            // Verificar que las fechas de los hitos estén dentro del rango del periodo académico
+            // Validar que las fechas de los hitos estén dentro del rango de planificación del periodo académico
             foreach ($validated['milestones'] as $milestone) {
-                if ($milestone['start_date'] < $academicPeriod->start_date || $milestone['end_date'] > $academicPeriod->end_date) {
+                if ($milestone['start_date'] < $academicPeriod->planning_start_date || 
+                    $milestone['end_date'] > $academicPeriod->planning_end_date) {
                     return response()->json([
-                        'message' => 'Las fechas de los hitos deben estar dentro del rango del periodo académico.',
+                        'message' => 'Las fechas de los hitos deben estar dentro del rango de planificación del periodo académico.',
                         'errors' => [
-                            'milestones' => 'El hito ' . $milestone['name'] . ' tiene fechas fuera del periodo académico.'
+                            'milestones' => 'El hito ' . $milestone['name'] . ' tiene fechas fuera del rango permitido.'
                         ]
                     ], 422);
                 }

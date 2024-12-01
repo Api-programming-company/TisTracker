@@ -88,9 +88,11 @@ class CompanyController extends Controller
             $academicPeriod = AcademicPeriod::findOrFail($validatedData['academic_period_id']);
             $currentDate = now();
 
-            if ($currentDate->lt($academicPeriod->start_date) || $currentDate->gt($academicPeriod->end_date)) {
+            // Verificar si la fecha actual está dentro del rango de creación de compañías
+            if ($currentDate->lt($academicPeriod->company_creation_start_date) || 
+                $currentDate->gt($academicPeriod->company_creation_end_date)) {
                 return response()->json([
-                    'message' => 'No está dentro de las fechas de registro de empresas.',
+                    'message' => 'No está dentro del rango de fechas permitido para registrar empresas.',
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
@@ -369,7 +371,7 @@ class CompanyController extends Controller
                 'email' => "sometimes|required|email|unique:companies,email,{$id}",
                 'address' => 'sometimes|required|string|max:255',
                 'phone' => 'sometimes|required|int|max:99999999|min:10000000|unique:companies,phone',
-                'status' => 'sometimes|required|in:A,R,P',
+                'status' => 'sometimes|required|in:A,C,P',
                 'members' => 'sometimes|required|array',
                 'members.*' => 'exists:users,id'
             ]);

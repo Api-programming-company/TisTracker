@@ -1,17 +1,30 @@
 import { Card, CardContent, CardHeader, Typography } from "@mui/material";
-import React, { useEffect } from "react";
+import { current } from "@reduxjs/toolkit";
+import React, { useEffect,useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CompanyCard2 = ({ company }) => {
+  const navigate = useNavigate();
 
-  // const handleClick = () => {
-  //   navigate(`/planning_spreadsheet/${company.planning.id}`);
-  // };
+  const handleClick = () => {
+    navigate(`/planning_spreadsheet/${company.planning.id}`);
+  };
+  const [currentMilestone,setCurrentMilestone] = useState(-1);
+  const [currentMiltestoneDate,setCurrentMilestoneDate] = useState("");
+
+  useEffect(() => {
+    if (company.planning) {
+      const currentIndex = company.planning.milestones.findIndex((milestone) => milestone.status === "P")
+      setCurrentMilestone(currentIndex);
+      setCurrentMilestoneDate(new Date(company.planning.milestones[currentIndex].end_date));
+    }
+  },[company.planning])
 
 
 
   return (
     <Card
-      // onClick={handleClick}
+      onClick={handleClick}
       sx={{
         paddingX:"1rem",
         mb: 2,
@@ -31,7 +44,7 @@ const CompanyCard2 = ({ company }) => {
         variant="body2"
         noWrap
         sx={{
-          color: "primary.main",
+          color: currentMiltestoneDate === "" ? "primary.main":currentMiltestoneDate.getTime() < new Date().getTime() ? "error.main" :"primary.main",
           mt: 1,
           mb: 0,
           ml: 2,
@@ -39,11 +52,12 @@ const CompanyCard2 = ({ company }) => {
         }}
       >
         {company.planning && company.planning.milestones &&
-          (company.planning.milestones[0] &&
-          new Date(company.planning.milestones[0].end_date).getTime() -
-            new Date().getTime() <=
-            6 * 24 * 60 * 60 * 1000
-            ? "Entregable"
+          (currentMilestone === -1 ?  "Sin entregable":
+
+          currentMiltestoneDate.getTime() < new Date().getTime() ?
+            "Entregable (retrasado)" :
+            new Date().getTime() + 6 * 24 * 60 * 60 * 1000 < currentMiltestoneDate.getTime()  
+            ?  "Entregable"
             : "Revisión")}
       </Typography>
 
@@ -69,19 +83,17 @@ const CompanyCard2 = ({ company }) => {
         <Typography variant="body2" noWrap>
           <b>Dia de entregable:</b>{" "}
           {company.planning &&
-            company.planning.milestones &&
-            new Date(
-              Date.parse(
-                company.planning.milestones.find(
-                  (milestone) =>
-                    new Date(milestone.end_date).getTime() >= new Date().getTime() - 1000 * 60 * 60 * 24
-                ).end_date
-              ) + 1000 * 60 * 60 * 24
-            ).toLocaleDateString("es-AR", {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-            })}
+            company.planning.milestones && currentMilestone !== -1 ?
+              new Date(
+                Date.parse(
+                  company.planning.milestones[currentMilestone].end_date
+                )
+              ).toLocaleDateString("es-AR", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+              })
+              : "Sin entregable"}
         </Typography>
       </CardContent>
     </Card>

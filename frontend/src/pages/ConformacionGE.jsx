@@ -19,6 +19,7 @@ import {
   useUpdateCompanyByIdMutation,
 } from "../api/companyApi";
 import DialogMod from "../components/DialogMod";
+import BackBtn from "../components/navigation/BackBtn";
 
 const statusMap = {
   A: "Aceptado",
@@ -132,151 +133,156 @@ const ConformacionGE = () => {
   };
 
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ mt: 12, mb: 10 }}>
-        <Typography
-          variant="h4"
-          component="h1"
-          gutterBottom
-          sx={{ textAlign: "center", mb: 3 }}
-        >
-          Confirmar integrantes de <br /> Grupo Empresa
-        </Typography>
-        {data.company.status === "C" ? (
-          <form onSubmit={handleSubmit}>
-            <FormControl fullWidth sx={{ mb: 2 }}>
-              <Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    gap: 2,
-                  }}
-                >
-                  <Typography>
-                    Estudiantes invitados a la grupo empresa:
-                  </Typography>
-                  <Typography
+    <Box className="section-container">
+      <BackBtn/>
+      <Container maxWidth="sm">
+        <Box sx={{ mb: 6 }}>
+          <Typography
+            variant="h4"
+            component="h1"
+            gutterBottom
+            sx={{ textAlign: "center", mb: 3 }}
+          >
+            Enviar solicitud de creación de <br /> Grupo Empresa
+          </Typography>
+          {data.company.status === "C" ? (
+            <form onSubmit={handleSubmit}>
+              <FormControl fullWidth sx={{ mb: 2 }}>
+                <Box>
+                  <Box
                     sx={{
-                      color:
-                        acceptedMembersCount === data.company.members.length
-                          ? "green"
-                          : "red",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      gap: 2,
                     }}
                   >
-                    {acceptedMembersCount}/{data.company.members.length}
-                  </Typography>
-                </Box>
-
-                <List>
-                  {data.company.members.map((member) => (
-                    <ListItem
-                      key={member.id}
-                      secondaryAction={
-                        <Typography variant="body2" sx={{ ml: 2 }}>
-                          {statusMap[member.status]}
-                        </Typography>
-                      }
-                      button
+                    <Typography>
+                      Estudiantes de la grupo empresa:
+                    </Typography>
+                    <Typography
                       sx={{
-                        backgroundColor: "info.gray",
-                        mb: 0.5,
+                        color:
+                          acceptedMembersCount === data.company.members.length
+                            ? "green"
+                            : "red",
                       }}
                     >
-                      <ListItemIcon>
-                        <Avatar
-                          sx={{
-                            bgcolor: "primary.main",
-                            color: "white",
-                            width: 56,
-                            height: 56,
-                            mr: 2,
-                          }}
-                        >
-                          {member.user.first_name[0]}
-                          {member.user.last_name[0]}
-                        </Avatar>
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={`${member.user.first_name} ${member.user.last_name}`}
-                        secondary={
-                          <Typography variant="body2">
-                            {member.user.email}
+                      {acceptedMembersCount}/{data.company.members.length}
+                    </Typography>
+                  </Box>
+
+                  <List>
+                    {data.company.members.map((member,index) => (
+                      <ListItem
+                        key={member.id}
+                        secondaryAction={
+                          <Typography variant="body2" sx={{ ml: 2 }}>
+                            {index === 0 ? <b>Representante</b>: statusMap[member.status]}
+                            
                           </Typography>
                         }
-                      />
-                    </ListItem>
-                  ))}
-                </List>
-              </Box>
+                        button
+                        sx={{
+                          backgroundColor: "info.gray",
+                          mb: 0.5,
+                        }}
+                      >
+                        <ListItemIcon>
+                          <Avatar
+                            sx={{
+                              bgcolor: "primary.main",
+                              color: "white",
+                              width: 56,
+                              height: 56,
+                              mr: 2,
+                            }}
+                          >
+                            {member.user.first_name[0]}
+                            {member.user.last_name[0]}
+                          </Avatar>
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={`${member.user.first_name} ${member.user.last_name}`}
+                          secondary={
+                            <Typography variant="body2">
+                              {member.user.email}
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                </Box>
 
-              <Typography component="p">
-                {acceptedMembersCount === data.company.members.length
-                  ? "Todos los estudiantes que aceptaron formarán parte en tu grupo empresa. ¿Deseas enviar la lista oficial a tu docente de TIS?"
-                  : "Todos los estudiantes deben aceptar o rechazar la invitación para conformar la lista oficial de la grupo empresa, antes de eso no podrás enviarle la solicitud de conformación a tu docente TIS."}
-              </Typography>
+                <Typography component="p">
+                  {acceptedMembersCount === data.company.members.length
+                    ? "Todos los estudiantes que aceptaron formarán parte en tu grupo empresa. ¿Deseas enviar la lista oficial a tu docente de TIS?"
+                    : "Todos los estudiantes deben aceptar o rechazar la invitación para conformar la lista oficial de la grupo empresa, antes de eso no podrás enviarle la solicitud de conformación a tu docente TIS."}
+                </Typography>
 
-              <Typography
-                component="p"
-                sx={{ color: "info.details", fontSize: "14px", mt: 2 }}
+                <Typography
+                  component="p"
+                  sx={{ color: "info.details", fontSize: "14px", mt: 2 }}
+                >
+                  Nota: Solamente se enviará la solicitud de conformación de la
+                  grupo empresa, tu docente todavía debe aceptar a tu equipo de
+                  trabajo.
+                </Typography>
+              </FormControl>
+
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                disabled={isLoading || isUpdateCompanyLoading}
+                sx={{
+                  display: "block",
+                  mx: "auto",
+                  px: 12,
+                  py: 1,
+                }}
               >
-                Nota: Solamente se enviará la solicitud de conformación de la
-                grupo empresa, tu docente todavía debe aceptar a tu equipo de
-                trabajo.
-              </Typography>
-            </FormControl>
+                {isLoading || isUpdateCompanyLoading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  "Enviar Solicitud"
+                )}
+              </Button>
+              <DialogMod
+                open={openConfirmModal}
+                setOpen={setOpenConfirmModal}
+                title={"Confirmación"}
+                content={"Solicitud enviada correctamente."}
+                onAccept={handleConfirmAccept}
+                onCancel={handleConfirmAccept}
+                showButtonCancel={false}
+              />
+            </form>
+          ) : data.company.status === "P" ? (
+            <Typography>
+              Ya enviaste la solicitud de creación de grupo empresa, espera a que tu docente
+              acepte o rechace la solicitud.
+            </Typography>
+          ) : data.company.status === "A" ? (
+            <Typography>
+              La grupo empresa fue aceptada.
+            </Typography>
+          ) : (
+            <Typography>
+              La grupo empresa fue rechazada.
+            </Typography>
+          )}
 
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              disabled={isLoading || isUpdateCompanyLoading}
-              sx={{
-                display: "block",
-                mx: "auto",
-                px: 12,
-                py: 1,
-              }}
-            >
-              {isLoading || isUpdateCompanyLoading ? (
-                <CircularProgress size={24} color="inherit" />
-              ) : (
-                "CONFIRMAR INTEGRANTES"
-              )}
-            </Button>
-            <DialogMod
-              open={openConfirmModal}
-              setOpen={setOpenConfirmModal}
-              title={"Confirmación"}
-              content={"Solicitud enviada correctamente."}
-              onAccept={handleConfirmAccept}
-              onCancel={handleConfirmAccept}
-              showButtonCancel={false}
-            />
-          </form>
-        ) : data.company.status === "P" ? (
-          <Typography>
-            Ya enviaste la confirmación de integrantes, espera a que tu docente
-            acepte o rechace la solicitud.
-          </Typography>
-        ) : data.company.status === "A" ? (
-          <Typography>
-            La grupo empresa fue aceptada.
-          </Typography>
-        ) : (
-          <Typography>
-            La grupo empresa fue rechazada.
-          </Typography>
-        )}
-
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={8000}
-          onClose={handleSnackbarClose}
-          message={snackbarMessage}
-        />
-      </Box>
-    </Container>
+          <Snackbar
+            open={snackbarOpen}
+            autoHideDuration={8000}
+            onClose={handleSnackbarClose}
+            message={snackbarMessage}
+          />
+        </Box>
+      </Container>
+    </Box>
+    
   );
 };
 
