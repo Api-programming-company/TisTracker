@@ -98,7 +98,7 @@ const VerGE = () => {
     const verGEe = [
         {
             text: "Agregar Planificación",
-            color: "success",
+            color: "info",
             path: `/company/${id}/plannification`,
         },
         {
@@ -111,17 +111,17 @@ const VerGE = () => {
         },
         {
             text: "Evaluar Empresa",
-            color: "error",
+            color: "info",
             path: `/company-evaluation/${id}`,
         },
         {
             text: "Autoevaluar empresa",
-            color: "error",
+            color: "info",
             path: `/autoevaluation/${id}`,
         },
         {
             text: "Abandonar empresa",
-            color: "warning",
+            color: "error",
             onClick: () => {
                 setOpenLeaveModal(true);
             },
