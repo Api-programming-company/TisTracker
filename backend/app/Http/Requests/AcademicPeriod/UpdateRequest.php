@@ -59,6 +59,31 @@ class UpdateRequest extends FormRequest
                     }
                 },
             ],
+            'company_creation_start_date' => [
+                'nullable',
+                'date',
+                'after_or_equal:start_date',
+                'before:company_creation_end_date',
+            ],
+            'company_creation_end_date' => [
+                'nullable',
+                'date',
+                'after:company_creation_start_date',
+                'before:planning_start_date',
+            ],
+            'planning_start_date' => [
+                'nullable',
+                'date',
+                'after_or_equal:company_creation_end_date',
+                'before:planning_end_date',
+            ],
+            'planning_end_date' => [
+                'nullable',
+                'date',
+                'after:planning_start_date',
+                'before_or_equal:end_date',
+            ],
+            'description' => 'nullable|string',
         ];
     }
     public function messages()
@@ -70,6 +95,11 @@ class UpdateRequest extends FormRequest
             'end_date.required' => 'La fecha de fin es obligatoria.',
             'end_date.date' => 'La fecha de fin debe ser una fecha válida.',
             'end_date.after' => 'La fecha de fin debe ser posterior a la fecha de inicio.',
+            'company_creation_start_date.date' => 'La fecha de inicio para la creación de compañías debe ser válida.',
+            'company_creation_end_date.date' => 'La fecha de finalización para la creación de compañías debe ser válida.',
+            'planning_start_date.date' => 'La fecha de inicio para la planificación debe ser válida.',
+            'planning_end_date.date' => 'La fecha de finalización para la planificación debe ser válida.',
+            'description.string' => 'La descripción debe ser una cadena de texto.',
         ];
     }
 }
