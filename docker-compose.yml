@@ -20,6 +20,7 @@ services:
       - tis-network
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 networks:
   tis-network:
     driver: bridge
