@@ -20,6 +20,7 @@ import { useUpdateCompanyPlanningByIdMutation } from "../api/companyApi";
 import { useNavigate } from "react-router-dom";
 import AppContext from "../context/AppContext";
 import { useLeaveCompanyMutation } from "../api/companyApi";
+import DialogMod from "../components/DialogMod";
 
 const VerGE = () => {
     const { id } = useParams();
@@ -97,7 +98,7 @@ const VerGE = () => {
     const verGEe = [
         {
             text: "Agregar Planificación",
-            color: "success",
+            color: "info",
             path: `/company/${id}/plannification`,
         },
         {
@@ -110,17 +111,17 @@ const VerGE = () => {
         },
         {
             text: "Evaluar Empresa",
-            color: "error",
+            color: "info",
             path: `/company-evaluation/${id}`,
         },
         {
             text: "Autoevaluar empresa",
-            color: "error",
+            color: "info",
             path: `/autoevaluation/${id}`,
         },
         {
             text: "Abandonar empresa",
-            color: "warning",
+            color: "error",
             onClick: () => {
                 setOpenLeaveModal(true);
             },
@@ -197,51 +198,37 @@ const VerGE = () => {
 
     return (
         <Box sx={{ maxWidth: 900, margin: "auto", padding: 2, mb: 15 }}>
-            <CompanyDetails company={formData.company} setFormData={setFormData}/>
+            <CompanyDetails
+                company={formData.company}
+                setFormData={setFormData}
+            />
             <Divider sx={{ my: 4 }} />
 
             {/* Modal para mostrar si no hay planificación */}
-            <Dialog open={openModal} onClose={() => setOpenModal(false)}>
-                <DialogTitle>Planificación no encontrada</DialogTitle>
-                <DialogContent>
-                    La empresa no tiene una planificación asignada.
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setOpenModal(false)} color="primary">
-                        Cerrar
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            <DialogMod
+                open={openModal}
+                setOpen={setOpenModal}
+                title={"Planificación no encontrada"}
+                content={"La empresa no tiene una planificación asignada."}
+                onAccept={() => setOpenModal(false)}
+                showButtonCancel={false}
+            />
 
             {/* Modal para salir de la empresa */}
-            <Dialog
+            <DialogMod
                 open={openLeaveModal}
-                onClose={() => setOpenLeaveModal(false)}
-            >
-                <DialogTitle>Confirmación de salida</DialogTitle>
-                <DialogContent>
-                    ¿Estás seguro de que deseas abandonar la empresa? Esta
-                    acción no se puede deshacer.
-                </DialogContent>
-                <DialogActions>
-                    <Button
-                        onClick={() => setOpenLeaveModal(false)}
-                        color="secondary"
-                    >
-                        Cancelar
-                    </Button>
-                    <Button
-                        onClick={() => {
-                            console.log("Abandonar empresa", id);
-                            leaveCompany({ companyId: id });
-                            setOpenLeaveModal(false);
-                        }}
-                        color="primary"
-                    >
-                        Confirmar
-                    </Button>
-                </DialogActions>
-            </Dialog>
+                setOpen={setOpenLeaveModal}
+                title={"Confirmación"}
+                content={
+                    "¿Estás seguro de que deseas abandonar la empresa? Esta acción no se puede deshacer."
+                }
+                onAccept={() => {
+                    console.log("Abandonar empresa", id);
+                    leaveCompany({ companyId: id });
+                    setOpenLeaveModal(false);
+                }}
+                showButtonCancel={true}
+            />
 
             {/* Botones de navegación */}
             <Stack
