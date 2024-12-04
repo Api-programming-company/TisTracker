@@ -44,7 +44,7 @@ const CompanyCard2 = ({ company }) => {
         variant="body2"
         noWrap
         sx={{
-          color: currentMiltestoneDate === "" ? "primary.main":currentMiltestoneDate.getTime() < new Date().getTime() ? "error.main" :"primary.main",
+          color: currentMiltestoneDate === "" ? "primary.main":currentMiltestoneDate.getTime() < new Date().getTime() -  24 * 60 * 60 * 1000 ? "error.main" :"primary.main",
           mt: 1,
           mb: 0,
           ml: 2,
@@ -54,7 +54,7 @@ const CompanyCard2 = ({ company }) => {
         {company.planning && company.planning.milestones &&
           (currentMilestone === -1 ?  "Sin entregable":
 
-          currentMiltestoneDate.getTime() < new Date().getTime() ?
+          currentMiltestoneDate.getTime() < new Date().getTime() -  24 * 60 * 60 * 1000 ?
             "Entregable (retrasado)" :
             new Date().getTime() + 6 * 24 * 60 * 60 * 1000 < currentMiltestoneDate.getTime()  
             ?  "Entregable"
