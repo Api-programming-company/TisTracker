@@ -3,6 +3,7 @@ import { Container, Typography, Paper, Box, Divider } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AppContext from "../../context/AppContext";
 import { InvitationsHome } from "../../pages";
+import AcademicPeriodAbout from "../academicPeriod/AcademicPeriodAbout";
 
 const StudentHome = () => {
   const { user } = useContext(AppContext);
@@ -52,6 +53,7 @@ const StudentHome = () => {
               </Box>
             ))}
             <InvitationsHome />
+            <AcademicPeriodAbout />
           </>
         ) : (
           <Box flexBasis={{ xs: "100%", md: "30%" }}>

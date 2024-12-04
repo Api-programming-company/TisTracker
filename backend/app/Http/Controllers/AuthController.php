@@ -188,4 +188,41 @@ class AuthController extends Controller
             'grades' => $formattedGrades
         ], Response::HTTP_OK);
     }
+
+    public function leaveAcademicPeriod(Request $request)
+    {
+        $currentUser = Auth::user();
+
+        // Verificar si el usuario autenticado es un estudiante
+        if ($currentUser->user_type !== 'E') {
+            return response()->json([
+                'message' => 'Solo los estudiantes pueden abandonar un periodo académico.'
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        // Verificar si el estudiante esta en un periodo académico
+        if ($currentUser->academic_period_id === null) {
+            return response()->json([
+                'message' => 'No está inscrito en un periodo académico.'
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        // Verificar si el estudiante es miembro de una empresa
+        if ($currentUser->companyUsers()->where('status', 'A')->exists()) {
+            return response()->json([
+                'message' => 'No puedes abandonar el periodo académico mientras seas miembro de una empresa.'
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        // Actualizar el periodo académico del estudiante
+        $currentUser->update([
+            'academic_period_id' => null
+        ]);
+
+        // Devolver la respuesta
+        return response()->json([
+            'message' => 'Has abandonado el periodo académico.',
+            'user' => $currentUser
+        ], Response::HTTP_OK);
+    }
 }

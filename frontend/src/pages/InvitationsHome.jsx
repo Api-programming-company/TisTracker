@@ -37,7 +37,7 @@ const InvitationsHome = () => {
   ];
 
   return (
-    <Box sx={{ mb: 3 }}>
+    <Box sx={{ mb: 1 }}>
       <Typography variant="h4" gutterBottom>
         Invitaciones
       </Typography>

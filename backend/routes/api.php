@@ -20,6 +20,7 @@ Route::prefix('user')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
     Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
+    Route::middleware('auth:sanctum')->post('leave-academic-period', [AuthController::class, 'leaveAcademicPeriod']);
 
     Route::middleware('auth:sanctum')->get('/', function (Request $request) {
         try {
@@ -62,6 +63,8 @@ Route::middleware('auth')->group(function () {
     Route::apiResource('company', CompanyController::class);
     Route::apiResource('invitations', CompanyUserController::class);
     Route::get('/student/company/{academicPeriodId}', [CompanyUserController::class, 'getStudentCompanyByAcademicPeriod']);
+    Route::post('companies/{companyId}/leave', [CompanyUserController::class, 'leaveCompany']);
+    Route::delete('companies/{companyId}/members/{userId}', [CompanyUserController::class, 'removeMember']);
 
     //buscador por correo solo estudiante
     Route::get('student/search/{email}', [AuthController::class, 'searchStudentByEmail']);
@@ -71,7 +74,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('grouped-by-teacher', [AcademicPeriodController::class, 'getAllGroupedByTeacher']);
     Route::post('enroll', [AcademicPeriodController::class, 'enroll']);
-    
+
     Route::apiResource('academic-periods', AcademicPeriodController::class);
     Route::apiResource('plannings', PlanningController::class);
 });

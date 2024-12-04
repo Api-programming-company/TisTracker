@@ -27,21 +27,34 @@ class AcademicPeriodController extends Controller
     {
         $user = Auth::user();
 
-        // Convierte las fechas de entrada a UTC
-        $startDateUtc = Carbon::parse($request->start_date)->timezone('UTC');
-        $endDateUtc = Carbon::parse($request->end_date)->timezone('UTC');
+        // Obtener los datos validados desde el FormRequest
+        $validated = $request->validated();
+
+        // Convertir las fechas a UTC
+        $startDateUtc = Carbon::parse($validated['start_date'])->timezone('UTC');
+        $endDateUtc = Carbon::parse($validated['end_date'])->timezone('UTC');
+        $companyCreationStartUtc = Carbon::parse($validated['company_creation_start_date'])->timezone('UTC');
+        $companyCreationEndUtc = Carbon::parse($validated['company_creation_end_date'])->timezone('UTC');
+        $planningStartUtc = Carbon::parse($validated['planning_start_date'])->timezone('UTC');
+        $planningEndUtc = Carbon::parse($validated['planning_end_date'])->timezone('UTC');
 
         // Crear el periodo académico
         $academicPeriod = AcademicPeriod::create([
-            'name' => $request->name,
+            'name' => $validated['name'],
             'start_date' => $startDateUtc,
             'end_date' => $endDateUtc,
-            'description' => $request->description,
+            'company_creation_start_date' => $companyCreationStartUtc,
+            'company_creation_end_date' => $companyCreationEndUtc,
+            'planning_start_date' => $planningStartUtc,
+            'planning_end_date' => $planningEndUtc,
+            'description' => $validated['description'],
             'user_id' => $user->id,
         ]);
 
-        // Devolver respuesta de éxito
-        return response()->json($academicPeriod, Response::HTTP_CREATED);
+        return response()->json([
+            'message' => 'Periodo académico creado con éxito.',
+            'academic_period' => $academicPeriod,
+        ], Response::HTTP_CREATED);
     }
 
     public function getAllGroupedByTeacher()
@@ -112,54 +125,43 @@ class AcademicPeriodController extends Controller
             return response()->json(['message' => 'No tienes permiso para actualizar este periodo académico'], Response::HTTP_FORBIDDEN);
         }
 
-        // Obtener las compañías asociadas al periodo académico
-        $companies = $academicPeriod->companies()->pluck('id');
-
-        // Verificar si existen hitos activos para las compañías asociadas al periodo académico
-        $activeMilestones = Milestone::whereHas('planning', function ($query) use ($companies) {
-            $query->whereIn('company_id', $companies);
+        // Verificar si hay hitos activos asociados al periodo académico
+        $activeMilestones = Milestone::whereHas('planning', function ($query) use ($academicPeriod) {
+            $query->whereIn('company_id', $academicPeriod->companies()->pluck('id'));
         })
-            ->whereDate('start_date', '<=', now())
-            ->whereDate('end_date', '>=', now())
-            ->exists();
+        ->whereDate('start_date', '<=', now())
+        ->whereDate('end_date', '>=', now())
+        ->exists();
 
         if ($activeMilestones) {
-            return response()->json([
-                'message' => 'No puedes actualizar las fechas porque ya existen hitos activos en este periodo.'
-            ], Response::HTTP_BAD_REQUEST);
+            return response()->json(['message' => 'No puedes actualizar las fechas porque ya existen hitos activos.'], Response::HTTP_BAD_REQUEST);
         }
 
-        // Actualizar fechas de inicio y fin del periodo académico
-        $academicPeriod->start_date = $request->start_date;
-        $academicPeriod->end_date = $request->end_date;
-        $academicPeriod->save();
+        // Obtener los datos validados desde el FormRequest
+        $validated = $request->validated();
 
-        // Mensaje de retroalimentación
+        // Actualizar los campos dinámicamente usando la función `only` para evitar código repetitivo
+        $academicPeriod->update(array_filter([
+            'start_date' => isset($validated['start_date']) ? Carbon::parse($validated['start_date'])->timezone('UTC') : null,
+            'end_date' => isset($validated['end_date']) ? Carbon::parse($validated['end_date'])->timezone('UTC') : null,
+            'company_creation_start_date' => isset($validated['company_creation_start_date']) ? Carbon::parse($validated['company_creation_start_date'])->timezone('UTC') : null,
+            'company_creation_end_date' => isset($validated['company_creation_end_date']) ? Carbon::parse($validated['company_creation_end_date'])->timezone('UTC') : null,
+            'planning_start_date' => isset($validated['planning_start_date']) ? Carbon::parse($validated['planning_start_date'])->timezone('UTC') : null,
+            'planning_end_date' => isset($validated['planning_end_date']) ? Carbon::parse($validated['planning_end_date'])->timezone('UTC') : null,
+            'description' => $validated['description'] ?? null,
+        ]));
+
         return response()->json([
-            'message' => 'La fecha ha sido ajustada con éxito',
-            'academic_period' => $academicPeriod
+            'message' => 'Periodo académico actualizado con éxito.',
+            'academic_period' => $academicPeriod->refresh(),
         ], Response::HTTP_OK);
     }
 
+
     public function show($id)
     {
-        // Obtener el usuario autenticado
-        $user = Auth::user();
+        $academicPeriod = AcademicPeriod::with('creator')->findOrFail($id);
 
-        // Verificar si el usuario es un docente
-        if ($user->user_type !== 'D') {
-            return response()->json(['message' => 'No tiene permiso para ver este periodo academico'], Response::HTTP_FORBIDDEN);
-        }
-
-        // Buscar el periodo académico por su ID
-        $academicPeriod = AcademicPeriod::findOrFail($id);
-
-        // Verificar si el periodo académico pertenece al docente autenticado
-        if ($academicPeriod->user_id !== $user->id) {
-            return response()->json(['message' => 'No tiene permiso para ver este periodo academico'], Response::HTTP_FORBIDDEN);
-        }
-
-        // Retornar el periodo académico encontrado con un mensaje de éxito
         return response()->json([
             'message' => 'Periodo académico obtenido con éxito',
             'academic_period' => $academicPeriod

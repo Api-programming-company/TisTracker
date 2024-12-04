@@ -36,6 +36,7 @@ const PlanningSpreadSheet = () => {
   const [
     update,
     {
+      data: updateData,
       isLoading: updateLoading,
       isSuccess: updatedSuccessfully,
       isError: updateIsError,
@@ -107,6 +108,15 @@ const PlanningSpreadSheet = () => {
       },
     });
   };
+
+
+  useEffect(() => {
+    console.log(updateData);
+    if(updateIsError){
+      console.log(updateError);
+    }
+  },[updateData, updateIsError,updateError])
+
 
   useEffect(() => {
     window.onbeforeunload = (e) => {

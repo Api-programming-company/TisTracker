@@ -30,19 +30,23 @@ const PlanningItem = ({deliverable,index,milestone_id}) => {
       
         case "expected_result":
             change[name] = parseInt(value);
+            dispatch(changeDeliverable({id : deliverable.id, field: name, value: parseInt(value), milestone_id}));
         break;
         case "actual_result":
                 change[name] = parseInt(value);
+                dispatch(changeDeliverable({id : deliverable.id, field: name, value: parseInt(value), milestone_id}));
+
             break;
         case "observations":
             change.observations = value;
+            dispatch(changeDeliverable({id : deliverable.id, field: name, value, milestone_id}));
+
             break;
         default:
             console.log("This state doesn't exist");
             break;
     }
     
-    dispatch(changeDeliverable({id : deliverable.id, field: name, value, milestone_id}));
 }
 const editable = (status === "A" || status === "L" || currentMilestoneIndex !== pendingMilestoneIndex) ? false : true;
 
