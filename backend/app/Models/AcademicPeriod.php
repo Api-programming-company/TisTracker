@@ -19,7 +19,9 @@ class AcademicPeriod extends Model
         'company_creation_start_date', 
         'company_creation_end_date',   
         'planning_start_date',         
-        'planning_end_date',           
+        'planning_end_date',  
+        'evaluation_start_date',         
+        'evaluation_end_date',         
     ];
 
     public function users()
