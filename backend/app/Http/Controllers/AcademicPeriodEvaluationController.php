@@ -44,7 +44,7 @@ class AcademicPeriodEvaluationController extends Controller
     {
         try {
             $user = Auth::user();
-
+    
             // Validar los datos del request
             $validatedData = $request->validate([
                 'evaluation_id' => 'required|exists:evaluations,id',
@@ -53,28 +53,36 @@ class AcademicPeriodEvaluationController extends Controller
                 'start_date' => 'required|date_format:Y-m-d\TH:i:sP',
                 'end_date' => 'required|date_format:Y-m-d\TH:i:sP|after:start_date',
             ]);
-
+    
             // Obtener el periodo académico
             $academicPeriod = AcademicPeriod::findOrFail($validatedData['academic_period_id']);
-
+    
             // Convertir las fechas a UTC
             $startDate = Carbon::parse($validatedData['start_date'])->setTimezone('UTC');
             $endDate = Carbon::parse($validatedData['end_date'])->setTimezone('UTC');
-
+    
             // Validar que las fechas estén dentro del periodo académico
             if ($startDate < $academicPeriod->start_date || $endDate > $academicPeriod->end_date) {
-                return response()->json(['message' => 'Las fechas de la evaluación deben estar dentro del periodo académico.'], 422);
+                return response()->json(['message' => 'Las fechas de la evaluación deben estar dentro del rango del periodo académico.'], 422);
             }
+    
+            // Validar que las fechas estén dentro del rango de evaluación
+            $evaluationStartUtc = Carbon::parse($academicPeriod->evaluation_start_date)->setTimezone('UTC');
+            $evaluationEndUtc = Carbon::parse($academicPeriod->evaluation_end_date)->setTimezone('UTC');
 
+            if ($startDate < $evaluationStartUtc || $endDate > $evaluationEndUtc) {
+                return response()->json(['message' => 'Las fechas de la evaluación deben estar dentro del rango del periodo de evaluación.'], 422);
+            }
+    
             // Verificar si ya existe una evaluación del mismo tipo en el mismo periodo académico
             $existingEvaluation = AcademicPeriodEvaluation::where('academic_period_id', $validatedData['academic_period_id'])
                 ->where('evaluation_type', $validatedData['evaluation_type'])
                 ->first();
-
+    
             if ($existingEvaluation) {
                 return response()->json(['message' => 'El periodo académico ya tiene una evaluación de este tipo.'], 422);
             }
-
+    
             // Crear una nueva evaluación de periodo académico
             $academicPeriodEvaluation = AcademicPeriodEvaluation::create(array_merge($validatedData, [
                 'start_date' => $startDate,
@@ -110,18 +118,19 @@ class AcademicPeriodEvaluationController extends Controller
                 $endDate,
                 $teacherName
             );
-
+    
             return response()->json([
                 'message' => 'Evaluación del periodo académico creada exitosamente.',
                 'academicPeriodEvaluation' => $academicPeriodEvaluation
             ], 201);
-
+    
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Error de validación.', 'errors' => $e->errors()], 422);
         } catch (Exception $e) {
             return response()->json(['message' => 'Error al crear la evaluación del periodo académico.', 'error' => $e->getMessage()], 500);
         }
     }
+    
 
 
 
