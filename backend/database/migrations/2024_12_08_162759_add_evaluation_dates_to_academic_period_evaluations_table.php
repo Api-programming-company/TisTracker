@@ -13,7 +13,7 @@ class AddEvaluationDatesToAcademicPeriodEvaluationsTable extends Migration
      */
     public function up()
     {
-        Schema::table('academic_period_evaluations', function (Blueprint $table) {
+        Schema::table('academic_period', function (Blueprint $table) {
             $table->date('evaluation_start_date');
             $table->date('evaluation_end_date');
         });
@@ -26,7 +26,7 @@ class AddEvaluationDatesToAcademicPeriodEvaluationsTable extends Migration
      */
     public function down()
     {
-        Schema::table('academic_period_evaluations', function (Blueprint $table) {
+        Schema::table('academic_period', function (Blueprint $table) {
             $table->dropColumn(['evaluation_start_date', 'evaluation_end_date']);
         });
     }
