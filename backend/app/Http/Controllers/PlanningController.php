@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Response;
+use Carbon\Carbon;
 
 class PlanningController extends Controller
 {
@@ -28,7 +29,8 @@ class PlanningController extends Controller
         }
     }
 
-    // Guardar una nueva planificación
+    
+
     public function store(Request $request)
     {
         try {
@@ -42,7 +44,7 @@ class PlanningController extends Controller
                 ], 422);
             }
 
-            // Validar los datos 
+            // Validar los datos
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'company_id' => 'required|exists:companies,id',
@@ -67,14 +69,39 @@ class PlanningController extends Controller
                 ], 422);
             }
 
-            // Validar que las fechas de los hitos estén dentro del rango de planificación del periodo académico
+            // Obtener la fecha actual
+            $currentDate = Carbon::now();
+
+            // Verificar si la fecha actual está dentro del rango de planificación del periodo académico
+            if ($currentDate < $academicPeriod->planning_start_date || $currentDate > $academicPeriod->planning_end_date) {
+                return response()->json([
+                    'message' => 'El periodo de planificación no está habilitado.',
+                    'errors' => ['planning_period' => 'El periodo de planificación no está habilitado.']
+                ], 422);
+            }
+
+            // Validar que las fechas de los hitos estén dentro del rango del periodo académico
             foreach ($validated['milestones'] as $milestone) {
-                if ($milestone['start_date'] < $academicPeriod->planning_start_date || 
-                    $milestone['end_date'] > $academicPeriod->planning_end_date) {
+                // Verificar que el inicio y fin del hito estén dentro del rango del periodo académico
+                $milestoneStartDate = Carbon::parse($milestone['start_date']);
+                $milestoneEndDate = Carbon::parse($milestone['end_date']);
+
+                if ($milestoneStartDate < $academicPeriod->start_date || 
+                    $milestoneEndDate > $academicPeriod->end_date) {
                     return response()->json([
-                        'message' => 'Las fechas de los hitos deben estar dentro del rango de planificación del periodo académico.',
+                        'message' => 'Las fechas de los hitos deben estar dentro del rango del periodo académico.',
                         'errors' => [
                             'milestones' => 'El hito ' . $milestone['name'] . ' tiene fechas fuera del rango permitido.'
+                        ]
+                    ], 422);
+                }
+
+                // Verificar que el hito termine antes de que inicien las evaluaciones
+                if ($milestoneEndDate >= $academicPeriod->evaluation_start_date) {
+                    return response()->json([
+                        'message' => 'El hito ' . $milestone['name'] . ' debe terminar antes de que inicien las evaluaciones del periodo académico.',
+                        'errors' => [
+                            'milestones' => 'La fecha de finalización del hito ' . $milestone['name'] . ' debe ser antes del inicio de las evaluaciones.'
                         ]
                     ], 422);
                 }
