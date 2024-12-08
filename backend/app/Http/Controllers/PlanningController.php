@@ -42,7 +42,7 @@ class PlanningController extends Controller
                 ], 422);
             }
 
-            // Validar los datos 
+            // Validar los datos
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'company_id' => 'required|exists:companies,id',
@@ -67,14 +67,25 @@ class PlanningController extends Controller
                 ], 422);
             }
 
-            // Validar que las fechas de los hitos estén dentro del rango de planificación del periodo académico
+            // Validar que las fechas de los hitos estén dentro del rango del periodo académico
             foreach ($validated['milestones'] as $milestone) {
-                if ($milestone['start_date'] < $academicPeriod->planning_start_date || 
-                    $milestone['end_date'] > $academicPeriod->planning_end_date) {
+                // Verificar que el inicio y fin del hito estén dentro del rango del periodo académico
+                if ($milestone['start_date'] < $academicPeriod->start_date || 
+                    $milestone['end_date'] > $academicPeriod->end_date) {
                     return response()->json([
-                        'message' => 'Las fechas de los hitos deben estar dentro del rango de planificación del periodo académico.',
+                        'message' => 'Las fechas de los hitos deben estar dentro del rango del periodo académico.',
                         'errors' => [
                             'milestones' => 'El hito ' . $milestone['name'] . ' tiene fechas fuera del rango permitido.'
+                        ]
+                    ], 422);
+                }
+
+                // Verificar que el hito termine antes de que inicien las evaluaciones
+                if ($milestone['end_date'] >= $academicPeriod->evaluation_start_date) {
+                    return response()->json([
+                        'message' => 'El hito ' . $milestone['name'] . ' debe terminar antes de que inicien las evaluaciones del periodo académico.',
+                        'errors' => [
+                            'milestones' => 'La fecha de finalización del hito ' . $milestone['name'] . ' debe ser antes del inicio de las evaluaciones.'
                         ]
                     ], 422);
                 }
