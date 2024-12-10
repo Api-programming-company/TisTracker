@@ -29,7 +29,7 @@ class PlanningController extends Controller
         }
     }
 
-    
+
 
     public function store(Request $request)
     {
@@ -86,8 +86,10 @@ class PlanningController extends Controller
                 $milestoneStartDate = Carbon::parse($milestone['start_date']);
                 $milestoneEndDate = Carbon::parse($milestone['end_date']);
 
-                if ($milestoneStartDate < $academicPeriod->start_date || 
-                    $milestoneEndDate > $academicPeriod->end_date) {
+                if (
+                    $milestoneStartDate < $academicPeriod->start_date ||
+                    $milestoneEndDate > $academicPeriod->end_date
+                ) {
                     return response()->json([
                         'message' => 'Las fechas de los hitos deben estar dentro del rango del periodo académico.',
                         'errors' => [
@@ -162,105 +164,107 @@ class PlanningController extends Controller
 
     // Actualizar una planificación
     public function update(Request $request, $id)
-{
-    DB::beginTransaction(); // Iniciar transacción
-    try {
-        // Log de entrada
-        Log::info('Datos recibidos:', $request->all());
+    {
+        DB::beginTransaction(); // Iniciar transacción
+        try {
+            // Log de entrada
+            Log::info('Datos recibidos:', $request->all());
 
-        // Validar los datos de entrada
-        $validatedData = $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'company_id' => 'sometimes|exists:companies,id',
-            'milestones' => 'sometimes|array',
-            'milestones.*.id' => 'nullable|exists:milestones,id',
-            'milestones.*.name' => 'sometimes|string|max:255',
-            'milestones.*.start_date' => 'sometimes|date|before:milestones.*.end_date',
-            'milestones.*.end_date' => 'sometimes|date|after:milestones.*.start_date',
-            'milestones.*.billing_percentage' => 'sometimes|required|numeric|min:0|max:100',
-            'milestones.*.status' => 'sometimes|in:A,P',
-            'milestones.*.deliverables' => 'sometimes|array|min:1',
-            'milestones.*.deliverables.*.id' => 'nullable|exists:deliverables,id',
-            'milestones.*.deliverables.*.name' => 'sometimes|string|max:255',
-            'milestones.*.deliverables.*.expected_result' => 'sometimes|nullable|integer|min:0',
-            'milestones.*.deliverables.*.actual_result' => 'sometimes|nullable|integer|min:0',
-            'milestones.*.deliverables.*.observations' => 'sometimes|nullable|string|max:255',
-            'milestones.*.deliverables.*.status' => 'sometimes|in:A,C',
-        ]);
+            // Validar los datos de entrada
+            $validatedData = $request->validate([
+                'name' => 'sometimes|string|max:255',
+                'company_id' => 'sometimes|exists:companies,id',
+                'milestones' => 'sometimes|array',
+                'milestones.*.id' => 'nullable|exists:milestones,id',
+                'milestones.*.name' => 'sometimes|string|max:255',
+                'milestones.*.start_date' => 'sometimes|date|before:milestones.*.end_date',
+                'milestones.*.end_date' => 'sometimes|date|after:milestones.*.start_date',
+                'milestones.*.billing_percentage' => 'sometimes|required|numeric|min:0|max:100',
+                'milestones.*.status' => 'sometimes|in:A,P',
+                'milestones.*.deliverables' => 'sometimes|array|min:1',
+                'milestones.*.deliverables.*.id' => 'nullable|exists:deliverables,id',
+                'milestones.*.deliverables.*.name' => 'sometimes|string|max:255',
+                'milestones.*.deliverables.*.expected_result' => 'sometimes|nullable|integer|min:0',
+                'milestones.*.deliverables.*.actual_result' => 'sometimes|nullable|integer|min:0',
+                'milestones.*.deliverables.*.observations' => 'sometimes|nullable|string|max:255',
+                'milestones.*.deliverables.*.status' => 'sometimes|in:A,C',
+                'milestones.*.deliverables.*.created_by' => 'sometimes|in:D,E',
+            ]);
 
-        // Buscar la planificación
-        $planning = Planning::findOrFail($id);
+            // Buscar la planificación
+            $planning = Planning::findOrFail($id);
 
-        // Actualizar la planificación principal
-        $planning->update([
-            'name' => $validatedData['name'] ?? $planning->name,
-            'company_id' => $validatedData['company_id'] ?? $planning->company_id,
-        ]);
+            // Actualizar la planificación principal
+            $planning->update([
+                'name' => $validatedData['name'] ?? $planning->name,
+                'company_id' => $validatedData['company_id'] ?? $planning->company_id,
+            ]);
 
-        // Log de planificación actualizada
-        Log::info('Planning actualizado:', $planning->toArray());
+            // Log de planificación actualizada
+            Log::info('Planning actualizado:', $planning->toArray());
 
-        // Procesar hitos si están presentes
-        if (!empty($validatedData['milestones'])) {
-            $totalBilling = array_sum(array_column($validatedData['milestones'], 'billing_percentage'));
+            // Procesar hitos si están presentes
+            if (!empty($validatedData['milestones'])) {
+                $totalBilling = array_sum(array_column($validatedData['milestones'], 'billing_percentage'));
 
-            if ($totalBilling > 100) {
-                return response()->json([
-                    'message' => 'La suma de los porcentajes de facturación no puede exceder el 100%.',
-                ], 422);
-            }
+                if ($totalBilling > 100) {
+                    return response()->json([
+                        'message' => 'La suma de los porcentajes de facturación no puede exceder el 100%.',
+                    ], 422);
+                }
 
-            foreach ($validatedData['milestones'] as $milestoneData) {
-                // Crear o actualizar el hito
-                $milestone = Milestone::updateOrCreate(
-                    ['id' => $milestoneData['id'] ?? null],
-                    [
-                        'name' => $milestoneData['name'] ?? '',
-                        'start_date' => $milestoneData['start_date'] ?? null,
-                        'end_date' => $milestoneData['end_date'] ?? null,
-                        'billing_percentage' => $milestoneData['billing_percentage'] ?? 0,
-                        'status' => $milestoneData['status'] ?? 'P',
-                        'planning_id' => $planning->id,
-                    ]
-                );
+                foreach ($validatedData['milestones'] as $milestoneData) {
+                    // Crear o actualizar el hito
+                    $milestone = Milestone::updateOrCreate(
+                        ['id' => $milestoneData['id'] ?? null],
+                        [
+                            'name' => $milestoneData['name'] ?? '',
+                            'start_date' => $milestoneData['start_date'] ?? null,
+                            'end_date' => $milestoneData['end_date'] ?? null,
+                            'billing_percentage' => $milestoneData['billing_percentage'] ?? 0,
+                            'status' => $milestoneData['status'] ?? 'P',
+                            'planning_id' => $planning->id,
+                        ]
+                    );
 
-                Log::info('Milestone actualizado o creado:', $milestone->toArray());
+                    Log::info('Milestone actualizado o creado:', $milestone->toArray());
 
-                // Procesar entregables si están presentes
-                if (!empty($milestoneData['deliverables'])) {
-                    foreach ($milestoneData['deliverables'] as $deliverableData) {
-                        $deliverable = Deliverable::updateOrCreate(
-                            ['id' => $deliverableData['id'] ?? null],
-                            [
-                                'name' => $deliverableData['name'] ?? '',
-                                'expected_result' => $deliverableData['expected_result'] ?? null,
-                                'actual_result' => $deliverableData['actual_result'] ?? null,
-                                'observations' => $deliverableData['observations'] ?? null,
-                                'status' => $deliverableData['status'] ?? 'A',
-                                'milestone_id' => $milestone->id,
-                            ]
-                        );
+                    // Procesar entregables si están presentes
+                    if (!empty($milestoneData['deliverables'])) {
+                        foreach ($milestoneData['deliverables'] as $deliverableData) {
+                            $deliverable = Deliverable::updateOrCreate(
+                                ['id' => $deliverableData['id'] ?? null],
+                                [
+                                    'name' => $deliverableData['name'] ?? '',
+                                    'expected_result' => $deliverableData['expected_result'] ?? null,
+                                    'actual_result' => $deliverableData['actual_result'] ?? null,
+                                    'observations' => $deliverableData['observations'] ?? null,
+                                    'status' => $deliverableData['status'] ?? 'A',
+                                    'milestone_id' => $milestone->id,
+                                    'created_by' => $deliverableData['created_by'] ?? 'E',
+                                ]
+                            );
 
-                        Log::info('Deliverable actualizado o creado:', $deliverable->toArray());
+                            Log::info('Deliverable actualizado o creado:', $deliverable->toArray());
+                        }
                     }
                 }
             }
+
+            DB::commit(); // Confirmar transacción
+
+            // Retornar la planificación con relaciones actualizadas
+            return response()->json($planning->load('milestones.deliverables'), 200);
+        } catch (ValidationException $e) {
+            DB::rollBack(); // Revertir cambios
+            Log::error('Error de validación:', $e->errors());
+            return response()->json(['message' => 'Error de validación', 'errors' => $e->errors()], 422);
+        } catch (Exception $e) {
+            DB::rollBack(); // Revertir cambios
+            Log::error('Error inesperado:', ['error' => $e->getMessage()]);
+            return response()->json(['message' => 'Error inesperado', 'error' => $e->getMessage()], 500);
         }
-
-        DB::commit(); // Confirmar transacción
-
-        // Retornar la planificación con relaciones actualizadas
-        return response()->json($planning->load('milestones.deliverables'), 200);
-    } catch (ValidationException $e) {
-        DB::rollBack(); // Revertir cambios
-        Log::error('Error de validación:', $e->errors());
-        return response()->json(['message' => 'Error de validación', 'errors' => $e->errors()], 422);
-    } catch (Exception $e) {
-        DB::rollBack(); // Revertir cambios
-        Log::error('Error inesperado:', ['error' => $e->getMessage()]);
-        return response()->json(['message' => 'Error inesperado', 'error' => $e->getMessage()], 500);
     }
-}
 
 
 
