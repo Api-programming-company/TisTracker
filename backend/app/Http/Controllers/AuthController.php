@@ -166,6 +166,7 @@ class AuthController extends Controller
             $companyData = $grade->company;
             $companyForGradesData = $grade->companyForGrades;
 
+            
             return [
                 'id' => $grade->id,
                 'nombre' => $grade->first_name,
