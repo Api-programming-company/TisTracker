@@ -82,7 +82,7 @@ const MilestoneItem = ({ milestone }) => {
             <MenuItem key={item.id} value={item}>
               {item.name} {item.current && <span className="text-sm text-primary">(actual)</span>}
               {item.pending && <span className={`text-sm ${item.current ? "text-primary" : "text-red-500"}`}>
-                {index <= currentMilestoneIndex && "(pendiente)"}
+                {index === pendingMilestoneIndex && !item.current && "(pendiente)"}
                 </span>}
               {index < pendingMilestoneIndex && <span className="text-sm text-success">(validado)</span>}
             </MenuItem>
