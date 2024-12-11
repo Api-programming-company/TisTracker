@@ -15,6 +15,7 @@ import MilestoneItem from "../components/planning/MilestoneItem";
 import { Button, Snackbar } from "@mui/material";
 import DialogMod from "../components/DialogMod";
 import AppContext from "../context/AppContext";
+import TrackingMilestone from "../components/planning/TrackingMilestone";
 const WeeklyTracking = () => {
     const { id } = useParams();
     const [open, setOpen] = useState({ state: false, message: "", title: "" });
@@ -135,7 +136,7 @@ const WeeklyTracking = () => {
             <h1>Seguimiento Semanal</h1>
           </div>
           <div className="section-body">
-  
+            <TrackingMilestone milestone={milestone} />
             {status === "E" && <p className="text-red-500">Editando</p>}
             {status === "A" && <p className="text-success">Hito Validado</p>}
           </div>

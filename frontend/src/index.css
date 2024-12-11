@@ -43,6 +43,10 @@ p,a,li,button,input,textarea{
   font-family: var(--body-font-family);
 }
 
+i{
+  margin: 0;
+  padding: 0;
+}
 
 
 /* Standard CSS */
