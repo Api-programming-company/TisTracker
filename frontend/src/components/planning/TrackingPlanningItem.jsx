@@ -1,6 +1,6 @@
 import { Button, TextField } from '@mui/material'
 import React from 'react'
-import { changeDeliverable, removeDeliverable } from '../../reducers/planningSlice';
+import { changeDeliverable, changeDeliverableName, removeDeliverable } from '../../reducers/planningSlice';
 import { useDispatch } from 'react-redux';
 import { de } from 'date-fns/locale';
 import Checkbox from '@mui/material/Checkbox';
@@ -19,38 +19,8 @@ const TrackingPlanningItem = ({deliverable,index,milestone_id}) => {
   
   
     const handleInputChange = (event) => {
-      const change = {};
-  
-      const {name,value} = event.target;    
-      
-      if(name === "expected_result" || name === "actual_result"){
-        if(isNaN(value) || value < 0 || value > 100 || value === ""){
-          return;
-        }
-      }
-  
-      switch (name) {
-        
-          case "expected_result":
-              change[name] = parseInt(value);
-              dispatch(changeDeliverable({id : deliverable.id, field: name, value: parseInt(value), milestone_id}));
-          break;
-          case "actual_result":
-                  change[name] = parseInt(value);
-                  dispatch(changeDeliverable({id : deliverable.id, field: name, value: parseInt(value), milestone_id}));
-  
-              break;
-          case "observations":
-              change.observations = value;
-              dispatch(changeDeliverable({id : deliverable.id, field: name, value, milestone_id}));
-  
-              break;
-          default:
-              console.log("This state doesn't exist");
-              break;
-      }
-      
-  }
+      dispatch(changeDeliverableName({milestone_id: milestone_id, deliverable_id: deliverable.id, name: event.target.value}));
+    }
   const editable = (status === "A" || status === "L" || currentMilestoneIndex !== pendingMilestoneIndex) ? false : true;
   
   
@@ -65,7 +35,20 @@ const TrackingPlanningItem = ({deliverable,index,milestone_id}) => {
     return (
       <>
         <Box className="grid-item">{index}</Box>
-          <Box className="grid-item">{deliverable.name}</Box>
+          <Box className="grid-item">
+            {editable && deliverable.created_by === "E" ? deliverable.name :
+            (
+              <TextField
+                id="outlined-basic"
+                variant="outlined"
+                size="small"
+                sx={{ width: "100%" }}
+                defaultValue={deliverable.name}
+              />
+            )
+            }
+            
+          </Box>
           <Box className="grid-item">
             <Box sx={{backgroundColor: deliverable.created_by === "E" ? "info.main" : "success.main"}} className='tracking-type'>
                 {deliverable.created_by === "E" ? "Estático" : "Dinámico"}
