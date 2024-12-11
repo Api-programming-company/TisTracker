@@ -58,7 +58,25 @@ const WeeklyTracking = () => {
   
   
     const handleConfirm = () => {
-        
+      setOpen({ ...open, state: false });
+      const milestonesData = data.planning.milestones.map((milestone, index) => {
+        if (index === milestone_index) {
+          return{
+            ...milestone,
+            status: "P",
+          }
+        }else{
+          return milestone
+        }
+       });
+
+       update({
+        id,
+        data: {
+          milestones: milestonesData,
+          company_id: data.planning.company_id,
+        },
+      });
     }
   
   
