@@ -1,6 +1,6 @@
 import { Button, TextField } from '@mui/material'
 import React from 'react'
-import { changeDeliverable } from '../../reducers/planningSlice';
+import { changeDeliverable, removeDeliverable } from '../../reducers/planningSlice';
 import { useDispatch } from 'react-redux';
 import { de } from 'date-fns/locale';
 import Checkbox from '@mui/material/Checkbox';
@@ -56,18 +56,7 @@ const TrackingPlanningItem = ({deliverable,index,milestone_id}) => {
   
     const handleActionButton = () => {
      if(editable) {
-        switch (deliverable.status) {
-          case "A":
-            dispatch(changeDeliverable({id : deliverable.id, field: "status", value: "C",milestone_id}));
-            break;
-          case "C" :
-            dispatch(changeDeliverable({id : deliverable.id, field: "status", value: "A",milestone_id}));
-  
-            break;
-            default:
-              console.log("This state doesn't exist");
-              break;
-        }
+        dispatch(removeDeliverable({milestone_index: milestone_id, deliverable_id: deliverable.id}));
      }
       
     };
@@ -83,7 +72,8 @@ const TrackingPlanningItem = ({deliverable,index,milestone_id}) => {
             </Box>
           </Box>
             <Box className="grid-item "  >
-            <i onClick={handleActionButton} className='delete-btn' ><FaTrash /></i>
+                {deliverable.created_by === "D" && <i onClick={handleActionButton} className='delete-btn' ><FaTrash /></i>
+            }
         </Box>
       </>
     )

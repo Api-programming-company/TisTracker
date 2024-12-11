@@ -130,7 +130,7 @@ const TrackingMilestone = ({milestone}) => {
                 deliverable={deliverable}
                 index={index + 1}
                 key={index}
-                milestone={milestone}
+                milestone_id={milestone.id}
               />
             ))
           ) : (

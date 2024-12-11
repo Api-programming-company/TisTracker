@@ -108,9 +108,26 @@ export const planningSlice = createSlice({
                     actual_result: 0,
                     observations: "",
                     status: "A",
-                    createdBy: "D", 
+                    created_by: "D", 
                  },
                 ],
+              }
+            : milestone
+        ),
+      }
+    },
+
+    removeDeliverable: (state, action) => {
+      console.log("Removing deliverable...",action);
+      return{
+        ...state,
+        milestones: state.milestones.map((milestone) =>
+          milestone.id === action.payload.milestone_index
+            ? {
+                ...milestone,
+                deliverables: milestone.deliverables.filter(
+                  (deliverable) => deliverable.id !== action.payload.deliverable_id
+                ),
               }
             : milestone
         ),
@@ -228,6 +245,6 @@ export const getCurrentMilestoneIndex = (state) => {
   return state.planning.currentMilestone;
 }
 
-export const { setMilestones, changeDeliverable,addDeliverable,confirmChanges,setCurrentMilestone } = planningSlice.actions;
+export const { setMilestones, changeDeliverable,addDeliverable,removeDeliverable,confirmChanges,setCurrentMilestone } = planningSlice.actions;
 
 export default planningSlice.reducer;
