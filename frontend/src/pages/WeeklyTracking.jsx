@@ -57,6 +57,15 @@ const WeeklyTracking = () => {
   
   
     const handleConfirm = () => {
+      
+      const valid = milestone.deliverables.findIndex((deliverable) => deliverable.name === "");
+      if (valid !== -1) {
+        setSnackbarMessage("No puedes tener entregables vacíos.");
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+        return;
+      }
+
       setOpen({ ...open, state: false });
       const milestonesData = data.planning.milestones.map((c_milestone, index) => {
         if (index === milestone_index) {
