@@ -5,14 +5,18 @@ import PlanningItem from "./PlanningItem";
 import { setCurrentMilestone } from "../../reducers/planningSlice";
 import { getMilestonesList,getCurrentMilestoneIndex,getPendingMilestoneIndex } from "../../reducers/planningSlice";
 import { useSelector } from "react-redux";
-import { FormControl,InputLabel,Select,MenuItem,Box } from "@mui/material";
+import { FormControl,InputLabel,Select,MenuItem,Box, Button } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { getStatus } from "../../reducers/planningSlice";
 import DialogMod from "../DialogMod"
+import { MdAssignmentLate } from "react-icons/md";
+import { useNavigate, useParams } from "react-router-dom";
 
-const headers = ["N","Entregable","Resultado Esperado", "Resultado Observado","Observaciones", "Carry Over"]
+
+const headers = ["N","Entregable","Tipo","Resultado Esperado", "Resultado Observado","Observaciones", "Carry Over"]
 const MilestoneItem = ({ milestone }) => {
-
+  const navigate = useNavigate();
+  const params = useParams();
   const list = useSelector(getMilestonesList)
   const status = useSelector(getStatus);
   const [open,setOpen] = useState({state : false,value : 0});
@@ -23,12 +27,6 @@ const MilestoneItem = ({ milestone }) => {
   const currentMilestoneIndex = useSelector(getCurrentMilestoneIndex);
   const pendingMilestoneIndex = useSelector(getPendingMilestoneIndex);
 
-  const currentMilestone = () => {
-    const today = new Date();
-    const startDate = new Date(milestone.start_date);
-    const endDate = new Date(milestone.end_date);
-    return today >= startDate && today <= endDate;
-  }
 
 
   const handleChangeListItem = (index) => {
@@ -47,6 +45,10 @@ const MilestoneItem = ({ milestone }) => {
     handleChangeListItem(open.value)
   }
 
+
+  const handleNavigate = () => {
+    navigate(`/weekly_tracking/${params.id}`);
+  }
 
   return (
     <div className="list">
@@ -114,21 +116,24 @@ const MilestoneItem = ({ milestone }) => {
 
         <div className="deliverables-list">
           <h4 className="text-neutral-700">Entregables:</h4>
-          <div className="grid">
+          {milestone.deliverables?.length > 0 && milestone.deliverables.findIndex((deliverable) => deliverable.created_by === "D") !== -1 ? (
+          <div className="planning-grid">
             {headers.map((header,index) => <Box key={index} className="grid-item" sx={{backgroundColor: "info.gray"}}>{header}</Box>)}
-          {milestone.deliverables?.length > 0 ? (
-            milestone.deliverables.map((deliverable, index) => (
+            {milestone.deliverables.filter((deliverable) => deliverable.created_by === "D").map((deliverable, index) => (
               <PlanningItem
                 deliverable={deliverable}
                 index={index}
                 key={index}
                 milestone_id={milestone.id}
-              />
-            ))
-          ) : (
-            <p className="text-neutral-500">No hay entregables asignados</p>
-          )}
-          </div>
+              />))}
+            </div>
+          ) :(
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '1rem' }}>
+              <i><MdAssignmentLate size={48} color="gray" /></i>
+              <p className="text-neutral-500"> Al parecer aún no se realizó un seguimiento semanal de este hito.</p>
+              <Button variant="contained" disabled={currentMilestoneIndex !== pendingMilestoneIndex} onClick={handleNavigate}>Realizar seguimiento semanal</Button>
+            </Box>
+          )} 
         </div>
       </LocalizationProvider>
       <DialogMod

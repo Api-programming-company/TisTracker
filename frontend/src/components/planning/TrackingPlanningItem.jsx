@@ -1,12 +1,10 @@
-import { Button, TextField } from '@mui/material'
+import {  TextField } from '@mui/material'
 import React from 'react'
-import { changeDeliverable, changeDeliverableName, removeDeliverable } from '../../reducers/planningSlice';
+import {  changeDeliverableName, removeDeliverable } from '../../reducers/planningSlice';
 import { useDispatch } from 'react-redux';
-import { de } from 'date-fns/locale';
-import Checkbox from '@mui/material/Checkbox';
 import { useSelector } from 'react-redux';
 import { getStatus,getCurrentMilestoneIndex,getPendingMilestoneIndex } from '../../reducers/planningSlice';
-import {Box} from "@mui/material"
+import {Box, Button} from "@mui/material"
 import { FaTrash } from "react-icons/fa";
 
 
@@ -36,7 +34,7 @@ const TrackingPlanningItem = ({deliverable,index,milestone_id}) => {
       <>
         <Box className="grid-item">{index}</Box>
           <Box className="grid-item">
-            {editable && deliverable.created_by === "E" ? deliverable.name :
+            {!editable && deliverable.created_by === "E" ? deliverable.name :
             (
               <TextField
                 id="outlined-basic"
@@ -56,7 +54,7 @@ const TrackingPlanningItem = ({deliverable,index,milestone_id}) => {
             </Box>
           </Box>
             <Box className="grid-item "  >
-                {deliverable.created_by === "D" && <i onClick={handleActionButton} className='delete-btn' ><FaTrash /></i>
+                {deliverable.created_by === "D" && editable && <Button onClick={handleActionButton} className='delete-btn' ><FaTrash size={16}/></Button>
             }
         </Box>
       </>

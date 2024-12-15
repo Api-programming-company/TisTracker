@@ -74,6 +74,10 @@ const editable = (status === "A" || status === "L" || currentMilestoneIndex !== 
     <>
     <Box sx={{backgroundColor: `${deliverable.status === "C" && "error.main"}`}}className="grid-item">{index}</Box>
         <Box sx={{backgroundColor: `${deliverable.status === "C" && "error.main"}`}}className="grid-item">{deliverable.name}</Box>
+        <Box sx={{backgroundColor: `${deliverable.status === "C" && "error.main"}`}}className="grid-item">
+            <Box sx={{backgroundColor: deliverable.created_by === "E" ? "info.main" : "success.main"}} className='tracking-type'>
+                {deliverable.created_by === "E" ? "Estático" : "Dinámico"}
+            </Box>        </Box>
         <Box sx={{backgroundColor: `${deliverable.status === "C" && "error.main"}`}}  className="grid-item">
           <input type="number" placeholder="0" value={deliverable.expected_result} onChange={handleInputChange} name="expected_result" min={0} max={100} className="grid-input number" readOnly={!editable}/>
         </Box>

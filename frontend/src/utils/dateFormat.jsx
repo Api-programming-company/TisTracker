@@ -18,7 +18,6 @@ const getMilestoneStatus= (end_date) => {
     const endDate_day = endDate.getDate();
     const endDate_month = endDate.getMonth();
     const endDate_year = endDate.getFullYear();
-    console.log("comparing...", today_day,endDate_day, today_day > endDate_day);
 
     if(today_year === endDate_year && today_month === endDate_month && today_day === endDate_day) {
         return "current";

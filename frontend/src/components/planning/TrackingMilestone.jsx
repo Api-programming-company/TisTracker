@@ -1,7 +1,6 @@
 import React, {  useState } from "react";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import PlanningItem from "./PlanningItem";
 import { addDeliverable, setCurrentMilestone } from "../../reducers/planningSlice";
 import { getMilestonesList,getCurrentMilestoneIndex,getPendingMilestoneIndex } from "../../reducers/planningSlice";
 import { useSelector } from "react-redux";
@@ -27,11 +26,6 @@ const TrackingMilestone = ({milestone}) => {
   const currentMilestoneIndex = useSelector(getCurrentMilestoneIndex);
   const pendingMilestoneIndex = useSelector(getPendingMilestoneIndex);
   const milestone_status = getMilestoneStatus(milestone.end_date);
-  const lateMilestone = () => {
-    const today = new Date();
-    const endDate = new Date(milestone.end_date);
-    return  today > endDate;
-  }
 
 
   const handleChangeListItem = (index) => {

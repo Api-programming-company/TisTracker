@@ -181,7 +181,7 @@ const PlanningSpreadSheet = () => {
     return (
       <div id="planning_spreadsheet" className="container">
         <div className="section-header">
-          <h1>Planilla de Seguimiento Semanal</h1>
+          <h1>Planilla de Validación de Hito</h1>
         </div>
         <div className="section-body">
           <MilestoneItem milestone={milestone} />

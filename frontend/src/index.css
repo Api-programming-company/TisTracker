@@ -179,7 +179,7 @@ i{
   display: flex;
   align-items: center;
   border: 1px solid var(--neutral-300);
-  padding: 0.5rem;
+  padding: 0.2rem 1rem;
   border-bottom: transparent;
 }
 
