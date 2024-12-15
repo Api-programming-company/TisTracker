@@ -137,7 +137,7 @@ const TrackingMilestone = ({milestone}) => {
             <p className="text-neutral-500">No hay entregables asignados</p>
           )}
           </div>
-          <Button  onClick={handleAddDeliverable} sx={{alignSelf: "flex-start", display: "flex", gap: "0.5rem", alignItems: "center"}}> 
+          <Button  disabled={currentMilestoneIndex !== pendingMilestoneIndex} onClick={handleAddDeliverable} sx={{alignSelf: "flex-start", display: "flex", gap: "0.5rem", alignItems: "center"}}> 
             <CiCirclePlus size={23}/> Agregar entregable</Button>
         </div>
       </LocalizationProvider>

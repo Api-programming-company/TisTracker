@@ -11,7 +11,6 @@ import { useGetPlanningByCompanyIdQuery } from "../api/planningApi";
 import { useUpdateCompanyPlanningByIdMutation } from "../api/companyApi";
 import { useNavigate, useParams } from "react-router-dom";
 import { CircularProgress, Container, Alert, Box } from "@mui/material";
-import MilestoneItem from "../components/planning/MilestoneItem";
 import { Button, Snackbar } from "@mui/material";
 import DialogMod from "../components/DialogMod";
 import AppContext from "../context/AppContext";
