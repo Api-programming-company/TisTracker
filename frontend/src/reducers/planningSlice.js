@@ -258,7 +258,7 @@ export const getMilestonesList = (state) => {
       name: milestone.name,
       selected : index === state.planning.currentMilestone,
       current: new Date().toISOString().split('T')[0] >= milestone.start_date && new Date().toISOString().split('T')[0] <= milestone.end_date,
-      pending: index === state.planning.pendingMilestone && milestone.end_date < new Date(),
+      pending: index === state.planning.pendingMilestone && Date.parse(new Date(milestone.end_date)) > Date.parse(new Date()) - 24 * 60 * 60 * 1000
 
     }));
   }else{

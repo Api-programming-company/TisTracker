@@ -12,6 +12,7 @@ import DialogMod from "../DialogMod"
 import "../../styles/weekly_tracking.css"
 import TrackingPlanningItem from "./TrackingPlanningItem";
 import { CiCirclePlus } from "react-icons/ci";
+import {formatDate, getMilestoneStatus, getToday} from "../../utils/dateFormat";
 
 
 
@@ -22,17 +23,14 @@ const TrackingMilestone = ({milestone}) => {
   const status = useSelector(getStatus);
   const [open,setOpen] = useState({state : false,value : 0});
   const dispatch = useDispatch();
-  const formatDate = (date) => {
-    return new Date(date).toLocaleDateString();
-  };
+ 
   const currentMilestoneIndex = useSelector(getCurrentMilestoneIndex);
   const pendingMilestoneIndex = useSelector(getPendingMilestoneIndex);
-
-  const currentMilestone = () => {
+  const milestone_status = getMilestoneStatus(milestone.end_date);
+  const lateMilestone = () => {
     const today = new Date();
-    const startDate = new Date(milestone.start_date);
     const endDate = new Date(milestone.end_date);
-    return today >= startDate && today <= endDate;
+    return  today > endDate;
   }
 
 
@@ -60,15 +58,18 @@ const TrackingMilestone = ({milestone}) => {
     <div className="list">
       {status !== "A" && (
         currentMilestoneIndex === pendingMilestoneIndex ? ( 
-        new Date() > new Date(milestone.end_date) ? (
+        milestone_status === "late" ? (
           <p className="text-red-500 text-sm">
             {`Validación retrasada por ${Math.ceil(
               Math.abs(new Date(milestone.end_date) - new Date()) /
                 (1000 * 60 * 60 * 24)
             )} días.`}
           </p>
-        ) : (
-          <p className="text-sm text-red-500">
+        ) : milestone_status === "current" ? (
+          <p className="text-sm text-success">Dia de validación</p>
+        ):(
+          
+          <p className="text-sm text-primary-300">
             {`Aun quedan ${Math.ceil(
               Math.abs(new Date(milestone.end_date) - new Date()) /
                 (1000 * 60 * 60 * 24)
@@ -89,8 +90,8 @@ const TrackingMilestone = ({milestone}) => {
           {list.map((item,index) => (
             <MenuItem key={item.id} value={item}>
               {item.name} {item.current && <span className="text-sm text-primary">(actual)</span>}
-              {item.pending && <span className={`text-sm ${item.current ? "text-primary" : "text-red-500"}`}>
-                {index === pendingMilestoneIndex && !item.current && "(pendiente)"}
+              {index === pendingMilestoneIndex  && <span className={`text-sm ${item.pending ? "text-primary" : "text-red-500"}`}>
+                { "(pendiente)"}
                 </span>}
               {index < pendingMilestoneIndex && <span className="text-sm text-success">(validado)</span>}
             </MenuItem>
