@@ -12,6 +12,7 @@ import "../../styles/weekly_tracking.css"
 import TrackingPlanningItem from "./TrackingPlanningItem";
 import { CiCirclePlus } from "react-icons/ci";
 import {formatDate, getMilestoneStatus, getToday} from "../../utils/dateFormat";
+import PlanningInfoMessage from "./PlanningInfoMessage";
 
 
 
@@ -50,28 +51,7 @@ const TrackingMilestone = ({milestone}) => {
 
   return (
     <div className="list">
-      {status !== "A" && (
-        currentMilestoneIndex === pendingMilestoneIndex ? ( 
-        milestone_status === "late" ? (
-          <p className="text-red-500 text-sm">
-            {`Validación retrasada por ${Math.ceil(
-              Math.abs(new Date(milestone.end_date) - new Date()) /
-                (1000 * 60 * 60 * 24)
-            )} días.`}
-          </p>
-        ) : milestone_status === "current" ? (
-          <p className="text-sm text-success">Dia de validación</p>
-        ):(
-          
-          <p className="text-sm text-primary-300">
-            {`Aun quedan ${Math.ceil(
-              Math.abs(new Date(milestone.end_date) - new Date()) /
-                (1000 * 60 * 60 * 24)
-            )} días para la validación de este hito.`}
-          </p>
-        )):
-        <p className="text-sm text-red-500">Debes validar los hitos anteriores para poder realizar el seguimiento semanal de este hito.</p>
-      )}
+      <PlanningInfoMessage status={status} currentMilestoneIndex={currentMilestoneIndex} pendingMilestoneIndex={pendingMilestoneIndex} milestone={milestone}/>
       <FormControl fullWidth>
         <InputLabel id="demo-simple-select-label">Hito</InputLabel>
         <Select

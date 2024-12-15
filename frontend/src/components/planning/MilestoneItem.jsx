@@ -11,6 +11,7 @@ import { getStatus } from "../../reducers/planningSlice";
 import DialogMod from "../DialogMod"
 import { MdAssignmentLate } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
+import PlanningInfoMessage from "./PlanningInfoMessage";
 
 
 const headers = ["N","Entregable","Tipo","Resultado Esperado", "Resultado Observado","Observaciones", "Carry Over"]
@@ -50,27 +51,11 @@ const MilestoneItem = ({ milestone }) => {
     navigate(`/weekly_tracking/${params.id}`);
   }
 
+
+
   return (
     <div className="list">
-      {status !== "A" && (
-        currentMilestoneIndex === pendingMilestoneIndex ? ( 
-        new Date() > new Date(milestone.end_date) ? (
-          <p className="text-red-500 text-sm">
-            {`Validación retrasada por ${Math.ceil(
-              Math.abs(new Date(milestone.end_date) - new Date()) /
-                (1000 * 60 * 60 * 24)
-            )} días.`}
-          </p>
-        ) : (
-          <p className="text-sm text-red-500">
-            {`Aun quedan ${Math.ceil(
-              Math.abs(new Date(milestone.end_date) - new Date()) /
-                (1000 * 60 * 60 * 24)
-            )} días para la validación de este hito.`}
-          </p>
-        )):
-        <p className="text-sm text-red-500">Debes validar los hitos anteriores para poder validar este</p>
-      )}
+      <PlanningInfoMessage status={status} currentMilestoneIndex={currentMilestoneIndex} pendingMilestoneIndex={pendingMilestoneIndex} milestone={milestone}/>
       <FormControl fullWidth>
         <InputLabel id="demo-simple-select-label">Hito</InputLabel>
         <Select
@@ -83,8 +68,8 @@ const MilestoneItem = ({ milestone }) => {
           {list.map((item,index) => (
             <MenuItem key={item.id} value={item}>
               {item.name} {item.current && <span className="text-sm text-primary">(actual)</span>}
-              {item.pending && <span className={`text-sm ${item.current ? "text-primary" : "text-red-500"}`}>
-                {index === pendingMilestoneIndex && !item.current && "(pendiente)"}
+              {index === pendingMilestoneIndex  && <span className={`text-sm ${item.pending ? "text-primary" : "text-red-500"}`}>
+                { "(pendiente)"}
                 </span>}
               {index < pendingMilestoneIndex && <span className="text-sm text-success">(validado)</span>}
             </MenuItem>

@@ -34,8 +34,8 @@ const TrackingPlanningItem = ({deliverable,index,milestone_id}) => {
       <>
         <Box className="grid-item">{index}</Box>
           <Box className="grid-item">
-            {!editable && deliverable.created_by === "E" ? deliverable.name :
-            (
+            {editable && deliverable.created_by === "D" ? 
+             (
               <TextField
                 id="outlined-basic"
                 variant="outlined"
@@ -45,6 +45,8 @@ const TrackingPlanningItem = ({deliverable,index,milestone_id}) => {
                 onChange={handleInputChange}
               />
             )
+            :deliverable.name
+           
             }
             
           </Box>
