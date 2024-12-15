@@ -70,8 +70,6 @@ const WeeklyTracking = () => {
         }
        });
 
-       console.log(milestone);
-
        update({
         id,
         data: {
@@ -80,14 +78,6 @@ const WeeklyTracking = () => {
         },
       });
     }
-  
-  
-    useEffect(() => {
-      console.log(updateData);
-      if(updateIsError){
-        console.log(updateError);
-      }
-    },[updateData, updateIsError,updateError])
   
   
     useEffect(() => {
@@ -102,7 +92,7 @@ const WeeklyTracking = () => {
     useEffect(() => {
       if (updatedSuccessfully) {
         dispatch(confirmChanges());
-        setSnackbarMessage("Hito validado correctamente");
+        setSnackbarMessage("Hito actualizado correctamente");
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
       }
@@ -175,14 +165,7 @@ const WeeklyTracking = () => {
               disabled={
                 pendingMilestoneIndex !== milestone_index || updateLoading || status !== "E"
               }
-              onClick={() =>
-                setOpen({
-                  state: true,
-                  message:
-                    "Al presionar aceptar ya no podras realizar cambios en la validación de este hito",
-                  title: "¿Estas seguro que quieres confirmar?",
-                })
-              }
+              onClick={handleConfirm}
             >
               Confirmar
             </Button>
