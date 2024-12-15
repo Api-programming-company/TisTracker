@@ -43,7 +43,8 @@ const TrackingPlanningItem = ({deliverable,index,milestone_id}) => {
                 variant="outlined"
                 size="small"
                 sx={{ width: "100%" }}
-                defaultValue={deliverable.name}
+                value={deliverable.name}
+                onChange={handleInputChange}
               />
             )
             }
