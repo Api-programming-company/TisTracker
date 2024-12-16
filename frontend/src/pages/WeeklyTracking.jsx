@@ -66,11 +66,23 @@ const WeeklyTracking = () => {
         return;
       }
 
+      const newDeliverables = milestone.deliverables.map((deliverable) => {
+        if(deliverable.new){
+          return{
+            ...deliverable,
+            id: null,
+            
+          }
+        }
+        return deliverable
+      });
+
       setOpen({ ...open, state: false });
       const milestonesData = data.planning.milestones.map((c_milestone, index) => {
         if (index === milestone_index) {
           return{
             ...milestone,
+            deliverables: newDeliverables,
             status: "P",
           }
         }else{

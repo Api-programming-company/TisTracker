@@ -1,6 +1,5 @@
 import { createSlice, current } from "@reduxjs/toolkit";
 import { planningSpreadsheet } from "../mock_objects/planificacion";
-import { formatDate } from "../utils/dateFormat";
 
 const initialState = planningSpreadsheet.planning.milestones;
 
@@ -98,13 +97,14 @@ export const planningSlice = createSlice({
                 deliverables: [
                   ...milestone.deliverables,
                   {
-                    id: Math.floor(Math.random() * 2000),
+                    id: Math.floor(Math.random() * 2000 + 200),
                     name: "",
                     expected_result: 0,
                     actual_result: 0,
                     observations: "",
                     status: "A",
-                    created_by: "D", 
+                    created_by: "D",
+                    new : true, 
                  },
                 ],
                 status : "E"

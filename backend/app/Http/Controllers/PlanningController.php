@@ -238,7 +238,7 @@ class PlanningController extends Controller
                                     'name' => $deliverableData['name'] ?? '',
                                     'expected_result' => $deliverableData['expected_result'] ?? null,
                                     'actual_result' => $deliverableData['actual_result'] ?? null,
-                                    'observations' => $deliverableData['observations'] ?? null,
+                                    'observations' => $deliverableData['observations'] ?? "",
                                     'status' => $deliverableData['status'] ?? 'A',
                                     'milestone_id' => $milestone->id,
                                     'created_by' => $deliverableData['created_by'] ?? 'E',
