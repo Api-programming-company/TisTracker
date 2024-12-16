@@ -14,5 +14,7 @@ export const evaluate = (lista) => {
     }
     finalGrade += temp;
   }
+  // al back no se puede enviar nota de 0, enviar 1 
+  if (finalGrade === 0) return 1;
   return finalGrade;
 };
