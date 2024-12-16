@@ -11,6 +11,7 @@ import {
   Box,
 } from "@mui/material";
 import { sortMilestones } from "../utils/planningUtils";
+import BackBtn from "../components/navigation/BackBtn";
 
 const SeeCompanyPlanning = () => {
   const { id } = useParams();
@@ -63,21 +64,27 @@ const SeeCompanyPlanning = () => {
   }
 
   return (
-    <Container maxWidth="lg" id="companyPlanning" sx={{ mt: 12, mb: 12 }}>
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" component="h1">
-          Planificación de grupo empresa
-        </Typography>
-        <Typography variant="h6" color="textSecondary">
-          {`${data.planning.company.long_name} [${data.planning.company.short_name}]`}
-        </Typography>
-      </Box>
-      <Box>
-        {milestones.map((milestone) => (
-          <SeeMilestone key={milestone.id} milestone={milestone} />
-        ))}
-      </Box>
-    </Container>
+    <Box className="section-container">
+      <BackBtn url={`/company/${data.planning.company.id}`}/>
+        <Container maxWidth="lg" id="companyPlanning">
+          <Box>
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h4" component="h1">
+                Planificación de grupo empresa
+              </Typography>
+              <Typography variant="h6" color="textSecondary">
+                {`${data.planning.company.long_name} [${data.planning.company.short_name}]`}
+              </Typography>
+            </Box>
+            <Box>
+              {milestones.map((milestone) => (
+                <SeeMilestone key={milestone.id} milestone={milestone} />
+              ))}
+            </Box>
+          </Box>
+      </Container>
+    </Box>
+    
   );
 };
 

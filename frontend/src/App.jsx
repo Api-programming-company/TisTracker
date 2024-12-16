@@ -90,7 +90,7 @@ function App({ toggleTheme, isDarkMode }) {
               <Route path="/invitations-home" element={<InvitationsHome />} />
 
               <Route
-                path="/company/:id/plannification"
+                path="/company/:id/planification"
                 element={<CompanyPlanning />}
               />
 

@@ -153,8 +153,12 @@ const PlanningProvider = ({ children }) => {
     setMilestones(updatedMilestones);
   };
 
+  
+
+
   return (
     <PlanningContext.Provider value={{ milestones, 
+                                      setMilestones,
                                       addMilestone, 
                                       addDeliverable,
                                       handleChangeMilestone,
