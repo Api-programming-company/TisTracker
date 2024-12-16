@@ -26,7 +26,6 @@ const TrackingMilestone = ({milestone}) => {
  
   const currentMilestoneIndex = useSelector(getCurrentMilestoneIndex);
   const pendingMilestoneIndex = useSelector(getPendingMilestoneIndex);
-  const milestone_status = getMilestoneStatus(milestone.end_date);
 
 
   const handleChangeListItem = (index) => {

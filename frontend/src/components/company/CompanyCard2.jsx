@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, Typography } from "@mui/material";
-import { current } from "@reduxjs/toolkit";
 import React, { useEffect,useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getMilestonePlanningStatus, getToday } from "../../utils/dateFormat";
+import { formatDate } from "../../utils/dateFormat";
 
 const CompanyCard2 = ({ company }) => {
   const navigate = useNavigate();
@@ -11,17 +12,30 @@ const CompanyCard2 = ({ company }) => {
   };
   const [currentMilestone,setCurrentMilestone] = useState(-1);
   const [currentMiltestoneDate,setCurrentMilestoneDate] = useState("");
+  const [milestoneStatus, setMilestoneStatus] = useState("pending");
 
   useEffect(() => {
     if (company.planning) {
-      const currentIndex = company.planning.milestones.findIndex((milestone) => milestone.status === "P")
+      const milestones = company.planning.milestones;
+      const sortedMilestones = [...milestones].sort((a, b) => {
+        const dateA = new Date(a.end_date).getTime();
+        const dateB = new Date(b.end_date).getTime();
+        return dateA - dateB;
+      })
+      const currentIndex = sortedMilestones.findIndex((milestone) => milestone.status === "P")
+
       setCurrentMilestone(currentIndex);
-      setCurrentMilestoneDate(new Date(company.planning.milestones[currentIndex].end_date));
+      console.log(company.long_name,new Date(sortedMilestones[currentIndex].end_date).getTime(), getToday().getTime())
+      setCurrentMilestoneDate(new Date(sortedMilestones[currentIndex].end_date));
     }
   },[company.planning])
 
 
-
+  useEffect(() => {
+    if(currentMiltestoneDate){
+      setMilestoneStatus(getMilestonePlanningStatus(currentMiltestoneDate));
+    }
+  },[currentMiltestoneDate])
   return (
     <Card
       onClick={handleClick}
@@ -44,7 +58,7 @@ const CompanyCard2 = ({ company }) => {
         variant="body2"
         noWrap
         sx={{
-          color: currentMiltestoneDate === "" ? "primary.main":currentMiltestoneDate.getTime() < new Date().getTime() -  24 * 60 * 60 * 1000 ? "error.main" :"primary.main",
+          color: milestoneStatus === "late" ? "red" : "primary.main",
           mt: 1,
           mb: 0,
           ml: 2,
@@ -54,9 +68,9 @@ const CompanyCard2 = ({ company }) => {
         {company.planning && company.planning.milestones &&
           (currentMilestone === -1 ?  "Sin entregable":
 
-          currentMiltestoneDate.getTime() < new Date().getTime() -  24 * 60 * 60 * 1000 ?
+          milestoneStatus === "late"?
             "Entregable (retrasado)" :
-            new Date().getTime() + 6 * 24 * 60 * 60 * 1000 < currentMiltestoneDate.getTime()  
+            milestoneStatus === "current" 
             ?  "Entregable"
             : "Revisión")}
       </Typography>
@@ -83,16 +97,8 @@ const CompanyCard2 = ({ company }) => {
         <Typography variant="body2" noWrap>
           <b>Dia de entregable:</b>{" "}
           {company.planning &&
-            company.planning.milestones && currentMilestone !== -1 ?
-              new Date(
-                Date.parse(
-                  company.planning.milestones[currentMilestone].end_date
-                )
-              ).toLocaleDateString("es-AR", {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-              })
+            company.planning.milestones && currentMiltestoneDate ?
+              formatDate(currentMiltestoneDate)
               : "Sin entregable"}
         </Typography>
       </CardContent>

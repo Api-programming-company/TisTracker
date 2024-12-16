@@ -12,6 +12,7 @@ import DialogMod from "../DialogMod"
 import { MdAssignmentLate } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import PlanningInfoMessage from "./PlanningInfoMessage";
+import { formatDate } from "../../utils/dateFormat";
 
 
 const headers = ["N","Entregable","Tipo","Resultado Esperado", "Resultado Observado","Observaciones", "Carry Over"]
@@ -22,9 +23,7 @@ const MilestoneItem = ({ milestone }) => {
   const status = useSelector(getStatus);
   const [open,setOpen] = useState({state : false,value : 0});
   const dispatch = useDispatch();
-  const formatDate = (date) => {
-    return new Date(date).toLocaleDateString();
-  };
+
   const currentMilestoneIndex = useSelector(getCurrentMilestoneIndex);
   const pendingMilestoneIndex = useSelector(getPendingMilestoneIndex);
 

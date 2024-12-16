@@ -1,5 +1,6 @@
 import { createSlice, current } from "@reduxjs/toolkit";
 import { planningSpreadsheet } from "../mock_objects/planificacion";
+import { formatDate } from "../utils/dateFormat";
 
 const initialState = planningSpreadsheet.planning.milestones;
 
@@ -8,18 +9,9 @@ export const planningSlice = createSlice({
   initialState,
   reducers: {
     setMilestones: (state, action) => {
-      const tempMilestones = JSON.parse(JSON.stringify(action.payload));
+      let tempMilestones = JSON.parse(JSON.stringify(action.payload));
       
-      tempMilestones.forEach(milestone => {
-        milestone.deliverables.forEach(deliverable => {
-          if (deliverable.expected_result === null) {
-            deliverable.expected_result = 0;
-          }
-          if (deliverable.actual_result === null) {
-            deliverable.actual_result = 0;
-          }
-        });
-      });
+      
 
       tempMilestones.sort((a,b) => {
         const dateA = new Date(a.end_date);
@@ -27,9 +19,12 @@ export const planningSlice = createSlice({
         return dateA - dateB;
       });
 
+
+
       let currentMilestone = tempMilestones.findIndex(
         (milestone) => milestone.status === "P"
       );
+
     
       return { milestones: tempMilestones , 
         currentMilestone : currentMilestone === -1 ? 0 : currentMilestone, 
@@ -103,7 +98,7 @@ export const planningSlice = createSlice({
                 deliverables: [
                   ...milestone.deliverables,
                   {
-                    id: milestone.deliverables.length,
+                    id: Math.floor(Math.random() * 2000),
                     name: "",
                     expected_result: 0,
                     actual_result: 0,

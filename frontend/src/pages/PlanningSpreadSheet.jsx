@@ -61,6 +61,24 @@ const PlanningSpreadSheet = () => {
   const handleConfirm = () => {
     setOpen({ ...open, state: false });
     dispatch(confirmChanges());
+    const carry_overs = milestone.deliverables.filter((deliverable) => {
+      return deliverable.status === "C";
+    })
+
+    const form_carry_overs = carry_overs.map((carry_over, index) => {
+      return {
+        ...carry_over,
+        id: index + milestone.deliverables.length ,
+        status: "A",
+        name: carry_over.name,
+        expected_result: 0,
+        actual_result: 0,
+        createdBy: "D",
+        observations: "",
+      };
+    })
+
+
     const formData = data.planning.milestones.map((t_milestone, index) => {
       if (index === milestone_index) {
         return {
@@ -72,21 +90,7 @@ const PlanningSpreadSheet = () => {
           ...t_milestone,
           deliverables: [
             ...t_milestone.deliverables,
-            ...milestone.deliverables
-              .filter((deliverable, i) => {
-                return deliverable.status === "C";
-              })
-              .map((newDeliverable, index) => {
-                return {
-                  ...newDeliverable,
-                  id: index + t_milestone.deliverables.length,
-                  status: "A",
-                  name: newDeliverable.name,
-                  expected_result: 0,
-                  actual_result: 0,
-                  observations: "",
-                };
-              }),
+            ...form_carry_overs,
           ],
         };
       }

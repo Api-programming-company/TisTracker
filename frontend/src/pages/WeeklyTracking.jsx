@@ -78,6 +78,7 @@ const WeeklyTracking = () => {
         }
        });
 
+       console.log(milestonesData);
        update({
         id,
         data: {
