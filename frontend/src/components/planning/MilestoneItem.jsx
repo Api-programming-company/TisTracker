@@ -114,7 +114,7 @@ const MilestoneItem = ({ milestone }) => {
           ) :(
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '1rem' }}>
               <i><MdAssignmentLate size={48} color="gray" /></i>
-              <p className="text-neutral-500"> Al parecer aún no se realizó un seguimiento semanal de este hito.</p>
+              <p className="text-neutral-500"> Al parecer no hay entregables para validar en este hito.</p>
               <Button variant="contained" disabled={currentMilestoneIndex !== pendingMilestoneIndex} onClick={handleNavigate}>Realizar seguimiento semanal</Button>
             </Box>
           )} 

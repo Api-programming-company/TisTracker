@@ -8,7 +8,7 @@ const CompanyCard2 = ({ company }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/planning_spreadsheet/${company.planning.id}`);
+    navigate(`/company/${company.id}`);
   };
   const [currentMilestone,setCurrentMilestone] = useState(-1);
   const [currentMiltestoneDate,setCurrentMilestoneDate] = useState("");

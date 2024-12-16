@@ -89,10 +89,19 @@ const VerGE = () => {
             onClick: () =>
                 data?.company?.planning
                     ? navigate(
-                          `/planning_spreadsheet/${data.company.planning.id}`
+                          `/weekly_tracking/${data.company.planning.id}`
                       )
                     : setOpenModal(true),
         },
+        {
+            text: "Validacion de Hito",
+            color: "info",
+            onClick: () => data?.company?.planning
+            ? navigate(
+                  `/planning_spreadsheet/${data?.company?.planning.id}`
+              )
+            : setOpenModal(true), 
+        }
     ];
 
     const verGEe = [
