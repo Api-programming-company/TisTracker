@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import SeeMilestone from "../components/planning/SeeMilestone";
 import "../styles/planning.css";
 import { useParams } from "react-router-dom";
@@ -10,15 +10,17 @@ import {
   Typography,
   Box,
 } from "@mui/material";
+import { sortMilestones } from "../utils/planningUtils";
 
 const SeeCompanyPlanning = () => {
   const { id } = useParams();
+  const [milestones, setMilestones] = useState([]);
   const { data, isSuccess, isFetching, isError, error } =
     useGetPlanningByCompanyIdQuery(id);
 
   useEffect(() => {
     if (isSuccess) {
-      console.log(data);
+      setMilestones(sortMilestones(data.planning.milestones));
     }
     if (isError) {
       console.log(error);
@@ -71,7 +73,7 @@ const SeeCompanyPlanning = () => {
         </Typography>
       </Box>
       <Box>
-        {data?.planning?.milestones.map((milestone) => (
+        {milestones.map((milestone) => (
           <SeeMilestone key={milestone.id} milestone={milestone} />
         ))}
       </Box>
