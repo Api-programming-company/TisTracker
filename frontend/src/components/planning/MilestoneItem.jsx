@@ -100,10 +100,10 @@ const MilestoneItem = ({ milestone }) => {
 
         <div className="deliverables-list">
           <h4 className="text-neutral-700">Entregables:</h4>
-          {milestone.deliverables?.length > 0 && milestone.deliverables.findIndex((deliverable) => deliverable.created_by === "D") !== -1 ? (
+          {milestone.deliverables?.length > 0 ? (
           <div className="planning-grid">
             {headers.map((header,index) => <Box key={index} className="grid-item" sx={{backgroundColor: "info.gray"}}>{header}</Box>)}
-            {milestone.deliverables.filter((deliverable) => deliverable.created_by === "D").map((deliverable, index) => (
+            {milestone.deliverables.map((deliverable, index) => (
               <PlanningItem
                 deliverable={deliverable}
                 index={index}

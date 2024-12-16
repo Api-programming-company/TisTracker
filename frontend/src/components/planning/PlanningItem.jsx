@@ -48,7 +48,7 @@ const PlanningItem = ({deliverable,index,milestone_id}) => {
     }
     
 }
-const editable = (status === "A" || status === "L" || currentMilestoneIndex !== pendingMilestoneIndex) ? false : true;
+const editable = (status === "A" || status === "L" || currentMilestoneIndex !== pendingMilestoneIndex || deliverable.created_by === "E") ? false : true;
 
 
   const handleActionButton = () => {

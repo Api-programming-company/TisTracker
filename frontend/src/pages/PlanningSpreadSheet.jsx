@@ -16,6 +16,7 @@ import { Button, Snackbar } from "@mui/material";
 import DialogMod from "../components/DialogMod";
 import AppContext from "../context/AppContext";
 import BackBtn from "../components/navigation/BackBtn";
+import { sortMilestones } from "../utils/planningUtils";
 
 
 const PlanningSpreadSheet = () => {
@@ -69,7 +70,7 @@ const PlanningSpreadSheet = () => {
     const form_carry_overs = carry_overs.map((carry_over, index) => {
       return {
         ...carry_over,
-        id: index + milestone.deliverables.length ,
+        id: null,
         status: "A",
         name: carry_over.name,
         expected_result: 0,
@@ -80,7 +81,8 @@ const PlanningSpreadSheet = () => {
     })
 
 
-    const formData = data.planning.milestones.map((t_milestone, index) => {
+    const sortedMilestones = sortMilestones(data.planning.milestones);
+    const formData = sortedMilestones.map((t_milestone, index) => {
       if (index === milestone_index) {
         return {
           ...milestone,
@@ -133,8 +135,8 @@ const PlanningSpreadSheet = () => {
   }, [status]);
 
   useEffect(() => {
-    if (updatedSuccessfully) {
-      dispatch(confirmChanges());
+    if (updatedSuccessfully && updateData) {
+      dispatch(setMilestones(updateData.planning.milestones));
       setSnackbarMessage("Hito validado correctamente");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
@@ -145,7 +147,7 @@ const PlanningSpreadSheet = () => {
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
     }
-  }, [isSuccess, error, isError, updatedSuccessfully, updateIsError, dispatch, updateError]);
+  }, [isSuccess, error, isError, updatedSuccessfully, updateIsError, dispatch, updateError,updateData]);
 
   if (isFetching) {
     return (
@@ -187,7 +189,7 @@ const PlanningSpreadSheet = () => {
       <Box className="section-container">
         <BackBtn url={`/company/${data.planning.company_id}`}/>
         <Container maxWidth="lg">
-          <Box className="section-container" sx={{ display: "flex", flexDirection: "column",gap: 4 }}>
+          <Box className="section-container" sx={{ display: "flex", flexDirection: "column",gap: 4, marginBottom: 5}}>
             <div className="section-header">
               <h1>Planilla de Validación de Hito</h1>
             </div>
