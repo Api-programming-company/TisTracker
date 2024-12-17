@@ -24,7 +24,8 @@ const PlanningProvider = ({ children }) => {
       end_date: '', 
       billing_percentage: 0, 
       deliverables: [], 
-      errors: [] }]);
+      errors: [],
+      isNew : true }]);
   };
 
   //errors Format : {milestoneId: [{errorArea: 'error message'}]}, Ojala usaramos typescript
@@ -53,7 +54,7 @@ const PlanningProvider = ({ children }) => {
   const addDeliverable = (milestoneId) => {
     const updatedMilestones = milestones.map((milestone) => {
       if (milestone.id === milestoneId) {
-        return { ...milestone, deliverables: [...milestone.deliverables,{ id: Date.now(), name: '', expected_result: 0, actual_result: 0, observations: '', status: 'A', created_by: 'E'}] };
+        return { ...milestone, deliverables: [...milestone.deliverables,{ id: Date.now(), name: '', expected_result: 0, actual_result: 0, observations: '', status: 'A', created_by: 'E',isNew: true}] };
       }
       return milestone;
     });

@@ -74,10 +74,18 @@ const CompanyPlanning = () => {
         registerPlanning(form);
       }else{
         const newMilestones = milestones.map((milestone) => {
+          
           return {
             ...milestone,
+            id: milestone.isNew ? null : milestone.id,
             end_date: milestone.end_date.toISOString().split("T")[0],
             start_date: milestone.start_date.toISOString().split("T")[0],
+            deliverables: milestone.deliverables.map((deliverable) => {
+              return {
+                ...deliverable,
+                id: deliverable.isNew ? null : deliverable.id,
+              };
+            })
           };
         })
         update({

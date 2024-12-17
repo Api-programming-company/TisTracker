@@ -127,7 +127,7 @@ const Milestone = ({ milestone }) => {
               <DatePicker
                 label="Fecha de fin"
                 value={milestone.end_date}
-                onChange={(e) => handleAction("handleEndDateChange", e.toIsoString())}
+                onChange={(e) => handleAction("handleEndDateChange", e)}
                 renderInput={(params) => <TextField  {...params}  error={Boolean(findError("end_date"))} helperText={findError("end_date")}/>}
                 
               />
