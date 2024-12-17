@@ -291,6 +291,24 @@ class PlanningController extends Controller
       public function getPlanningByCompany($company_id)
       {
           $planning = Planning::with('milestones.deliverables')->where('company_id', $company_id)->first();
-          return response()->json($planning, 200);
+          
+          if ($planning) {
+            // Obtener el usuario autenticado
+             $user = auth()->user();
+
+              // Verificar si el usuario pertenece a la compañía
+              $company = $planning->company;
+              $member = $company->members()->where('user_id', $user->id)->first();
+
+              if (!$member && $user->user_type !== 'D') {
+                  return response()->json([
+                      'message' => 'No tienes permisos para acceder a esta planificación.',
+                  ], 403);
+              }
+              
+              return response()->json($planning, 200);
+          } else {
+              return response()->json([], 200);
+          }
       }
 }
