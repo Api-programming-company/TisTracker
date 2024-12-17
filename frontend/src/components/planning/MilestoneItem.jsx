@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, {  useContext, useState } from "react";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import PlanningItem from "./PlanningItem";
@@ -13,6 +13,7 @@ import { MdAssignmentLate } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import PlanningInfoMessage from "./PlanningInfoMessage";
 import { formatDate } from "../../utils/dateFormat";
+import AppContext from "../../context/AppContext";
 
 
 const headers = ["N","Entregable","Tipo","Resultado Esperado", "Resultado Observado","Observaciones", "Carry Over"]
@@ -102,7 +103,7 @@ const MilestoneItem = ({ milestone }) => {
           <h4 className="text-neutral-700">Entregables:</h4>
           {milestone.deliverables?.length > 0 ? (
           <div className="planning-grid">
-            {headers.map((header,index) => <Box key={index} className="grid-item" sx={{backgroundColor: "info.gray"}}>{header}</Box>)}
+            {headers.map((header,index) => <Box key={index} className="grid-item" sx={{backgroundColor: "info.gray", fontWeight:"bold"}}>{header}</Box>)}
             {milestone.deliverables.map((deliverable, index) => (
               <PlanningItem
                 deliverable={deliverable}

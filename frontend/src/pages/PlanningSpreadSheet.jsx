@@ -33,7 +33,7 @@ const PlanningSpreadSheet = () => {
   const pendingMilestoneIndex = useSelector(getPendingMilestoneIndex);
   const { data, isSuccess, isFetching, isError, error } =
     useGetPlanningByCompanyIdQuery(id);
-    
+  const [userType, setUserType] = useState(user.user_type);
   const milestone_index = useSelector(getCurrentMilestoneIndex);
   const [
     update,
@@ -54,10 +54,18 @@ const PlanningSpreadSheet = () => {
   }, [isSuccess, isError, error, data, dispatch]);
 
   useEffect(() => {
-    if(user.user_type === "E"){
-      navigate("/")
+    if(user){
+      if(user.user_type === "E"){
+        setUserType("E");
+        if(data.planning.id !== Number(id)){
+          navigate("/student-home");
+        }
+      }else{
+        setUserType("D");
+      }
     }
-  },[navigate, user])
+    
+  },[navigate, user,id])
 
 
   const handleConfirm = () => {
@@ -115,15 +123,6 @@ const PlanningSpreadSheet = () => {
       },
     });
   };
-
-
-  useEffect(() => {
-    console.log(updateData);
-    if(updateIsError){
-      console.log(updateError);
-    }
-  },[updateData, updateIsError,updateError])
-
 
   useEffect(() => {
     window.onbeforeunload = (e) => {
@@ -194,14 +193,15 @@ const PlanningSpreadSheet = () => {
               <h1>Planilla de Validación de Hito</h1>
             </div>
             <div className="section-body">
-              <MilestoneItem milestone={milestone} />
+              <MilestoneItem milestone={milestone}/>
 
               {status === "E" && <p className="text-red-500">Editando</p>}
               {status === "A" && <p className="text-success">Hito Validado</p>}
             </div>
 
             <Box>
-              <Button
+              {userType === "D" && (
+                <Button
                 variant="outlined"
                 sx={{
                   backgroundColor:
@@ -225,6 +225,8 @@ const PlanningSpreadSheet = () => {
               >
                 Confirmar
               </Button>
+              )}
+              
             </Box>
             <DialogMod
               open={open.state}

@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import AppContext from "../context/AppContext";
 import { useLeaveCompanyMutation } from "../api/companyApi";
 import DialogMod from "../components/DialogMod";
+import { formatDate, getAcademicPeriodStatus } from "../utils/dateFormat";
 
 const VerGE = () => {
     const { id } = useParams();
@@ -33,6 +34,8 @@ const VerGE = () => {
         severity: "success",
     });
     const navigate = useNavigate();
+    const acad_period_status = getAcademicPeriodStatus(user.academic_period)
+
     const [
         leaveCompany,
         {
@@ -104,9 +107,17 @@ const VerGE = () => {
 
     const verGEe = [
         {
-            text: data?.company?.planning ? "Editar Planificación" : "Crear Planificación",
+            text: acad_period_status === "project" ? "Ver Seguimiento Semanal" : data?.company?.planning ? "Editar Planificación" : "Crear Planificación",
             color: "info",
-            path: `/company/${id}/planification`,
+            onClick: () =>  {
+                if(acad_period_status === "project" || acad_period_status === "evaluation") {
+                    if(data?.company?.planning) {
+                        navigate(`/planning_spreadsheet/${data.company.planning.id}`)
+                    }
+                }else{
+                    navigate(`/company/${id}/planification`)
+                }
+            }
         },
         {
             text: "Ver Planificación",
@@ -116,6 +127,7 @@ const VerGE = () => {
                     ? navigate(`/planning/${data.company.planning.id}`)
                     : setOpenModal(true),
         },
+        
         {
             text: "Evaluar Empresa",
             color: "info",

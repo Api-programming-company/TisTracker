@@ -18,13 +18,13 @@ const PlanningInfoMessage = ({status,currentMilestoneIndex,pendingMilestoneIndex
         ):(
           
           <p className="text-sm text-primary-300">
-            {`Aun quedan ${Math.ceil(
+            {`Quedan ${Math.ceil(
               Math.abs(new Date(milestone.end_date) - new Date()) /
                 (1000 * 60 * 60 * 24)
             )} días para la validación de este hito.`}
           </p>
         )):
-        <p className="text-sm text-red-500">Debes validar los hitos anteriores para poder realizar el seguimiento semanal de este hito.</p>
+        <p className="text-sm text-red-300">Se deben validar los hitos anteriores para poder validar este hito.</p>
       )
   )
 }

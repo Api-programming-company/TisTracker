@@ -45,4 +45,29 @@ const getMilestonePlanningStatus = (end_date) => {
 
 }
 
-export {formatDate,getToday,getMilestoneStatus,getMilestonePlanningStatus};
+const getDateTime = (dateString) => {
+    const date = new Date( new Date(dateString).getTime() + 4*60*60*1000 ); 
+    return date.getTime();
+};
+
+const getAcademicPeriodStatus = (academic_period) => {
+    const today = new Date().getTime();
+    const company_creation_start_date = getDateTime(academic_period.company_creation_start_date);
+    const company_creation_end_date = getDateTime(academic_period.company_creation_end_date);
+    const planning_start_date = getDateTime(academic_period.planning_start_date);
+    const planning_end_date = getDateTime(academic_period.planning_end_date);
+    const evaluation_start_date = getDateTime(academic_period.evaluation_start_date);
+    const evaluation_end_date = getDateTime(academic_period.evaluation_end_date);
+    if(company_creation_start_date <= today && today <= company_creation_end_date) {
+        return "company_creation";
+    }else if(planning_start_date <= today && today <= planning_end_date){ 
+        return "planning";
+    }else if(evaluation_start_date <= today && today <= evaluation_end_date){
+        return "evaluation";
+    }else if(planning_end_date <= today && today <= evaluation_start_date){
+        return "project";
+    }
+    
+}
+
+export {formatDate,getToday,getMilestoneStatus,getMilestonePlanningStatus,getDateTime,getAcademicPeriodStatus};

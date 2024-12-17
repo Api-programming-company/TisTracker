@@ -187,7 +187,6 @@ i{
 .grid.header{
   background-color: var(--neutral-200);
   /* border-color: var(--primary-500); */
-  /* color: white; */
   font-weight: bold;
 }
 
