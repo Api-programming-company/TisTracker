@@ -127,7 +127,7 @@ const Milestone = ({ milestone }) => {
               <DatePicker
                 label="Fecha de fin"
                 value={milestone.end_date}
-                onChange={(e) => handleAction("handleEndDateChange", e)}
+                onChange={(e) => handleAction("handleEndDateChange", e.toIsoString())}
                 renderInput={(params) => <TextField  {...params}  error={Boolean(findError("end_date"))} helperText={findError("end_date")}/>}
                 
               />
@@ -141,9 +141,9 @@ const Milestone = ({ milestone }) => {
               
                 <TextField 
                   label="Porcentaje de facturación"
-                  value={milestone.billing_percentage}
+                  value={milestone.billing_percentage.toString()}
                   onChange={(e) =>
-                    handleAction("handleBillingPercentageChange", e.target.value)
+                    handleAction("handleBillingPercentageChange", Number(e.target.value))
                   }
                   type="number"
                   fullWidth

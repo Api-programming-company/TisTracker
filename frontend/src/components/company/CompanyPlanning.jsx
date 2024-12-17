@@ -73,11 +73,17 @@ const CompanyPlanning = () => {
       if(!planningId){
         registerPlanning(form);
       }else{
-        console.log("data",planningId,milestones,id);
+        const newMilestones = milestones.map((milestone) => {
+          return {
+            ...milestone,
+            end_date: milestone.end_date.toISOString().split("T")[0],
+            start_date: milestone.start_date.toISOString().split("T")[0],
+          };
+        })
         update({
-          planningId : planningId.toString(),
+          id: planningId,
           data: {
-            milestones,
+            milestones: newMilestones,
             company_id: id,
           },
         });
@@ -120,10 +126,10 @@ const CompanyPlanning = () => {
           ...milestone,
           end_date: new Date(milestone.end_date),
           start_date: new Date(milestone.start_date),
+          billing_percentage: Number(milestone.billing_percentage),
         };
       });
       if(sortedMilestones.length > 0){
-        console.log(data.planning,"Planning")
         setPlanningId(data.id);
       }
 
@@ -147,6 +153,7 @@ const CompanyPlanning = () => {
       setSnackbarOpen(true);
     }
   }, [updatedSuccessfully, updateError, updateIsError]);
+
 
 
   if (isFetching) {
