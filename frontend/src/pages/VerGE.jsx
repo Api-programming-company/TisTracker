@@ -1,3 +1,5 @@
+
+
 import React, { useEffect, useContext, useState } from "react";
 import {
     Box,
@@ -7,10 +9,6 @@ import {
     Button,
     Stack,
     Snackbar,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
     Typography,
 } from "@mui/material";
 import { useGetCompanyByIdQuery } from "../api/companyApi";
@@ -80,7 +78,7 @@ const VerGE = () => {
             color: "info",
             onClick: () =>
                 data?.company?.planning
-                    ? navigate(`/planning/${data.company.planning.id}`)
+                    ? navigate(`/planing/${data.company.planning.id}`)
                     : setOpenModal(true),
         },
         {
@@ -108,7 +106,7 @@ const VerGE = () => {
         {
             text: "Agregar Planificación",
             color: "info",
-            path: `/company/${id}/plannification`,
+            path: `/company/${id}/planification`,
         },
         {
             text: "Ver Planificación",

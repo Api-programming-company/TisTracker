@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography, Button, Snackbar, Alert, Container } from "@mui/material";
+import { Box, Typography, Button, Snackbar, Alert, Container,CircularProgress } from "@mui/material";
 import Milestone from "./Milestone";
 import DialogMod from "../DialogMod";
 import { useParams, useNavigate } from "react-router-dom";
@@ -9,6 +9,7 @@ import "../../styles/planning_record.css";
 import BackBtn from "../navigation/BackBtn";
 import { sortMilestones } from "../../utils/planningUtils";
 import { useGetPlanningByCompanyIdQuery } from "../../api/planningApi";
+import { useUpdateCompanyPlanningByIdMutation } from "../../api/companyApi";
 
 const CompanyPlanning = () => {
   const { id } = useParams();
@@ -16,6 +17,7 @@ const CompanyPlanning = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [planningId,setPlanningId] = useState(0);
 
   const {
     milestones,
@@ -27,6 +29,17 @@ const CompanyPlanning = () => {
 
   const { data, isSuccess, isFetching, isError, error } =
   useGetPlanningByCompanyIdQuery(id);
+
+  const [
+    update,
+    {
+      data: updateData,
+      isLoading: updateLoading,
+      isSuccess: updatedSuccessfully,
+      isError: updateIsError,
+      error: updateError,
+    },
+  ] = useUpdateCompanyPlanningByIdMutation();
 
   const [registerPlanning, { data: registerPlanningData, 
     isSuccess: registerPlanningSuccess,
@@ -57,8 +70,19 @@ const CompanyPlanning = () => {
         setSnackbarOpen(true);
         return;
       }
-
-      registerPlanning(form);
+      if(!planningId){
+        registerPlanning(form);
+      }else{
+        console.log("data",planningId,milestones,id);
+        update({
+          planningId : planningId.toString(),
+          data: {
+            milestones,
+            company_id: id,
+          },
+        });
+      }
+      
     } else {
       setSnackbarMessage("Al parecer tienes errores en los datos");
       setSnackbarSeverity("error");
@@ -77,10 +101,10 @@ const CompanyPlanning = () => {
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
 
-      navigate("/");
     }
     if (registerPlanningIsError) {
       setSnackbarMessage(registerPlanningError.data?.message);
+      console.log(registerPlanningError);
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
     }
@@ -97,12 +121,48 @@ const CompanyPlanning = () => {
           start_date: new Date(milestone.start_date),
         };
       });
+      if(sortedMilestones.length > 0){
+        console.log(data.planning,"Planning")
+        setPlanningId(data.planning.id);
+      }
+
       setMilestones(sortedMilestones);
     }
     if (isError) {
       console.log(error);
     }
   }, [isSuccess, isError, error, data, setMilestones]);
+
+  useEffect(() => {
+    if (updatedSuccessfully) {
+      setSnackbarMessage("Planificación actualizada con éxito");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+    }
+    if (updateIsError) {
+      setSnackbarMessage(updateError.data?.message);
+      console.log(updateError);
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+  }, [updatedSuccessfully, updateError, updateIsError]);
+
+
+  if (isFetching) {
+    return (
+      <Container
+        maxWidth="sm"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        <CircularProgress />
+      </Container>
+    );
+  }
 
   return (
     <Box className="section-container">
@@ -142,7 +202,7 @@ const CompanyPlanning = () => {
 
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Button
-            disabled={isLoading}
+            disabled={isLoading || updateLoading}
             variant="outlined"
             onClick={() => setOpen(true)}
             sx={{
@@ -155,11 +215,12 @@ const CompanyPlanning = () => {
               width: "200px",
             }}
           >
-            Confirmar
+            {!planningId ? "Registrar planificación" : "Actualizar planificación"}
           </Button>
         </Box>
-        <div className="planning-btns-container">
-          <DialogMod
+          
+      </Container>
+      <DialogMod
             open={open}
             setOpen={setOpen}
             title={"Confirmar"}
@@ -167,7 +228,6 @@ const CompanyPlanning = () => {
             onAccept={handleConfirm}
             onCancel={() => setOpen(false)}
           />
-        </div>
 
         {/* Snackbar para mostrar mensajes */}
         <Snackbar
@@ -184,10 +244,10 @@ const CompanyPlanning = () => {
             {snackbarMessage}
           </Alert>
         </Snackbar>
-      </Container>
-      
     </Box>
+    
   );
 };
 
 export default CompanyPlanning;
+

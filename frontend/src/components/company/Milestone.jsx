@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import {
   ListItem,
@@ -18,7 +19,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DialogMod from "../DialogMod";
 import { usePlanningContext } from "../../context/PlanningContext";
-import { formatDate } from "../../utils/validaciones";
+
+
 
 const Milestone = ({ milestone }) => {
   const [openDeliverables, setOpenDeliverables] = useState(true);
@@ -132,15 +134,16 @@ const Milestone = ({ milestone }) => {
                {findError("end_date") && <p className="text-red-300 text-sm">{findError("end_date")}</p>}
 
               </div>
+
               
             </ListItem>
-            <ListItem>
+             <ListItem>
               
                 <TextField 
                   label="Porcentaje de facturación"
-                  value={Math.floor(milestone.billing_percentage)}
+                  value={milestone.billing_percentage}
                   onChange={(e) =>
-                    handleAction("handleBillingPercentageChange", Number(e.target.value))
+                    handleAction("handleBillingPercentageChange", e.target.value)
                   }
                   type="number"
                   fullWidth
@@ -167,6 +170,7 @@ const Milestone = ({ milestone }) => {
                 
                 
             </ListItem>
+            
             <ListItem>
             {Boolean(findError("deliverables")) &&
                 <p className="text-red-300 text-sm">{findError("deliverables")}</p>
@@ -194,10 +198,10 @@ const Milestone = ({ milestone }) => {
                 >
                   Agregar Entregable
                 </Button>
-            </ListItem>
+            </ListItem> 
           </LocalizationProvider>
         </List>
-      </Collapse>
+      </Collapse> 
       </div>
   );
 };

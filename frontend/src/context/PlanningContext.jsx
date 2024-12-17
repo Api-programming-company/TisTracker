@@ -1,5 +1,4 @@
-// MilestonesContext.js
-import { is } from 'date-fns/locale';
+
 import { createContext, useState,useContext, useEffect } from 'react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -54,7 +53,7 @@ const PlanningProvider = ({ children }) => {
   const addDeliverable = (milestoneId) => {
     const updatedMilestones = milestones.map((milestone) => {
       if (milestone.id === milestoneId) {
-        return { ...milestone, deliverables: [...milestone.deliverables,{ id: Date.now(), name: ''}] };
+        return { ...milestone, deliverables: [...milestone.deliverables,{ id: Date.now(), name: '', expected_result: 0, actual_result: 0, observations: '', status: 'A', created_by: 'E'}] };
       }
       return milestone;
     });
