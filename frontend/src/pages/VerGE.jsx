@@ -104,7 +104,7 @@ const VerGE = () => {
 
     const verGEe = [
         {
-            text: "Agregar Planificación",
+            text: data?.company?.planning ? "Editar Planificación" : "Crear Planificación",
             color: "info",
             path: `/company/${id}/planification`,
         },

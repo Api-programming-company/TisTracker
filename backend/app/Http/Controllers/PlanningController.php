@@ -286,4 +286,11 @@ class PlanningController extends Controller
             return response()->json(['message' => 'Error al eliminar la planificación', 'error' => $e->getMessage()], 500);
         }
     }
+
+      // Obtener una planificación por compañía
+      public function getPlanningByCompany($company_id)
+      {
+          $planning = Planning::with('milestones.deliverables')->where('company_id', $company_id)->first();
+          return response()->json($planning, 200);
+      }
 }

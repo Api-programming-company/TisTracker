@@ -8,7 +8,7 @@ import { usePlanningContext } from "../../context/PlanningContext";
 import "../../styles/planning_record.css";
 import BackBtn from "../navigation/BackBtn";
 import { sortMilestones } from "../../utils/planningUtils";
-import { useGetPlanningByCompanyIdQuery } from "../../api/planningApi";
+import { useGetPlanningByRealCompanyIdQuery } from "../../api/planningApi";
 import { useUpdateCompanyPlanningByIdMutation } from "../../api/companyApi";
 
 const CompanyPlanning = () => {
@@ -28,7 +28,7 @@ const CompanyPlanning = () => {
   const navigate = useNavigate();
 
   const { data, isSuccess, isFetching, isError, error } =
-  useGetPlanningByCompanyIdQuery(id);
+    useGetPlanningByRealCompanyIdQuery(id);
 
   const [
     update,
@@ -114,7 +114,8 @@ const CompanyPlanning = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      const sortedMilestones = sortMilestones(data.planning.milestones).map((milestone) => {
+      console.log(data,"Data");
+      const sortedMilestones = sortMilestones(data.milestones).map((milestone) => {
         return {
           ...milestone,
           end_date: new Date(milestone.end_date),
@@ -123,7 +124,7 @@ const CompanyPlanning = () => {
       });
       if(sortedMilestones.length > 0){
         console.log(data.planning,"Planning")
-        setPlanningId(data.planning.id);
+        setPlanningId(data.id);
       }
 
       setMilestones(sortedMilestones);
