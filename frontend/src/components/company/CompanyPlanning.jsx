@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import { Box, Typography, Button, Snackbar, Alert, Container,CircularProgress } from "@mui/material";
 import Milestone from "./Milestone";
 import DialogMod from "../DialogMod";
@@ -10,6 +10,8 @@ import BackBtn from "../navigation/BackBtn";
 import { sortMilestones } from "../../utils/planningUtils";
 import { useGetPlanningByRealCompanyIdQuery } from "../../api/planningApi";
 import { useUpdateCompanyPlanningByIdMutation } from "../../api/companyApi";
+import AppContext from "../../context/AppContext";
+import { formatDate } from "../../utils/dateFormat";
 
 const CompanyPlanning = () => {
   const { id } = useParams();
@@ -18,6 +20,8 @@ const CompanyPlanning = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [planningId,setPlanningId] = useState(0);
+  const { user } = useContext(AppContext);
+
 
   const {
     milestones,
@@ -169,7 +173,22 @@ const CompanyPlanning = () => {
   }, [updatedSuccessfully, updateError, updateIsError]);
 
 
-
+  useEffect(() => {
+    console.log(user,"user",id);
+    if(user){
+      if(user.company.company_id != id){
+        navigate(`/company/${user.company.company_id}`);
+      }
+        
+  
+        if(user.user_type !== "E" || new Date(formatDate( user.academic_period.planning_end_date)).getTime() < new Date().getTime()){
+          navigate(`/company/${id}`);
+        }
+      
+    }
+    
+  },[user,id,navigate]);
+ 
   if (isFetching) {
     return (
       <Container
