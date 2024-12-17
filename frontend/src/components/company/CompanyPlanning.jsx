@@ -27,7 +27,7 @@ const CompanyPlanning = () => {
   } = usePlanningContext();
   const navigate = useNavigate();
 
-  const { data, isSuccess, isFetching, isError, error } =
+  const { data, isSuccess, isFetching, isError, error,refetch } =
     useGetPlanningByRealCompanyIdQuery(id);
 
   const [
@@ -114,6 +114,7 @@ const CompanyPlanning = () => {
       setSnackbarMessage("Planificación registrada con éxito");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
+      refetch();
 
     }
     if (registerPlanningIsError) {
@@ -129,19 +130,24 @@ const CompanyPlanning = () => {
   useEffect(() => {
     if (isSuccess) {
       console.log(data,"Data");
-      const sortedMilestones = sortMilestones(data.milestones).map((milestone) => {
-        return {
-          ...milestone,
-          end_date: new Date(milestone.end_date),
-          start_date: new Date(milestone.start_date),
-          billing_percentage: Number(milestone.billing_percentage),
-        };
-      });
-      if(sortedMilestones.length > 0){
-        setPlanningId(data.id);
+      if(data?.milestones){
+        const sortedMilestones = sortMilestones(data.milestones).map((milestone) => {
+          return {
+            ...milestone,
+            end_date: new Date(milestone.end_date),
+            start_date: new Date(milestone.start_date),
+            billing_percentage: Number(milestone.billing_percentage),
+          };
+        });
+        if(sortedMilestones.length > 0){
+          setPlanningId(data.id);
+          setMilestones(sortedMilestones);
+        }
+      
+      }else{
+        setMilestones([]);
       }
 
-      setMilestones(sortedMilestones);
     }
     if (isError) {
       console.log(error);

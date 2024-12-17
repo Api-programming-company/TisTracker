@@ -193,6 +193,27 @@ class PlanningController extends Controller
 
             // Buscar la planificación
             $planning = Planning::findOrFail($id);
+            $planning_milestones = $planning->milestones()->get();
+
+            $validated_milestones_ids = array_column($validatedData['milestones'], 'id');
+                // Eliminar hitos y entregables relacionados
+                foreach ($planning_milestones as $planning_milestone) {
+                    if (!in_array($planning_milestone->id, $validated_milestones_ids)) {
+                        $planning_milestone->delete();
+                    }else{
+                        $deliverables = $planning_milestone->deliverables()->get();
+                        $validated_milestone = array_filter($validatedData['milestones'], function ($milestone) use ($planning_milestone) {
+                            return $milestone['id'] == $planning_milestone->id;
+                        });
+                        $validated_deliverables_ids = array_column($validated_milestone[0]['deliverables'], 'id');
+                        foreach ($deliverables as $deliverable) {
+                            if (!in_array($deliverable->id, $validated_deliverables_ids)) {
+                                $deliverable->delete();
+                            }
+                        }
+                    }
+                }
+
 
             // Actualizar la planificación principal
             $planning->update([
@@ -254,25 +275,7 @@ class PlanningController extends Controller
 
                 
                 
-                $planning_milestones = $planning->milestones()->get();
-                $validated_milestones_ids = array_column($validatedData['milestones'], 'id');
-                // Eliminar hitos y entregables relacionados
-                foreach ($planning_milestones as $planning_milestone) {
-                    if (!in_array($planning_milestone->id, $validated_milestones_ids)) {
-                        $planning_milestone->delete();
-                    }else{
-                        $deliverables = $planning_milestone->deliverables()->get();
-                        $validated_milestone = array_filter($validatedData['milestones'], function ($milestone) use ($planning_milestone) {
-                            return $milestone['id'] == $planning_milestone->id;
-                        });
-                        $validated_deliverables_ids = array_column($validated_milestone[0]['deliverables'], 'id');
-                        foreach ($deliverables as $deliverable) {
-                            if (!in_array($deliverable->id, $validated_deliverables_ids)) {
-                                $deliverable->delete();
-                            }
-                        }
-                    }
-                }
+                
 
                 
         
