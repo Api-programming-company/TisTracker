@@ -200,6 +200,7 @@ class PlanningController extends Controller
                 'company_id' => $validatedData['company_id'] ?? $planning->company_id,
             ]);
 
+
             // Log de planificación actualizada
             Log::info('Planning actualizado:', $planning->toArray());
 
@@ -215,17 +216,18 @@ class PlanningController extends Controller
 
                 foreach ($validatedData['milestones'] as $milestoneData) {
                     // Crear o actualizar el hito
-                    $milestone = Milestone::updateOrCreate(
+                     $milestone = Milestone::updateOrCreate(
                         ['id' => $milestoneData['id'] ?? null],
-                        [
+                            [
                             'name' => $milestoneData['name'] ?? '',
                             'start_date' => $milestoneData['start_date'] ?? null,
                             'end_date' => $milestoneData['end_date'] ?? null,
                             'billing_percentage' => $milestoneData['billing_percentage'] ?? 0,
-                            'status' => $milestoneData['status'] ?? 'P',
-                            'planning_id' => $planning->id,
-                        ]
-                    );
+                            'status' => $milestoneData['status'] ?? 'P',                                'planning_id' => $planning->id,
+                            ]
+                        );
+                    }
+                    
 
                     Log::info('Milestone actualizado o creado:', $milestone->toArray());
 
@@ -249,7 +251,20 @@ class PlanningController extends Controller
                         }
                     }
                 }
-            }
+
+                
+                
+                $planning_milestones = $planning->milestones()->get();
+                $validated_milestones_ids = array_column($validatedData['milestones'], 'id');
+                // Eliminar hitos y entregables relacionados
+                foreach ($planning_milestones as $planning_milestone) {
+                    if (!in_array($planning_milestone->id, $validated_milestones_ids)) {
+                        $planning_milestone->delete();
+                    }
+                }
+
+                
+        
 
             DB::commit(); // Confirmar transacción
 
@@ -311,4 +326,30 @@ class PlanningController extends Controller
               return response()->json([], 200);
           }
       }
+
+    //   Eliminar un hito
+    public function destroyMilestone($milestone_id)
+    {
+        try {
+            $milestone = Milestone::findOrFail($milestone_id);
+            $milestone->deliverables()->delete();
+            $milestone->delete();
+    
+            return response()->json(['message' => 'Hito eliminado correctamente'], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Error al eliminar el hito', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function destroyDeliverable($deliverable_id)
+    {
+        try {
+            $deliverable = Deliverable::findOrFail($deliverable_id);
+            $deliverable->delete();
+    
+            return response()->json(['message' => 'Entregable eliminado correctamente'], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Error al eliminar la entrega', 'error' => $e->getMessage()], 500);
+        }
+    }
 }
