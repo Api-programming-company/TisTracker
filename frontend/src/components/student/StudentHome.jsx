@@ -66,7 +66,7 @@ const StudentHome = () => {
 
     console.log("endDate", companyCreationEndDate);
     console.log("startDate", companyCreationStartDate);
-    
+
     console.log(isWithinCreationPeriod);
 
     const menuItems = [
@@ -87,13 +87,10 @@ const StudentHome = () => {
         return (
             <Container
                 sx={{
-                    // position: "absolute",
-                    width: "100%",
-                    height: "90vh",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    backgroundColor: "rgba(255, 255, 255, 0.9)",
+                    height: "80vh",
                 }}
             >
                 <CircularProgress />
@@ -111,7 +108,7 @@ const StudentHome = () => {
             <Divider sx={{ width: "100%", mb: 4 }} />{" "}
             <Box display="flex" justifyContent="start" flexWrap="wrap" gap={3}>
                 {user.academic_period_id ? (
-                    <Box sx={{display:"flex", flexDirection:"column"}}>
+                    <Box sx={{ display: "flex", flexDirection: "column" }}>
                         {menuItems.map((item, index) => (
                             <Box
                                 key={index}
@@ -145,11 +142,7 @@ const StudentHome = () => {
                             </Box>
                         ))}
 
-                        {isWithinCreationPeriod ? (
-                            <>
-                                <InvitationsHome />
-                            </>
-                        ) : null}
+                        {isWithinCreationPeriod ? <InvitationsHome /> : null}
                         <AcademicPeriodAbout />
                     </Box>
                 ) : (
