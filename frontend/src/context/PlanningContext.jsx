@@ -3,6 +3,7 @@ import { createContext, useState,useContext, useEffect } from 'react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { formatDate } from '../utils/dateFormat';
+import { now } from 'moment';
 
 const PlanningContext = createContext();
 
@@ -64,7 +65,7 @@ const PlanningProvider = ({ children }) => {
 
   const checkErrors = (end_date) => {
     let isError = false;
-    const tis_end_time = new Date(end_date).getTime() + 4*60*60*1000;
+    const tis_end_time = new Date(end_date).getTime() + 4*60*60*1000 - 24*60*60*1000;
     const tis_start_time = new Date().getTime()
     console.log(tis_start_time,tis_end_time);
     const updatedMilestones = milestones.map((milestone, index) => {
@@ -78,8 +79,8 @@ const PlanningProvider = ({ children }) => {
         const mil_start_date_time = milestone.start_date ? new Date(milestone.start_date).getTime() : null;
         console.log(mil_start_date_time,"start time");
   
-        if (mil_start_date_time < tis_start_time) errors.push({ errorArea: "start_date", message: "La fecha de inicio debe ser mayor o igual que la fecha actual ("
-        + new Date().toLocaleDateString() + ")" });
+        if (mil_start_date_time < tis_start_time) errors.push({ errorArea: "start_date", message: "La fecha de inicio debe ser mayor que la fecha actual ("
+        + new Date( now() + 24 * 60 * 60 * 1000).toLocaleDateString() + ")" });
         
         if (index > 0) {
           const prevMilestone = milestones[index - 1];
@@ -100,7 +101,7 @@ const PlanningProvider = ({ children }) => {
         }
         if(tis_end_time){
           if (mil_end_date_time > tis_end_time) errors.push({ errorArea: "end_date", message: "La fecha de fin debe ser menor o igual a la fecha valida indicada en la parte superior. (" 
-            + formatDate(end_date) +")" });
+            + new Date(new Date(end_date).getTime() + 4*60*60*1000 - 24*60*60*1000).toLocaleDateString() +")" });
         } 
       }
       if (!milestone.billing_percentage){

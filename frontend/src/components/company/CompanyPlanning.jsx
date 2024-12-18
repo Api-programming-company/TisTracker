@@ -12,6 +12,7 @@ import { useGetPlanningByRealCompanyIdQuery } from "../../api/planningApi";
 import { useUpdateCompanyPlanningByIdMutation } from "../../api/companyApi";
 import AppContext from "../../context/AppContext";
 import { formatDate } from "../../utils/dateFormat";
+import { now } from "moment";
 
 const CompanyPlanning = () => {
   const { id } = useParams();
@@ -138,8 +139,8 @@ const CompanyPlanning = () => {
         const sortedMilestones = sortMilestones(data.milestones).map((milestone) => {
           return {
             ...milestone,
-            end_date: new Date(milestone.end_date),
-            start_date: new Date(milestone.start_date),
+            end_date: new Date( new Date(milestone.end_date).getTime()+ 4*60*60*1000), 
+            start_date: new Date(new Date(milestone.start_date).getTime() + 4*60*60*1000),
             billing_percentage: Number(milestone.billing_percentage),
           };
         });
@@ -218,7 +219,7 @@ const CompanyPlanning = () => {
         {user?.academic_period && (
           <Box sx={{display: "flex", gap: 1, alignItems: "center", mb: 4}}>
             <Typography fontWeight={"bold"}>Intervalo válido:</Typography>
-            <Typography color="textSecondary" fontSize={15}>{new Date().toLocaleDateString()} - {formatDate(user.academic_period.evaluation_start_date)}</Typography>
+            <Typography color="textSecondary" fontSize={15}>{new Date(now() + 24*60*60*1000).toLocaleDateString()} - {new Date(new Date(user.academic_period.evaluation_start_date).getTime() + 4*60*60*1000 - 24*60*60*1000).toLocaleDateString()}</Typography>
           </Box>
         )}
         
