@@ -72,7 +72,7 @@ const WeeklyTracking = () => {
           return{
             ...deliverable,
             id: null,
-            
+            new: undefined,
           }
         }
         return deliverable
@@ -90,6 +90,8 @@ const WeeklyTracking = () => {
           return c_milestone
         }
        });
+
+       console.log("DATAAA",id, milestonesData);
 
        update({
         id,
@@ -116,6 +118,7 @@ const WeeklyTracking = () => {
         setSnackbarMessage("Hito actualizado correctamente");
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
+        console.log(updateData,"updated Data");
       }
       if (updateIsError) {
         console.log(updateError);
@@ -123,7 +126,7 @@ const WeeklyTracking = () => {
         setSnackbarSeverity("error");
         setSnackbarOpen(true);
       }
-    }, [isSuccess, error, isError, updatedSuccessfully, updateIsError, dispatch, updateError]);
+    }, [isSuccess, error, isError, updatedSuccessfully, updateIsError, dispatch, updateError,updateData]);
   
     if (isFetching) {
       return (
