@@ -27,8 +27,6 @@ import { format } from "date-fns";
 import moment from "moment-timezone";
 import { formatDate4Evaluation, formatDate } from "../utils/dateFormat";
 
-
-
 const RegistroGE = () => {
     const navigate = useNavigate();
     const { academic_period_id } = useParams();
@@ -300,10 +298,16 @@ const RegistroGE = () => {
                 Crear Evaluación
             </Typography>
             <Typography>
-                Fecha de inicio de periodo de evaluación es: {formatDate(academicPeriodData.academic_period.evaluation_start_date)}
+                Fecha de inicio de periodo de evaluación es:{" "}
+                {formatDate(
+                    academicPeriodData.academic_period.evaluation_start_date
+                )}
             </Typography>
             <Typography>
-                Fecha de finalización de periodo de evaluación es: {formatDate(academicPeriodData.academic_period.evaluation_end_date)}
+                Fecha de finalización de periodo de evaluación es:{" "}
+                {formatDate(
+                    academicPeriodData.academic_period.evaluation_end_date
+                )}
             </Typography>
             <form>
                 <FormControl fullWidth sx={{ mb: 3, mt: 1 }}>
@@ -364,14 +368,17 @@ const RegistroGE = () => {
                                 label="Fecha de Inicio"
                                 minDate={
                                     isAcademicPeriodSuccess
-                                        ? 
-                                            formatDate4Evaluation(academicPeriodData.academic_period.evaluation_start_date)   
+                                        ? formatDate4Evaluation(
+                                              academicPeriodData.academic_period
+                                                  .evaluation_start_date
+                                          )
                                         : null
                                 }
                                 maxDate={
                                     isAcademicPeriodSuccess
-                                        ? new Date(
-                                            academicPeriodData.academic_period.evaluation_end_date
+                                        ? formatDate4Evaluation(
+                                              academicPeriodData.academic_period
+                                                  .evaluation_end_date
                                           )
                                         : null
                                 }
@@ -395,14 +402,18 @@ const RegistroGE = () => {
                                 minDate={
                                     isAcademicPeriodSuccess
                                         ? new Date(
-                                            formatDate4Evaluation(academicPeriodData.academic_period.evaluation_start_date)
+                                              formatDate4Evaluation(
+                                                  academicPeriodData
+                                                      .academic_period
+                                                      .evaluation_start_date
+                                              )
                                           )
                                         : null
                                 }
                                 maxDate={
                                     isAcademicPeriodSuccess
-                                        ? new Date(
-                                            academicPeriodData.academic_period.evaluation_end_date
+                                        ? formatDate4Evaluation(
+                                              academicPeriodData.academic_period.evaluation_end_date
                                           )
                                         : null
                                 }
