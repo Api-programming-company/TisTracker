@@ -77,6 +77,9 @@ Route::middleware('auth')->group(function () {
 
     Route::apiResource('academic-periods', AcademicPeriodController::class);
     Route::apiResource('plannings', PlanningController::class);
+    Route::get('company/{id}/planning', [PlanningController::class, 'getPlanningByCompany']);
+    Route::delete('milestones/{id}', [PlanningController::class, 'destroy']);
+    Route::delete('deliverables/{id}', [PlanningController::class, 'destroyDeliverable']);
 });
 
 // Evaluaciones

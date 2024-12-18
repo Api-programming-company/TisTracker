@@ -18,6 +18,7 @@ class Deliverable extends Model
         'actual_result',
         'observations',
         'status',
+        'created_by'
     ];
 
     public function milestone()

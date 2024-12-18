@@ -59,23 +59,32 @@ const SeeWeeklyGE = () => {
   }
 
 
-  const groupedCompanies = data?.companies?.reduce((acc, company) => {
+
+  const sortedCompanies = [...data?.companies].sort((a, b) => {
+    const dateA = new Date(a.planning.milestones.end_date);
+    const dateB = new Date(b.planning.milestones.end_date);
+    return dateA - dateB;
+  })
+  const groupedCompanies = sortedCompanies.reduce((acc, company) => {
 
     if (!company.planning || !company.planning.milestones) {
       acc.undefined.push(company);
     } else {
       const upcomingMilestone = company.planning.milestones.find((milestone) => {
-        return new Date(milestone.end_date) >= new Date(Date.now() - 1000 * 60 * 60 * 24);
+        return milestone.status === "P";
       });
+
 
       if (upcomingMilestone) {
         const endDate = new Date(upcomingMilestone.end_date);
-        const endDatePlusOneDay = new Date(endDate.getTime() + 1000 * 60 * 60 * 24);
+        const endDatePlusOneDay = new Date(endDate.getTime() + 4 * 60 * 60 * 1000);
         const weekDay = endDatePlusOneDay.toLocaleString('default', { weekday: 'long' });
         if (!acc[weekDay]) {
           acc[weekDay] = [];
         }
         acc[weekDay].push(company);
+      }else{
+        acc.undefined.push(company);
       }
     }
     return acc;

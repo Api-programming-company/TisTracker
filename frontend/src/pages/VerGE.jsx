@@ -1,3 +1,5 @@
+
+
 import React, { useEffect, useContext, useState } from "react";
 import {
     Box,
@@ -7,10 +9,6 @@ import {
     Button,
     Stack,
     Snackbar,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
     Typography,
 } from "@mui/material";
 import { useGetCompanyByIdQuery } from "../api/companyApi";
@@ -21,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import AppContext from "../context/AppContext";
 import { useLeaveCompanyMutation } from "../api/companyApi";
 import DialogMod from "../components/DialogMod";
+import { formatDate, getAcademicPeriodStatus } from "../utils/dateFormat";
 
 const VerGE = () => {
     const { id } = useParams();
@@ -35,6 +34,8 @@ const VerGE = () => {
         severity: "success",
     });
     const navigate = useNavigate();
+    const acad_period_status = getAcademicPeriodStatus(user.academic_period)
+
     const [
         leaveCompany,
         {
@@ -80,7 +81,7 @@ const VerGE = () => {
             color: "info",
             onClick: () =>
                 data?.company?.planning
-                    ? navigate(`/planning/${data.company.planning.id}`)
+                    ? navigate(`/planing/${data.company.planning.id}`)
                     : setOpenModal(true),
         },
         {
@@ -89,17 +90,34 @@ const VerGE = () => {
             onClick: () =>
                 data?.company?.planning
                     ? navigate(
-                          `/planning_spreadsheet/${data.company.planning.id}`
+                          `/weekly_tracking/${data.company.planning.id}`
                       )
                     : setOpenModal(true),
         },
+        {
+            text: "Validacion de Hito",
+            color: "info",
+            onClick: () => data?.company?.planning
+            ? navigate(
+                  `/planning_spreadsheet/${data?.company?.planning.id}`
+              )
+            : setOpenModal(true), 
+        }
     ];
 
     const verGEe = [
         {
-            text: "Agregar Planificación",
+            text: acad_period_status === "project" ? "Ver Seguimiento Semanal" : data?.company?.planning ? "Editar Planificación" : "Crear Planificación",
             color: "info",
-            path: `/company/${id}/plannification`,
+            onClick: () =>  {
+                if(acad_period_status === "project" || acad_period_status === "evaluation") {
+                    if(data?.company?.planning) {
+                        navigate(`/planning_spreadsheet/${data.company.planning.id}`)
+                    }
+                }else{
+                    navigate(`/company/${id}/planification`)
+                }
+            }
         },
         {
             text: "Ver Planificación",
@@ -109,6 +127,7 @@ const VerGE = () => {
                     ? navigate(`/planning/${data.company.planning.id}`)
                     : setOpenModal(true),
         },
+        
         {
             text: "Evaluar Empresa",
             color: "info",

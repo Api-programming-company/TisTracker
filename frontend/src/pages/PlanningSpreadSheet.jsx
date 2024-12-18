@@ -15,6 +15,8 @@ import MilestoneItem from "../components/planning/MilestoneItem";
 import { Button, Snackbar } from "@mui/material";
 import DialogMod from "../components/DialogMod";
 import AppContext from "../context/AppContext";
+import BackBtn from "../components/navigation/BackBtn";
+import { sortMilestones } from "../utils/planningUtils";
 
 
 const PlanningSpreadSheet = () => {
@@ -31,7 +33,7 @@ const PlanningSpreadSheet = () => {
   const pendingMilestoneIndex = useSelector(getPendingMilestoneIndex);
   const { data, isSuccess, isFetching, isError, error } =
     useGetPlanningByCompanyIdQuery(id);
-    
+  const [userType, setUserType] = useState(user.user_type);
   const milestone_index = useSelector(getCurrentMilestoneIndex);
   const [
     update,
@@ -52,16 +54,43 @@ const PlanningSpreadSheet = () => {
   }, [isSuccess, isError, error, data, dispatch]);
 
   useEffect(() => {
-    if(user.user_type === "E"){
-      navigate("/")
+    if(user){
+      if(user.user_type === "E"){
+        setUserType("E");
+        if(data.planning.id !== Number(id)){
+          navigate("/student-home");
+        }
+      }else{
+        setUserType("D");
+      }
     }
-  },[navigate, user])
+    
+  },[navigate, user,id])
 
 
   const handleConfirm = () => {
     setOpen({ ...open, state: false });
     dispatch(confirmChanges());
-    const formData = data.planning.milestones.map((t_milestone, index) => {
+    const carry_overs = milestone.deliverables.filter((deliverable) => {
+      return deliverable.status === "C";
+    })
+
+    const form_carry_overs = carry_overs.map((carry_over, index) => {
+      return {
+        ...carry_over,
+        id: null,
+        status: "A",
+        name: carry_over.name,
+        expected_result: 0,
+        actual_result: 0,
+        createdBy: "D",
+        observations: "",
+      };
+    })
+
+
+    const sortedMilestones = sortMilestones(data.planning.milestones);
+    const formData = sortedMilestones.map((t_milestone, index) => {
       if (index === milestone_index) {
         return {
           ...milestone,
@@ -72,21 +101,7 @@ const PlanningSpreadSheet = () => {
           ...t_milestone,
           deliverables: [
             ...t_milestone.deliverables,
-            ...milestone.deliverables
-              .filter((deliverable, i) => {
-                return deliverable.status === "C";
-              })
-              .map((newDeliverable, index) => {
-                return {
-                  ...newDeliverable,
-                  id: index + t_milestone.deliverables.length,
-                  status: "A",
-                  name: newDeliverable.name,
-                  expected_result: 0,
-                  actual_result: 0,
-                  observations: "",
-                };
-              }),
+            ...form_carry_overs,
           ],
         };
       }
@@ -109,15 +124,6 @@ const PlanningSpreadSheet = () => {
     });
   };
 
-
-  useEffect(() => {
-    console.log(updateData);
-    if(updateIsError){
-      console.log(updateError);
-    }
-  },[updateData, updateIsError,updateError])
-
-
   useEffect(() => {
     window.onbeforeunload = (e) => {
       if (status === "E") {
@@ -128,8 +134,8 @@ const PlanningSpreadSheet = () => {
   }, [status]);
 
   useEffect(() => {
-    if (updatedSuccessfully) {
-      dispatch(confirmChanges());
+    if (updatedSuccessfully && updateData) {
+      dispatch(setMilestones(updateData.planning.milestones));
       setSnackbarMessage("Hito validado correctamente");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
@@ -140,7 +146,7 @@ const PlanningSpreadSheet = () => {
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
     }
-  }, [isSuccess, error, isError, updatedSuccessfully, updateIsError, dispatch, updateError]);
+  }, [isSuccess, error, isError, updatedSuccessfully, updateIsError, dispatch, updateError,updateData]);
 
   if (isFetching) {
     return (
@@ -179,67 +185,75 @@ const PlanningSpreadSheet = () => {
 
   if (milestone) {
     return (
-      <div id="planning_spreadsheet" className="container">
-        <div className="section-header">
-          <h1>Planilla de Seguimiento Semanal</h1>
-        </div>
-        <div className="section-body">
-          <MilestoneItem milestone={milestone} />
+      <Box className="section-container">
+        <BackBtn url={`/company/${data.planning.company_id}`}/>
+        <Container maxWidth="lg">
+          <Box className="section-container" sx={{ display: "flex", flexDirection: "column",gap: 4, marginBottom: 5}}>
+            <div className="section-header">
+              <h1>Planilla de Validación de Hito</h1>
+            </div>
+            <div className="section-body">
+              <MilestoneItem milestone={milestone}/>
 
-          {status === "E" && <p className="text-red-500">Editando</p>}
-          {status === "A" && <p className="text-success">Hito Validado</p>}
-        </div>
+              {status === "E" && <p className="text-red-500">Editando</p>}
+              {status === "A" && <p className="text-success">Hito Validado</p>}
+            </div>
 
-        <Box>
-          <Button
-            variant="outlined"
-            sx={{
-              backgroundColor:
-                pendingMilestoneIndex !== milestone_index || updateLoading || status !== "E"
-                  ? "info.gray"
-                  : "primary.main",
-              color: "white",
-              border: "white",
-            }}
-            disabled={
-              pendingMilestoneIndex !== milestone_index || updateLoading || status !== "E"
-            }
-            onClick={() =>
-              setOpen({
-                state: true,
-                message:
-                  "Al presionar aceptar ya no podras realizar cambios en la validación de este hito",
-                title: "¿Estas seguro que quieres confirmar?",
-              })
-            }
-          >
-            Confirmar
-          </Button>
-        </Box>
-        <DialogMod
-          open={open.state}
-          setOpen={setOpen}
-          title={open.title}
-          content={open.message}
-          onAccept={handleConfirm}
-          onCancel={() => setOpen({ ...open, state: false })}
-        />
+            <Box>
+              {userType === "D" && (
+                <Button
+                variant="outlined"
+                sx={{
+                  backgroundColor:
+                    pendingMilestoneIndex !== milestone_index || updateLoading || status !== "E"
+                      ? "info.gray"
+                      : "primary.main",
+                  color: "white",
+                  border: "white",
+                }}
+                disabled={
+                  pendingMilestoneIndex !== milestone_index || updateLoading || status !== "E"
+                }
+                onClick={() =>
+                  setOpen({
+                    state: true,
+                    message:
+                      "Al presionar aceptar ya no podras realizar cambios en la validación de este hito",
+                    title: "¿Estas seguro que quieres confirmar?",
+                  })
+                }
+              >
+                Confirmar
+              </Button>
+              )}
+              
+            </Box>
+            <DialogMod
+              open={open.state}
+              setOpen={setOpen}
+              title={open.title}
+              content={open.message}
+              onAccept={handleConfirm}
+              onCancel={() => setOpen({ ...open, state: false })}
+            />
 
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={6000}
-          onClose={() => setSnackbarOpen(false)}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        >
-          <Alert
-            onClose={() => setSnackbarOpen(false)}
-            severity={snackbarSeverity}
-            sx={{ width: "100%" }}
-          >
-            {snackbarMessage}
-          </Alert>
-        </Snackbar>
-      </div>
+            <Snackbar
+              open={snackbarOpen}
+              autoHideDuration={6000}
+              onClose={() => setSnackbarOpen(false)}
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            >
+              <Alert
+                onClose={() => setSnackbarOpen(false)}
+                severity={snackbarSeverity}
+                sx={{ width: "100%" }}
+              >
+                {snackbarMessage}
+              </Alert>
+            </Snackbar>
+          </Box>
+        </Container>
+      </Box>
     );
   }
 };

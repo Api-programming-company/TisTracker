@@ -28,6 +28,8 @@ const RegisterAcademicPeriod = () => {
         company_creation_end_date: null,
         planning_start_date: null,
         planning_end_date: null,
+        evaluation_start_date: null,
+        evaluation_end_date: null,
     });
     const [errors, setErrors] = useState({});
     const [snackbar, setSnackbar] = useState({
@@ -80,12 +82,14 @@ const RegisterAcademicPeriod = () => {
         setForm((prevForm) => ({
             ...prevForm,
             [name]: date,
-            ...(name === "start_date" || name === "end_date" ? {
-                company_creation_start_date: null,
-                company_creation_end_date: null,
-                planning_start_date: null,
-                planning_end_date: null,
-            } : {}),
+            ...(name === "start_date" || name === "end_date"
+                ? {
+                      company_creation_start_date: null,
+                      company_creation_end_date: null,
+                      planning_start_date: null,
+                      planning_end_date: null,
+                  }
+                : {}),
         }));
         setErrors((prevErrors) => ({
             ...prevErrors,
@@ -164,6 +168,14 @@ const RegisterAcademicPeriod = () => {
             .utc(form.planning_end_date)
             .tz(clientTimezone)
             .format();
+        const evaluationStartDateInClientTZ = moment
+            .utc(form.evaluation_start_date)
+            .tz(clientTimezone)
+            .format();
+        const evaluationEndDateInClientTZ = moment
+            .utc(form.evaluation_end_date)
+            .tz(clientTimezone)
+            .format();
 
         console.log("Registrando periodo académico...", {
             name: form.name,
@@ -180,6 +192,8 @@ const RegisterAcademicPeriod = () => {
             company_creation_end_date: companyCreationEndDateInClientTZ,
             planning_start_date: planningStartDateInClientTZ,
             planning_end_date: planningEndDateInClientTZ,
+            evaluation_start_date: evaluationStartDateInClientTZ,
+            evaluation_end_date: evaluationEndDateInClientTZ,
             description: form.description,
         });
     };
@@ -392,6 +406,70 @@ const RegisterAcademicPeriod = () => {
                                             helperText: errors.planning_end_date
                                                 ? errors.planning_end_date
                                                 : "DD/MM/AAAA",
+                                        },
+                                    }}
+                                    format="dd/MM/yyyy"
+                                    disabled={
+                                        !form.start_date ||
+                                        !form.end_date ||
+                                        isLoading
+                                    }
+                                    maxDate={form.end_date}
+                                    minDate={form.start_date}
+                                />
+                            </Box>
+
+                            {/*fecha de inicio y fin de planificación*/}
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    gap: 2,
+                                }}
+                            >
+                                <DatePicker
+                                    label="Fecha Inicio Evaluación"
+                                    value={form.evaluation_start_date}
+                                    onChange={(date) =>
+                                        handleDateChange(
+                                            "evaluation_start_date",
+                                            date
+                                        )
+                                    }
+                                    slotProps={{
+                                        textField: {
+                                            error: errors.evaluation_start_date,
+                                            helperText:
+                                                errors.evaluation_start_date
+                                                    ? errors.evaluation_start_date
+                                                    : "DD/MM/AAAA",
+                                        },
+                                    }}
+                                    format="dd/MM/yyyy"
+                                    disabled={
+                                        !form.start_date ||
+                                        !form.end_date ||
+                                        isLoading
+                                    }
+                                    maxDate={form.end_date}
+                                    minDate={form.start_date}
+                                />
+                                <DatePicker
+                                    label="Fecha Fin Evaluación"
+                                    value={form.evaluation_end_date}
+                                    onChange={(date) =>
+                                        handleDateChange(
+                                            "evaluation_end_date",
+                                            date
+                                        )
+                                    }
+                                    slotProps={{
+                                        textField: {
+                                            error: errors.evaluation_end_date,
+                                            helperText:
+                                                errors.evaluation_end_date
+                                                    ? errors.evaluation_end_date
+                                                    : "DD/MM/AAAA",
                                         },
                                     }}
                                     format="dd/MM/yyyy"

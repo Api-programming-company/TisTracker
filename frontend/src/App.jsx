@@ -59,6 +59,7 @@ import SeeSolicitudesGE from "./pages/SeeSolicitudesGE";
 import PlanningReport from "./pages/PlanningReport";
 import CompanyReport from "./pages/CompanyReport";
 import WeeklyEvalReportList from "./components/WeeklyEvalReportList";
+import WeeklyTracking from "./pages/WeeklyTracking";
 
 function App({ toggleTheme, isDarkMode }) {
   const { user } = useContext(AppContext);
@@ -89,7 +90,7 @@ function App({ toggleTheme, isDarkMode }) {
               <Route path="/invitations-home" element={<InvitationsHome />} />
 
               <Route
-                path="/company/:id/plannification"
+                path="/company/:id/planification"
                 element={<CompanyPlanning />}
               />
 
@@ -97,6 +98,12 @@ function App({ toggleTheme, isDarkMode }) {
                 path="/planning_spreadsheet/:id" //Generar planillas de evaluación semanal
                 element={<PlanningSpreadSheet />}
               ></Route>
+              <Route
+                path="/weekly_tracking/:id"
+                element={<WeeklyTracking/>}
+              >
+
+              </Route>
 
               <Route path="/company/:id/invite" element={<StudentSearch />} />
               <Route path="/company/:id/confirm" element={<ConformacionGE />} />

@@ -13,15 +13,13 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-
+import { formatDate } from "../../utils/dateFormat";
 import SeeDeliverable from "./SeeDeliverable";
 
 const SeeMilestone = ({ milestone }) => {
   const [openDeliverables, setOpenDeliverables] = useState(false);
 
-  const formatDate = (date) => {
-    return new Date(date).toLocaleDateString();
-  };
+ 
 
   return (
     <div

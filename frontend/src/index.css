@@ -43,6 +43,10 @@ p,a,li,button,input,textarea{
   font-family: var(--body-font-family);
 }
 
+i{
+  margin: 0;
+  padding: 0;
+}
 
 
 /* Standard CSS */
@@ -175,7 +179,7 @@ p,a,li,button,input,textarea{
   display: flex;
   align-items: center;
   border: 1px solid var(--neutral-300);
-  padding: 0.5rem;
+  padding: 0.2rem 1rem;
   border-bottom: transparent;
 }
 
@@ -183,7 +187,6 @@ p,a,li,button,input,textarea{
 .grid.header{
   background-color: var(--neutral-200);
   /* border-color: var(--primary-500); */
-  /* color: white; */
   font-weight: bold;
 }
 
@@ -222,6 +225,10 @@ input[type="checkbox"]{
   height: 1.5rem;  
 }
 
+/* .input-field input{
+  position: relative;
+  padding: 0.5rem 1rem;
+} */
 
 
 .bg-red{

@@ -63,18 +63,30 @@ class StoreRequest extends FormRequest
                 'required',
                 'date',
                 'after:company_creation_start_date',
-                'before_or_equal:planning_start_date',
+                'before_or_equal:end_date',
             ],
             'planning_start_date' => [
                 'required',
                 'date',
-                'after_or_equal:company_creation_end_date',
+                'after_or_equal:start_date',
                 'before:planning_end_date',
             ],
             'planning_end_date' => [
                 'required',
                 'date',
                 'after:planning_start_date',
+                'before_or_equal:end_date',
+            ],
+            'evaluation_start_date' => [
+                'required',
+                'date',
+                'after_or_equal:planning_end_date',
+                'before:evaluation_end_date',
+            ],
+            'evaluation_end_date' => [
+                'required',
+                'date',
+                'after:evaluation_start_date',
                 'before_or_equal:end_date',
             ],
             'description' => 'nullable|string',
@@ -107,20 +119,23 @@ class StoreRequest extends FormRequest
 
             'company_creation_end_date.required' => 'La fecha de finalización para la creación de compañías es obligatoria.',
             'company_creation_end_date.date' => 'La fecha de finalización para la creación de compañías debe ser una fecha válida.',
-            'company_creation_end_date.after' => 'La fecha de finalización para la creación de compañías debe ser posterior a la fecha de inicio.',
-            'company_creation_end_date.before' => 'La fecha de finalización para la creación de compañías debe ser anterior a la fecha de inicio de la planificación.',
 
             'planning_start_date.required' => 'La fecha de inicio para la planificación es obligatoria.',
             'planning_start_date.date' => 'La fecha de inicio para la planificación debe ser una fecha válida.',
-            'planning_start_date.after_or_equal' => 'La fecha de inicio para la planificación debe ser posterior o igual a la fecha de finalización de la creación de compañías.',
             'planning_start_date.before' => 'La fecha de inicio para la planificación debe ser anterior a la fecha de finalización para la planificación.',
-
             'planning_end_date.required' => 'La fecha de finalización para la planificación es obligatoria.',
             'planning_end_date.date' => 'La fecha de finalización para la planificación debe ser una fecha válida.',
             'planning_end_date.after' => 'La fecha de finalización para la planificación debe ser posterior a la fecha de inicio.',
             'planning_end_date.before_or_equal' => 'La fecha de finalización para la planificación debe ser igual o anterior a la fecha de finalización del periodo académico.',
-            'description.string' => 'La descripción debe ser una cadena de texto.',
 
+            'evaluation_start_date.required' => 'La fecha de inicio para la evaluación es obligatoria.',
+            'evaluation_start_date.date' => 'La fecha de inicio para la evaluación debe ser una fecha válida.',
+
+            'evaluation_end_date.required' => 'La fecha de finalización para la evaluación es obligatoria.',
+            'evaluation_end_date.date' => 'La fecha de finalización para la evaluación debe ser una fecha válida.',
+            'evaluation_end_date.after' => 'La fecha de finalización para la evaluación debe ser posterior a la fecha de inicio.',
+
+            'description.string' => 'La descripción debe ser una cadena de texto.',
         ];
     }
 }

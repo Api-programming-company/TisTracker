@@ -37,6 +37,8 @@ class AcademicPeriodController extends Controller
         $companyCreationEndUtc = Carbon::parse($validated['company_creation_end_date'])->timezone('UTC');
         $planningStartUtc = Carbon::parse($validated['planning_start_date'])->timezone('UTC');
         $planningEndUtc = Carbon::parse($validated['planning_end_date'])->timezone('UTC');
+        $evaluationStartUtc = Carbon::parse($validated['evaluation_start_date'])->timezone('UTC');
+        $evaluationEndUtc = Carbon::parse($validated['evaluation_end_date'])->timezone('UTC');
 
         // Crear el periodo académico
         $academicPeriod = AcademicPeriod::create([
@@ -47,6 +49,8 @@ class AcademicPeriodController extends Controller
             'company_creation_end_date' => $companyCreationEndUtc,
             'planning_start_date' => $planningStartUtc,
             'planning_end_date' => $planningEndUtc,
+            'evaluation_start_date' => $evaluationStartUtc,
+            'evaluation_end_date' => $evaluationEndUtc,
             'description' => $validated['description'],
             'user_id' => $user->id,
         ]);

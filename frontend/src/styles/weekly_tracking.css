@@ -1,0 +1,13 @@
+
+.tracking-grid{
+    position: relative;
+    min-width: 30rem;
+    display: grid;
+    grid-template-columns: 1fr 5fr 2fr 1fr;
+    border-bottom: 2px solid var(--neutral-200);
+}
+
+.tracking-type{
+    padding: 0.2rem 1rem;
+    border-radius: 5rem;
+}

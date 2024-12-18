@@ -17,8 +17,8 @@ export default (state, action) => {
         questions: newQuestions,
       };
     case "verifyFields":
-      const answersList = state.questions.map((e) => (e.answer ? true : false));
-      console.log(answersList)
+      const answersList = state.questions.map((e) => "answer" in e);
+      // console.log(answersList);
       const isValid = answersList.reduce(
         (acc, current) => acc && current,
         true

@@ -47,7 +47,9 @@ const CompanyReport = () => {
       isSuccess: isGradesSucess,
       isError: isGradesError,
     } = useGetGradesQuery({academic_period_id:id, limit:15});
-  
+   //booleano para ver si los datos estan listos para mostrarse
+   const [finalData, setFinalData] = useState([]);
+
     useEffect(() => {
       if (isGradesSucess) {
         console.log(grades,id);
@@ -60,8 +62,7 @@ const CompanyReport = () => {
       }
     }, [grades, gradesError, isGradesSucess, isGradesError, id]);
   
-    //booleano para ver si los datos estan listos para mostrarse
-    const [finalData, setFinalData] = useState([]);
+   
   
     useEffect(() => {
       console.log(grades);

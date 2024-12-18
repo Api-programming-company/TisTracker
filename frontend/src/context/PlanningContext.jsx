@@ -1,5 +1,4 @@
-// MilestonesContext.js
-import { is } from 'date-fns/locale';
+
 import { createContext, useState,useContext, useEffect } from 'react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -25,7 +24,8 @@ const PlanningProvider = ({ children }) => {
       end_date: '', 
       billing_percentage: 0, 
       deliverables: [], 
-      errors: [] }]);
+      errors: [],
+      isNew : true }]);
   };
 
   //errors Format : {milestoneId: [{errorArea: 'error message'}]}, Ojala usaramos typescript
@@ -54,7 +54,7 @@ const PlanningProvider = ({ children }) => {
   const addDeliverable = (milestoneId) => {
     const updatedMilestones = milestones.map((milestone) => {
       if (milestone.id === milestoneId) {
-        return { ...milestone, deliverables: [...milestone.deliverables,{ id: Date.now(), name: ''}] };
+        return { ...milestone, deliverables: [...milestone.deliverables,{ id: Date.now(), name: '', expected_result: 0, actual_result: 0, observations: '', status: 'A', created_by: 'E',isNew: true}] };
       }
       return milestone;
     });
@@ -153,8 +153,12 @@ const PlanningProvider = ({ children }) => {
     setMilestones(updatedMilestones);
   };
 
+  
+
+
   return (
     <PlanningContext.Provider value={{ milestones, 
+                                      setMilestones,
                                       addMilestone, 
                                       addDeliverable,
                                       handleChangeMilestone,

@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import {
   ListItem,
@@ -17,9 +18,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DialogMod from "../DialogMod";
-import { id } from "date-fns/locale";
 import { usePlanningContext } from "../../context/PlanningContext";
-import { set } from "date-fns";
+
+
 
 const Milestone = ({ milestone }) => {
   const [openDeliverables, setOpenDeliverables] = useState(true);
@@ -28,7 +29,7 @@ const Milestone = ({ milestone }) => {
   const [isError, setIsError] = useState(false);
 
   const findError = (name) => {
-    const error = milestone.errors.find((error) => error.errorArea === name);
+    const error = milestone.errors?.find((error) => error.errorArea === name);
     if(error && !isError){
       setIsError(true);
       setOpenDeliverables(true);
@@ -65,7 +66,7 @@ const Milestone = ({ milestone }) => {
           primary={
             
               <Box sx={{ display: "flex", gap: 2 }}>
-                <TextField
+                <TextField 
                   label="Nombre de Hito"
                   value={milestone.name}
                   onChange={(e) => handleAction("handleNameChange", e.target.value)}
@@ -111,11 +112,13 @@ const Milestone = ({ milestone }) => {
             <ListItem>
               <div className="date-item">
               <DatePicker
+              
                 label="Fecha de inicio"
                 value={milestone.start_date}
                 onChange={(e) => handleAction("handleStartDateChange", e)}
                 renderInput={(params) => <TextField {...params} error={Boolean(findError("start_date"))} helperText={findError("start_date")} />}
                 sx={{ mr: 2 }}
+                
               />
               {findError("start_date") && <p className="text-red-300 text-sm">{findError("start_date")}</p>}
               </div>
@@ -125,19 +128,20 @@ const Milestone = ({ milestone }) => {
                 label="Fecha de fin"
                 value={milestone.end_date}
                 onChange={(e) => handleAction("handleEndDateChange", e)}
-                renderInput={(params) => <TextField {...params}  error={Boolean(findError("end_date"))} helperText={findError("end_date")}/>}
+                renderInput={(params) => <TextField  {...params}  error={Boolean(findError("end_date"))} helperText={findError("end_date")}/>}
                 
               />
                {findError("end_date") && <p className="text-red-300 text-sm">{findError("end_date")}</p>}
 
               </div>
+
               
             </ListItem>
-            <ListItem>
+             <ListItem>
               
-                <TextField
+                <TextField 
                   label="Porcentaje de facturación"
-                  value={milestone.billingPercentage}
+                  value={milestone.billing_percentage.toString()}
                   onChange={(e) =>
                     handleAction("handleBillingPercentageChange", Number(e.target.value))
                   }
@@ -166,6 +170,7 @@ const Milestone = ({ milestone }) => {
                 
                 
             </ListItem>
+            
             <ListItem>
             {Boolean(findError("deliverables")) &&
                 <p className="text-red-300 text-sm">{findError("deliverables")}</p>
@@ -193,10 +198,10 @@ const Milestone = ({ milestone }) => {
                 >
                   Agregar Entregable
                 </Button>
-            </ListItem>
+            </ListItem> 
           </LocalizationProvider>
         </List>
-      </Collapse>
+      </Collapse> 
       </div>
   );
 };

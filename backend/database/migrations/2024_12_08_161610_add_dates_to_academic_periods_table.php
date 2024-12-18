@@ -14,10 +14,10 @@ class AddDatesToAcademicPeriodsTable extends Migration
     public function up()
     {
         Schema::table('academic_periods', function (Blueprint $table) {
-            $table->date('company_creation_start_date')->nullable();
-            $table->date('company_creation_end_date')->nullable();
-            $table->date('planning_start_date')->nullable();
-            $table->date('planning_end_date')->nullable();
+            $table->date('company_creation_start_date');
+            $table->date('company_creation_end_date');
+            $table->date('planning_start_date');
+            $table->date('planning_end_date');
         });
     }
 

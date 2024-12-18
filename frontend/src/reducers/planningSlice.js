@@ -8,18 +8,9 @@ export const planningSlice = createSlice({
   initialState,
   reducers: {
     setMilestones: (state, action) => {
-      const tempMilestones = JSON.parse(JSON.stringify(action.payload));
+      let tempMilestones = JSON.parse(JSON.stringify(action.payload));
       
-      tempMilestones.forEach(milestone => {
-        milestone.deliverables.forEach(deliverable => {
-          if (deliverable.expected_result === null) {
-            deliverable.expected_result = 0;
-          }
-          if (deliverable.actual_result === null) {
-            deliverable.actual_result = 0;
-          }
-        });
-      });
+      
 
       tempMilestones.sort((a,b) => {
         const dateA = new Date(a.end_date);
@@ -27,15 +18,19 @@ export const planningSlice = createSlice({
         return dateA - dateB;
       });
 
+
+
       let currentMilestone = tempMilestones.findIndex(
         (milestone) => milestone.status === "P"
       );
+
     
       return { milestones: tempMilestones , 
         currentMilestone : currentMilestone === -1 ? 0 : currentMilestone, 
         pendingMilestone: currentMilestone === -1 ? 10000: currentMilestone 
       };
     },
+
 
 
     changeDeliverable: (state, action) => {
@@ -67,7 +62,6 @@ export const planningSlice = createSlice({
 
       newDeliverable[field] = value;
 
-
       return {
         ...currentState,
         milestones: [
@@ -91,6 +85,73 @@ export const planningSlice = createSlice({
           ...currentMilestones.slice(milestoneIndex + 1),
         ],
       };
+    },
+    addDeliverable: (state, action) => {
+      console.log("Adding deliverable...",action);
+      return{
+        ...state,
+        milestones: state.milestones.map((milestone, index) =>
+          milestone.id === action.payload.milestone_index
+            ? {
+                ...milestone,
+                deliverables: [
+                  ...milestone.deliverables,
+                  {
+                    id: Math.floor(Math.random() * 2000 + 200),
+                    name: "",
+                    expected_result: 0,
+                    actual_result: 0,
+                    observations: "",
+                    status: "A",
+                    created_by: "D",
+                    new : true, 
+                 },
+                ],
+                status : "E"
+              }
+            : milestone
+        ),
+      }
+    },
+
+    removeDeliverable: (state, action) => {
+      console.log("Removing deliverable...",action);
+      return{
+        ...state,
+        milestones: state.milestones.map((milestone) =>
+          milestone.id === action.payload.milestone_index
+            ? {
+                ...milestone,
+                deliverables: milestone.deliverables.filter(
+                  (deliverable) => deliverable.id !== action.payload.deliverable_id
+                ),
+                status : "E"
+              }
+            : milestone
+        ),
+      }
+    },
+
+    changeDeliverableName: (state, action) => {
+      return {
+        ...state,
+        milestones: state.milestones.map((milestone) =>
+          milestone.id === action.payload.milestone_id
+            ? {
+                ...milestone,
+                deliverables: milestone.deliverables.map((deliverable) =>
+                  deliverable.id === action.payload.deliverable_id
+                    ? {
+                        ...deliverable,
+                        name: action.payload.name,
+                      }
+                    : deliverable
+                ),
+                status : "E"
+              }
+            : milestone
+        ),
+      }
     },
     confirmChanges: (state, action) => {
       
@@ -192,7 +253,8 @@ export const getMilestonesList = (state) => {
       name: milestone.name,
       selected : index === state.planning.currentMilestone,
       current: new Date().toISOString().split('T')[0] >= milestone.start_date && new Date().toISOString().split('T')[0] <= milestone.end_date,
-      pending: index === state.planning.pendingMilestone,
+      pending: index === state.planning.pendingMilestone && Date.parse(new Date(milestone.end_date)) > Date.parse(new Date()) - 24 * 60 * 60 * 1000
+
     }));
   }else{
     return null;
@@ -203,6 +265,6 @@ export const getCurrentMilestoneIndex = (state) => {
   return state.planning.currentMilestone;
 }
 
-export const { setMilestones, changeDeliverable,confirmChanges,setCurrentMilestone } = planningSlice.actions;
+export const { setMilestones, changeDeliverable,addDeliverable,removeDeliverable,changeDeliverableName,confirmChanges,setCurrentMilestone } = planningSlice.actions;
 
 export default planningSlice.reducer;

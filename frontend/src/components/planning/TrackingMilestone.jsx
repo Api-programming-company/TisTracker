@@ -1,33 +1,31 @@
-import React, {  useContext, useState } from "react";
+import React, {  useState } from "react";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import PlanningItem from "./PlanningItem";
-import { setCurrentMilestone } from "../../reducers/planningSlice";
+import { addDeliverable, setCurrentMilestone } from "../../reducers/planningSlice";
 import { getMilestonesList,getCurrentMilestoneIndex,getPendingMilestoneIndex } from "../../reducers/planningSlice";
 import { useSelector } from "react-redux";
-import { FormControl,InputLabel,Select,MenuItem,Box, Button } from "@mui/material";
+import { FormControl,InputLabel,Select,MenuItem,Box,Button } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { getStatus } from "../../reducers/planningSlice";
 import DialogMod from "../DialogMod"
-import { MdAssignmentLate } from "react-icons/md";
-import { useNavigate, useParams } from "react-router-dom";
+import "../../styles/weekly_tracking.css"
+import TrackingPlanningItem from "./TrackingPlanningItem";
+import { CiCirclePlus } from "react-icons/ci";
+import {formatDate, getMilestoneStatus, getToday} from "../../utils/dateFormat";
 import PlanningInfoMessage from "./PlanningInfoMessage";
-import { formatDate } from "../../utils/dateFormat";
-import AppContext from "../../context/AppContext";
 
 
-const headers = ["N","Entregable","Tipo","Resultado Esperado", "Resultado Observado","Observaciones", "Carry Over"]
-const MilestoneItem = ({ milestone }) => {
-  const navigate = useNavigate();
-  const params = useParams();
+
+const headers = ["N","Entregable","Tipo","Accion"]
+const TrackingMilestone = ({milestone}) => {
+  
   const list = useSelector(getMilestonesList)
   const status = useSelector(getStatus);
   const [open,setOpen] = useState({state : false,value : 0});
   const dispatch = useDispatch();
-
+ 
   const currentMilestoneIndex = useSelector(getCurrentMilestoneIndex);
   const pendingMilestoneIndex = useSelector(getPendingMilestoneIndex);
-
 
 
   const handleChangeListItem = (index) => {
@@ -46,12 +44,9 @@ const MilestoneItem = ({ milestone }) => {
     handleChangeListItem(open.value)
   }
 
-
-  const handleNavigate = () => {
-    navigate(`/weekly_tracking/${params.id}`);
+  const handleAddDeliverable = () => {
+    dispatch(addDeliverable({milestone_index: milestone.id}))
   }
-
-
 
   return (
     <div className="list">
@@ -101,24 +96,23 @@ const MilestoneItem = ({ milestone }) => {
 
         <div className="deliverables-list">
           <h4 className="text-neutral-700">Entregables:</h4>
+          <div className="tracking-grid">
+            {headers.map((header,index) => <Box key={index} className="grid-item" sx={{backgroundColor: "info.gray"}}>{header}</Box>)}
           {milestone.deliverables?.length > 0 ? (
-          <div className="planning-grid">
-            {headers.map((header,index) => <Box key={index} className="grid-item" sx={{backgroundColor: "info.gray", fontWeight:"bold"}}>{header}</Box>)}
-            {milestone.deliverables.map((deliverable, index) => (
-              <PlanningItem
+            milestone.deliverables.map((deliverable, index) => (
+              <TrackingPlanningItem
                 deliverable={deliverable}
-                index={index}
+                index={index + 1}
                 key={index}
                 milestone_id={milestone.id}
-              />))}
-            </div>
-          ) :(
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '1rem' }}>
-              <i><MdAssignmentLate size={48} color="gray" /></i>
-              <p className="text-neutral-500"> Al parecer no hay entregables para validar en este hito.</p>
-              <Button variant="contained" disabled={currentMilestoneIndex !== pendingMilestoneIndex} onClick={handleNavigate}>Realizar seguimiento semanal</Button>
-            </Box>
-          )} 
+              />
+            ))
+          ) : (
+            <p className="text-neutral-500">No hay entregables asignados</p>
+          )}
+          </div>
+          <Button  disabled={currentMilestoneIndex !== pendingMilestoneIndex} onClick={handleAddDeliverable} sx={{alignSelf: "flex-start", display: "flex", gap: "0.5rem", alignItems: "center"}}> 
+            <CiCirclePlus size={23}/> Agregar entregable</Button>
         </div>
       </LocalizationProvider>
       <DialogMod
@@ -130,6 +124,6 @@ const MilestoneItem = ({ milestone }) => {
         />
     </div>
   );
-};
+}
 
-export default MilestoneItem;
+export default TrackingMilestone
