@@ -34,6 +34,7 @@ class PlanningController extends Controller
     public function store(Request $request)
     {
         try {
+            $timezone = $request->header('Timezone', 'UTC');
             // Validar si ya existe una planificación para la empresa dada
             $exists = Planning::where('company_id', $request->company_id)->exists();
 
@@ -72,8 +73,19 @@ class PlanningController extends Controller
             // Obtener la fecha actual
             $currentDate = Carbon::now();
 
+            // Obtener las fechas de inicio y fin del periodo académico
+            $academicPeriodStartDate = Carbon::parse($academicPeriod->start_date, $timezone)->startOfDay();
+            $academicPeriodEndDate = Carbon::parse($academicPeriod->end_date, $timezone)->endOfDay();
+
+            // Obtener la fecha de inicio de la planificación
+            $planningStartDate = Carbon::parse($academicPeriod->planning_start_date, $timezone)->startOfDay();
+            $planningEndDate = Carbon::parse($academicPeriod->planning_end_date, $timezone)->endOfDay();
+
+            // Obtener la fecha de inicio de las evaluaciones
+            $evaluationsStartDate = Carbon::parse($academicPeriod->evaluation_start_date, $timezone)->startOfDay();
+
             // Verificar si la fecha actual está dentro del rango de planificación del periodo académico
-            if ($currentDate < $academicPeriod->planning_start_date || $currentDate > $academicPeriod->planning_end_date) {
+            if ($currentDate < $planningStartDate || $currentDate > $planningEndDate) {
                 return response()->json([
                     'message' => 'El periodo de planificación no está habilitado.',
                     'errors' => ['planning_period' => 'El periodo de planificación no está habilitado.']
@@ -83,12 +95,12 @@ class PlanningController extends Controller
             // Validar que las fechas de los hitos estén dentro del rango del periodo académico
             foreach ($validated['milestones'] as $milestone) {
                 // Verificar que el inicio y fin del hito estén dentro del rango del periodo académico
-                $milestoneStartDate = Carbon::parse($milestone['start_date']);
-                $milestoneEndDate = Carbon::parse($milestone['end_date']);
+                $milestoneStartDate = Carbon::parse($milestone['start_date'])->setTimezone($timezone)->startOfDay();
+                $milestoneEndDate = Carbon::parse($milestone['end_date'])->setTimezone($timezone)->endOfDay();
 
                 if (
-                    $milestoneStartDate < $academicPeriod->start_date ||
-                    $milestoneEndDate > $academicPeriod->end_date
+                    $milestoneStartDate < $academicPeriodStartDate ||
+                    $milestoneEndDate > $academicPeriodEndDate
                 ) {
                     return response()->json([
                         'message' => 'Las fechas de los hitos deben estar dentro del rango del periodo académico.',
@@ -99,7 +111,7 @@ class PlanningController extends Controller
                 }
 
                 // Verificar que el hito termine antes de que inicien las evaluaciones
-                if ($milestoneEndDate >= $academicPeriod->evaluation_start_date) {
+                if ($milestoneEndDate >= $evaluationsStartDate) {
                     return response()->json([
                         'message' => 'El hito ' . $milestone['name'] . ' debe terminar antes de que inicien las evaluaciones del periodo académico.',
                         'errors' => [
@@ -196,28 +208,28 @@ class PlanningController extends Controller
             $planning_milestones = $planning->milestones()->get();
 
             $validated_milestones_ids = array_column($validatedData['milestones'], 'id');
-           
+
             // Eliminar hitos y entregables relacionados
             foreach ($planning_milestones as $planning_milestone) {
                 if (!in_array($planning_milestone->id, $validated_milestones_ids)) {
-                       $planning_milestone->delete();
-                 }else{
+                    $planning_milestone->delete();
+                } else {
                     $deliverables = $planning_milestone->deliverables()->get();
                     $validated_milestone = array_filter($validatedData['milestones'], function ($milestone) use ($planning_milestone) {
-                         return $milestone['id'] == $planning_milestone->id;
-                     });
-                    if(!empty($validated_milestone)){
+                        return $milestone['id'] == $planning_milestone->id;
+                    });
+                    if (!empty($validated_milestone)) {
                         $validated_milestone = array_values($validated_milestone);
                         $validated_deliverables_ids = array_column($validated_milestone[0]['deliverables'], 'id');
                         // ELiminar nulls
-                            
+
                         foreach ($deliverables as $deliverable) {
                             if (!in_array($deliverable->id, $validated_deliverables_ids)) {
                                 $deliverable->delete();
                             }
                         }
                     }
-                        
+
                 }
             }
 
@@ -243,8 +255,8 @@ class PlanningController extends Controller
                 }
 
                 foreach ($validatedData['milestones'] as $milestoneData) {
-                    Log::info('Milestone por crear:' , $milestoneData);
-                
+                    Log::info('Milestone por crear:', $milestoneData);
+
                     // Crear o actualizar el hito
                     $milestone = Milestone::updateOrCreate(
                         ['id' => $milestoneData['id'] ?? null],
@@ -257,11 +269,11 @@ class PlanningController extends Controller
                             'planning_id' => $planning->id,
                         ]
                     );
-                
+
                     // Procesar entregables si están presentes (dentro del foreach de milestones)
                     if (!empty($milestoneData['deliverables'])) {
                         foreach ($milestoneData['deliverables'] as $deliverableData) {
-                            Log::info('Deliverable por crear:' , $deliverableData);
+                            Log::info('Deliverable por crear:', $deliverableData);
                             $deliverable = Deliverable::updateOrCreate(
                                 ['id' => $deliverableData['id'] ?? null],
                                 [
@@ -277,7 +289,7 @@ class PlanningController extends Controller
                         }
                     }
                 }
-                
+
             }
 
             DB::commit(); // Confirmar transacción
@@ -316,30 +328,30 @@ class PlanningController extends Controller
         }
     }
 
-      // Obtener una planificación por compañía
-      public function getPlanningByCompany($company_id)
-      {
-          $planning = Planning::with('milestones.deliverables')->where('company_id', $company_id)->first();
-          
-          if ($planning) {
+    // Obtener una planificación por compañía
+    public function getPlanningByCompany($company_id)
+    {
+        $planning = Planning::with('milestones.deliverables')->where('company_id', $company_id)->first();
+
+        if ($planning) {
             // Obtener el usuario autenticado
-             $user = auth()->user();
+            $user = auth()->user();
 
-              // Verificar si el usuario pertenece a la compañía
-              $company = $planning->company;
-              $member = $company->members()->where('user_id', $user->id)->first();
+            // Verificar si el usuario pertenece a la compañía
+            $company = $planning->company;
+            $member = $company->members()->where('user_id', $user->id)->first();
 
-              if (!$member && $user->user_type !== 'D') {
-                  return response()->json([
-                      'message' => 'No tienes permisos para acceder a esta planificación.',
-                  ], 403);
-              }
-              
-              return response()->json($planning, 200);
-          } else {
-              return response()->json([], 200);
-          }
-      }
+            if (!$member && $user->user_type !== 'D') {
+                return response()->json([
+                    'message' => 'No tienes permisos para acceder a esta planificación.',
+                ], 403);
+            }
+
+            return response()->json($planning, 200);
+        } else {
+            return response()->json([], 200);
+        }
+    }
 
     //   Eliminar un hito
     public function destroyMilestone($milestone_id)
@@ -348,7 +360,7 @@ class PlanningController extends Controller
             $milestone = Milestone::findOrFail($milestone_id);
             $milestone->deliverables()->delete();
             $milestone->delete();
-    
+
             return response()->json(['message' => 'Hito eliminado correctamente'], 200);
         } catch (Exception $e) {
             return response()->json(['message' => 'Error al eliminar el hito', 'error' => $e->getMessage()], 500);
@@ -360,7 +372,7 @@ class PlanningController extends Controller
         try {
             $deliverable = Deliverable::findOrFail($deliverable_id);
             $deliverable->delete();
-    
+
             return response()->json(['message' => 'Entregable eliminado correctamente'], 200);
         } catch (Exception $e) {
             return response()->json(['message' => 'Error al eliminar la entrega', 'error' => $e->getMessage()], 500);
