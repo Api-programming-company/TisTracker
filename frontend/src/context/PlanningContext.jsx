@@ -2,6 +2,7 @@
 import { createContext, useState,useContext, useEffect } from 'react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { formatDate } from '../utils/dateFormat';
 
 const PlanningContext = createContext();
 
@@ -61,10 +62,10 @@ const PlanningProvider = ({ children }) => {
     setMilestones(updatedMilestones);
   };
 
-  const checkErrors = () => {
+  const checkErrors = (end_date) => {
     let isError = false;
-    const tis_end_time = tisGroup.end_date ? new Date(tisGroup.end_date).getTime() : null;
-    const tis_start_time = tisGroup.start_date ? new Date(tisGroup.start_date).getTime() : null;
+    const tis_end_time = new Date(end_date).getTime() + 4*60*60*1000;
+    const tis_start_time = new Date().getTime()
     console.log(tis_start_time,tis_end_time);
     const updatedMilestones = milestones.map((milestone, index) => {
       const errors = [];
@@ -77,13 +78,12 @@ const PlanningProvider = ({ children }) => {
         const mil_start_date_time = milestone.start_date ? new Date(milestone.start_date).getTime() : null;
         console.log(mil_start_date_time,"start time");
   
-        if (mil_start_date_time < tis_start_time) errors.push({ errorArea: "start_date", message: "La fecha de inicio debe ser mayor o igual que la fecha de inicio del grupo TIS ("
-        + new Date(tisGroup.start_date).toLocaleDateString() + ")" });
+        if (mil_start_date_time < tis_start_time) errors.push({ errorArea: "start_date", message: "La fecha de inicio debe ser mayor o igual que la fecha actual ("
+        + new Date().toLocaleDateString() + ")" });
         
         if (index > 0) {
           const prevMilestone = milestones[index - 1];
-          console.log("here")
-          if (mil_start_date_time <= new Date(prevMilestone.end_date).getTime()) {
+          if (!prevMilestone.end_date && mil_start_date_time <= new Date(prevMilestone.end_date).getTime()) {
             errors.push({ errorArea: "start_date", message: `La fecha de inicio debe ser mayor que la fecha de fin del hito anterior` });
           }
         }
@@ -99,18 +99,9 @@ const PlanningProvider = ({ children }) => {
           if ( mil_end_date_time <= new Date(milestone.start_date).getTime()) errors.push({ errorArea: "end_date", message: "La fecha de fin debe ser mayor que la fecha de inicio" });
         }
         if(tis_end_time){
-          if (mil_end_date_time > tis_end_time) errors.push({ errorArea: "end_date", message: "La fecha de fin debe ser menor o igual que la fecha de fin del grupo TIS (" 
-            + new Date(tisGroup.end_date).toLocaleDateString() +")" });
+          if (mil_end_date_time > tis_end_time) errors.push({ errorArea: "end_date", message: "La fecha de fin debe ser menor o igual a la fecha valida indicada en la parte superior. (" 
+            + formatDate(end_date) +")" });
         } 
-        
-        const endDay = format(milestone.end_date, 'i');
-        if (index > 0) {
-          const prevMilestone = milestones[index - 1];
-          if (endDay !== format(prevMilestone.end_date, 'i')) {
-            const endDayName = format(prevMilestone.end_date, 'EEEE', { locale: es });
-            errors.push({ errorArea: "end_date", message: `La fecha de fin debe ser el mismo dia que la fecha de fin del hito anterior (${endDayName})` });
-          }
-        }
       }
       if (!milestone.billing_percentage){
         errors.push({ errorArea: "billing_percentage", message: "El porcentaje de facturacion es requerido" });
