@@ -109,7 +109,7 @@ const AcademicPeriodAbout = () => {
     }
 
     return (
-        <Box sx={{ mb: 3 }}>
+        <Box sx={{ mb: 3, marginTop: 3 }}>
             <Typography variant="h4" gutterBottom>
                 Sobre el periodo académico
             </Typography>

@@ -87,9 +87,9 @@ const StudentHome = () => {
         return (
             <Container
                 sx={{
-                    position: "absolute",
+                    // position: "absolute",
                     width: "100%",
-                    height: "100%",
+                    height: "90vh",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
@@ -111,7 +111,7 @@ const StudentHome = () => {
             <Divider sx={{ width: "100%", mb: 4 }} />{" "}
             <Box display="flex" justifyContent="start" flexWrap="wrap" gap={3}>
                 {user.academic_period_id ? (
-                    <>
+                    <Box sx={{display:"flex", flexDirection:"column"}}>
                         {menuItems.map((item, index) => (
                             <Box
                                 key={index}
@@ -151,7 +151,7 @@ const StudentHome = () => {
                             </>
                         ) : null}
                         <AcademicPeriodAbout />
-                    </>
+                    </Box>
                 ) : (
                     <Box flexBasis={{ xs: "100%", md: "30%" }}>
                         <Paper
