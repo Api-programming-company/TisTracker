@@ -14,7 +14,7 @@ class AddCreatedByToDeliverablesTable extends Migration
     public function up()
     {
         Schema::table('deliverables', function (Blueprint $table) {
-            $table->char('created_by', 1)->default(value: 'E')->comment('D: docente, E: estudiante');
+            $table->char('created_by', 1)->default('E')->comment('D: docente, E: estudiante');
         });
     }
 
