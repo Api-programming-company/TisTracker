@@ -9,7 +9,7 @@ import {
     Snackbar,
 } from "@mui/material";
 import AppContext from "../../context/AppContext";
-import { formatDate } from "../../utils/validaciones";
+import { formatDate, formatDate2 } from "../../utils/validaciones";
 import DialogMod from "../DialogMod";
 import { useNavigate } from "react-router-dom";
 import { useGetAcademicPeriodByIdQuery } from "../../api/academicPeriodApi";
@@ -77,11 +77,11 @@ const AcademicPeriodAbout = () => {
         },
         {
             key: "Fecha de inicio",
-            value: formatDate(data?.academic_period?.start_date),
+            value: formatDate2(data?.academic_period?.start_date),
         },
         {
             key: "Fecha de finalización",
-            value: formatDate(data?.academic_period?.end_date),
+            value: formatDate2(data?.academic_period?.end_date),
         },
     ];
 
