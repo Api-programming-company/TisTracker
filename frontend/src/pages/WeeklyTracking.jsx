@@ -28,7 +28,7 @@ const WeeklyTracking = () => {
     const status = useSelector(getStatus);
     const { user } = useContext(AppContext);
     const pendingMilestoneIndex = useSelector(getPendingMilestoneIndex);
-    const { data, isSuccess, isFetching, isError, error } =
+    const { data, isSuccess, isFetching, isError, error,refetch } =
       useGetPlanningByCompanyIdQuery(id);
       
     const milestone_index = useSelector(getCurrentMilestoneIndex);
@@ -91,8 +91,6 @@ const WeeklyTracking = () => {
         }
        });
 
-       console.log("DATAAA",id, milestonesData);
-
        update({
         id,
         data: {
@@ -114,7 +112,7 @@ const WeeklyTracking = () => {
   
     useEffect(() => {
       if (updatedSuccessfully) {
-        dispatch(confirmChanges());
+        refetch();
         setSnackbarMessage("Hito actualizado correctamente");
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
@@ -126,7 +124,7 @@ const WeeklyTracking = () => {
         setSnackbarSeverity("error");
         setSnackbarOpen(true);
       }
-    }, [isSuccess, error, isError, updatedSuccessfully, updateIsError, dispatch, updateError,updateData]);
+    }, [isSuccess, error, isError, updatedSuccessfully, updateIsError, dispatch, updateError,updateData,refetch]);
   
     if (isFetching) {
       return (
