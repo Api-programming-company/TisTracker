@@ -38,6 +38,10 @@ const CompanyList = () => {
     navigate("/registroge");
   };
 
+
+  useEffect(() => {
+    console.log(user, "user");
+  },[user])
   const handlePendingRequests = () => {
     navigate(`/academic-period/${id}/pending`); // Navegar a solicitudes pendientes
   };
