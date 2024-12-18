@@ -231,7 +231,7 @@ const CompanyDetails = ({ company, setFormData }) => {
                                                         : member.user.email
                                                 }
                                             />
-                                            {user.user_type == !"D" && (
+                                            {user.user_type !== "D" && user.id !== member.user.id && (
                                                 <Button
                                                     variant="contained"
                                                     color="primary"

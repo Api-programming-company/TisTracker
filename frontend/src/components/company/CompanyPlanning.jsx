@@ -115,10 +115,10 @@ const CompanyPlanning = () => {
 
   useEffect(() => {
     if (registerPlanningSuccess) {
+      refetch();
       setSnackbarMessage("Planificación registrada con éxito");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
-      refetch();
 
     }
     if (registerPlanningIsError) {
@@ -127,7 +127,7 @@ const CompanyPlanning = () => {
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
     }
-  }, [registerPlanningSuccess, registerPlanningError, navigate, registerPlanningIsError]);
+  }, [registerPlanningSuccess, registerPlanningError, navigate, registerPlanningIsError, refetch]);
 
  
 
@@ -160,6 +160,7 @@ const CompanyPlanning = () => {
 
   useEffect(() => {
     if (updatedSuccessfully) {
+      refetch();
       setSnackbarMessage("Planificación actualizada con éxito");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
@@ -170,7 +171,7 @@ const CompanyPlanning = () => {
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
     }
-  }, [updatedSuccessfully, updateError, updateIsError]);
+  }, [updatedSuccessfully, updateError, updateIsError, refetch]);
 
 
   useEffect(() => {
