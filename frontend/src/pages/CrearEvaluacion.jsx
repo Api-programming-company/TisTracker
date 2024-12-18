@@ -25,7 +25,8 @@ import { useCreateAcademicPeriodEvaluationMutation } from "../api/academicPeriod
 import { useGetAcademicPeriodByIdQuery } from "../api/academicPeriodApi";
 import { format } from "date-fns";
 import moment from "moment-timezone";
-import { formatDate } from "../utils/dateFormat";
+import { formatDate4Evaluation, formatDate } from "../utils/dateFormat";
+
 
 
 const RegistroGE = () => {
@@ -363,15 +364,14 @@ const RegistroGE = () => {
                                 label="Fecha de Inicio"
                                 minDate={
                                     isAcademicPeriodSuccess
-                                        ? new Date(
-                                              academicPeriodData.academic_period.evaluation_start_date
-                                          )
+                                        ? 
+                                            formatDate4Evaluation(academicPeriodData.academic_period.evaluation_start_date)   
                                         : null
                                 }
                                 maxDate={
                                     isAcademicPeriodSuccess
                                         ? new Date(
-                                              academicPeriodData.academic_period.evaluation_end_date
+                                            academicPeriodData.academic_period.evaluation_end_date
                                           )
                                         : null
                                 }
@@ -395,14 +395,14 @@ const RegistroGE = () => {
                                 minDate={
                                     isAcademicPeriodSuccess
                                         ? new Date(
-                                              academicPeriodData.academic_period.evaluation_start_date
+                                            formatDate4Evaluation(academicPeriodData.academic_period.evaluation_start_date)
                                           )
                                         : null
                                 }
                                 maxDate={
                                     isAcademicPeriodSuccess
                                         ? new Date(
-                                              academicPeriodData.academic_period.evaluation_end_date
+                                            academicPeriodData.academic_period.evaluation_end_date
                                           )
                                         : null
                                 }

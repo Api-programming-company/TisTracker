@@ -4,6 +4,10 @@ const formatDate = (dateString) => {
     return date.toLocaleDateString();
 };
 
+const formatDate4Evaluation = (dateString) => {
+    const date = new Date( new Date(dateString).getTime() + 4*60*60*1000 ); 
+    return date;
+}
 
 
 const getToday = () => {
@@ -70,4 +74,4 @@ const getAcademicPeriodStatus = (academic_period) => {
     
 }
 
-export {formatDate,getToday,getMilestoneStatus,getMilestonePlanningStatus,getDateTime,getAcademicPeriodStatus};
+export {formatDate,getToday,getMilestoneStatus,getMilestonePlanningStatus,getDateTime,getAcademicPeriodStatus, formatDate4Evaluation};
