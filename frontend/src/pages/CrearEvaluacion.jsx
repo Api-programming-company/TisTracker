@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
     Button,
     Typography,
@@ -26,8 +26,11 @@ import { useGetAcademicPeriodByIdQuery } from "../api/academicPeriodApi";
 import { format } from "date-fns";
 import moment from "moment-timezone";
 import { formatDate4Evaluation, formatDate } from "../utils/dateFormat";
+import BackBtn from "../components/navigation/BackBtn";
 
 const RegistroGE = () => {
+    const location = useLocation();
+    const period = location.state?.period;
     const navigate = useNavigate();
     const { academic_period_id } = useParams();
 
@@ -281,246 +284,255 @@ const RegistroGE = () => {
     }
 
     return (
-        <Box
-            sx={{
-                mx: { xs: 3, sm: "auto" },
-                mt: 12,
-                mb: 10,
-                maxWidth: 600,
-            }}
-        >
-            <Typography
-                variant="h4"
-                component="h1"
-                gutterBottom
-                sx={{ textAlign: "center", mb: 3 }}
+        <>
+            <Box sx={{position:"absolute"}}>
+                <BackBtn
+                    url={`/academic-periods/docente-home/${period.id}`}
+                    period={period}
+                />
+            </Box>        
+            <Box
+                sx={{
+                    mx: { xs: 3, sm: "auto" },
+                    mt: 12,
+                    mb: 10,
+                    maxWidth: 600,
+                }}
             >
-                Crear Evaluación
-            </Typography>
-            <Typography>
-                Fecha de inicio de periodo de evaluación es:{" "}
-                {formatDate(
-                    academicPeriodData.academic_period.evaluation_start_date
-                )}
-            </Typography>
-            <Typography>
-                Fecha de finalización de periodo de evaluación es:{" "}
-                {formatDate(
-                    academicPeriodData.academic_period.evaluation_end_date
-                )}
-            </Typography>
-            <form>
-                <FormControl fullWidth sx={{ mb: 3, mt: 1 }}>
-                    <InputLabel>Seleccionar tipo de evaluación</InputLabel>
-                    <Select
-                        value={selectedEvaluation}
-                        onChange={(e) => setSelectedEvaluation(e.target.value)}
-                        label="Seleccionar tipo de evaluación"
-                    >
-                        {evaluations.map((evaluation) => (
-                            <MenuItem
-                                key={evaluation.title}
-                                value={evaluation.title}
-                            >
-                                {evaluation.title}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-
-                {/* Selector de plantillas */}
-                <FormControl fullWidth sx={{ mb: 3 }}>
-                    <InputLabel>Seleccionar Plantilla</InputLabel>
-                    <Select
-                        value={selectedPlantilla}
-                        onChange={(e) => {
-                            setSelectedPlantilla(e.target.value);
-                            const selectedPlantillaObj = plantillas.find(
-                                (plantilla) =>
-                                    plantilla.title === e.target.value
-                            );
-                            setSelectedPlantillaId(selectedPlantillaObj.id);
-                        }}
-                        label="Seleccionar Plantilla"
-                    >
-                        {plantillas.map((plantilla) => (
-                            <MenuItem
-                                key={plantilla.id}
-                                value={plantilla.title}
-                            >
-                                {plantilla.title}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-
-                {/* Fecha de Inicio y Fecha Fin */}
-                <FormControl fullWidth sx={{ mb: 2 }}>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <Box
-                            sx={{
-                                display: { xs: "block", sm: "flex" },
-                                justifyContent: "space-between",
-                                gap: 2,
-                            }}
-                        >
-                            <DatePicker
-                                label="Fecha de Inicio"
-                                minDate={
-                                    isAcademicPeriodSuccess
-                                        ? formatDate4Evaluation(
-                                              academicPeriodData.academic_period
-                                                  .evaluation_start_date
-                                          )
-                                        : null
-                                }
-                                maxDate={
-                                    isAcademicPeriodSuccess
-                                        ? formatDate4Evaluation(
-                                              academicPeriodData.academic_period
-                                                  .evaluation_end_date
-                                          )
-                                        : null
-                                }
-                                value={startDate}
-                                onChange={(newValue) => {
-                                    setStartDate(newValue);
-                                    setStartDateError(false);
-                                    setEndDateError(false);
-                                }}
-                                slotProps={{
-                                    textField: {
-                                        helperText: "DD/MM/AAAA",
-                                        fullWidth: true,
-                                        error: startDateError,
-                                    },
-                                }}
-                                format="dd/MM/yyyy"
-                            />
-                            <DatePicker
-                                label="Fecha de Fin"
-                                minDate={
-                                    isAcademicPeriodSuccess
-                                        ? new Date(
-                                              formatDate4Evaluation(
-                                                  academicPeriodData
-                                                      .academic_period
-                                                      .evaluation_start_date
-                                              )
-                                          )
-                                        : null
-                                }
-                                maxDate={
-                                    isAcademicPeriodSuccess
-                                        ? formatDate4Evaluation(
-                                              academicPeriodData.academic_period.evaluation_end_date
-                                          )
-                                        : null
-                                }
-                                value={endDate}
-                                onChange={(newValue) => {
-                                    setEndDate(newValue);
-                                    setStartDateError(false);
-                                    setEndDateError(false);
-                                }}
-                                slotProps={{
-                                    textField: {
-                                        helperText: "DD/MM/AAAA",
-                                        fullWidth: true,
-                                        error: endDateError,
-                                    },
-                                }}
-                                format="dd/MM/yyyy"
-                            />
-                        </Box>
-                    </LocalizationProvider>
-                </FormControl>
-                {/* Hora de Inicio y Hora Fin */}
-                <FormControl fullWidth sx={{ mb: 2 }}>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <Box
-                            sx={{
-                                display: { xs: "block", sm: "flex" },
-                                justifyContent: "space-between",
-                                gap: 2,
-                            }}
-                        >
-                            <TimePicker
-                                label="Hora de Inicio"
-                                value={startTime}
-                                onChange={(newValue) => {
-                                    setStartTime(newValue);
-                                    setStartTimeError(false);
-                                }}
-                                slotProps={{
-                                    textField: {
-                                        helperText: "HH:MM",
-                                        fullWidth: true,
-                                        error: startTimeError,
-                                    },
-                                }}
-                                format="HH:mm"
-                            />
-                            <TimePicker
-                                label="Hora de Fin"
-                                value={endTime}
-                                onChange={(newValue) => {
-                                    setEndTime(newValue);
-                                    setEndTimeError(false);
-                                }}
-                                slotProps={{
-                                    textField: {
-                                        helperText: "HH:MM",
-                                        fullWidth: true,
-                                        error: endTimeError,
-                                    },
-                                }}
-                                fullWidth
-                                format="HH:mm"
-                            />
-                        </Box>
-                    </LocalizationProvider>
-                </FormControl>
-
-                <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    onClick={handleOpenDialog}
-                    sx={{ display: "block", mx: "auto", mt: 3, px: 12, py: 1 }}
+        
+                <Typography
+                    variant="h4"
+                    component="h1"
+                    gutterBottom
+                    sx={{ textAlign: "center", mb: 3 }}
                 >
                     Crear Evaluación
-                </Button>
-            </form>
+                </Typography>
+                <Typography>
+                    Fecha de inicio de periodo de evaluación es:{" "}
+                    {formatDate(
+                        academicPeriodData.academic_period.evaluation_start_date
+                    )}
+                </Typography>
+                <Typography>
+                    Fecha de finalización de periodo de evaluación es:{" "}
+                    {formatDate(
+                        academicPeriodData.academic_period.evaluation_end_date
+                    )}
+                </Typography>
+                <form>
+                    <FormControl fullWidth sx={{ mb: 3, mt: 1 }}>
+                        <InputLabel>Seleccionar tipo de evaluación</InputLabel>
+                        <Select
+                            value={selectedEvaluation}
+                            onChange={(e) => setSelectedEvaluation(e.target.value)}
+                            label="Seleccionar tipo de evaluación"
+                        >
+                            {evaluations.map((evaluation) => (
+                                <MenuItem
+                                    key={evaluation.title}
+                                    value={evaluation.title}
+                                >
+                                    {evaluation.title}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
 
-            <Snackbar
-                open={snackbarOpen}
-                autoHideDuration={6000}
-                onClose={handleSnackbarClose}
-                message={snackbarMessage}
-            />
-            {/* Dialog de confirmación */}
-            <DialogMod
-                open={openConfirm}
-                setOpen={setOpenConfirm}
-                title={"Confirmación de creación"}
-                content={"Se ha creado la evaluación correctamente"}
-                onAccept={() => navigate("/")}
-                onCancel={() => navigate("/")}
-                showButtonCancel={false}
-            />
-            <DialogMod
-                open={opentoConfirm}
-                setOpen={setOpentoConfirm}
-                title={"Crear Evaluación"}
-                content={"¿Estás seguro de crear esta evaluación?"}
-                onAccept={() => {
-                    handleNavigate();
-                    setOpentoConfirm(false);
-                }}
-                onCancel={() => setOpentoConfirm(false)}
-            />
-        </Box>
+                    {/* Selector de plantillas */}
+                    <FormControl fullWidth sx={{ mb: 3 }}>
+                        <InputLabel>Seleccionar Plantilla</InputLabel>
+                        <Select
+                            value={selectedPlantilla}
+                            onChange={(e) => {
+                                setSelectedPlantilla(e.target.value);
+                                const selectedPlantillaObj = plantillas.find(
+                                    (plantilla) =>
+                                        plantilla.title === e.target.value
+                                );
+                                setSelectedPlantillaId(selectedPlantillaObj.id);
+                            }}
+                            label="Seleccionar Plantilla"
+                        >
+                            {plantillas.map((plantilla) => (
+                                <MenuItem
+                                    key={plantilla.id}
+                                    value={plantilla.title}
+                                >
+                                    {plantilla.title}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+
+                    {/* Fecha de Inicio y Fecha Fin */}
+                    <FormControl fullWidth sx={{ mb: 2 }}>
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <Box
+                                sx={{
+                                    display: { xs: "block", sm: "flex" },
+                                    justifyContent: "space-between",
+                                    gap: 2,
+                                }}
+                            >
+                                <DatePicker
+                                    label="Fecha de Inicio"
+                                    minDate={
+                                        isAcademicPeriodSuccess
+                                            ? formatDate4Evaluation(
+                                                academicPeriodData.academic_period
+                                                    .evaluation_start_date
+                                            )
+                                            : null
+                                    }
+                                    maxDate={
+                                        isAcademicPeriodSuccess
+                                            ? formatDate4Evaluation(
+                                                academicPeriodData.academic_period
+                                                    .evaluation_end_date
+                                            )
+                                            : null
+                                    }
+                                    value={startDate}
+                                    onChange={(newValue) => {
+                                        setStartDate(newValue);
+                                        setStartDateError(false);
+                                        setEndDateError(false);
+                                    }}
+                                    slotProps={{
+                                        textField: {
+                                            helperText: "DD/MM/AAAA",
+                                            fullWidth: true,
+                                            error: startDateError,
+                                        },
+                                    }}
+                                    format="dd/MM/yyyy"
+                                />
+                                <DatePicker
+                                    label="Fecha de Fin"
+                                    minDate={
+                                        isAcademicPeriodSuccess
+                                            ? new Date(
+                                                formatDate4Evaluation(
+                                                    academicPeriodData
+                                                        .academic_period
+                                                        .evaluation_start_date
+                                                )
+                                            )
+                                            : null
+                                    }
+                                    maxDate={
+                                        isAcademicPeriodSuccess
+                                            ? formatDate4Evaluation(
+                                                academicPeriodData.academic_period.evaluation_end_date
+                                            )
+                                            : null
+                                    }
+                                    value={endDate}
+                                    onChange={(newValue) => {
+                                        setEndDate(newValue);
+                                        setStartDateError(false);
+                                        setEndDateError(false);
+                                    }}
+                                    slotProps={{
+                                        textField: {
+                                            helperText: "DD/MM/AAAA",
+                                            fullWidth: true,
+                                            error: endDateError,
+                                        },
+                                    }}
+                                    format="dd/MM/yyyy"
+                                />
+                            </Box>
+                        </LocalizationProvider>
+                    </FormControl>
+                    {/* Hora de Inicio y Hora Fin */}
+                    <FormControl fullWidth sx={{ mb: 2 }}>
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <Box
+                                sx={{
+                                    display: { xs: "block", sm: "flex" },
+                                    justifyContent: "space-between",
+                                    gap: 2,
+                                }}
+                            >
+                                <TimePicker
+                                    label="Hora de Inicio"
+                                    value={startTime}
+                                    onChange={(newValue) => {
+                                        setStartTime(newValue);
+                                        setStartTimeError(false);
+                                    }}
+                                    slotProps={{
+                                        textField: {
+                                            helperText: "HH:MM",
+                                            fullWidth: true,
+                                            error: startTimeError,
+                                        },
+                                    }}
+                                    format="HH:mm"
+                                />
+                                <TimePicker
+                                    label="Hora de Fin"
+                                    value={endTime}
+                                    onChange={(newValue) => {
+                                        setEndTime(newValue);
+                                        setEndTimeError(false);
+                                    }}
+                                    slotProps={{
+                                        textField: {
+                                            helperText: "HH:MM",
+                                            fullWidth: true,
+                                            error: endTimeError,
+                                        },
+                                    }}
+                                    fullWidth
+                                    format="HH:mm"
+                                />
+                            </Box>
+                        </LocalizationProvider>
+                    </FormControl>
+
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        onClick={handleOpenDialog}
+                        sx={{ display: "block", mx: "auto", mt: 3, px: 12, py: 1 }}
+                    >
+                        Crear Evaluación
+                    </Button>
+                </form>
+
+                <Snackbar
+                    open={snackbarOpen}
+                    autoHideDuration={6000}
+                    onClose={handleSnackbarClose}
+                    message={snackbarMessage}
+                />
+                {/* Dialog de confirmación */}
+                <DialogMod
+                    open={openConfirm}
+                    setOpen={setOpenConfirm}
+                    title={"Confirmación de creación"}
+                    content={"Se ha creado la evaluación correctamente"}
+                    onAccept={() => navigate("/")}
+                    onCancel={() => navigate("/")}
+                    showButtonCancel={false}
+                />
+                <DialogMod
+                    open={opentoConfirm}
+                    setOpen={setOpentoConfirm}
+                    title={"Crear Evaluación"}
+                    content={"¿Estás seguro de crear esta evaluación?"}
+                    onAccept={() => {
+                        handleNavigate();
+                        setOpentoConfirm(false);
+                    }}
+                    onCancel={() => setOpentoConfirm(false)}
+                />
+            </Box>
+        </>
     );
 };
 
