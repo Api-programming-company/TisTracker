@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useGetAllEvaluationTemplatesQuery } from "../../api/evaluationApi";
 
 import {
@@ -14,8 +14,11 @@ import {
     Box,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import BackBtn from "../navigation/BackBtn";
 
 const EvaluationTemplateList = () => {
+    const location = useLocation()
+    const period = location.state?.period;
     const navigate = useNavigate();
     const { data, error, isFetching, isError, isSuccess } =
         useGetAllEvaluationTemplatesQuery();
@@ -78,8 +81,12 @@ const EvaluationTemplateList = () => {
                 width: "100%",
                 alignItems: "center",
                 padding: "16px",
+                position: "relative"
             }}
         >
+            <Box sx={{display:"flex", width:"100%", paddingX: 0, position: "absolute"}}>
+                <BackBtn url={`/academic-periods/docente-home/${period.id}`} period={period}/>
+            </Box>
             <Typography variant="h4" mt={3} gutterBottom>
                 Plantillas de evaluación
             </Typography>
