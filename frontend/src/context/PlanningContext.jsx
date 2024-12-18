@@ -63,6 +63,9 @@ const PlanningProvider = ({ children }) => {
 
   const checkErrors = () => {
     let isError = false;
+    const tis_end_time = tisGroup.end_date ? new Date(tisGroup.end_date).getTime() : null;
+    const tis_start_time = tisGroup.start_date ? new Date(tisGroup.start_date).getTime() : null;
+    console.log(tis_start_time,tis_end_time);
     const updatedMilestones = milestones.map((milestone, index) => {
       const errors = [];
       if (!milestone.name) errors.push({ errorArea: "name", message: "El nombre del hito es requerido" });
@@ -70,22 +73,36 @@ const PlanningProvider = ({ children }) => {
       if (milestoneNames.length !== new Set(milestoneNames).size) errors.push({ errorArea: "name", message: "Los nombres de los hitos deben ser unicos" });
       
       if (!milestone.start_date) errors.push({ errorArea: "start_date", message: "La fecha de inicio es requerida" });
-      if (milestone.start_date && milestone.start_date < tisGroup.start_date) errors.push({ errorArea: "start_date", message: "La fecha de inicio debe ser mayor o igual que la fecha de inicio del grupo TIS ("
-      + format(tisGroup.start_date, 'dd/MM/yyyy') + ")" });
-      
-      if (index > 0) {
-        const prevMilestone = milestones[index - 1];
-        if (milestone.start_date <= prevMilestone.end_date) {
-          errors.push({ errorArea: "start_date", message: `La fecha de inicio debe ser mayor que la fecha de fin del hito anterior` });
+      if(milestone.start_date){
+        const mil_start_date_time = milestone.start_date ? new Date(milestone.start_date).getTime() : null;
+        console.log(mil_start_date_time,"start time");
+  
+        if (mil_start_date_time < tis_start_time) errors.push({ errorArea: "start_date", message: "La fecha de inicio debe ser mayor o igual que la fecha de inicio del grupo TIS ("
+        + new Date(tisGroup.start_date).toLocaleDateString() + ")" });
+        
+        if (index > 0) {
+          const prevMilestone = milestones[index - 1];
+          console.log("here")
+          if (mil_start_date_time <= new Date(prevMilestone.end_date).getTime()) {
+            errors.push({ errorArea: "start_date", message: `La fecha de inicio debe ser mayor que la fecha de fin del hito anterior` });
+          }
         }
       }
+      
       
       if (!milestone.end_date) {
         errors.push({ errorArea: "end_date", message: "La fecha de fin es requerida" });
       }else{
-        if (milestone.end_date <= milestone.start_date) errors.push({ errorArea: "end_date", message: "La fecha de fin debe ser mayor que la fecha de inicio" });
-        if (milestone.end_date > tisGroup.end_date) errors.push({ errorArea: "end_date", message: "La fecha de fin debe ser menor o igual que la fecha de fin del grupo TIS (" 
-        + format(tisGroup.end_date, 'dd/MM/yyyy') + ")" });
+        const mil_end_date_time = new Date(milestone.end_date).getTime();
+        console.log(mil_end_date_time,"end time");
+        if(milestone.start_date){
+          if ( mil_end_date_time <= new Date(milestone.start_date).getTime()) errors.push({ errorArea: "end_date", message: "La fecha de fin debe ser mayor que la fecha de inicio" });
+        }
+        if(tis_end_time){
+          if (mil_end_date_time > tis_end_time) errors.push({ errorArea: "end_date", message: "La fecha de fin debe ser menor o igual que la fecha de fin del grupo TIS (" 
+            + new Date(tisGroup.end_date).toLocaleDateString() +")" });
+        } 
+        
         const endDay = format(milestone.end_date, 'i');
         if (index > 0) {
           const prevMilestone = milestones[index - 1];
