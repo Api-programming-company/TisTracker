@@ -60,14 +60,15 @@ const SeeWeeklyGE = () => {
 
 
 
+
   const sortedCompanies = [...data?.companies].sort((a, b) => {
-    const dateA = new Date(a.planning.milestones.end_date);
-    const dateB = new Date(b.planning.milestones.end_date);
+    const dateA = new Date(a?.planning?.milestones?.end_date);
+    const dateB = new Date(b?.planning?.milestones?.end_date);
     return dateA - dateB;
   })
   const groupedCompanies = sortedCompanies.reduce((acc, company) => {
 
-    if (!company.planning || !company.planning.milestones) {
+    if (!company.planning || !company?.planning?.milestones) {
       acc.undefined.push(company);
     } else {
       const upcomingMilestone = company.planning.milestones.find((milestone) => {
