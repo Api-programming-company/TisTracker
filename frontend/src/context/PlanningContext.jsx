@@ -98,7 +98,7 @@ const PlanningProvider = ({ children }) => {
       if (!milestone.billing_percentage){
         errors.push({ errorArea: "billing_percentage", message: "El porcentaje de facturacion es requerido" });
       } else{
-        if (milestone.billing_percentage < 0 || milestone.billing_percentage > 100) errors.push({ errorArea: "billing_percentage", message: "El porcentaje de facturacion debe estar entre 0 y 100" });
+        if (milestone.billing_percentage < 0 || milestone.billing_percentage > 100) errors.push({ errorArea: "billing_percentage", message: "El porcentaje de facturacion debe estar entre 1 y 100" });
       }
       
       if(milestone.deliverables.length < 1) {
