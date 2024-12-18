@@ -34,7 +34,7 @@ const VerGE = () => {
         severity: "success",
     });
     const navigate = useNavigate();
-    const acad_period_status = getAcademicPeriodStatus(user.academic_period)
+    const acad_period_status = user.user_type === "E" && getAcademicPeriodStatus(user?.academic_period)
 
     const [
         leaveCompany,
