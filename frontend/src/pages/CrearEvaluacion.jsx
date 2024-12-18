@@ -25,7 +25,9 @@ import { useCreateAcademicPeriodEvaluationMutation } from "../api/academicPeriod
 import { useGetAcademicPeriodByIdQuery } from "../api/academicPeriodApi";
 import { format } from "date-fns";
 import moment from "moment-timezone";
-import { formatDate } from "../utils/dateFormat";
+import { formatDate4Evaluation, formatDate } from "../utils/dateFormat";
+
+
 
 const RegistroGE = () => {
     const navigate = useNavigate();
@@ -368,33 +370,15 @@ const RegistroGE = () => {
                                 label="Fecha de Inicio"
                                 minDate={
                                     isAcademicPeriodSuccess
-                                        ? (() => {
-                                              const startDate = new Date(
-                                                  academicPeriodData.academic_period.evaluation_start_date
-                                              );
-                                              // Establecer la hora en 00:00:00
-                                              startDate.setHours(0, 0, 0, 0);
-                                              // Sumar un día
-                                              startDate.setDate(
-                                                  startDate.getDate() + 1
-                                              );
-                                              return startDate;
-                                          })()
+                                        ? 
+                                            formatDate4Evaluation(academicPeriodData.academic_period.evaluation_start_date)   
                                         : null
                                 }
                                 maxDate={
                                     isAcademicPeriodSuccess
-                                        ? (() => {
-                                              const endDate = new Date(
-                                                  academicPeriodData.academic_period.evaluation_end_date
-                                              );
-                                              // Establecer la hora en 23:59:59
-                                              endDate.setHours(23, 59, 59, 999);
-                                              endDate.setDate(
-                                                  endDate.getDate() + 1
-                                              );
-                                              return endDate;
-                                          })()
+                                        ? new Date(
+                                            academicPeriodData.academic_period.evaluation_end_date
+                                          )
                                         : null
                                 }
                                 value={startDate}
@@ -416,33 +400,16 @@ const RegistroGE = () => {
                                 label="Fecha de Fin"
                                 minDate={
                                     isAcademicPeriodSuccess
-                                        ? (() => {
-                                              const startDate = new Date(
-                                                  academicPeriodData.academic_period.evaluation_start_date
-                                              );
-                                              // Establecer la hora en 00:00:00
-                                              startDate.setHours(0, 0, 0, 0);
-                                              // Sumar un día
-                                              startDate.setDate(
-                                                  startDate.getDate() + 1
-                                              );
-                                              return startDate;
-                                          })()
+                                        ? new Date(
+                                            formatDate4Evaluation(academicPeriodData.academic_period.evaluation_start_date)
+                                          )
                                         : null
                                 }
                                 maxDate={
                                     isAcademicPeriodSuccess
-                                        ? (() => {
-                                              const endDate = new Date(
-                                                  academicPeriodData.academic_period.evaluation_end_date
-                                              );
-                                              // Establecer la hora en 23:59:59
-                                              endDate.setHours(23, 59, 59, 999);
-                                              endDate.setDate(
-                                                  endDate.getDate() + 1
-                                              );
-                                              return endDate;
-                                          })()
+                                        ? new Date(
+                                            academicPeriodData.academic_period.evaluation_end_date
+                                          )
                                         : null
                                 }
                                 value={endDate}
