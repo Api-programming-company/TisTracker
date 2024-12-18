@@ -81,7 +81,7 @@ const VerGE = () => {
             color: "info",
             onClick: () =>
                 data?.company?.planning
-                    ? navigate(`/planing/${data.company.planning.id}`)
+                    ? navigate(`/planning/${data.company.planning.id}`)
                     : setOpenModal(true),
         },
         {
