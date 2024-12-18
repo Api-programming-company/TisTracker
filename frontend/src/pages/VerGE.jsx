@@ -20,6 +20,7 @@ import AppContext from "../context/AppContext";
 import { useLeaveCompanyMutation } from "../api/companyApi";
 import DialogMod from "../components/DialogMod";
 import { getAcademicPeriodStatus } from "../utils/dateFormat";
+import BackBtn from "../components/navigation/BackBtn";
 
 const VerGE = () => {
     const { id } = useParams();
@@ -33,6 +34,8 @@ const VerGE = () => {
         message: "",
         severity: "success",
     });
+    const period_id = JSON.parse(localStorage.getItem("periodId"));
+    console.log(period_id);
     const navigate = useNavigate();
     const acad_period_status = user.user_type === "E" && getAcademicPeriodStatus(user?.academic_period)
 
@@ -217,6 +220,7 @@ const VerGE = () => {
 
     return (
         <Box sx={{ maxWidth: 900, margin: "auto", padding: 2, mb: 15 }}>
+            <BackBtn url={`/academic-periods/docente-home/${period_id}`}	/>
             <CompanyDetails
                 company={formData.company}
                 setFormData={setFormData}

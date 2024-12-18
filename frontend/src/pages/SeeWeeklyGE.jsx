@@ -17,6 +17,7 @@ const SeeWeeklyGE = () => {
   const {  checkUser } = useContext(AppContext);
   const { data, error, isLoading, isError, isSuccess } =
     useGetCompaniesByAcademicPeriodQuery(id);
+  localStorage.setItem("periodId", JSON.stringify(id));
 
   useEffect(() => {
     if (isSuccess) {

@@ -10,6 +10,8 @@ export const AppProvider = ({ children }) => {
     localStorage.setItem("user", JSON.stringify(user));
   };
 
+  
+
   const [
     checkUser,
     { data, error, isError, isSuccess, isLoading, isFetching },
@@ -48,6 +50,9 @@ export const AppProvider = ({ children }) => {
       removeUserFromLocalStorage();
     }
   }, [data, isSuccess, isError]);
+
+
+
 
   const handleLogout = async () => {
     try {
