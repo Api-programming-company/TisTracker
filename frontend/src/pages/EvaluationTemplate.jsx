@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useCreateEvaluationTemplateMutation } from "../api/evaluationApi";
 import {
+  Box,
   Button,
   CircularProgress,
   Container,
@@ -12,9 +13,12 @@ import {
 import EvaluateContext from "../context/evaluateContext/EvaluateContext";
 import Criteria from "../components/evaluationTemplate/Criteria";
 import DialogMod from "../components/DialogMod";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import BackBtn from "../components/navigation/BackBtn";
 
 const EvaluationTemplate = () => {
+  const location = useLocation();
+  const period = location.state?.period;
   const [
     createEvaluationTemplate,
     { data, isSuccess, isError, error, isLoading },
@@ -135,112 +139,128 @@ const EvaluationTemplate = () => {
   }
 
   return (
-    <Container>
-      <Typography
-        component={"h1"}
-        sx={{ fontSize: "40px", lineHeight: "1", mt: 12 }}
-      >
-        Crear Plantilla de Evaluación
-      </Typography>
-      <Divider sx={{ width: "100%", marginY: 3 }} />{" "}
-      <TextField
-        sx={{ marginY: 1 }}
-        variant="outlined"
-        value={state.title}
-        label="Nombre de plantilla*"
-        name="title"
-        onChange={handleInputChange}
-        error={Boolean(error?.data?.errors?.title && showError) || showError}
-        helperText={findError("title") || titleError()}
-        fullWidth
-        multiline
-        inputProps={{ maxLength: 255 }}
-      />
-      <TextField
-        sx={{ marginY: 1 }}
-        variant="outlined"
-        value={state.description}
-        label="Descripción*"
-        name="description"
-        onChange={handleInputChange}
-        error={Boolean(findError("description"))}
-        helperText={findError("description")}
-        fullWidth
-        multiline
-        inputProps={{ maxLength: 500 }}
-      />
-      <Typography
-        component={"h2"}
-        sx={{ fontSize: "30px", lineHeight: "1", marginY: 3 }}
-      >
-        Criterios de Evaluación
-      </Typography>
-      {state.questions?.length > 0 ? (
-        state.questions.map((e) => {
-          return (
-            <Criteria
-              key={e.id}
-              criteria={e}
-              findError={findError}
-              setShowError={setShowError}
-              showError={showError}
-            />
-          );
-        })
-      ) : (
-        <p>Ningún criterio ha sido agregado todavía.</p>
-      )}
-      {findError("questions") && (
-        <p className="text-red-300 text-sm ml-1">{findError("questions")}</p>
-      )}
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <Button
-          variant="contained"
-          sx={{ marginX: 3, marginY: 3 }}
-          onClick={handleAddCriteria}
-        >
-          Agregar Criterio
-        </Button>
-      </div>
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <Button
-          variant="contained"
-          sx={{ marginX: 3, marginY: 3, display: "block" }}
-          onClick={() => {
-            validateErrors();
-            handleScore();
-            setOpenCreateTemplate(true);
-            setShowError(false);
-          }}
-        >
-          Crear Plantilla
-        </Button>
-        <DialogMod
-          open={openCreateTemplate}
-          setOpen={setOpenCreateTemplate}
-          title={"Crear plantilla"}
-          content={"¿Estás seguro de realizar esta acción?"}
-          onAccept={handleCreateTemplate}
+    <>
+      <Box sx={{position:"absolute"}}>
+        <BackBtn
+          url={`/academic-periods/docente-home/${period.id}`}
+          period={period}
         />
+      </Box>
+      <Container>
+        <Typography
+          component={"h1"}
+          sx={{ fontSize: "40px", lineHeight: "1", mt: 12 }}
+        >
+          Crear Plantilla de Evaluación
+        </Typography>
+        <Divider sx={{ width: "100%", marginY: 3 }} />{" "}
+        <TextField
+          sx={{ marginY: 1 }}
+          variant="outlined"
+          value={state.title}
+          label="Nombre de plantilla*"
+          name="title"
+          onChange={handleInputChange}
+          error={Boolean(error?.data?.errors?.title && showError) || showError}
+          helperText={findError("title") || titleError()}
+          fullWidth
+          multiline
+          inputProps={{ maxLength: 255 }}
+        />
+        <TextField
+          sx={{ marginY: 1 }}
+          variant="outlined"
+          value={state.description}
+          label="Descripción*"
+          name="description"
+          onChange={handleInputChange}
+          error={Boolean(findError("description"))}
+          helperText={findError("description")}
+          fullWidth
+          multiline
+          inputProps={{ maxLength: 500 }}
+        />
+        <Typography
+          component={"h2"}
+          sx={{ fontSize: "30px", lineHeight: "1", marginY: 3 }}
+        >
+          Criterios de Evaluación
+        </Typography>
+        {state.questions?.length > 0 ? (
+          state.questions.map((e) => {
+            return (
+              <Criteria
+                key={e.id}
+                criteria={e}
+                findError={findError}
+                setShowError={setShowError}
+                showError={showError}
+              />
+            );
+          })
+        ) : (
+          <p>Ningún criterio ha sido agregado todavía.</p>
+        )}
+        {findError("questions") && (
+          <p className="text-red-300 text-sm ml-1">{findError("questions")}</p>
+        )}
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Button
+            variant="contained"
+            sx={{ marginX: 3, marginY: 3 }}
+            onClick={handleAddCriteria}
+          >
+            Agregar Criterio
+          </Button>
+        </div>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Button
+            variant="contained"
+            sx={{ marginX: 3, marginY: 3, display: "block" }}
+            onClick={() => {
+              validateErrors();
+              handleScore();
+              setOpenCreateTemplate(true);
+              setShowError(false);
+            }}
+          >
+            Crear Plantilla
+          </Button>
+          <DialogMod
+            open={openCreateTemplate}
+            setOpen={setOpenCreateTemplate}
+            title={"Crear plantilla"}
+            content={"¿Estás seguro de realizar esta acción?"}
+            onAccept={handleCreateTemplate}
+          />
 
-        <DialogMod
-          open={openConfirm}
-          setOpen={setOpenConfirm}
-          title={"Confirmar"}
-          content={"Se registró su plantilla con éxito"}
-          onAccept={() => navigate("/")}
-          onCancel={() => navigate("/")}
-          showButtonCancel={false}
+          <DialogMod
+            open={openConfirm}
+            setOpen={setOpenConfirm}
+            title={"Confirmar"}
+            content={"Se registró su plantilla con éxito"}
+            onAccept={() =>
+              navigate(`/academic-periods/docente-home/${period.id}`, {
+                state: { period },
+              })
+            }
+            onCancel={() =>
+              navigate(`/academic-periods/docente-home/${period.id}`, {
+                state: { period },
+              })
+            }
+            showButtonCancel={false}
+          />
+        </div>
+        <Snackbar
+          open={openSnackBar}
+          autoHideDuration={8000}
+          onClose={() => setOpenSnackBar(false)}
+          message={snackbarMessage}
+          // action={action}
         />
-      </div>
-      <Snackbar
-        open={openSnackBar}
-        autoHideDuration={8000}
-        onClose={() => setOpenSnackBar(false)}
-        message={snackbarMessage}
-        // action={action}
-      />
-    </Container>
+      </Container>
+    </>
   );
 };
 

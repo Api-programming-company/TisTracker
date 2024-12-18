@@ -1,12 +1,20 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+const getTimezone = () => {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+};
+
 export const apiSlice = createApi({
-  reducerPath: "api",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "/api/",
-    credentials: "include",
-    tagTypes: ['company', 'evaluation', 'invitation'],
-    
-  }),
-  endpoints: (builder) => ({}),
+    reducerPath: "api",
+    baseQuery: fetchBaseQuery({
+        baseUrl: "/api/",
+        credentials: "include",
+        prepareHeaders: (headers) => {
+            const timezone = getTimezone();
+            headers.set("Timezone", timezone);
+            return headers;
+        },
+        tagTypes: ["company", "evaluation", "invitation"],
+    }),
+    endpoints: (builder) => ({}),
 });
