@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Container, Typography, Paper, Box, Divider } from "@mui/material";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import AppContext from "../context/AppContext";
 
 const DocenteHome = () => {
@@ -8,6 +8,7 @@ const DocenteHome = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const period = location.state?.period;
+  const {academic_period_id} = useParams();
 
   const handleNavigate = (path) => {
     navigate(path, { state: { period } });
@@ -17,40 +18,41 @@ const DocenteHome = () => {
   console.log(user);
   console.log("Periodo academico");
   console.log(period);
+  localStorage.setItem("periodId", JSON.stringify(academic_period_id));
 
   const menuItems = [
     {
       label: "Lista de Grupo Empresas",
-      path: `/academic-period/${period.id}/companies`,
+      path: `/academic-period/${academic_period_id}/companies`,
     },
     {
       label: "Ver Grupo Empresas para Seguimiento Semanal",
-      path: `/academic-period/${period.id}/weekly_companies`,
+      path: `/academic-period/${academic_period_id}/weekly_companies`,
     },
     {
       label: "Ver Solicitudes de creación de Grupo Empresas",
-      path: `/academic-period/${period.id}/seepending`,
+      path: `/academic-period/${academic_period_id}/seepending`,
     },
     {
       label: "Aceptar/Rechazar Solicitudes",
-      path: `/academic-period/${period.id}/pending`,
+      path: `/academic-period/${academic_period_id}/pending`,
     },
     {
       label: "Ver calificaciones de Grupo Empresa",
-      path: `/academic-period/${period.id}/reports/companies`,
+      path: `/academic-period/${academic_period_id}/reports/companies`,
     },
     {
       label: "Ver calificaciones de estudiantes",
-      path: `/academic-period/${period.id}/reports/students`,
+      path: `/academic-period/${academic_period_id}/reports/students`,
     },
     {
       label: "Ver reporte de evaluaciones semanales",
-      path: `/academic-period/${period.id}/companies4reports`,
+      path: `/academic-period/${academic_period_id}/companies4reports`,
     },
   ];
 
   const evaluationItems = [
-    { label: "Asignar una evaluación", path: `/crearevaluacion/${period.id}` },
+    { label: "Asignar una evaluación", path: `/crearevaluacion/${academic_period_id}` },
     {
       label: "Crear plantilla de evaluación",
       path: "/evaluation-templates/create",

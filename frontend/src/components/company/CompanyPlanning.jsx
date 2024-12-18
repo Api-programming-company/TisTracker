@@ -61,7 +61,7 @@ const CompanyPlanning = () => {
       setOpen(false)
       return;
     }
-    if (!checkErrors()) {
+    if (!checkErrors(user?.academic_period?.evaluation_start_date)) {
       const sumBillingPercentage = milestones.reduce(
         (acc, curr) => acc + parseFloat(curr.billing_percentage),
         0
@@ -210,11 +210,18 @@ const CompanyPlanning = () => {
     <Box className="section-container">
       <BackBtn url={`/company/${id}`}/>
       <Container maxWidth="lg" sx={{ mb:6}}>
-        <Box className="section-header" sx={{ mb: 4 }}>
+        <Box className="section-header" sx={{ mb:1 }}>
           <Typography component="h1" sx={{ fontSize: "40px", lineHeight: "1" }}>
             Planificación de grupo empresa
           </Typography>
         </Box>
+        {user?.academic_period && (
+          <Box sx={{display: "flex", gap: 1, alignItems: "center", mb: 4}}>
+            <Typography fontWeight={"bold"}>Intervalo válido:</Typography>
+            <Typography color="textSecondary" fontSize={15}>{new Date().toLocaleDateString()} - {formatDate(user.academic_period.evaluation_start_date)}</Typography>
+          </Box>
+        )}
+        
         
         <div className="milestones-list">
           {milestones.length > 0 ? (
