@@ -31,7 +31,7 @@ const PlanningSpreadSheet = () => {
   const status = useSelector(getStatus);
   const { user } = useContext(AppContext);
   const pendingMilestoneIndex = useSelector(getPendingMilestoneIndex);
-  const { data, isSuccess, isFetching, isError, error } =
+  const { data, isSuccess, isFetching, isError, error,refetch } =
     useGetPlanningByCompanyIdQuery(id);
   const [userType, setUserType] = useState(user.user_type);
   const milestone_index = useSelector(getCurrentMilestoneIndex);
@@ -135,7 +135,7 @@ const PlanningSpreadSheet = () => {
 
   useEffect(() => {
     if (updatedSuccessfully && updateData) {
-      dispatch(setMilestones(updateData.planning.milestones));
+      refetch();
       setSnackbarMessage("Hito validado correctamente");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);

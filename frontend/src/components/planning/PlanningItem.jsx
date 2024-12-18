@@ -63,11 +63,11 @@ useEffect(() => {
   }
 },[user]);
 
-const editable = (status === "A" || status === "L" || currentMilestoneIndex !== pendingMilestoneIndex || deliverable.created_by === "E") ? false : true;
+const editable = (status === "A" || status === "L" || currentMilestoneIndex !== pendingMilestoneIndex) ? false : true;
 
 
   const handleActionButton = () => {
-   if(editable) {
+   if(editable && deliverable.created_by === "D") {
       switch (deliverable.status) {
         case "A":
           dispatch(changeDeliverable({id : deliverable.id, field: "status", value: "C",milestone_id}));
@@ -128,7 +128,7 @@ const editable = (status === "A" || status === "L" || currentMilestoneIndex !== 
           <textarea name="observations" placeholder="Ponga sus observaciones aqui" id="observations" className="grid-input area" value={deliverable.observations} onChange={handleInputChange} readOnly={!editable} ></textarea>
         </Box>
           <Box sx={{backgroundColor: `${deliverable.status === "C" && "error.main"}`}}className="grid-item " onClick={handleActionButton} >
-            <Checkbox color="primary" name="status" disabled={!editable} checked= {deliverable.status === "C"}  />
+            <Checkbox color="primary" name="status" disabled={!editable || deliverable.created_by !== "D"} checked= {deliverable.status === "C"}  />
           </Box>
     </>
   )
