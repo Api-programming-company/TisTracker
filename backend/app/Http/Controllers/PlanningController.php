@@ -196,23 +196,30 @@ class PlanningController extends Controller
             $planning_milestones = $planning->milestones()->get();
 
             $validated_milestones_ids = array_column($validatedData['milestones'], 'id');
-                // Eliminar hitos y entregables relacionados
-                foreach ($planning_milestones as $planning_milestone) {
-                    if (!in_array($planning_milestone->id, $validated_milestones_ids)) {
-                        $planning_milestone->delete();
-                    }else{
-                        $deliverables = $planning_milestone->deliverables()->get();
-                        $validated_milestone = array_filter($validatedData['milestones'], function ($milestone) use ($planning_milestone) {
-                            return $milestone['id'] == $planning_milestone->id;
-                        });
+           
+            // Eliminar hitos y entregables relacionados
+            foreach ($planning_milestones as $planning_milestone) {
+                if (!in_array($planning_milestone->id, $validated_milestones_ids)) {
+                       $planning_milestone->delete();
+                 }else{
+                    $deliverables = $planning_milestone->deliverables()->get();
+                    $validated_milestone = array_filter($validatedData['milestones'], function ($milestone) use ($planning_milestone) {
+                         return $milestone['id'] == $planning_milestone->id;
+                     });
+                    if(!empty($validated_milestone)){
+                        $validated_milestone = array_values($validated_milestone);
                         $validated_deliverables_ids = array_column($validated_milestone[0]['deliverables'], 'id');
+                        // ELiminar nulls
+                            
                         foreach ($deliverables as $deliverable) {
                             if (!in_array($deliverable->id, $validated_deliverables_ids)) {
                                 $deliverable->delete();
                             }
                         }
                     }
+                        
                 }
+            }
 
 
             // Actualizar la planificación principal
@@ -236,25 +243,25 @@ class PlanningController extends Controller
                 }
 
                 foreach ($validatedData['milestones'] as $milestoneData) {
+                    Log::info('Milestone por crear:' , $milestoneData);
+                
                     // Crear o actualizar el hito
-                     $milestone = Milestone::updateOrCreate(
+                    $milestone = Milestone::updateOrCreate(
                         ['id' => $milestoneData['id'] ?? null],
-                            [
+                        [
                             'name' => $milestoneData['name'] ?? '',
                             'start_date' => $milestoneData['start_date'] ?? null,
                             'end_date' => $milestoneData['end_date'] ?? null,
                             'billing_percentage' => $milestoneData['billing_percentage'] ?? 0,
-                            'status' => $milestoneData['status'] ?? 'P',                                'planning_id' => $planning->id,
-                            ]
-                        );
-                    }
-                    
-
-                    Log::info('Milestone actualizado o creado:', $milestone->toArray());
-
-                    // Procesar entregables si están presentes
+                            'status' => $milestoneData['status'] ?? 'P',
+                            'planning_id' => $planning->id,
+                        ]
+                    );
+                
+                    // Procesar entregables si están presentes (dentro del foreach de milestones)
                     if (!empty($milestoneData['deliverables'])) {
                         foreach ($milestoneData['deliverables'] as $deliverableData) {
+                            Log::info('Deliverable por crear:' , $deliverableData);
                             $deliverable = Deliverable::updateOrCreate(
                                 ['id' => $deliverableData['id'] ?? null],
                                 [
@@ -267,18 +274,11 @@ class PlanningController extends Controller
                                     'created_by' => $deliverableData['created_by'] ?? 'E',
                                 ]
                             );
-
-                            Log::info('Deliverable actualizado o creado:', $deliverable->toArray());
                         }
                     }
                 }
-
                 
-                
-                
-
-                
-        
+            }
 
             DB::commit(); // Confirmar transacción
 

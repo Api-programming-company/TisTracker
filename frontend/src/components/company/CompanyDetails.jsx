@@ -11,7 +11,7 @@ import {
     Avatar,
     Container,
     CircularProgress,
-	Snackbar
+    Snackbar,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
@@ -27,7 +27,7 @@ const CompanyDetails = ({ company, setFormData }) => {
     const [openDialog, setOpenDialog] = useState(false);
     const [openMembers, setOpenMembers] = useState(false);
     const [memberToRemove, setMemberToRemove] = useState(null);
-	const [snackbar, setSnackbar] = useState({
+    const [snackbar, setSnackbar] = useState({
         open: false,
         message: "",
         severity: "success",
@@ -46,7 +46,6 @@ const CompanyDetails = ({ company, setFormData }) => {
     const isLeader = company.members.some(
         (member) => member.user.id === user.id && member.permission === "W"
     );
-    console.log("El usuario es el encargado?", isLeader);
 
     useEffect(() => {
         if (removeMemberIsSuccess) {
@@ -61,20 +60,20 @@ const CompanyDetails = ({ company, setFormData }) => {
                 },
             }));
             setMemberToRemove(null);
-			setSnackbar({
-				open: true,
-				message: "Miembro expulsado correctamente",
-				severity: "success",
-			});
+            setSnackbar({
+                open: true,
+                message: "Miembro expulsado correctamente",
+                severity: "success",
+            });
         }
         if (removeMemberIsError) {
             console.log(removeMemberError);
-			setMemberToRemove(null);
-			setSnackbar({
-				open: true,
-				message: removeMemberError.data.error,
-				severity: "error",
-			});
+            setMemberToRemove(null);
+            setSnackbar({
+                open: true,
+                message: removeMemberError.data.error,
+                severity: "error",
+            });
         }
     }, [
         removeMemberData,
@@ -198,7 +197,7 @@ const CompanyDetails = ({ company, setFormData }) => {
                         </IconButton>
                     </ListItem>
                     <Collapse in={openMembers} timeout="auto" unmountOnExit>
-                        <List component="div" disablePadding>
+                        <List>
                             {company.members.filter(
                                 (member) => member.status === "A"
                             ).length > 0 ? (
@@ -232,17 +231,19 @@ const CompanyDetails = ({ company, setFormData }) => {
                                                         : member.user.email
                                                 }
                                             />
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                onClick={() => {
-                                                    navigate(
-                                                        `/user-evaluation/${member.id}`
-                                                    );
-                                                }}
-                                            >
-                                                Evaluar
-                                            </Button>
+                                            {user.user_type !== "D" && user.id !== member.user.id && (
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={() => {
+                                                        navigate(
+                                                            `/user-evaluation/${member.id}`
+                                                        );
+                                                    }}
+                                                >
+                                                    Evaluar
+                                                </Button>
+                                            )}
                                             {isLeader &&
                                                 member.user.id !== user.id && (
                                                     <IconButton
@@ -289,7 +290,7 @@ const CompanyDetails = ({ company, setFormData }) => {
                     });
                 }}
             />
-			<Snackbar
+            <Snackbar
                 open={snackbar.open}
                 autoHideDuration={10000}
                 onClose={() =>

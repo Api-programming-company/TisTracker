@@ -10,7 +10,7 @@ const DocenteHome = () => {
   const period = location.state?.period;
 
   const handleNavigate = (path) => {
-    navigate(path);
+    navigate(path, { state: { period } });
   };
 
   console.log("Usuario");
@@ -84,7 +84,7 @@ const DocenteHome = () => {
                 paddingLeft: "16px",
                 paddingRight: "16px",
                 textAlign: "center",
-                height: "100%"
+                height: "100%",
               }}
               onClick={() => handleNavigate(item.path)}
             >

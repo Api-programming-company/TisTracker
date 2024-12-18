@@ -9,7 +9,7 @@ import {
     Snackbar,
 } from "@mui/material";
 import AppContext from "../../context/AppContext";
-import { formatDate2 } from "../../utils/validaciones";
+import { formatDate, formatDate2 } from "../../utils/validaciones";
 import DialogMod from "../DialogMod";
 import { useNavigate } from "react-router-dom";
 import { useGetAcademicPeriodByIdQuery } from "../../api/academicPeriodApi";
@@ -109,7 +109,7 @@ const AcademicPeriodAbout = () => {
     }
 
     return (
-        <Box sx={{ mb: 3 }}>
+        <Box sx={{ mb: 3, marginTop: 3 }}>
             <Typography variant="h4" gutterBottom>
                 Sobre el periodo académico
             </Typography>

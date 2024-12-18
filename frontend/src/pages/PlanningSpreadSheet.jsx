@@ -31,7 +31,7 @@ const PlanningSpreadSheet = () => {
   const status = useSelector(getStatus);
   const { user } = useContext(AppContext);
   const pendingMilestoneIndex = useSelector(getPendingMilestoneIndex);
-  const { data, isSuccess, isFetching, isError, error } =
+  const { data, isSuccess, isFetching, isError, error,refetch } =
     useGetPlanningByCompanyIdQuery(id);
   const [userType, setUserType] = useState(user.user_type);
   const milestone_index = useSelector(getCurrentMilestoneIndex);
@@ -47,14 +47,14 @@ const PlanningSpreadSheet = () => {
   ] = useUpdateCompanyPlanningByIdMutation();
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && data?.planning) {
       dispatch(setMilestones(data.planning.milestones));
       // dispatch(setMilestones(planningSpreadsheet.planning.milestones));
     }
   }, [isSuccess, isError, error, data, dispatch]);
 
   useEffect(() => {
-    if(user){
+    if(user && data?.planning){
       if(user.user_type === "E"){
         setUserType("E");
         if(data.planning.id !== Number(id)){
@@ -65,7 +65,7 @@ const PlanningSpreadSheet = () => {
       }
     }
     
-  },[navigate, user,id])
+  },[navigate, user,id, data])
 
 
   const handleConfirm = () => {
@@ -119,7 +119,7 @@ const PlanningSpreadSheet = () => {
       id,
       data: {
         milestones: formData,
-        company_id: data.planning.company_id,
+        company_id: data?.planning?.company_id,
       },
     });
   };
@@ -135,7 +135,7 @@ const PlanningSpreadSheet = () => {
 
   useEffect(() => {
     if (updatedSuccessfully && updateData) {
-      dispatch(setMilestones(updateData.planning.milestones));
+      refetch();
       setSnackbarMessage("Hito validado correctamente");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
@@ -186,7 +186,7 @@ const PlanningSpreadSheet = () => {
   if (milestone) {
     return (
       <Box className="section-container">
-        <BackBtn url={`/company/${data.planning.company_id}`}/>
+        {data?.planning && <BackBtn url={`/company/${data.planning.company_id}`}/>}
         <Container maxWidth="lg">
           <Box className="section-container" sx={{ display: "flex", flexDirection: "column",gap: 4, marginBottom: 5}}>
             <div className="section-header">

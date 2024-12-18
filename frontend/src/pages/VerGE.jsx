@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 import AppContext from "../context/AppContext";
 import { useLeaveCompanyMutation } from "../api/companyApi";
 import DialogMod from "../components/DialogMod";
-import { formatDate, getAcademicPeriodStatus } from "../utils/dateFormat";
+import { getAcademicPeriodStatus } from "../utils/dateFormat";
 
 const VerGE = () => {
     const { id } = useParams();
@@ -81,7 +81,7 @@ const VerGE = () => {
             color: "info",
             onClick: () =>
                 data?.company?.planning
-                    ? navigate(`/planing/${data.company.planning.id}`)
+                    ? navigate(`/planning/${data.company.planning.id}`)
                     : setOpenModal(true),
         },
         {
