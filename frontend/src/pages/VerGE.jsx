@@ -220,7 +220,11 @@ const VerGE = () => {
 
     return (
         <Box>
+            {user?.user_type === "E" ? 
+            <BackBtn url={"/student-home"}	/>
+            :
             <BackBtn url={`/academic-periods/docente-home/${period_id}`}	/>
+            }
             <Box sx={{ maxWidth: 900, margin: "auto", padding: 2, mb: 15 }}>
             
                 <CompanyDetails
