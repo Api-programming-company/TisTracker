@@ -219,104 +219,108 @@ const VerGE = () => {
     }
 
     return (
-        <Box sx={{ maxWidth: 900, margin: "auto", padding: 2, mb: 15 }}>
+        <Box>
             <BackBtn url={`/academic-periods/docente-home/${period_id}`}	/>
-            <CompanyDetails
-                company={formData.company}
-                setFormData={setFormData}
-            />
-            <Divider sx={{ my: 4 }} />
+            <Box sx={{ maxWidth: 900, margin: "auto", padding: 2, mb: 15 }}>
+            
+                <CompanyDetails
+                    company={formData.company}
+                    setFormData={setFormData}
+                />
+                <Divider sx={{ my: 4 }} />
 
-            {/* Modal para mostrar si no hay planificación */}
-            <DialogMod
-                open={openModal}
-                setOpen={setOpenModal}
-                title={"Planificación no encontrada"}
-                content={"La empresa no tiene una planificación asignada."}
-                onAccept={() => setOpenModal(false)}
-                showButtonCancel={false}
-            />
+                {/* Modal para mostrar si no hay planificación */}
+                <DialogMod
+                    open={openModal}
+                    setOpen={setOpenModal}
+                    title={"Planificación no encontrada"}
+                    content={"La empresa no tiene una planificación asignada."}
+                    onAccept={() => setOpenModal(false)}
+                    showButtonCancel={false}
+                />
 
-            {/* Modal para salir de la empresa */}
-            <DialogMod
-                open={openLeaveModal}
-                setOpen={setOpenLeaveModal}
-                title={"Confirmación"}
-                content={
-                    "¿Estás seguro de que deseas abandonar la empresa? Esta acción no se puede deshacer."
-                }
-                onAccept={() => {
-                    console.log("Abandonar empresa", id);
-                    leaveCompany({ companyId: id });
-                    setOpenLeaveModal(false);
-                }}
-                showButtonCancel={true}
-            />
+                {/* Modal para salir de la empresa */}
+                <DialogMod
+                    open={openLeaveModal}
+                    setOpen={setOpenLeaveModal}
+                    title={"Confirmación"}
+                    content={
+                        "¿Estás seguro de que deseas abandonar la empresa? Esta acción no se puede deshacer."
+                    }
+                    onAccept={() => {
+                        console.log("Abandonar empresa", id);
+                        leaveCompany({ companyId: id });
+                        setOpenLeaveModal(false);
+                    }}
+                    showButtonCancel={true}
+                />
 
-            {/* Botones de navegación */}
-            <Stack
-                direction={{ xs: "column", sm: "row" }}
-                spacing={2}
-                mt={4}
-                sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "100%",
-                }}
-            >
-                {user?.user_type === "D" && (
-                    <Box>
-                        {verGEd.map((button, index) => (
-                            <Button
-                                key={index}
-                                variant="contained"
-                                color={button.color}
-                                sx={{ mb: "12px" }}
-                                fullWidth={true} // Asegura que ocupe todo el ancho disponible en pantallas pequeñas
-                                onClick={
-                                    button.onClick ||
-                                    (() => navigate(button.path))
-                                }
-                            >
-                                {button.text}
-                            </Button>
-                        ))}
-                    </Box>
-                )}
-                {user?.user_type === "E" && (
-                    <Box>
-                        {verGEe.map((button, index) => (
-                            <Button
-                                key={index}
-                                variant="contained"
-                                color={button.color}
-                                sx={{ mb: "12px" }}
-                                fullWidth={true} // Asegura que ocupe todo el ancho disponible en pantallas pequeñas
-                                onClick={
-                                    button.onClick ||
-                                    (() => navigate(button.path))
-                                }
-                            >
-                                {button.text}
-                            </Button>
-                        ))}
-                    </Box>
-                )}
-            </Stack>
-            <Snackbar
-                open={snackbar.open}
-                autoHideDuration={10000}
-                onClose={() =>
-                    setSnackbar({
-                        ...snackbar,
-                        open: false,
-                    })
-                }
-                message={snackbar.message}
-                severity={snackbar.severity}
-            />
+                {/* Botones de navegación */}
+                <Stack
+                    direction={{ xs: "column", sm: "row" }}
+                    spacing={2}
+                    mt={4}
+                    sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: "100%",
+                    }}
+                >
+                    {user?.user_type === "D" && (
+                        <Box>
+                            {verGEd.map((button, index) => (
+                                <Button
+                                    key={index}
+                                    variant="contained"
+                                    color={button.color}
+                                    sx={{ mb: "12px" }}
+                                    fullWidth={true} // Asegura que ocupe todo el ancho disponible en pantallas pequeñas
+                                    onClick={
+                                        button.onClick ||
+                                        (() => navigate(button.path))
+                                    }
+                                >
+                                    {button.text}
+                                </Button>
+                            ))}
+                        </Box>
+                    )}
+                    {user?.user_type === "E" && (
+                        <Box>
+                            {verGEe.map((button, index) => (
+                                <Button
+                                    key={index}
+                                    variant="contained"
+                                    color={button.color}
+                                    sx={{ mb: "12px" }}
+                                    fullWidth={true} // Asegura que ocupe todo el ancho disponible en pantallas pequeñas
+                                    onClick={
+                                        button.onClick ||
+                                        (() => navigate(button.path))
+                                    }
+                                >
+                                    {button.text}
+                                </Button>
+                            ))}
+                        </Box>
+                    )}
+                </Stack>
+                <Snackbar
+                    open={snackbar.open}
+                    autoHideDuration={10000}
+                    onClose={() =>
+                        setSnackbar({
+                            ...snackbar,
+                            open: false,
+                        })
+                    }
+                    message={snackbar.message}
+                    severity={snackbar.severity}
+                />
+            </Box>
         </Box>
+
     );
 };
 

@@ -10,6 +10,7 @@ import React, { useContext, useEffect } from "react";
 import { useGetCompaniesByAcademicPeriodQuery} from "../api/academicPeriodApi";
 import AppContext from "../context/AppContext";
 import CompanyCard2 from "../components/company/CompanyCard2";
+import BackBtn from "../components/navigation/BackBtn";
 
 const SeeWeeklyGE = () => {
   const { id } = useParams();
@@ -121,53 +122,56 @@ const SeeWeeklyGE = () => {
     }, {});
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 12}} >
-      <Box display="flex" alignItems="center" justifyContent="space-between">
-        <Typography variant="h3" gutterBottom>
-          Lista de Grupo Empresas
-        </Typography>
-      </Box>
-      {Object.entries(sortedGroupedCompanies).map(([day, companies]) => (
-        <Box key={day} sx={{ mb: 4 }}>
-          <Typography variant="h5" gutterBottom>
-            {day === 'undefined' ? 'Sin planificación' : `Día: ${day}`}
+    <Box>
+      <BackBtn url={`/academic-periods/docente-home/${id}`}/>
+      <Container maxWidth="lg"  >
+        <Box display="flex" alignItems="center" justifyContent="space-between">
+          <Typography variant="h3" gutterBottom>
+            Lista de Grupo Empresas
           </Typography>
-          <Divider sx={{ borderColor:"gray", borderWidth:"1", marginBottom:"1rem" }} />
-          <Box
-            
-          >
-            {companies.length === 0 ? (
-              <Typography variant="h6" color="textSecondary">
-                No hay empresas para este grupo.
-              </Typography>
-            ) : (
-                <Box
-                  display="grid"
-                  gridTemplateColumns={{
-                    xs: "repeat(1, 1fr)",
-                    sm: "repeat(2, 1fr)",
-                    md: "repeat(3, 1fr)"
-                  }}
-                  justifyContent="space-between"
-                  gap="1rem"
-                >
-                  {companies.map((company) => (
-                    <Box
-                      key={company.id}
-                      marginBottom="1rem"
-                      sx={{
-                        backgroundColor: "info.gray"
-                      }}
-                    >
-                      <CompanyCard2 company={company} />
-                    </Box>
-                  ))}
-                </Box>
-            )}
-          </Box>
         </Box>
-      ))}
-    </Container>
+        {Object.entries(sortedGroupedCompanies).map(([day, companies]) => (
+          <Box key={day} sx={{ mb: 4 }}>
+            <Typography variant="h5" gutterBottom>
+              {day === 'undefined' ? 'Sin planificación' : `Día: ${day}`}
+            </Typography>
+            <Divider sx={{ borderColor:"gray", borderWidth:"1", marginBottom:"1rem" }} />
+            <Box
+              
+            >
+              {companies.length === 0 ? (
+                <Typography variant="h6" color="textSecondary">
+                  No hay empresas para este grupo.
+                </Typography>
+              ) : (
+                  <Box
+                    display="grid"
+                    gridTemplateColumns={{
+                      xs: "repeat(1, 1fr)",
+                      sm: "repeat(2, 1fr)",
+                      md: "repeat(3, 1fr)"
+                    }}
+                    justifyContent="space-between"
+                    gap="1rem"
+                  >
+                    {companies.map((company) => (
+                      <Box
+                        key={company.id}
+                        marginBottom="1rem"
+                        sx={{
+                          backgroundColor: "info.gray"
+                        }}
+                      >
+                        <CompanyCard2 company={company} />
+                      </Box>
+                    ))}
+                  </Box>
+              )}
+            </Box>
+          </Box>
+        ))}
+      </Container>
+    </Box>
   );
 };
 
