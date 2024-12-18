@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 import AppContext from "../context/AppContext";
 import { useLeaveCompanyMutation } from "../api/companyApi";
 import DialogMod from "../components/DialogMod";
-import { formatDate, getAcademicPeriodStatus } from "../utils/dateFormat";
+import { getAcademicPeriodStatus } from "../utils/dateFormat";
 
 const VerGE = () => {
     const { id } = useParams();
