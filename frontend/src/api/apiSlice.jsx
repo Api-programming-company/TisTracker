@@ -7,7 +7,7 @@ const getTimezone = () => {
 export const apiSlice = createApi({
     reducerPath: "api",
     baseQuery: fetchBaseQuery({
-        baseUrl: "http://localhost:8000/api/",
+        baseUrl: "/api/",
         credentials: "include",
         prepareHeaders: (headers) => {
             const timezone = getTimezone();

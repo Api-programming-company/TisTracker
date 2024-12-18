@@ -119,7 +119,7 @@ class AcademicPeriodEvaluationController extends Controller
             $teacherName = $academicPeriod->creator ? $academicPeriod->creator->full_name : 'Docente';
 
             // Despachar el trabajo en la cola con el tipo de evaluación legible
-            SendEvaluationNotification::dispatchSync(
+            SendEvaluationNotification::dispatchNow(
                 $students,
                 $academicPeriodEvaluation->evaluation->name,
                 $evaluationTypeReadable,

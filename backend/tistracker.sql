@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 17.0 (Debian 17.0-1.pgdg120+1)
--- Dumped by pg_dump version 17.0 (Debian 17.0-1.pgdg120+1)
+-- Dumped from database version 17.2 (Debian 17.2-1.pgdg120+1)
+-- Dumped by pg_dump version 17.2 (Debian 17.2-1.pgdg120+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -89,7 +89,13 @@ CREATE TABLE system.academic_periods (
     description text,
     user_id bigint NOT NULL,
     created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone
+    updated_at timestamp(0) without time zone,
+    company_creation_start_date date NOT NULL,
+    company_creation_end_date date NOT NULL,
+    planning_start_date date NOT NULL,
+    planning_end_date date NOT NULL,
+    evaluation_start_date date NOT NULL,
+    evaluation_end_date date NOT NULL
 );
 
 
@@ -298,7 +304,8 @@ CREATE TABLE system.deliverables (
     observations text DEFAULT 'Sin observaciones'::text,
     status character(1) DEFAULT 'A'::bpchar NOT NULL,
     created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone
+    updated_at timestamp(0) without time zone,
+    created_by character(1) DEFAULT 'E'::bpchar NOT NULL
 );
 
 
@@ -309,6 +316,13 @@ ALTER TABLE system.deliverables OWNER TO tistracker;
 --
 
 COMMENT ON COLUMN system.deliverables.status IS 'Status A (active), C (carry over)';
+
+
+--
+-- Name: COLUMN deliverables.created_by; Type: COMMENT; Schema: system; Owner: tistracker
+--
+
+COMMENT ON COLUMN system.deliverables.created_by IS 'D: docente, E: estudiante';
 
 
 --
@@ -968,7 +982,7 @@ COPY system.academic_period_evaluations (id, evaluation_id, academic_period_id, 
 -- Data for Name: academic_periods; Type: TABLE DATA; Schema: system; Owner: tistracker
 --
 
-COPY system.academic_periods (id, name, start_date, end_date, description, user_id, created_at, updated_at) FROM stdin;
+COPY system.academic_periods (id, name, start_date, end_date, description, user_id, created_at, updated_at, company_creation_start_date, company_creation_end_date, planning_start_date, planning_end_date, evaluation_start_date, evaluation_end_date) FROM stdin;
 \.
 
 
@@ -1008,7 +1022,7 @@ COPY system.company_users (id, company_id, user_id, status, permission, created_
 -- Data for Name: deliverables; Type: TABLE DATA; Schema: system; Owner: tistracker
 --
 
-COPY system.deliverables (id, name, responsible, objective, milestone_id, expected_result, actual_result, observations, status, created_at, updated_at) FROM stdin;
+COPY system.deliverables (id, name, responsible, objective, milestone_id, expected_result, actual_result, observations, status, created_at, updated_at, created_by) FROM stdin;
 \.
 
 
@@ -1086,6 +1100,9 @@ COPY system.migrations (id, migration, batch) FROM stdin;
 19	2024_10_04_003835_create_user_evaluations_table	1
 20	2024_10_12_134347_create_academic_period_evaluations_table	1
 21	2024_10_29_151233_create_jobs_table	1
+22	2024_12_08_161610_add_dates_to_academic_periods_table	1
+23	2024_12_08_164105_add_evaluation_dates_to_academic_periods_table	1
+24	2024_12_10_122924_add_created_by_to_deliverables_table	1
 \.
 
 
@@ -1233,7 +1250,7 @@ SELECT pg_catalog.setval('system.jobs_id_seq', 1, false);
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: system; Owner: tistracker
 --
 
-SELECT pg_catalog.setval('system.migrations_id_seq', 21, true);
+SELECT pg_catalog.setval('system.migrations_id_seq', 24, true);
 
 
 --
