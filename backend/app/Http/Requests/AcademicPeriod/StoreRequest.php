@@ -130,10 +130,13 @@ class StoreRequest extends FormRequest
 
             'evaluation_start_date.required' => 'La fecha de inicio para la evaluación es obligatoria.',
             'evaluation_start_date.date' => 'La fecha de inicio para la evaluación debe ser una fecha válida.',
+            'evaluation_start_date.after' => 'La fecha de inicio para la evaluación debe ser posterior a la fecha de finalización para la planificación.',
+            'evaluation_start_date.before_or_equal' => 'La fecha de inicio para la evaluación debe ser igual o anterior a la fecha de finalización para la evaluación.',
 
             'evaluation_end_date.required' => 'La fecha de finalización para la evaluación es obligatoria.',
             'evaluation_end_date.date' => 'La fecha de finalización para la evaluación debe ser una fecha válida.',
             'evaluation_end_date.after' => 'La fecha de finalización para la evaluación debe ser posterior a la fecha de inicio.',
+            'evaluation_end_date.before_or_equal' => 'La fecha de finalización para la evaluación debe ser igual o anterior a la fecha de finalización del periodo académico.',
 
             'description.string' => 'La descripción debe ser una cadena de texto.',
         ];
