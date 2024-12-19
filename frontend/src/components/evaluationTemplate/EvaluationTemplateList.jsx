@@ -85,7 +85,7 @@ const EvaluationTemplateList = () => {
             }}
         >
             <Box sx={{display:"flex", width:"100%", paddingX: 0, position: "absolute"}}>
-                <BackBtn url={`/academic-periods/docente-home/${period.id}`} period={period}/>
+                <BackBtn url={`/academic-periods/docente-home/${period?.id}`}/>
             </Box>
             <Typography variant="h4" mt={3} gutterBottom>
                 Plantillas de evaluación
