@@ -32,7 +32,7 @@ const RegistroGE = () => {
     const location = useLocation();
     const period = location.state?.period;
     const navigate = useNavigate();
-    const { academic_period_id } = useParams();
+    const { id } = useParams();
 
     const {
         data: academicPeriodData,
@@ -40,7 +40,7 @@ const RegistroGE = () => {
         isError: isAcademicPeriodError,
         error: academicPeriodError,
         isLoading: isAcademicPeriodLoading,
-    } = useGetAcademicPeriodByIdQuery(academic_period_id);
+    } = useGetAcademicPeriodByIdQuery(id);
 
     useEffect(() => {
         if (academicPeriodData) {
@@ -172,7 +172,7 @@ const RegistroGE = () => {
 
         const formData = {
             evaluation_id: selectedPlantillaId,
-            academic_period_id: academic_period_id,
+            academic_period_id: id,
             evaluation_type: evaluationMap[selectedEvaluation],
             start_date: formattedStartTime,
             end_date: formattedEndTime,
@@ -287,7 +287,7 @@ const RegistroGE = () => {
         <>
             <Box sx={{position:"absolute"}}>
                 <BackBtn
-                    url={`/academic-periods/docente-home/${academic_period_id }`}
+                    url={`/academic-periods/docente-home/${id }`}
                     period={period}
                 />
             </Box>        

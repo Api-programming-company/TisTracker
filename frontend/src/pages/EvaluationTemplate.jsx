@@ -13,10 +13,11 @@ import {
 import EvaluateContext from "../context/evaluateContext/EvaluateContext";
 import Criteria from "../components/evaluationTemplate/Criteria";
 import DialogMod from "../components/DialogMod";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import BackBtn from "../components/navigation/BackBtn";
 
 const EvaluationTemplate = () => {
+  const {id : academic_period_id} = useParams();
   const location = useLocation();
   const period = location.state?.period;
   const [
@@ -142,7 +143,7 @@ const EvaluationTemplate = () => {
     <>
       <Box sx={{ position: "absolute" }}>
         <BackBtn
-          url={`/academic-periods/docente-home/${period.id}`}
+          url={`/academic-periods/docente-home/${academic_period_id}`}
           period={period}
         />
       </Box>

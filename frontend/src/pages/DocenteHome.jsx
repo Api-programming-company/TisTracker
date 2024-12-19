@@ -52,12 +52,12 @@ const DocenteHome = () => {
   ];
 
   const evaluationItems = [
-    { label: "Asignar una evaluación", path: `/crearevaluacion/${academic_period_id}` },
+    { label: "Asignar una evaluación", path: `/academic-period/${academic_period_id}/crearevaluacion/` },
     {
       label: "Crear plantilla de evaluación",
-      path: "/evaluation-templates/create",
+      path: `/academic-period/${academic_period_id}/evaluation-templates/create`,
     },
-    { label: "Plantillas de evaluación", path: "/evaluation-templates" },
+    { label: "Plantillas de evaluación", path: `/academic-period/${academic_period_id}/evaluation-templates` },
   ];
 
   return (

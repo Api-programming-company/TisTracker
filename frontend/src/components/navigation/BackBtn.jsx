@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 const BackBtn = ({url, period}) => {
     const navigate = useNavigate();
 
-
     const goBack = () => {
       if (url) {
           navigate(url, {state: {period}});
