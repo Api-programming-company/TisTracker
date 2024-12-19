@@ -185,6 +185,10 @@ const EditEvaluationTemplate = () => {
       >
         Criterios de Evaluación
       </Typography>
+      <Typography variant="overline">
+        Los parámetros de evaluación deben organizarse en orden ascendente,
+        partiendo del nivel más bajo hasta alcanzar el nivel más alto.
+      </Typography>
       {state.questions?.length > 0 ? (
         state.questions.map((e) => {
           return (
