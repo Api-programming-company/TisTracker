@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Container, CircularProgress } from "@mui/material";
+import { Container, CircularProgress,Box } from "@mui/material";
 import { useGetGradesQuery } from "../api/userApi";
 import { useParams } from "react-router-dom";
 import ReportTemplate from "../components/ReportTemplate";
+import BackBtn from "../components/navigation/BackBtn";
 
 const formatGradesData = (grades) => {
     return grades
@@ -80,11 +81,15 @@ const StudentsReport = () => {
     }
 
     return (
-        <ReportTemplate
+        <Box>
+            <BackBtn url={`/academic-periods/docente-home/${id}`}/>
+            < ReportTemplate
             data={finalData}
             title={"Reporte de calificaciones de estudiante"}
             filename={"calificaciones_de_estudiantes"}
         />
+        </Box>
+        
     );
 };
 

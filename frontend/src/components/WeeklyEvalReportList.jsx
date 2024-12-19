@@ -11,6 +11,7 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
+import BackBtn from "./navigation/BackBtn";
 
 const WeeklyEvalReportList = () => {
   const { id } = useParams();
@@ -49,7 +50,8 @@ const WeeklyEvalReportList = () => {
     );
   }
   return (
-    <>
+    <Box>
+      <BackBtn url={`/academic-periods/docente-home/${id}`}/>
       <Box
         sx={{
           display: "flex",
@@ -96,7 +98,7 @@ const WeeklyEvalReportList = () => {
                   </Typography>
                 }
                 onClick={() =>
-                  navigate(`/company/${company?.planning?.id}/planning_report`)
+                  navigate(`/academic-period/${id}/company-report/${company?.planning?.id}`)
                 }
               />
             </ListItem>
@@ -111,7 +113,7 @@ const WeeklyEvalReportList = () => {
           />
         )}
       </List>
-    </>
+    </Box>
   );
 };
 

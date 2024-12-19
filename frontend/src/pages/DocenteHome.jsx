@@ -47,7 +47,7 @@ const DocenteHome = () => {
     },
     {
       label: "Ver reporte de evaluaciones semanales",
-      path: `/academic-period/${academic_period_id}/companies4reports`,
+      path: `/academic-period/${academic_period_id}/companies-reports`,
     },
   ];
 
