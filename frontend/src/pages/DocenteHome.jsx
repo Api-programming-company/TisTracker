@@ -6,18 +6,16 @@ import AppContext from "../context/AppContext";
 const DocenteHome = () => {
   const { user } = useContext(AppContext);
   const navigate = useNavigate();
-  const location = useLocation();
-  const period = location.state?.period;
+
   const {academic_period_id} = useParams();
 
   const handleNavigate = (path) => {
-    navigate(path, { state: { period } });
+    navigate(path);
   };
 
   console.log("Usuario");
   console.log(user);
-  console.log("Periodo academico");
-  console.log(period);
+
   localStorage.setItem("periodId", JSON.stringify(academic_period_id));
 
   const menuItems = [
@@ -52,12 +50,12 @@ const DocenteHome = () => {
   ];
 
   const evaluationItems = [
-    { label: "Asignar una evaluación", path: `/crearevaluacion/${academic_period_id}` },
+    { label: "Asignar una evaluación", path: `/academic-period/${academic_period_id}/crearevaluacion/` },
     {
       label: "Crear plantilla de evaluación",
-      path: "/evaluation-templates/create",
+      path: `/academic-period/${academic_period_id}/evaluation-templates/create`,
     },
-    { label: "Plantillas de evaluación", path: "/evaluation-templates" },
+    { label: "Plantillas de evaluación", path: `/academic-period/${academic_period_id}/evaluation-templates` },
   ];
 
   return (

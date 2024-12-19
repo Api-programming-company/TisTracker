@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useGetAllEvaluationTemplatesQuery } from "../../api/evaluationApi";
 
 import {
@@ -17,8 +17,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import BackBtn from "../navigation/BackBtn";
 
 const EvaluationTemplateList = () => {
-    const location = useLocation()
-    const period = location.state?.period;
+    const {id : academic_period_id} = useParams();
+
     const navigate = useNavigate();
     const { data, error, isFetching, isError, isSuccess } =
         useGetAllEvaluationTemplatesQuery();
@@ -85,7 +85,7 @@ const EvaluationTemplateList = () => {
             }}
         >
             <Box sx={{display:"flex", width:"100%", paddingX: 0, position: "absolute"}}>
-                <BackBtn url={`/academic-periods/docente-home/${period.id}`} period={period}/>
+                <BackBtn url={`/academic-periods/docente-home/${academic_period_id}`}/>
             </Box>
             <Typography variant="h4" mt={3} gutterBottom>
                 Plantillas de evaluación
