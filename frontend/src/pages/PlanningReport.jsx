@@ -6,15 +6,16 @@ import { useGetPlanningByCompanyIdQuery } from '../api/planningApi';
 import { useParams } from 'react-router-dom';
 import { getOptions } from '../utils/pdfOptions';
 import { FaCalendarTimes } from "react-icons/fa";
+import BackBtn from '../components/navigation/BackBtn';
 
 
 const PlanningReport = () => {
 
-    const {id} = useParams();
+    const {id,company_id} = useParams();
     const [finalData, setFinalData] = useState([]);
     const [csvData,setCsvData] = useState([]);
     const { data, isSuccess, isFetching, isError, error } =
-    useGetPlanningByCompanyIdQuery(id);
+    useGetPlanningByCompanyIdQuery(company_id);
     const options = getOptions("reporte_de_evaluacion_semanal")
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -171,46 +172,50 @@ const PlanningReport = () => {
       }
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      justifyContent="start"
-      alignItems="start"
-      padding="2rem 5rem"
-      gap="2rem"
->
-    <Box display="flex" flexDirection="column" gap="1rem" ref={targetRef}>
-        <Typography variant="h4">Reporte de evaluaciones semanales</Typography>
-        <Box display="flex" gap={3}>
-          <Box display="flex" alignItems="center" gap={0.5}><Typography fontWeight="bold">Nombre Largo:</Typography><Typography>{data.planning.company.long_name}</Typography></Box>
-          <Box display="flex" alignItems="center" gap={0.5}><Typography fontWeight="bold">Nombre Corto:</Typography><Typography>{data.planning.company.short_name}</Typography></Box>
+    <Box>
+      <BackBtn url={`/academic-period/${id}/companies-reports`}/>
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="start"
+        alignItems="start"
+        padding="2rem 5rem"
+        gap="2rem"
+  >
+      <Box display="flex" flexDirection="column" gap="1rem" ref={targetRef}>
+          <Typography variant="h4">Reporte de evaluaciones semanales</Typography>
+          <Box display="flex" gap={3}>
+            <Box display="flex" alignItems="center" gap={0.5}><Typography fontWeight="bold">Nombre Largo:</Typography><Typography>{data.planning.company.long_name}</Typography></Box>
+            <Box display="flex" alignItems="center" gap={0.5}><Typography fontWeight="bold">Nombre Corto:</Typography><Typography>{data.planning.company.short_name}</Typography></Box>
 
-        </Box>
-        <div className="report-grid">
-            {headers.map((header, index) => <div className='planning-grid-item' key={index * 100}>
-                <Box width="100%" sx={{backgroundColor: "info.gray"}} paddingX={2} paddingY={1}>
-                    <Typography textAlign="center" fontSize={13} fontWeight="bold">{header}</Typography>
-                </Box></div>)}
-            {generateGrid()}
-        </div>
-    </Box>
-        
-      <Box display="flex" gap="1rem">
-        <Button onClick={() => downloadCsv(csvData, filename)} sx={{
-            backgroundColor:"primary.main",
-            color: "white"
-        }}>
-            Descargar como csv
-        </Button>
-        <Button onClick={() => generatePDF(targetRef,options)} sx={{
-            backgroundColor:"primary.main",
-            color: "white"
-        }}>
-            Descargar como pdf
-        </Button>
+          </Box>
+          <div className="report-grid">
+              {headers.map((header, index) => <div className='planning-grid-item' key={index * 100}>
+                  <Box width="100%" sx={{backgroundColor: "info.gray"}} paddingX={2} paddingY={1}>
+                      <Typography textAlign="center" fontSize={13} fontWeight="bold">{header}</Typography>
+                  </Box></div>)}
+              {generateGrid()}
+          </div>
       </Box>
-      
+          
+        <Box display="flex" gap="1rem">
+          <Button onClick={() => downloadCsv(csvData, filename)} sx={{
+              backgroundColor:"primary.main",
+              color: "white"
+          }}>
+              Descargar como csv
+          </Button>
+          <Button onClick={() => generatePDF(targetRef,options)} sx={{
+              backgroundColor:"primary.main",
+              color: "white"
+          }}>
+              Descargar como pdf
+          </Button>
+        </Box>
+        
+      </Box>
     </Box>
+    
   )
 }
 

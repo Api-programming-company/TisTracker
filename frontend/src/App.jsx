@@ -108,7 +108,7 @@ function App({ toggleTheme, isDarkMode }) {
               <Route path="/company/:id/invite" element={<StudentSearch />} />
               <Route path="/company/:id/confirm" element={<ConformacionGE />} />
               <Route path="/company/:id/uninvite" element={<EditarListaGE />} />
-              <Route path="/company/:id/planning_report" element={<PlanningReport/>}/>
+              <Route path="/academic-period/:id/company-report/:company_id" element={<PlanningReport/>}/>
               <Route
                 path="/academic-periods"
                 element={<AcademicPeriodList />}
@@ -120,7 +120,7 @@ function App({ toggleTheme, isDarkMode }) {
                 element={<CompanyList />}
               />
               <Route
-                path="/academic-period/:id/companies4reports"
+                path="/academic-period/:id/companies-reports"
                 element={<WeeklyEvalReportList />}
               />
               <Route
