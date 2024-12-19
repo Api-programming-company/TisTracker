@@ -159,6 +159,8 @@ const VerGE = () => {
         }
     }, [updateData, isUpdateSuccess, isUpdateError, updateError]);
 
+
+
     useEffect(() => {
         if (sendData) {
             setFormData(data);
@@ -182,6 +184,10 @@ const VerGE = () => {
             console.error("Error fetching company data:", error);
         }
     }, [data, isSuccess, isError, error]);
+
+    useEffect(() => {
+        console.log(user)
+    },[user])
 
     if (isLoading || isFetching || isLeaveLoading) {
         return (

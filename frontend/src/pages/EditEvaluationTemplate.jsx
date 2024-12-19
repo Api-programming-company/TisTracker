@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useGetCompanyQuestionsByIdQuery } from "../api/evaluationApi";
 import { useUpdateEvaluationTemplateMutation } from "../api/evaluationApi";
 import EvaluateContext from "../context/evaluateContext/EvaluateContext";
@@ -16,6 +16,8 @@ import DialogMod from "../components/DialogMod";
 import Criteria from "../components/evaluationTemplate/Criteria";
 
 const EditEvaluationTemplate = () => {
+  const storedId = localStorage.getItem('periodId');
+  const id = JSON.parse(storedId);
   const { evaluation_id } = useParams();
   const [initialStateCopy, setInitialStateCopy] = useState();
   const {
@@ -246,7 +248,7 @@ const EditEvaluationTemplate = () => {
           content={
             "Se han registrado los cambios en su plantilla correctamente"
           }
-          onAccept={() => navigate("/evaluation-templates")}
+          onAccept={() => navigate(`/academic-period/${id}/evaluation-templates`)}
           onCancel={() => navigate("/")}
           showButtonCancel={false}
         />

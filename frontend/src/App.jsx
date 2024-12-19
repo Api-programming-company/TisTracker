@@ -163,7 +163,7 @@ function App({ toggleTheme, isDarkMode }) {
                 element={<EvaluationGE />}
               />
               <Route
-                path="/evaluation-templates/create"
+                path="/academic-period/:id/evaluation-templates/create"
                 element={<EvaluationTemplate />}
               />
               <Route
@@ -176,12 +176,12 @@ function App({ toggleTheme, isDarkMode }) {
               />
 
               <Route
-                path="/evaluation-templates"
+                path="/academic-period/:id/evaluation-templates"
                 element={<EvaluationTemplateList />}
               />
               <Route path="/plantillas" element={<PlantillasVisualizer />} />
               <Route
-                path="/crearevaluacion/:academic_period_id"
+                path="/academic-period/:id/crearevaluacion/"
                 element={<CrearEvaluacion />}
               />
 

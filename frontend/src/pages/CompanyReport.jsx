@@ -12,9 +12,9 @@ const formatGradesData = (grades) => {
     grades.forEach((grade) => {
       const companyId = grade.company.id;
       if (!uniqueGrades.has(companyId)) {
-        const autoevaluacion = grade.company.auto_evaluation_score;
-        const cruzada = grade.company.cross_evaluation_score;
-        const planificacion = grade.company.planning_score;
+        const autoevaluacion = Math.round(grade.company.auto_evaluation_score);
+        const cruzada = Math.round(grade.company.cross_evaluation_score);
+        const planificacion = Math.round(grade.company.planning_score);
 
         const totalEvaluations = Math.round(
           (autoevaluacion + cruzada) / 2
