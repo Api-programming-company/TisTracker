@@ -17,9 +17,8 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import BackBtn from "../components/navigation/BackBtn";
 
 const EvaluationTemplate = () => {
-  const {id : academic_period_id} = useParams();
-  const location = useLocation();
-  const period = location.state?.period;
+  const { id: academic_period_id } = useParams();
+
   const [
     createEvaluationTemplate,
     { data, isSuccess, isError, error, isLoading },
@@ -142,10 +141,7 @@ const EvaluationTemplate = () => {
   return (
     <>
       <Box sx={{ position: "absolute" }}>
-        <BackBtn
-          url={`/academic-periods/docente-home/${academic_period_id}`}
-          period={period}
-        />
+        <BackBtn url={`/academic-periods/docente-home/${academic_period_id}`} />
       </Box>
       <Container>
         <Typography
@@ -245,14 +241,10 @@ const EvaluationTemplate = () => {
             title={"Confirmar"}
             content={"Se registró su plantilla con éxito"}
             onAccept={() =>
-              navigate(`/academic-periods/docente-home/${period.id}`, {
-                state: { period },
-              })
+              navigate(`/academic-periods/docente-home/${academic_period_id}`)
             }
             onCancel={() =>
-              navigate(`/academic-periods/docente-home/${period.id}`, {
-                state: { period },
-              })
+              navigate(`/academic-periods/docente-home/${academic_period_id}`)
             }
             showButtonCancel={false}
           />

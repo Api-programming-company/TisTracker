@@ -6,18 +6,16 @@ import AppContext from "../context/AppContext";
 const DocenteHome = () => {
   const { user } = useContext(AppContext);
   const navigate = useNavigate();
-  const location = useLocation();
-  const period = location.state?.period;
+
   const {academic_period_id} = useParams();
 
   const handleNavigate = (path) => {
-    navigate(path, { state: { period } });
+    navigate(path);
   };
 
   console.log("Usuario");
   console.log(user);
-  console.log("Periodo academico");
-  console.log(period);
+
   localStorage.setItem("periodId", JSON.stringify(academic_period_id));
 
   const menuItems = [

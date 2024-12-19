@@ -29,8 +29,7 @@ import { formatDate4Evaluation, formatDate } from "../utils/dateFormat";
 import BackBtn from "../components/navigation/BackBtn";
 
 const RegistroGE = () => {
-    const location = useLocation();
-    const period = location.state?.period;
+
     const navigate = useNavigate();
     const { id } = useParams();
 
@@ -288,7 +287,6 @@ const RegistroGE = () => {
             <Box sx={{position:"absolute"}}>
                 <BackBtn
                     url={`/academic-periods/docente-home/${id }`}
-                    period={period}
                 />
             </Box>        
             <Box

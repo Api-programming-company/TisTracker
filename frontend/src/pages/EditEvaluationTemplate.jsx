@@ -16,8 +16,8 @@ import DialogMod from "../components/DialogMod";
 import Criteria from "../components/evaluationTemplate/Criteria";
 
 const EditEvaluationTemplate = () => {
-  const location = useLocation();
-  const period = location.state?.period;
+  const storedId = localStorage.getItem('periodId');
+  const id = JSON.parse(storedId);
   const { evaluation_id } = useParams();
   const [initialStateCopy, setInitialStateCopy] = useState();
   const {
@@ -248,7 +248,7 @@ const EditEvaluationTemplate = () => {
           content={
             "Se han registrado los cambios en su plantilla correctamente"
           }
-          onAccept={() => navigate("/evaluation-templates", {state: {period}})}
+          onAccept={() => navigate(`/academic-period/${id}/evaluation-templates`)}
           onCancel={() => navigate("/")}
           showButtonCancel={false}
         />

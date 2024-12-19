@@ -4,12 +4,12 @@ import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 
 
-const BackBtn = ({url, period}) => {
+const BackBtn = ({url}) => {
     const navigate = useNavigate();
 
     const goBack = () => {
       if (url) {
-          navigate(url, {state: {period}});
+          navigate(url);
       }else{
         navigate(-1);
       }

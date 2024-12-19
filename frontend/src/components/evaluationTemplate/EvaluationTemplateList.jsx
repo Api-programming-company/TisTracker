@@ -18,8 +18,7 @@ import BackBtn from "../navigation/BackBtn";
 
 const EvaluationTemplateList = () => {
     const {id : academic_period_id} = useParams();
-    const location = useLocation()
-    const period = location.state?.period;
+
     const navigate = useNavigate();
     const { data, error, isFetching, isError, isSuccess } =
         useGetAllEvaluationTemplatesQuery();
@@ -71,7 +70,7 @@ const EvaluationTemplateList = () => {
     };
 
     const handleEditClick = (id) => {
-        navigate(`/evaluation-templates/${id}/update`, {state: {period}});
+        navigate(`/evaluation-templates/${id}/update`);
     };
 
     return (
@@ -86,7 +85,7 @@ const EvaluationTemplateList = () => {
             }}
         >
             <Box sx={{display:"flex", width:"100%", paddingX: 0, position: "absolute"}}>
-                <BackBtn url={`/academic-periods/docente-home/${academic_period_id}`} period={period}/>
+                <BackBtn url={`/academic-periods/docente-home/${academic_period_id}`}/>
             </Box>
             <Typography variant="h4" mt={3} gutterBottom>
                 Plantillas de evaluación
