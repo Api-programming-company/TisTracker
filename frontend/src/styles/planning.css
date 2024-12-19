@@ -68,6 +68,14 @@
     border-bottom: 1px solid var(--neutral-300);
 }
 
+.report-grid{
+    position: relative;
+    display: grid;
+    grid-template-columns: 2fr 2fr 2fr 2fr 3fr 1fr 1fr 5fr 1fr;
+    width: 100%;
+    border-bottom: 1px solid var(--neutral-300);
+}
+
 
 @media screen and (max-width: 500px) {
     .list-item2{

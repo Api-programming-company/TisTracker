@@ -287,8 +287,7 @@ const RegistroGE = () => {
         <>
             <Box sx={{position:"absolute"}}>
                 <BackBtn
-                    url={`/academic-periods/docente-home/${period.id}`}
-                    period={period}
+                    url={`/academic-periods/docente-home/${academic_period_id }`}
                 />
             </Box>        
             <Box

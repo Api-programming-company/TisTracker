@@ -140,7 +140,7 @@ const EvaluationTemplate = () => {
 
   return (
     <>
-      <Box sx={{position:"absolute"}}>
+      <Box sx={{ position: "absolute" }}>
         <BackBtn
           url={`/academic-periods/docente-home/${period.id}`}
           period={period}
@@ -185,6 +185,10 @@ const EvaluationTemplate = () => {
           sx={{ fontSize: "30px", lineHeight: "1", marginY: 3 }}
         >
           Criterios de Evaluación
+        </Typography>
+        <Typography variant="overline">
+          Los parámetros de evaluación deben organizarse en orden ascendente,
+          partiendo del nivel más bajo hasta alcanzar el nivel más alto.
         </Typography>
         {state.questions?.length > 0 ? (
           state.questions.map((e) => {
