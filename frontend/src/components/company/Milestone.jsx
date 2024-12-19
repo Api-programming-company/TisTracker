@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   ListItem,
   ListItemText,
@@ -19,6 +19,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DialogMod from "../DialogMod";
 import { usePlanningContext } from "../../context/PlanningContext";
+import { now } from "moment";
+import AppContext from "../../context/AppContext";
 
 
 
@@ -27,6 +29,7 @@ const Milestone = ({ milestone }) => {
   const [open, setOpen] = useState(false)
   const {handleChangeMilestone,deleteMilestone,addDeliverable} = usePlanningContext();
   const [isError, setIsError] = useState(false);
+  const {user} = useContext(AppContext)
 
   const findError = (name) => {
     const error = milestone.errors?.find((error) => error.errorArea === name);
@@ -112,7 +115,8 @@ const Milestone = ({ milestone }) => {
             <ListItem>
               <div className="date-item">
               <DatePicker
-              
+                minDate={new Date(now() + 24 * 60 * 60 * 1000).toISOString()}
+                maxDate={new Date(new Date(new Date(user.academic_period.evaluation_start_date).getTime() + 4*60*60*1000 - 24*60*60*1000))}
                 label="Fecha de inicio"
                 value={milestone.start_date}
                 onChange={(e) => handleAction("handleStartDateChange", e)}
