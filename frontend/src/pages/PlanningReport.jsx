@@ -186,7 +186,7 @@ const PlanningReport = () => {
           <Box display="flex" alignItems="center" gap={0.5}><Typography fontWeight="bold">Nombre Corto:</Typography><Typography>{data.planning.company.short_name}</Typography></Box>
 
         </Box>
-        <div className="planning-grid">
+        <div className="report-grid">
             {headers.map((header, index) => <div className='planning-grid-item' key={index * 100}>
                 <Box width="100%" sx={{backgroundColor: "info.gray"}} paddingX={2} paddingY={1}>
                     <Typography textAlign="center" fontSize={13} fontWeight="bold">{header}</Typography>
