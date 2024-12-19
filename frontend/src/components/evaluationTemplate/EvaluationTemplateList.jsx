@@ -70,7 +70,7 @@ const EvaluationTemplateList = () => {
     };
 
     const handleEditClick = (id) => {
-        navigate(`/evaluation-templates/${id}/update`);
+        navigate(`/evaluation-templates/${id}/update`, {state: {period}});
     };
 
     return (
