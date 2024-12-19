@@ -7,10 +7,10 @@ import ReportTemplate from "../components/ReportTemplate";
 const formatGradesData = (grades) => {
     return grades
         .map((grade) => {
-            const autoevaluacion = grade.company.auto_evaluation_score;
-            const cruzada = grade.company.cross_evaluation_score;
-            const pares = grade.pares;
-            const planificacion = grade.company.planning_score;
+            const autoevaluacion = parseInt(grade.company.auto_evaluation_score, 10);
+            const cruzada = parseInt(grade.company.cross_evaluation_score, 10);
+            const pares = parseInt(grade.pares, 10);
+            const planificacion = parseInt(grade.company.planning_score, 10);
 
             const totalEvaluations = Math.round(
                 (autoevaluacion + pares + cruzada) / 3
