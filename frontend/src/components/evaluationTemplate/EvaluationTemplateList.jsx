@@ -70,7 +70,7 @@ const EvaluationTemplateList = () => {
     };
 
     const handleEditClick = (id) => {
-        navigate(`/evaluation-templates/${id}/update`);
+        navigate(`/evaluation-templates/${id}/update`, {state: {period}});
     };
 
     return (
@@ -85,7 +85,7 @@ const EvaluationTemplateList = () => {
             }}
         >
             <Box sx={{display:"flex", width:"100%", paddingX: 0, position: "absolute"}}>
-            <BackBtn url={`/academic-periods/docente-home/${period?.id}`}/>
+                <BackBtn url={`/academic-periods/docente-home/${period?.id}`} period={period}/>
             </Box>
             <Typography variant="h4" mt={3} gutterBottom>
                 Plantillas de evaluación
